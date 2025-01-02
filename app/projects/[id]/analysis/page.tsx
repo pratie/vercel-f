@@ -65,7 +65,7 @@ export default function ProjectAnalysisPage() {
       toast.success('Analysis completed successfully');
     } catch (error) {
       console.error('Error analyzing project:', error);
-      toast.error('Failed to analyze project. Please try again.');
+      toast.error("Failed to analyze subreddits. Please try again.");
     } finally {
       setAnalyzing(false);
     }
@@ -190,10 +190,10 @@ export default function ProjectAnalysisPage() {
                 </Badge>
               </div>
 
-              {post.matched_keywords && post.matched_keywords.length > 0 && (
+              {post.matching_keywords && post.matching_keywords.length > 0 && (
                 <div className="mb-2 flex flex-wrap gap-2">
                   <span className="text-sm text-gray-600">Matched keywords:</span>
-                  {post.matched_keywords.map((keyword) => (
+                  {post.matching_keywords.map((keyword) => (
                     <Badge key={keyword} variant="secondary" className="bg-yellow-100 text-yellow-800">
                       {keyword}
                     </Badge>
@@ -204,7 +204,7 @@ export default function ProjectAnalysisPage() {
               <h3 className="text-lg font-semibold mb-2">
                 <HighlightedText 
                   text={post.title} 
-                  keywords={post.matched_keywords || []}
+                  keywords={post.matching_keywords || []}
                 />
               </h3>
 
@@ -212,7 +212,7 @@ export default function ProjectAnalysisPage() {
                 <div className="mt-4 text-gray-600">
                   <HighlightedText 
                     text={post.content} 
-                    keywords={post.matched_keywords || []}
+                    keywords={post.matching_keywords || []}
                   />
                 </div>
               )}

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,23 @@ import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import KeywordStats from '@/components/KeywordStats';
+
+interface RawMention {
+  id: number;
+  brand_id: number;
+  title: string;
+  content: string;
+  url: string;
+  subreddit: string;
+  author?: string;
+  created_utc: number;
+  score: number;
+  num_comments: number;
+  matching_keywords?: string[] | string;
+  keyword?: string;
+  relevance_score: number;
+  suggested_comment: string;
+}
 
 interface RedditMention {
   id: number;
@@ -48,23 +65,7 @@ export default function MentionsPage() {
   const params = useParams();
   const projectId = params?.projectId as string;
 
-  useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
-
-    // Check if projectId exists and is valid
-    if (!projectId || typeof projectId !== 'string' || isNaN(parseInt(projectId, 10))) {
-      toast.error('Invalid project ID');
-      router.push('/projects');
-      return;
-    }
-
-    fetchMentions();
-  }, [projectId, user, router]);
-
-  const fetchMentions = async () => {
+  const fetchMentions = useCallback(async () => {
     // Add additional type safety check
     if (!projectId || typeof projectId !== 'string' || isNaN(parseInt(projectId, 10))) {
       toast.error('Invalid project ID');
@@ -77,14 +78,25 @@ export default function MentionsPage() {
       setProject(projectData);
 
       // Get mentions from database
-      const mentions = await api.getMentions(projectId);
+      const mentions: RawMention[] = await api.getMentions(projectId);
       
       // Transform mentions to match RedditPost interface
       const transformedMentions = mentions.map(mention => ({
-        ...mention,
+        id: mention.id,
+        brand_id: mention.brand_id,
+        title: mention.title,
+        content: mention.content,
+        url: mention.url,
+        subreddit: mention.subreddit,
+        author: mention.author || 'unknown',
+        created_utc: mention.created_utc,
+        score: mention.score,
+        num_comments: mention.num_comments,
         matching_keywords: Array.isArray(mention.matching_keywords) ? 
           mention.matching_keywords : 
           (mention.keyword ? [mention.keyword] : []),
+        relevance_score: mention.relevance_score,
+        suggested_comment: mention.suggested_comment,
         formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -101,7 +113,23 @@ export default function MentionsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [projectId]);
+
+  useEffect(() => {
+    if (!user) {
+      router.push('/login');
+      return;
+    }
+
+    // Check if projectId exists and is valid
+    if (!projectId || typeof projectId !== 'string' || isNaN(parseInt(projectId, 10))) {
+      toast.error('Invalid project ID');
+      router.push('/projects');
+      return;
+    }
+
+    fetchMentions();
+  }, [projectId, user, router, fetchMentions]);
 
   const refreshMentions = async () => {
     if (!project) return;
@@ -117,7 +145,7 @@ export default function MentionsPage() {
       }
 
       // Use the updated refreshMentions API with latest project data and limit
-      const updatedMentions = await api.refreshMentions(
+      const updatedMentions: RawMention[] = await api.refreshMentions(
         projectId,
         latestProject.keywords,
         latestProject.subreddits,
@@ -132,10 +160,21 @@ export default function MentionsPage() {
       
       // Transform mentions to match RedditPost interface
       const transformedMentions = updatedMentions.map(mention => ({
-        ...mention,
+        id: mention.id,
+        brand_id: mention.brand_id,
+        title: mention.title,
+        content: mention.content,
+        url: mention.url,
+        subreddit: mention.subreddit,
+        author: mention.author || 'unknown',
+        created_utc: mention.created_utc,
+        score: mention.score,
+        num_comments: mention.num_comments,
         matching_keywords: Array.isArray(mention.matching_keywords) ? 
           mention.matching_keywords : 
           (mention.keyword ? [mention.keyword] : []),
+        relevance_score: mention.relevance_score,
+        suggested_comment: mention.suggested_comment,
         formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
@@ -384,7 +423,7 @@ export default function MentionsPage() {
                   </div>
                   {mention.suggested_comment && (
                     <div className="mt-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                      <h4 className="text-sm font-semibold text-gray-700 mb-2">💡 Suggested Response:</h4>
+                      <h4 className="text-sm font-semibold text-gray-700 mb-2"> Suggested Response:</h4>
                       <p className="text-gray-600 text-sm">{mention.suggested_comment}</p>
                     </div>
                   )}

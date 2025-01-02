@@ -1,7 +1,9 @@
 // src/components/ResultsSection.tsx
+'use client';
+
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { RedditPost } from '@/types';
+import { RedditPost } from '@/lib/api';
 import { MessageSquare, ArrowUpRight, ThumbsUp, Clock } from 'lucide-react';
 
 interface ResultsSectionProps {
@@ -24,7 +26,7 @@ export function ResultsSection({ posts }: ResultsSectionProps) {
       <div className="grid gap-4">
         {posts.map((post, index) => (
           <Card 
-            key={post.post_id}
+            key={`${post.subreddit}-${post.created_utc}-${index}`}
             className="overflow-hidden bg-white shadow-lg border-0 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] opacity-0 animate-slide-up"
             style={{ animationDelay: `${index * 100}ms` }}
           >

@@ -4,7 +4,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Search, Hash, TrendingUp } from 'lucide-react';
-import { RedditPost } from '@/types';
+import { RedditPost } from '@/lib/api';
 
 interface AnalysisSectionProps {
   keywords: string[];

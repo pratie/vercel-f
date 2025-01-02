@@ -12,7 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from 'next/navigation';
-import { api, Project, RedditPost } from '@/lib/api';
+import { api, Project, RedditPost, RedditMention } from '@/lib/api';
 import { toast } from 'sonner';
 import { EditProjectDialog } from './EditProjectDialog';
 
@@ -43,7 +43,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
       
       if (!isExpired && mentions.length > 0) {
         // Process cached data to ensure matching_keywords exists
-        const processedMentions = mentions.map(mention => ({
+        const processedMentions = mentions.map((mention: RedditMention) => ({
           ...mention,
           matching_keywords: Array.isArray(mention.matching_keywords) ? 
             mention.matching_keywords : 
@@ -78,8 +78,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         const processedPosts = analysisResult.posts.map(post => ({
           ...post,
           matching_keywords: Array.isArray(post.matching_keywords) ? 
-            post.matching_keywords : 
-            (post.keyword ? [post.keyword] : []),
+            post.matching_keywords : [],
           relevance_score: post.relevance_score || post.score || 0
         }));
 
@@ -113,7 +112,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
       onDelete(project.id);
     } catch (error) {
       // Only show error in ProjectCard if it wasn't already handled by the parent
-      if (!error.message.includes('Failed to delete project')) {
+      if (error instanceof Error && !error.message.includes('Failed to delete project')) {
         console.error('Delete project error in card:', error);
         toast.error(error.message);
       }

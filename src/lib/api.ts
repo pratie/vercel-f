@@ -88,8 +88,9 @@ export interface RedditPost {
     score: number;
     num_comments: number;
     relevance_score: number;
-    matched_keywords: string[];
+    matching_keywords: string[];
     suggested_comment?: string;
+    generated_reply?: string;
 }
 
 export interface AnalysisResponse {

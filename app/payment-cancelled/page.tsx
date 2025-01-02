@@ -11,7 +11,7 @@ export default function PaymentCancelledPage() {
       <div className="text-center space-y-4">
         <h1 className="text-4xl font-bold text-primary">Payment Cancelled</h1>
         <p className="text-xl text-muted-foreground">
-          Your payment was cancelled. You can try again when you're ready.
+          Your payment was cancelled. Don&apos;t worry, you weren&apos;t charged.
         </p>
         <Button
           onClick={() => router.push('/projects')}
