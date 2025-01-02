@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { api } from '@/src/lib/api';  // Updated import path
+import { api } from '@/lib/api';
 import { Loader2 } from 'lucide-react';
 
 export default function PaymentSuccessPage() {
@@ -15,7 +15,7 @@ export default function PaymentSuccessPage() {
   useEffect(() => {
     const handlePaymentSuccess = async () => {
       try {
-        await api.updatePaymentStatus();  // Updated API call
+        await api.updatePaymentStatus();  
         setStatus('success');
         
         // Start countdown for redirect

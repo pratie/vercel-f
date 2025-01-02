@@ -1,9 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { useState, useEffect } from 'react';
+import { Card, CardContent } from '@/components/ui/card';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, RefreshCw } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
@@ -18,16 +19,14 @@ interface RedditMention {
   content: string;
   url: string;
   subreddit: string;
-  keyword: string;
-  score: number;
-  suggested_comment: string;
-  created_at: string;
-  formatted_date: string;
-  relevance_score: number;
-  matching_keywords: string[];
-  matched_keywords: string[];
-  num_comments: number;
+  author: string;
   created_utc: number;
+  score: number;
+  num_comments: number;
+  matching_keywords: string[];
+  relevance_score: number;
+  suggested_comment: string;
+  formatted_date: string;
 }
 
 interface Project {
@@ -83,14 +82,14 @@ export default function MentionsPage() {
       // Transform mentions to match RedditPost interface
       const transformedMentions = mentions.map(mention => ({
         ...mention,
-        matching_keywords: Array.isArray(mention.matching_keywords) 
-          ? mention.matching_keywords 
-          : JSON.parse(mention.matching_keywords || '[]'),
-        created_utc: mention.created_utc || Math.floor(new Date(mention.created_at).getTime() / 1000),
-        score: mention.score || 0,
-        num_comments: mention.num_comments || 0,
-        relevance_score: mention.relevance_score || 0,
-        suggested_comment: mention.suggested_comment || ""
+        matching_keywords: Array.isArray(mention.matching_keywords) ? 
+          mention.matching_keywords : 
+          (mention.keyword ? [mention.keyword] : []),
+        formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
       }))
       // Sort by relevance score in descending order
       .sort((a, b) => b.relevance_score - a.relevance_score);
@@ -134,14 +133,14 @@ export default function MentionsPage() {
       // Transform mentions to match RedditPost interface
       const transformedMentions = updatedMentions.map(mention => ({
         ...mention,
-        matching_keywords: Array.isArray(mention.matching_keywords) 
-          ? mention.matching_keywords 
-          : JSON.parse(mention.matching_keywords || '[]'),
-        created_utc: mention.created_utc || Math.floor(new Date(mention.created_at).getTime() / 1000),
-        score: mention.score || 0,
-        num_comments: mention.num_comments || 0,
-        relevance_score: mention.relevance_score || 0,
-        suggested_comment: mention.suggested_comment || ""
+        matching_keywords: Array.isArray(mention.matching_keywords) ? 
+          mention.matching_keywords : 
+          (mention.keyword ? [mention.keyword] : []),
+        formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
       }))
       // Sort by relevance score in descending order
       .sort((a, b) => b.relevance_score - a.relevance_score);
@@ -178,7 +177,7 @@ export default function MentionsPage() {
           `"${mention.url || ''}"`,
           `"${mention.author || ''}"`,
           `"${mention.subreddit || ''}"`,
-          new Date(mention.created_at).toLocaleString(),
+          new Date(mention.created_utc * 1000).toLocaleString(),
           mention.score,
           mention.num_comments,
           mention.relevance_score,
