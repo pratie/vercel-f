@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
-import { updatePaymentStatus } from '@/lib/api';
+import { api } from '@/src/lib/api';  // Updated import path
 import { Loader2 } from 'lucide-react';
 
 export default function PaymentSuccessPage() {
@@ -15,7 +15,7 @@ export default function PaymentSuccessPage() {
   useEffect(() => {
     const handlePaymentSuccess = async () => {
       try {
-        await updatePaymentStatus();
+        await api.updatePaymentStatus();  // Updated API call
         setStatus('success');
         
         // Start countdown for redirect
@@ -41,53 +41,49 @@ export default function PaymentSuccessPage() {
     handlePaymentSuccess();
   }, [router]);
 
-  if (status === 'loading') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-4">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto" />
-          <p className="text-xl text-muted-foreground">
-            Processing your payment...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (status === 'error') {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen bg-background">
-        <div className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-destructive">Payment Error</h1>
-          <p className="text-xl text-muted-foreground">{error}</p>
-          <Button
-            onClick={() => router.push('/projects')}
-            variant="outline"
-            className="mt-4"
-          >
-            Return to Projects
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background">
       <div className="text-center space-y-4">
-        <h1 className="text-4xl font-bold text-primary">Payment Successful!</h1>
-        <p className="text-xl text-muted-foreground">
-          Thank you for your purchase. You can now create projects!
-        </p>
-        <p className="text-sm text-muted-foreground">
-          Redirecting to projects in {redirectCount} seconds...
-        </p>
-        <Button
-          onClick={() => router.push('/projects')}
-          className="mt-4"
-        >
-          Go to Projects Now
-        </Button>
+        {status === 'loading' && (
+          <>
+            <Loader2 className="h-8 w-8 animate-spin mx-auto" />
+            <p className="text-xl text-muted-foreground">
+              Processing your payment...
+            </p>
+          </>
+        )}
+        
+        {status === 'success' && (
+          <>
+            <h1 className="text-2xl font-semibold text-green-600">
+              Payment Successful!
+            </h1>
+            <p className="text-muted-foreground">
+              Redirecting to projects in {redirectCount} seconds...
+            </p>
+            <Button
+              onClick={() => router.push('/projects')}
+              className="mt-4"
+            >
+              Go to Projects Now
+            </Button>
+          </>
+        )}
+
+        {status === 'error' && (
+          <>
+            <h1 className="text-2xl font-semibold text-red-600">
+              Something went wrong
+            </h1>
+            <p className="text-muted-foreground">{error}</p>
+            <Button
+              onClick={() => router.push('/projects')}
+              className="mt-4"
+            >
+              Go to Projects
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
