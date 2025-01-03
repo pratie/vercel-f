@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { Button } from './ui/button';
 import { LogOut } from 'lucide-react';
+import Image from 'next/image';
 
 export function Navbar() {
   const router = useRouter();
@@ -28,11 +29,14 @@ export function Navbar() {
         <div className="flex h-14 items-center justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center gap-2 group cursor-pointer" onClick={handleLogoClick}>
-              <img 
-                src="/Logo.png" 
-                alt="SneakyGuy Logo" 
-                className="h-8 w-8 object-contain"
-              />
+              <div className="relative h-12 w-12">
+                <Image 
+                  src="/logo.png"
+                  alt="SneakyGuy Logo"
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
                 SNEAKYGUY
               </span>
