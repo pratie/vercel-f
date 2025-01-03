@@ -305,7 +305,7 @@ export default function MentionsPage() {
             <Button
               onClick={refreshMentions}
               disabled={isLoading}
-              className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white"
+              className="flex items-center gap-2 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
             >
               <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
               {isLoading ? 'Refreshing...' : 'Refresh Mentions'}

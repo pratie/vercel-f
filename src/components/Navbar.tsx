@@ -27,12 +27,14 @@ export function Navbar() {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-14 items-center justify-between">
           <div className="flex">
-            <div className="flex flex-shrink-0 items-center">
-              <span 
-                className="text-xl tracking-tight font-medium text-orange-600 cursor-pointer" 
-                onClick={handleLogoClick}
-              >
-                SneakyGuy
+            <div className="flex flex-shrink-0 items-center gap-2 group cursor-pointer" onClick={handleLogoClick}>
+              <img 
+                src="/Logo.png" 
+                alt="SneakyGuy Logo" 
+                className="h-8 w-8 object-contain"
+              />
+              <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
+                SNEAKYGUY
               </span>
             </div>
           </div>
