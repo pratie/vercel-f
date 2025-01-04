@@ -29,6 +29,10 @@ export function Navbar() {
         <div className="flex h-14 items-center justify-between">
           <div className="flex">
             <div className="flex flex-shrink-0 items-center gap-2 group cursor-pointer" onClick={handleLogoClick}>
+              
+              <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
+                SNEAKYGUY
+              </span>
               <div className="relative h-12 w-12">
                 <Image 
                   src="/logo.png"
@@ -37,9 +41,6 @@ export function Navbar() {
                   className="object-contain"
                 />
               </div>
-              <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
-                SNEAKYGUY
-              </span>
             </div>
           </div>
           <div className="flex items-center gap-3">
