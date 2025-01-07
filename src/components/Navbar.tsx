@@ -33,12 +33,12 @@ export function Navbar() {
               <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
                 SNEAKYGUY
               </span>
-              <div className="relative h-13 w-13">
+              <div className="relative h-10 w-10">
                 <Image 
                   src="/logo.png"
                   alt="Sneakylogo"
                   fill
-                  className="object-contain"
+                  className="object-cover"
                 />
               </div>
             </div>
