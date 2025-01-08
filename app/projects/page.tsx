@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Plus, Loader2 } from 'lucide-react';
+import { Plus, Loader2, Rocket, ArrowRight } from 'lucide-react';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CreateProjectDialog } from '@/components/CreateProjectDialog';
 import { Toaster, toast } from 'sonner';
@@ -10,6 +10,7 @@ import { api, Project } from '@/lib/api';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getStripe } from '@/lib/stripe';
+import Image from 'next/image';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -136,49 +137,116 @@ export default function ProjectsPage() {
     setIsCreateOpen(true);
   };
 
-  if (isLoading || isProcessingPayment) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen">
-        <Loader2 className="h-8 w-8 animate-spin" />
-        <p className="mt-4 text-muted-foreground">
-          {isProcessingPayment ? 'Processing payment...' : 'Loading projects...'}
-        </p>
-      </div>
-    );
-  }
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <Toaster />
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-medium">Your Projects</h1>
-        <Button onClick={handleNewProject}>
-          <Plus className="mr-2 h-4 w-4" /> {hasPaid ? 'New Project' : 'Upgrade to Add Projects'}
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="flex justify-between items-center mb-12">
+        <h1 className="text-[28px] font-bold text-gray-900">Your Projects</h1>
+        <Button
+          onClick={() => hasPaid ? setIsCreateOpen(true) : handleNewProject()}
+          className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-6"
+          size="lg"
+        >
+          {hasPaid ? (
+            <>
+              <Plus className="mr-2 h-5 w-5" />
+              New Project
+            </>
+          ) : (
+            <>
+              Upgrade to Add Projects
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </>
+          )}
         </Button>
       </div>
 
-      {!hasPaid && projects.length === 0 && (
-        <div className="text-center py-12">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">Upgrade to Create Projects</h3>
-          <p className="text-gray-500 mb-4">Get started by upgrading your account to create and track Reddit mentions</p>
-          <Button onClick={handleNewProject}>
-            Upgrade Now
-          </Button>
+      {isLoading ? (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-[#ff4500]" />
         </div>
-      )}
+      ) : !hasPaid ? (
+        <div className="flex flex-col items-center justify-center max-w-[560px] mx-auto">
+          <div className="text-center w-full">
+            <h2 className="text-[32px] font-bold text-gray-900 mb-6">Upgrade to Create Projects</h2>
+            <div className="relative w-full mb-8">
+              <Image 
+                src="/Dashboard.png" 
+                alt="Dashboard Preview" 
+                width={500}
+                height={375}
+                className="rounded-xl shadow-lg w-full"
+                priority
+              />
+            </div>
+            <div className="max-w-[440px] mx-auto">
+              <p className="text-base text-gray-600 mb-6">
+                Get started by upgrading your account to create and track Reddit mentions. Unlock powerful features:
+              </p>
+              <ul className="space-y-3 text-left mb-8">
+                <li className="flex items-center gap-3">
+                  <Rocket className="h-5 w-5 text-[#ff4500] flex-shrink-0" />
+                  <span className="text-base text-gray-700">AI-powered keyword discovery</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Rocket className="h-5 w-5 text-[#ff4500] flex-shrink-0" />
+                  <span className="text-base text-gray-700">Smart relevance scoring</span>
+                </li>
+                <li className="flex items-center gap-3">
+                  <Rocket className="h-5 w-5 text-[#ff4500] flex-shrink-0" />
+                  <span className="text-base text-gray-700">Real-time mention tracking</span>
+                </li>
+              </ul>
+              
+              <div className="flex flex-col items-center mb-6">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-xl text-gray-400 line-through font-medium">$120</span>
+                  <span className="text-2xl font-bold text-[#ff4500]">$49</span>
+                  <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 60%</span>
+                </div>
+                <p className="text-sm text-gray-600 font-medium">Early Adopter Special Offer</p>
+              </div>
 
-      {hasPaid && projects.length === 0 ? (
-        <div className="text-center py-12">
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No projects yet</h3>
-          <p className="text-gray-500 mb-4">Create your first project to start tracking Reddit mentions</p>
-          <Button onClick={() => setIsCreateOpen(true)}>
-            <Plus className="mr-2 h-4 w-4" /> Create Project
+              <Button 
+                onClick={handleNewProject}
+                className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold py-5 text-base rounded-xl shadow-sm mb-2"
+                disabled={isProcessingPayment}
+              >
+                {isProcessingPayment ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Processing...
+                  </>
+                ) : (
+                  <>
+                    Upgrade Now - Lifetime Access
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </>
+                )}
+              </Button>
+              <p className="text-xs text-gray-500 text-center">One-time payment, lifetime access</p>
+            </div>
+          </div>
+        </div>
+      ) : projects.length === 0 ? (
+        <div className="flex flex-col items-center justify-center py-12">
+          <h3 className="text-xl font-medium text-gray-900 mb-4">No projects yet</h3>
+          <p className="text-gray-600 mb-6">Create your first project to start tracking Reddit mentions</p>
+          <Button 
+            onClick={() => setIsCreateOpen(true)}
+            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+          >
+            <Plus className="mr-2 h-5 w-5" />
+            Create Project
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} onDelete={handleDeleteProject} />
+            <ProjectCard
+              key={project.id}
+              project={project}
+              onDelete={() => handleDeleteProject(project.id)}
+            />
           ))}
         </div>
       )}
@@ -188,6 +256,7 @@ export default function ProjectsPage() {
         onOpenChange={setIsCreateOpen}
         onSubmit={handleCreateProject}
       />
+      <Toaster position="top-center" />
     </div>
   );
 }
