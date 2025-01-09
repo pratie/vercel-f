@@ -31,7 +31,7 @@ export function Navbar() {
             <div className="flex flex-shrink-0 items-center gap-2 group cursor-pointer" onClick={handleLogoClick}>
               
               <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
-                SNEAKYGUYy
+                SNEAKYGUY
               </span>
               <div className="relative h-11 w-11">
                 <Image 
