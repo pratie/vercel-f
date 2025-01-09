@@ -1,16 +1,24 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Inter, Space_Grotesk } from 'next/font/google';
 import './globals.css';
 import { Navbar } from '@/components/Navbar';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/AuthContext';
 
-const inter = Inter({ subsets: ['latin'] });
+const inter = Inter({ 
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  variable: '--font-space-grotesk',
+})
 
 export const metadata: Metadata = {
   title: 'Reddit Tracker',
-  description: 'Track brand mentions on Reddit',
+  description: 'Track Reddit mentions and generate leads',
 };
 
 export default function RootLayout({
@@ -19,12 +27,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+      <body className={`min-h-screen bg-white font-sans antialiased ${spaceGrotesk.className}`}>
         <AuthProvider>
           <Navbar />
           {children}
-          <Toaster position="top-right" />
+          <Toaster />
         </AuthProvider>
       </body>
     </html>

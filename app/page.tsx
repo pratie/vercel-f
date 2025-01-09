@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare } from 'lucide-react';
+import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare, Rocket } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 import { useEffect } from 'react';
 
@@ -28,53 +28,60 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
-      <div className="mx-auto max-w-7xl px-6 lg:px-8 pt-16">
-        <div className="mx-auto max-w-2xl text-center">
-          <div className="mb-8">
-            <span className="inline-flex items-center rounded-full bg-[#ff4500]/10 px-4 py-1 text-sm font-medium text-[#ff4500]">
-              🚀 Early Adopter Special
-            </span>
+      <main className="flex min-h-screen flex-col items-center justify-center p-8">
+        <div className="text-center max-w-4xl mx-auto">
+          <div className="inline-flex items-center bg-[#fff3f0] rounded-full px-4 py-2 mb-8">
+            <Rocket className="h-4 w-4 text-[#ff4500] mr-2" />
+            <span className="text-sm font-medium text-[#ff4500]">Early Adopter Special</span>
           </div>
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tight text-gray-900">
+
+          <h1 className="font-space-grotesk text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-[#ff4500] to-gray-900">
             Discover Reddit
             <br />
             Gold Mines
           </h1>
-          <div className="mt-4 flex justify-center items-center text-4xl md:text-6xl font-bold">
-            <span>in</span>
-            <span className="mx-4 text-[#ff4500] relative">
-              Minutes
-              <span className="absolute -right-4 top-0">!</span>
+
+          <div className="flex items-center justify-center gap-2 mb-8">
+            <span className="text-xl font-medium">in</span>
+            <span className="text-xl font-bold text-[#ff4500]">Minutes</span>
+            <span className="text-xl font-medium">!</span>
+          </div>
+
+          <div className="space-y-4 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-600 leading-relaxed font-medium">
+              Turn Reddit into your lead generation powerhouse. AI-powered keyword discovery, relevance scoring, and smart replies
+            </p>
+            <p className="text-xl font-semibold text-[#ff4500]">
+              — all for a one-time price.
+            </p>
+          </div>
+
+          <div className="inline-flex items-center bg-white border border-gray-200 rounded-full px-6 py-2 mb-8 shadow-sm">
+            <span className="text-base font-semibold bg-gradient-to-r from-[#ff4500] to-[#ff6b00] bg-clip-text text-transparent">
+              Limited Time: $49 Lifetime Access
             </span>
           </div>
-          <p className="mt-8 text-xl leading-8 text-gray-600 max-w-xl mx-auto">
-            Turn Reddit into your lead generation powerhouse. AI-powered keyword discovery, relevance scoring, and smart replies - all for a one-time price.
-          </p>
-          <div className="mt-6">
-            <div className="inline-flex items-center rounded-full border border-[#ff4500] px-4 py-1 text-base font-semibold text-[#ff4500]">
-              Limited Time: $49 Lifetime Access
-            </div>
-          </div>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
+
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 
-              onClick={handleStartFreeTrial}
               size="lg"
-              className="rounded-lg bg-[#ff4500] px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-[#ff4500]/90 transition-all duration-300"
+              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all"
+              onClick={handleStartFreeTrial}
             >
-              Get Leads Now 
-              <ArrowRight className="ml-2 inline-block h-5 w-5" />
+              Get Leads Now
+              <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
-              variant="outline" 
+              variant="outline"
               size="lg"
-              className="rounded-lg bg-white px-8 py-4 text-lg font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-200 hover:bg-gray-50 transition-all duration-300"
+              className="border-2 px-8 py-6 text-lg rounded-xl hover:bg-gray-50 transition-all"
               onClick={handleLiveDemo}
             >
               See Live Demo
             </Button>
           </div>
         </div>
-      </div>
+      </main>
 
       {/* How It Works Section */}
       <div className="mt-24">
