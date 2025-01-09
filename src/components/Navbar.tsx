@@ -36,7 +36,7 @@ export function Navbar() {
               <div className="relative h-11 w-11">
                 <Image 
                   src="/logo.png"
-                  alt="Sneakyogo"
+                  alt="Sneakylogo"
                   fill
                   className="object-contain"
                 />

@@ -32,13 +32,13 @@ export default function LandingPage() {
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center bg-[#fff3f0] rounded-full px-4 py-2 mb-8">
             <Rocket className="h-4 w-4 text-[#ff4500] mr-2" />
-            <span className="text-sm font-medium text-[#ff4500]">Early Adopter Special</span>
+            <span className="text-sm font-medium text-[#ff4500]">Be the First Sneaky User 🕵️‍♂️</span>
           </div>
 
-          <h1 className="font-space-grotesk text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-[#ff4500] to-gray-900">
-            Discover Reddit
+          <h1 className="font-display text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-[#ff4500] to-gray-900">
+            Get Sneaky with
             <br />
-            Gold Mines
+            Reddit Gold
           </h1>
 
           <div className="flex items-center justify-center gap-2 mb-8">
@@ -49,16 +49,16 @@ export default function LandingPage() {
 
           <div className="space-y-4 mb-8 max-w-2xl mx-auto">
             <p className="text-xl text-gray-600 leading-relaxed font-medium">
-              Turn Reddit into your lead generation powerhouse. AI-powered keyword discovery, relevance scoring, and smart replies
+              Be the smartest guy in the room. SneakyGUY helps you discover hidden Reddit opportunities with AI-powered keyword tracking and smart insights
             </p>
             <p className="text-xl font-semibold text-[#ff4500]">
-              — all for a one-time price.
+              — ninja-level intelligence, one-time price.
             </p>
           </div>
 
           <div className="inline-flex items-center bg-white border border-gray-200 rounded-full px-6 py-2 mb-8 shadow-sm">
             <span className="text-base font-semibold bg-gradient-to-r from-[#ff4500] to-[#ff6b00] bg-clip-text text-transparent">
-              Limited Time: $49 Lifetime Access
+              Early Bird Special: $49 Lifetime Access
             </span>
           </div>
 
@@ -68,7 +68,7 @@ export default function LandingPage() {
               className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all"
               onClick={handleStartFreeTrial}
             >
-              Get Leads Now
+              Become a SneakyGUY
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
@@ -77,7 +77,7 @@ export default function LandingPage() {
               className="border-2 px-8 py-6 text-lg rounded-xl hover:bg-gray-50 transition-all"
               onClick={handleLiveDemo}
             >
-              See Live Demo
+              See How It Works
             </Button>
           </div>
         </div>
