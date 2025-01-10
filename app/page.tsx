@@ -32,44 +32,63 @@ export default function LandingPage() {
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center bg-[#fff3f0] rounded-full px-4 py-2 mb-8">
             <Rocket className="h-4 w-4 text-[#ff4500] mr-2" />
-            <span className="text-sm font-medium text-[#ff4500]">Be the First Sneaky User 🕵️‍♂️</span>
+            <span className="text-sm font-medium text-[#ff4500]">First 100 Users Only 🎯</span>
           </div>
 
           <h1 className="font-display text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-[#ff4500] to-gray-900">
-            Get Sneaky with
+            Find Reddit Gold
             <br />
-            Reddit Gold
+            Before Others Do
           </h1>
 
           <div className="flex items-center justify-center gap-2 mb-8">
-            <span className="text-xl font-medium">in</span>
-            <span className="text-xl font-bold text-[#ff4500]">Minutes</span>
-            <span className="text-xl font-medium">!</span>
+            <span className="text-xl font-medium">Spot Opportunities</span>
+            <span className="text-xl font-bold text-[#ff4500]">10x Faster</span>
           </div>
 
           <div className="space-y-4 mb-8 max-w-2xl mx-auto">
             <p className="text-xl text-gray-600 leading-relaxed font-medium">
-              Be the smartest guy in the room. SneakyGUY helps you discover hidden Reddit opportunities with AI-powered keyword tracking and smart insights
+              Your AI-powered Reddit detective. Uncover trending topics, track brand mentions, and find perfect leads while others are still searching
             </p>
             <p className="text-xl font-semibold text-[#ff4500]">
-              — ninja-level intelligence, one-time price.
+              — it's like having insider Reddit knowledge
             </p>
           </div>
 
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto mb-8">
+            <div className="flex items-center gap-2 text-gray-600">
+              <Target className="h-5 w-5 text-[#ff4500]" />
+              <span className="text-sm font-medium">Smart Lead Detection</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <Brain className="h-5 w-5 text-[#ff4500]" />
+              <span className="text-sm font-medium">AI-Powered Insights</span>
+            </div>
+            <div className="flex items-center gap-2 text-gray-600">
+              <MessageSquare className="h-5 w-5 text-[#ff4500]" />
+              <span className="text-sm font-medium">Real-time Alerts</span>
+            </div>
+          </div>
+
           <div className="inline-flex items-center bg-white border border-gray-200 rounded-full px-6 py-2 mb-8 shadow-sm">
-            <span className="text-base font-semibold bg-gradient-to-r from-[#ff4500] to-[#ff6b00] bg-clip-text text-transparent">
-              Early Bird Special: $49 Lifetime Access
-            </span>
+            <div className="flex flex-col items-center">
+              <div className="flex items-center gap-2">
+                <span className="text-xl text-gray-400 line-through font-medium">$120</span>
+                <span className="text-2xl font-bold text-[#ff4500]">$49</span>
+                <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 60%</span>
+              </div>
+              <span className="text-sm text-gray-600">Lifetime Access</span>
+            </div>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Button 
               size="lg"
-              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all"
+              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold px-8 py-6 text-lg rounded-xl shadow-lg hover:shadow-xl transition-all group"
               onClick={handleStartFreeTrial}
             >
-              Become a SneakyGUY
-              <ArrowRight className="ml-2 h-5 w-5" />
+              Start Finding Gold
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button 
               variant="outline"
@@ -77,7 +96,7 @@ export default function LandingPage() {
               className="border-2 px-8 py-6 text-lg rounded-xl hover:bg-gray-50 transition-all"
               onClick={handleLiveDemo}
             >
-              See How It Works
+              Watch Demo
             </Button>
           </div>
         </div>
