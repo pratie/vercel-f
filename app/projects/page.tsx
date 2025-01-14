@@ -170,7 +170,7 @@ export default function ProjectsPage() {
             <h2 className="text-[32px] font-bold text-gray-900 mb-6">Upgrade to Create Projects</h2>
             <div className="relative w-full mb-8">
               <Image 
-                src="/Dashboard.png" 
+                src="/dash_design.png" 
                 alt="Dashboard Preview" 
                 width={500}
                 height={375}
