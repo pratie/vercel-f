@@ -32,9 +32,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
     
     if (!user?.token && !isPublicRoute) {
-      console.log('No token, redirecting to login...');
-      router.push('/login');
-    } else if (user?.token && isPublicRoute) {
+      console.log('No token, redirecting to home...');
+      router.push('/');
+    } else if (user?.token && pathname === '/login') {
       console.log('Has token, redirecting to projects...');
       router.push('/projects');
     }
