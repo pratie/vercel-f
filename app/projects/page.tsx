@@ -200,8 +200,8 @@ export default function ProjectsPage() {
               <div className="flex flex-col items-center mb-6">
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xl text-gray-400 line-through font-medium">$120</span>
-                  <span className="text-2xl font-bold text-[#ff4500]">$49</span>
-                  <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 60%</span>
+                  <span className="text-2xl font-bold text-[#ff4500]">$39</span>
+                  <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 67%</span>
                 </div>
                 <p className="text-sm text-gray-600 font-medium">Early Adopter Special Offer</p>
               </div>

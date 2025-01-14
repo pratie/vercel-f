@@ -134,14 +134,17 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
             </div>
           </div>
         ) : (
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-medium mb-2">Keywords</h3>
-              <div className="flex flex-wrap gap-2">
+          <div className="space-y-6 py-4">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Keywords</h3>
+                <span className="text-sm text-gray-500">({projectData.keywords.length})</span>
+              </div>
+              <div className="flex flex-wrap gap-2 bg-gray-50 p-4 rounded-lg min-h-[100px]">
                 {projectData.keywords.map((keyword) => (
                   <div
                     key={keyword}
-                    className="bg-red-50 text-red-500 px-3 py-1 rounded-full text-sm"
+                    className="bg-white border border-red-100 text-red-500 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all hover:shadow-md hover:scale-105 hover:border-red-200"
                   >
                     {keyword}
                   </div>
@@ -149,25 +152,29 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
               </div>
             </div>
 
-            <div>
-              <h3 className="text-lg font-medium mb-2">Subreddits</h3>
-              <div className="flex flex-wrap gap-2">
+            <div className="space-y-3">
+              <div className="flex items-center gap-2">
+                <h3 className="text-lg font-medium">Subreddits</h3>
+                <span className="text-sm text-gray-500">({projectData.subreddits.length})</span>
+              </div>
+              <div className="flex flex-wrap gap-2 bg-gray-50 p-4 rounded-lg min-h-[100px]">
                 {projectData.subreddits.map((subreddit) => (
                   <div
                     key={subreddit}
-                    className="bg-red-50 text-red-500 px-3 py-1 rounded-full text-sm"
+                    className="bg-white border border-red-100 text-red-500 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all hover:shadow-md hover:scale-105 hover:border-red-200 flex items-center gap-1"
                   >
+                    <span className="text-red-400 font-normal">r/</span>
                     {subreddit}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex justify-end gap-3">
+            <div className="flex justify-end gap-3 pt-2">
               <Button variant="outline" onClick={() => setStep(1)}>
                 Back
               </Button>
-              <Button onClick={handleSubmit} disabled={loading}>
+              <Button onClick={handleSubmit} disabled={loading} className="bg-[#ff4500] hover:bg-[#ff4500]/90">
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

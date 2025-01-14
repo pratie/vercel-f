@@ -32,7 +32,7 @@ export default function LandingPage() {
         <div className="text-center max-w-4xl mx-auto">
           <div className="inline-flex items-center bg-[#fff3f0] rounded-full px-4 py-2 mb-8">
             <Rocket className="h-4 w-4 text-[#ff4500] mr-2" />
-            <span className="text-sm font-medium text-[#ff4500]">First 100 Users Only 🎯</span>
+            <span className="text-sm font-medium text-[#ff4500]">First 20 Users Only 🎯</span>
           </div>
 
           <h1 className="font-display text-6xl md:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-[#ff4500] to-gray-900">
@@ -74,8 +74,8 @@ export default function LandingPage() {
             <div className="flex flex-col items-center">
               <div className="flex items-center gap-2">
                 <span className="text-xl text-gray-400 line-through font-medium">$120</span>
-                <span className="text-2xl font-bold text-[#ff4500]">$49</span>
-                <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 60%</span>
+                <span className="text-2xl font-bold text-[#ff4500]">$39</span>
+                <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 67%</span>
               </div>
               <span className="text-sm text-gray-600">Lifetime Access</span>
             </div>
@@ -233,7 +233,7 @@ export default function LandingPage() {
             <div className="mt-16 text-center">
               <div className="inline-flex flex-col items-center">
                 <p className="text-lg text-gray-600 mb-4">Limited Time Early Adopter Offer</p>
-                <p className="text-4xl font-bold text-gray-900 mb-6">$49 <span className="text-lg text-gray-600">one-time payment</span></p>
+                <p className="text-4xl font-bold text-gray-900 mb-6">$39 <span className="text-lg text-gray-600">one-time payment</span></p>
                 <Button 
                   onClick={handleStartFreeTrial}
                   size="lg"
