@@ -7,9 +7,16 @@ const publicRoutes = ['/', '/login', '/signup', '/forgot-password']
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
-  // Skip middleware for API routes and static files
+  // Skip middleware for public assets and static files
   if (pathname.startsWith('/api') || 
       pathname.startsWith('/_next') || 
+      pathname.startsWith('/static') ||
+      pathname.endsWith('.png') ||
+      pathname.endsWith('.jpg') ||
+      pathname.endsWith('.jpeg') ||
+      pathname.endsWith('.gif') ||
+      pathname.endsWith('.svg') ||
+      pathname.endsWith('.ico') ||
       pathname === '/favicon.ico') {
     return NextResponse.next()
   }
@@ -34,5 +41,14 @@ export function middleware(request: NextRequest) {
 
 // Configure which routes to run middleware on
 export const config = {
-  matcher: '/((?!_next/static|_next/image|favicon.ico).*)',
+  matcher: [
+    /*
+     * Match all paths except:
+     * - api (API routes)
+     * - _next (Next.js internals)
+     * - static (static files)
+     * - public files with specific extensions
+     */
+    '/((?!api|_next|static|.*\\.ico$).*)',
+  ]
 }
