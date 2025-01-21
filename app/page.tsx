@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare, Rocket } from 'lucide-react';
+import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare, Rocket, Users, Star, Shield } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 import { useEffect } from 'react';
 import Image from 'next/image';
@@ -35,61 +35,68 @@ export default function LandingPage() {
         <main className="relative">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="pt-20 pb-16 text-center">
-              {/* Early Access Badge */}
-              <div className="inline-flex items-center bg-white rounded-full px-4 py-2 mb-8 shadow-sm border border-gray-100">
-                <Rocket className="h-4 w-4 text-[#ff4500] mr-2" />
-                <span className="text-sm font-semibold text-[#ff4500]">⚡️ Early Access: First 20 Users Only</span>
+              {/* Target Audience Badge */}
+              <div className="flex justify-center mb-8">
+                <div className="inline-flex items-center bg-white rounded-full px-4 py-2 shadow-sm border border-gray-100">
+                  <span className="text-sm text-gray-600">For B2B SaaS Companies & Growth Teams</span>
+                </div>
               </div>
 
               {/* Main Headline */}
-              <h1 className="font-display text-5xl sm:text-6xl md:text-7xl font-bold tracking-tight mb-8 bg-clip-text text-transparent bg-gradient-to-br from-gray-900 via-[#ff4500] to-gray-900 max-w-4xl mx-auto">
-                Strike Reddit Gold
-                <br />
-                <span className="text-4xl sm:text-5xl md:text-6xl">Before Anyone Else</span>
-              </h1>
+              <div className="text-center max-w-4xl mx-auto">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight text-gray-900 mb-6">
+                  Turn Reddit Discussions Into
+                  <span className="text-[#ff4500]"> Qualified B2B Leads</span>
+                </h1>
 
-              {/* Subheadline */}
-              <div className="max-w-2xl mx-auto mb-16">
-                <div className="flex items-center justify-center gap-2 mb-6">
-                  <span className="text-xl sm:text-2xl font-medium">Turn Reddit Insights Into</span>
-                  <span className="text-xl sm:text-2xl font-bold text-[#ff4500]">Real Opportunities</span>
-                </div>
-                
-                <p className="text-lg sm:text-xl text-gray-600 leading-relaxed">
-                  Your <span className="font-semibold">AI-powered Reddit detective</span> that spots golden opportunities others miss.
+                <p className="text-xl text-gray-600 mb-8">
+                  AI-powered tool that finds and qualifies B2B leads from Reddit discussions, saving you <span className="font-medium">50+ hours monthly</span> on manual prospecting.
                 </p>
               </div>
 
-              {/* Feature List */}
-              <div className="max-w-3xl mx-auto mb-20">
-                <div className="bg-white rounded-2xl border border-gray-100 p-8 sm:p-10 shadow-sm">
-                  <div className="grid gap-8 sm:gap-12">
-                    <div className="flex items-start gap-6">
-                      <div className="h-12 w-12 rounded-xl bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
-                        <Target className="h-6 w-6 text-[#ff4500]" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Emerging market trends</h3>
-                        <p className="text-gray-600">Be the first to spot opportunities before they go mainstream</p>
-                      </div>
+              {/* Quirky Message */}
+              <div className="flex justify-center mb-12">
+                <div className="flex items-center gap-3 text-lg text-gray-600">
+                  <MessageSquare className="h-5 w-5 text-[#ff4500]" />
+                  <span>find conversations to mention your product with AI relavency score</span>
+                  <span className="text-[#ff4500] font-medium">+</span>
+                  <Brain className="h-5 w-5 text-[#ff4500]" />
+                  <span>AI-crafted reply suggestions</span>
+                </div>
+              </div>
+
+              {/* CTA Button */}
+              <div className="mb-16">
+                <Button
+                  onClick={() => router.push('/login')}
+                  className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-3 rounded-full text-lg font-medium"
+                >
+                  Find leads
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </div>
+
+              {/* Customer Achievements Section */}
+              <div className="py-16 bg-gray-50">
+                <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <h2 className="text-xl text-gray-600 text-center mb-12">
+                    What our customers achieve with SNEAKYGUY
+                  </h2>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div className="bg-white p-8 rounded-xl">
+                      <div className="text-[2.5rem] font-bold text-[#ff4500] mb-3">3.5x</div>
+                      <p className="text-gray-600">More qualified leads compared to traditional prospecting</p>
                     </div>
-                    <div className="flex items-start gap-6">
-                      <div className="h-12 w-12 rounded-xl bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
-                        <Brain className="h-6 w-6 text-[#ff4500]" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Perfect-fit leads</h3>
-                        <p className="text-gray-600">Connect with users actively seeking solutions like yours</p>
-                      </div>
+                    
+                    <div className="bg-white p-8 rounded-xl">
+                      <div className="text-[2.5rem] font-bold text-[#ff4500] mb-3">50+</div>
+                      <p className="text-gray-600">Hours saved monthly on manual lead generation</p>
                     </div>
-                    <div className="flex items-start gap-6">
-                      <div className="h-12 w-12 rounded-xl bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
-                        <MessageSquare className="h-6 w-6 text-[#ff4500]" />
-                      </div>
-                      <div className="text-left">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Brand & competitor insights</h3>
-                        <p className="text-gray-600">Stay ahead with real-time discussion monitoring</p>
-                      </div>
+                    
+                    <div className="bg-white p-8 rounded-xl">
+                      <div className="text-[2.5rem] font-bold text-[#ff4500] mb-3">89%</div>
+                      <p className="text-gray-600">Higher response rate from Reddit-sourced leads</p>
                     </div>
                   </div>
                 </div>
