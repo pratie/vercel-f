@@ -11,6 +11,7 @@ import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getStripe } from '@/lib/stripe';
 import Image from 'next/image';
+import { FreeAccessMessage } from '../components/FreeAccessMessage';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -257,6 +258,7 @@ export default function ProjectsPage() {
         onSubmit={handleCreateProject}
       />
       <Toaster position="top-center" />
+      <FreeAccessMessage />
     </div>
   );
 }

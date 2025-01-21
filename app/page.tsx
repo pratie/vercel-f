@@ -2,10 +2,11 @@
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare, Rocket, Users, Star, Shield } from 'lucide-react';
+import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare, Rocket, Users, Star, Shield, Sparkles, Mail } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 import { useEffect } from 'react';
 import Image from 'next/image';
+import { FreeAccessMessage } from './components/FreeAccessMessage';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -410,6 +411,11 @@ export default function LandingPage() {
                     <span className="text-sm">Cancel anytime</span>
                   </div>
                 </div>
+              </div>
+
+              {/* Quirky Free Access Message */}
+              <div className="mt-12 bg-[#fff3f0] rounded-2xl p-8 max-w-2xl mx-auto">
+                <FreeAccessMessage />
               </div>
             </div>
           </div>
