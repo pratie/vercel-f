@@ -36,89 +36,49 @@ export default function LandingPage() {
         <main className="relative">
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="pt-20 pb-16 text-center">
-              {/* Background Gradient Effect */}
-              <div className="absolute inset-0 bg-gradient-to-b from-orange-50/50 via-white to-white pointer-events-none"></div>
-              
-              {/* Floating Elements */}
-              <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <div className="absolute -top-4 right-1/4 w-24 h-24 bg-orange-500/10 rounded-full blur-2xl animate-pulse"></div>
-                <div className="absolute top-1/4 -left-12 w-32 h-32 bg-[#ff4500]/10 rounded-full blur-2xl animate-pulse delay-300"></div>
-                <div className="absolute bottom-1/4 right-0 w-40 h-40 bg-orange-400/10 rounded-full blur-2xl animate-pulse delay-700"></div>
-              </div>
-
               {/* Target Audience Badge */}
-              <div className="flex justify-center mb-8 sm:mb-12 px-4 animate-fade-in relative">
-                <div className="inline-block bg-gradient-to-r from-white/80 via-white to-orange-50/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-lg border border-orange-200/30 hover:scale-105 transition-all duration-300 cursor-pointer group">
-                  <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-[#ff4500]/5 rounded-full blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  <p className="text-[15px] sm:text-base text-gray-800 font-medium whitespace-nowrap bg-gradient-to-r from-gray-800 to-gray-600 hover:to-orange-600 bg-clip-text hover:text-transparent transition-all duration-300 relative">
-                    For B2B SaaS Companies & Growth Teams
-                  </p>
+              <div className="flex justify-center mb-6 sm:mb-12 px-4">
+                <div className="inline-block bg-white/90 backdrop-blur-sm px-5 py-2.5 rounded-full shadow-sm border border-[#ff4500]/10">
+                  <p className="text-[15px] sm:text-base text-gray-700 font-medium whitespace-nowrap">For B2B SaaS Companies & Growth Teams</p>
                 </div>
               </div>
 
-              <div className="max-w-[800px] mx-auto px-4 sm:px-6 text-center relative z-10">
-                <h1 className="text-[28px] sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-6 sm:mb-8 leading-[1.15] animate-fade-in-up">
-                  <span className="inline-block mb-2">Turn Reddit Discussions Into</span>{" "}
-                  <div className="mt-1 sm:mt-0 sm:inline relative">
-                    <span className="bg-gradient-to-r from-orange-500 via-[#ff4500] to-[#ff6634] bg-clip-text text-transparent animate-gradient-x relative inline-block">
+              <div className="max-w-[800px] mx-auto px-4 sm:px-6 text-center">
+                <h1 className="text-[28px] sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-5 sm:mb-6 leading-[1.15]">
+                  Turn Reddit Discussions Into{" "}
+                  <div className="mt-1 sm:mt-0 sm:inline">
+                    <span className="bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent">
                       Qualified B2B Leads
-                      <span className="absolute -inset-1 bg-orange-500/20 blur-xl opacity-50"></span>
                     </span>
                   </div>
                 </h1>
 
-                <p className="text-[15px] leading-relaxed sm:text-lg text-gray-600 mb-10 sm:mb-12 max-w-2xl mx-auto animate-fade-in-up delay-100">
-                  AI-powered tool that finds and qualifies B2B leads from Reddit discussions, saving you{" "}
-                  <span className="font-semibold bg-gradient-to-r from-orange-500 to-[#ff4500] bg-clip-text text-transparent inline-block hover:scale-110 transition-transform duration-300 cursor-default">
-                    50+ hours monthly
-                  </span>{" "}
-                  on manual prospecting.
+                <p className="text-[15px] leading-relaxed sm:text-lg text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
+                  AI-powered tool that finds and qualifies B2B leads from Reddit discussions, saving you <span className="font-semibold text-[#ff4500]">50+ hours monthly</span> on manual prospecting.
                 </p>
-
-                {/* Trust Badges */}
-                <div className="flex flex-wrap justify-center gap-6 mb-12 sm:mb-16 animate-fade-in-up delay-200">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <div className="w-8 h-8 rounded-full bg-orange-100/50 flex items-center justify-center">
-                      <Users className="w-4 h-4 text-orange-600" />
-                    </div>
-                    <span className="text-sm font-medium">500+ Active Users</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <div className="w-8 h-8 rounded-full bg-orange-100/50 flex items-center justify-center">
-                      <Star className="w-4 h-4 text-orange-600" />
-                    </div>
-                    <span className="text-sm font-medium">4.8/5 Rating</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <div className="w-8 h-8 rounded-full bg-orange-100/50 flex items-center justify-center">
-                      <Shield className="w-4 h-4 text-orange-600" />
-                    </div>
-                    <span className="text-sm font-medium">GDPR Compliant</span>
-                  </div>
-                </div>
               </div>
 
               {/* Features Section */}
-              <div className="max-w-[800px] mx-auto px-4 mb-12 sm:mb-16 relative z-10">
+              <div className="max-w-[800px] mx-auto px-4 mb-10 sm:mb-16">
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
-                  <div className="flex items-start sm:items-center gap-4 text-[15px] leading-relaxed sm:text-lg text-gray-600 max-w-[280px] sm:max-w-none group bg-gradient-to-br from-white via-white to-orange-50/30 p-5 rounded-xl border border-orange-200/30 hover:border-orange-300/50 transition-all duration-300 hover:scale-105 hover:shadow-orange-200/50 shadow-lg animate-fade-in-left">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 via-[#ff4500] to-[#ff6634] flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                      <MessageSquare className="h-6 w-6 text-white group-hover:rotate-6 transition-transform duration-300" />
+                  <div className="flex items-start sm:items-center gap-4 text-[15px] leading-relaxed sm:text-lg text-gray-600 max-w-[280px] sm:max-w-none group bg-white/50 p-4 rounded-xl border border-[#ff4500]/5">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white flex items-center justify-center flex-shrink-0 shadow-sm border border-[#ff4500]/10 group-hover:border-[#ff4500]/20 transition-all duration-200">
+                      <MessageSquare className="h-6 w-6 text-[#ff4500]" />
                     </div>
                     <span className="text-left sm:text-center group-hover:text-gray-900 transition-colors duration-200">Find conversations to mention your product with AI relevancy score</span>
                   </div>
                   
                   <div className="flex sm:hidden items-center">
-                    <span className="text-transparent bg-gradient-to-r from-orange-500 to-[#ff4500] bg-clip-text text-2xl font-medium animate-bounce px-2">+</span>
+                    <span className="text-[#ff4500] text-2xl font-medium animate-pulse px-2">+</span>
                   </div>
                   
                   <div className="hidden sm:flex items-center">
-                    <span className="text-transparent bg-gradient-to-r from-orange-500 to-[#ff4500] bg-clip-text text-3xl font-medium animate-bounce px-2">+</span>
+                    <span className="text-[#ff4500] text-3xl font-medium animate-pulse px-2">+</span>
                   </div>
                   
-                  <div className="flex items-start sm:items-center gap-4 text-[15px] leading-relaxed sm:text-lg text-gray-600 max-w-[280px] sm:max-w-none group bg-gradient-to-br from-white via-white to-orange-50/30 p-5 rounded-xl border border-orange-200/30 hover:border-orange-300/50 transition-all duration-300 hover:scale-105 hover:shadow-orange-200/50 shadow-lg animate-fade-in-right">
-                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-orange-500 via-[#ff4500] to-[#ff6634] flex items-center justify-center flex-shrink-0 shadow-lg group-hover:shadow-xl transition-all duration-300 group-hover:scale-110">
-                      <Brain className="h-6 w-6 text-white group-hover:rotate-6 transition-transform duration-300" />
+                  <div className="flex items-start sm:items-center gap-4 text-[15px] leading-relaxed sm:text-lg text-gray-600 max-w-[280px] sm:max-w-none group bg-white/50 p-4 rounded-xl border border-[#ff4500]/5">
+                    <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white flex items-center justify-center flex-shrink-0 shadow-sm border border-[#ff4500]/10 group-hover:border-[#ff4500]/20 transition-all duration-200">
+                      <Brain className="h-6 w-6 text-[#ff4500]" />
                     </div>
                     <span className="text-left sm:text-center group-hover:text-gray-900 transition-colors duration-200">AI-crafted reply suggestions</span>
                   </div>
@@ -126,18 +86,14 @@ export default function LandingPage() {
               </div>
 
               {/* CTA Button */}
-              <div className="flex justify-center mb-12 sm:mb-20 px-4 animate-fade-in-up delay-300 relative z-10">
-                <button
+              <div className="flex justify-center mb-12 sm:mb-20 px-4">
+                <Button
                   onClick={() => router.push('/signup')}
-                  className="group relative w-full sm:w-auto bg-gradient-to-r from-orange-500 via-[#ff4500] to-[#ff6634] hover:from-[#ff4500] hover:to-[#ff6634] text-white px-8 sm:px-12 py-4 sm:py-5 rounded-full text-lg sm:text-xl font-medium transform hover:scale-105 transition-all duration-300 shadow-xl hover:shadow-2xl max-w-[280px] hover:border-orange-300/50 border border-orange-200/30 overflow-hidden"
+                  className="w-full sm:w-auto bg-gradient-to-r from-[#ff4500] to-[#ff6634] hover:from-[#ff4500] hover:to-[#ff4500] text-white px-8 sm:px-12 py-3.5 sm:py-4 rounded-full text-lg sm:text-xl font-medium transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl max-w-[280px]"
                 >
-                  <span className="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover:opacity-100 group-hover:animate-shine"></span>
-                  <span className="absolute inset-0 rounded-full bg-gradient-to-r from-orange-500/50 to-[#ff6634]/50 blur-xl group-hover:blur-2xl transition-all duration-300 opacity-0 group-hover:opacity-100"></span>
-                  <span className="relative flex items-center justify-center gap-3">
-                    Find leads
-                    <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 group-hover:translate-x-1 transition-transform duration-300" />
-                  </span>
-                </button>
+                  Find leads
+                  <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6" />
+                </Button>
               </div>
 
               {/* Customer Achievements Section */}
