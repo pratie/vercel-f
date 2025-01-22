@@ -24,7 +24,7 @@ export function FreeAccessMessage() {
 
       <div className="flex justify-center">
         <button 
-          className="group w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-[#ff4500] to-[#ff6634] hover:from-[#ff4500] hover:to-[#ff4500] text-white px-5 sm:px-8 py-3 sm:py-3.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 max-w-[280px]" 
+          className="group w-full sm:w-auto flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-[#ff4500] to-[#ff6634] hover:from-[#ff4500] hover:to-[#ff4500] text-white px-5 sm:px-8 py-3 sm:py-3.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200 max-w-[320px] sm:max-w-[360px]" 
           onClick={() => window.location.href = 'mailto:sneakyguysaas@gmail.com'}
         >
           <Mail className="h-[18px] w-[18px] sm:h-5 sm:w-5 flex-shrink-0" />
