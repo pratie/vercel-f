@@ -1,27 +1,36 @@
-import { ArrowRight, Mail, Sparkles, Wrench } from 'lucide-react';
+import { ArrowRight, Mail, Sparkles } from 'lucide-react';
 
 export function FreeAccessMessage() {
   return (
-    <div className="mt-12 bg-[#fff3f0] rounded-2xl p-8 max-w-2xl mx-auto">
-      <div className="flex items-center justify-center gap-2 mb-4">
-        <Sparkles className="h-6 w-6 text-[#ff4500]" />
-        <span className="text-lg font-medium text-gray-900">Psst! Want to be an early adopter? 🚀</span>
+    <div className="mt-8 sm:mt-12 bg-gradient-to-br from-[#fff3f0] to-white rounded-xl sm:rounded-2xl p-6 sm:p-8 mx-4 sm:mx-auto max-w-2xl shadow-sm border border-[#ff4500]/10">
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 mb-6 text-center">
+        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shadow-sm border border-[#ff4500]/10">
+          <Sparkles className="h-5 w-5 text-[#ff4500]" />
+        </div>
+        <span className="text-base sm:text-lg font-semibold text-gray-900">Psst! Want to be an early adopter? 🚀</span>
       </div>
-      <p className="text-gray-600 mb-4">
-        I'm an indie hacker building this tool and would love your feedback! Send me an email for free access - let's make this tool awesome together!
-      </p>
-      <div className="flex items-center justify-center gap-2 mb-6 text-gray-600">
-        <p className="text-sm italic">
-          ✨ Bonus: Got a specific feature in mind? I'd be happy to build custom features just for you! ✨
+      
+      <div className="max-w-xl mx-auto">
+        <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 text-center px-2">
+          I'm an indie hacker building this tool and would love your feedback! Send me an email for free access - let's make this tool <span className="text-[#ff4500] font-medium">awesome</span> together!
         </p>
+        
+        <div className="flex justify-center mb-6 sm:mb-8">
+          <div className="text-xs sm:text-sm italic text-gray-600 max-w-[280px] sm:max-w-md text-center px-4 py-2 rounded-lg bg-white/50 border border-[#ff4500]/10">
+            ✨ Bonus: Got a specific feature in mind? I'd be happy to build custom features just for you! ✨
+          </div>
+        </div>
       </div>
-      <div 
-        className="flex items-center justify-center gap-3 bg-white rounded-full px-6 py-3 shadow-sm border border-gray-100 hover:shadow-md transition-shadow cursor-pointer" 
-        onClick={() => window.location.href = 'mailto:sneakyguysaas@gmail.com'}
-      >
-        <Mail className="h-5 w-5 text-[#ff4505]" />
-        <span className="text-gray-900 font-medium">sneakyguysaas@gmail.com</span>
-        <ArrowRight className="h-4 w-4 text-[#ff4500]" />
+
+      <div className="flex justify-center px-2">
+        <button 
+          className="group w-full sm:w-auto flex items-center justify-center gap-3 bg-gradient-to-r from-[#ff4500] to-[#ff6634] hover:from-[#ff4500] hover:to-[#ff4500] text-white px-6 sm:px-8 py-3 sm:py-3.5 rounded-full shadow-md hover:shadow-lg transition-all duration-200" 
+          onClick={() => window.location.href = 'mailto:sneakyguysaas@gmail.com'}
+        >
+          <Mail className="h-5 w-5 flex-shrink-0" />
+          <span className="text-sm sm:text-base font-medium truncate">sneakyguysaas@gmail.com</span>
+          <ArrowRight className="h-4 w-4 flex-shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
+        </button>
       </div>
     </div>
   );
