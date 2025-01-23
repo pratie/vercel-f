@@ -65,7 +65,7 @@ export default function LandingPage() {
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white flex items-center justify-center flex-shrink-0 shadow-sm border border-[#ff4500]/10 group-hover:border-[#ff4500]/20 transition-all duration-200">
                       <MessageSquare className="h-6 w-6 text-[#ff4500]" />
                     </div>
-                    <span className="text-left sm:text-center group-hover:text-gray-900 transition-colors duration-200">Find conversations to mention your product with AI relevancy score</span>
+                    <span className="text-left sm:text-center group-hover:text-gray-900 transition-colors duration-200">Find conversations to mention your product keywords with AI relevancy score</span>
                   </div>
                   
                   <div className="flex sm:hidden items-center">
