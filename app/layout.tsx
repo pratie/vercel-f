@@ -17,8 +17,11 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Reddit Tracker',
-  description: 'Track Reddit mentions and generate leads',
+  title: 'SneakyGuy - Reddit Tracking & Lead Generation',
+  description: 'Track Reddit keyword mentions and generate leads with AI-powered relevancy scoring',
+  icons: {
+    icon: '/logo.png'
+  }
 };
 
 export default function RootLayout({
