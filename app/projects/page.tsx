@@ -139,12 +139,12 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex justify-between items-center mb-12">
-        <h1 className="text-[28px] font-bold text-gray-900">Your Projects</h1>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-8 sm:mb-12">
+        <h1 className="text-2xl sm:text-[28px] font-bold text-gray-900">Your Projects</h1>
         <Button
           onClick={() => hasPaid ? setIsCreateOpen(true) : handleNewProject()}
-          className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-6"
+          className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-4 sm:px-6 w-full sm:w-auto"
           size="lg"
         >
           {hasPaid ? (
@@ -166,10 +166,10 @@ export default function ProjectsPage() {
           <Loader2 className="h-8 w-8 animate-spin text-[#ff4500]" />
         </div>
       ) : !hasPaid ? (
-        <div className="flex flex-col items-center justify-center max-w-[560px] mx-auto">
+        <div className="flex flex-col items-center justify-center max-w-[560px] mx-auto px-4 sm:px-0">
           <div className="text-center w-full">
-            <h2 className="text-[32px] font-bold text-gray-900 mb-6">Upgrade to Create Projects</h2>
-            <div className="relative w-full mb-8">
+            <h2 className="text-2xl sm:text-[32px] font-bold text-gray-900 mb-4 sm:mb-6">Upgrade to Create Projects</h2>
+            <div className="relative w-full mb-6 sm:mb-8">
               <Image 
                 src="/dash_design.png" 
                 alt="Dashboard Preview" 
@@ -180,36 +180,36 @@ export default function ProjectsPage() {
               />
             </div>
             <div className="max-w-[440px] mx-auto">
-              <p className="text-base text-gray-600 mb-6">
+              <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">
                 Get started by upgrading your account to create and track Reddit mentions. Unlock powerful features:
               </p>
-              <ul className="space-y-3 text-left mb-8">
+              <ul className="space-y-3 text-left mb-6 sm:mb-8">
                 <li className="flex items-center gap-3">
                   <Rocket className="h-5 w-5 text-[#ff4500] flex-shrink-0" />
-                  <span className="text-base text-gray-700">AI-powered keyword discovery</span>
+                  <span className="text-sm sm:text-base text-gray-700">AI-powered keyword discovery</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Rocket className="h-5 w-5 text-[#ff4500] flex-shrink-0" />
-                  <span className="text-base text-gray-700">Smart relevance scoring</span>
+                  <span className="text-sm sm:text-base text-gray-700">Smart relevance scoring</span>
                 </li>
                 <li className="flex items-center gap-3">
                   <Rocket className="h-5 w-5 text-[#ff4500] flex-shrink-0" />
-                  <span className="text-base text-gray-700">Real-time mention tracking</span>
+                  <span className="text-sm sm:text-base text-gray-700">Real-time mention tracking</span>
                 </li>
               </ul>
               
-              <div className="flex flex-col items-center mb-6">
+              <div className="flex flex-col items-center mb-4 sm:mb-6">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xl text-gray-400 line-through font-medium">$120</span>
-                  <span className="text-2xl font-bold text-[#ff4500]">$39</span>
-                  <span className="bg-[#ff4500] text-white text-xs font-semibold px-2 py-1 rounded-full">Save 67%</span>
+                  <span className="text-lg sm:text-xl text-gray-400 line-through font-medium">$120</span>
+                  <span className="text-xl sm:text-2xl font-bold text-[#ff4500]">$39</span>
+                  <span className="bg-[#ff4500] text-white text-[10px] sm:text-xs font-semibold px-2 py-1 rounded-full">Save 67%</span>
                 </div>
-                <p className="text-sm text-gray-600 font-medium">Early Adopter Special Offer</p>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Early Adopter Special Offer</p>
               </div>
 
               <Button 
                 onClick={handleNewProject}
-                className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold py-5 text-base rounded-xl shadow-sm mb-2"
+                className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold py-4 sm:py-5 text-sm sm:text-base rounded-xl shadow-sm mb-2"
                 disabled={isProcessingPayment}
               >
                 {isProcessingPayment ? (
@@ -224,24 +224,24 @@ export default function ProjectsPage() {
                   </>
                 )}
               </Button>
-              <p className="text-xs text-gray-500 text-center">One-time payment, lifetime access</p>
+              <p className="text-[10px] sm:text-xs text-gray-500 text-center">One-time payment, lifetime access</p>
             </div>
           </div>
         </div>
       ) : projects.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-12">
-          <h3 className="text-xl font-medium text-gray-900 mb-4">No projects yet</h3>
-          <p className="text-gray-600 mb-6">Create your first project to start tracking Reddit mentions</p>
+        <div className="flex flex-col items-center justify-center py-8 sm:py-12 px-4 sm:px-0">
+          <h3 className="text-lg sm:text-xl font-medium text-gray-900 mb-3 sm:mb-4 text-center">No projects yet</h3>
+          <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 text-center">Create your first project to start tracking Reddit mentions</p>
           <Button 
             onClick={() => setIsCreateOpen(true)}
-            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white w-full sm:w-auto"
           >
             <Plus className="mr-2 h-5 w-5" />
             Create Project
           </Button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {projects.map((project) => (
             <ProjectCard
               key={project.id}
