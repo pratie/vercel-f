@@ -25,9 +25,9 @@ declare global {
 const floatingAnimation = {
   initial: { y: 0 },
   animate: {
-    y: [-10, 10, -10],
+    y: [-5, 5, -5],
     transition: {
-      duration: 4,
+      duration: 6,
       repeat: Infinity,
       ease: "easeInOut"
     }
@@ -99,44 +99,35 @@ export default function LoginPage() {
   }, [initializeGoogleSignIn]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-[#fff3f0] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-b from-white to-[#fff3f0] flex flex-col items-center justify-center p-4 overflow-hidden">
       {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 1 }}
-          className="absolute -right-20 top-20 w-96 h-96 bg-[#ff4500] rounded-full blur-3xl"
-        />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 0.1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.2 }}
-          className="absolute -left-20 bottom-20 w-96 h-96 bg-[#ff4500] rounded-full blur-3xl"
-        />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
+        <div className="absolute -right-20 top-20 w-96 h-96 bg-[#ff4500]/10 rounded-full blur-3xl transform-gpu" />
+        <div className="absolute -left-20 bottom-20 w-96 h-96 bg-[#ff4500]/10 rounded-full blur-3xl transform-gpu" />
       </div>
 
       {/* Main Content */}
       <div className="relative z-10 w-full max-w-md">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-[#ff4500]/10"
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#ff4500]/10 transform-gpu"
         >
           {/* Floating Reddit Snoo */}
           <motion.div
             variants={floatingAnimation}
             initial="initial"
             animate="animate"
-            className="flex justify-center mb-6"
+            className="flex justify-center mb-6 select-none"
           >
             <Image
               src="/reddit-snoo.jpg"
               alt="Reddit Snoo"
               width={80}
               height={80}
-              className="drop-shadow-lg"
+              className="drop-shadow-lg transform-gpu"
+              priority
             />
           </motion.div>
 
@@ -148,7 +139,7 @@ export default function LoginPage() {
           </p>
 
           {/* Google Sign-in Button */}
-          <div ref={googleButtonRef} className="flex justify-center" />
+          <div ref={googleButtonRef} className="flex justify-center transform-gpu" />
         </motion.div>
       </div>
 
