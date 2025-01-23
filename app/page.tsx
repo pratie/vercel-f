@@ -88,7 +88,7 @@ export default function LandingPage() {
               {/* CTA Button */}
               <div className="flex justify-center mb-12 sm:mb-20 px-4">
                 <Button
-                  onClick={() => router.push('/signup')}
+                  onClick={() => router.push('/login')}
                   className="w-full sm:w-auto bg-gradient-to-r from-[#ff4500] to-[#ff6634] hover:from-[#ff4500] hover:to-[#ff4500] text-white px-8 sm:px-12 py-3.5 sm:py-4 rounded-full text-lg sm:text-xl font-medium transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl max-w-[280px]"
                 >
                   Find leads

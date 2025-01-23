@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth';
 import Script from 'next/script';
 import { toast } from 'sonner';
+import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 declare global {
   interface Window {
@@ -19,6 +21,18 @@ declare global {
     };
   }
 }
+
+const floatingAnimation = {
+  initial: { y: 0 },
+  animate: {
+    y: [-10, 10, -10],
+    transition: {
+      duration: 4,
+      repeat: Infinity,
+      ease: "easeInOut"
+    }
+  }
+};
 
 export default function LoginPage() {
   const router = useRouter();
@@ -51,7 +65,7 @@ export default function LoginPage() {
         cancel_on_tap_outside: true,
       });
 
-      window.google.accounts.id.renderButton(googleButtonRef.current, { 
+      window.google.accounts.id.renderButton(googleButtonRef.current, {
         type: 'standard',
         theme: 'outline',
         size: 'large',
@@ -63,14 +77,14 @@ export default function LoginPage() {
 
       isGoogleInitialized.current = true;
     } catch (error) {
-      console.error('Google Sign-In initialization error:', error);
+      console.error('Error initializing Google Sign-In:', error);
       toast.error('Failed to initialize Google Sign-In');
     }
   }, [handleCredentialResponse]);
 
   useEffect(() => {
     if (user) {
-      router.push('/projects');
+      router.push('/dashboard');
     }
   }, [user, router]);
 
@@ -84,25 +98,60 @@ export default function LoginPage() {
     return () => clearTimeout(timer);
   }, [initializeGoogleSignIn]);
 
-  if (!isInitialized) {
-    return null;
-  }
-
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-md space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-medium tracking-tight text-gray-900">
+    <div className="min-h-screen bg-gradient-to-b from-white to-[#fff3f0] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+      {/* Animated Background Elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 0.1, scale: 1 }}
+          transition={{ duration: 1 }}
+          className="absolute -right-20 top-20 w-96 h-96 bg-[#ff4500] rounded-full blur-3xl"
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 0.1, scale: 1 }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="absolute -left-20 bottom-20 w-96 h-96 bg-[#ff4500] rounded-full blur-3xl"
+        />
+      </div>
+
+      {/* Main Content */}
+      <div className="relative z-10 w-full max-w-md">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="bg-white/80 backdrop-blur-lg rounded-2xl p-8 shadow-xl border border-[#ff4500]/10"
+        >
+          {/* Floating Reddit Snoo */}
+          <motion.div
+            variants={floatingAnimation}
+            initial="initial"
+            animate="animate"
+            className="flex justify-center mb-6"
+          >
+            <Image
+              src="/reddit-snoo.jpg"
+              alt="Reddit Snoo"
+              width={80}
+              height={80}
+              className="drop-shadow-lg"
+            />
+          </motion.div>
+
+          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent">
             Welcome to SneakyGuy
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
+          </h1>
+          <p className="text-gray-600 text-center mb-8">
             Sign in to manage your Reddit tracking projects
           </p>
-        </div>
-        <div className="mt-8">
+
+          {/* Google Sign-in Button */}
           <div ref={googleButtonRef} className="flex justify-center" />
-        </div>
+        </motion.div>
       </div>
+
       <Script
         src="https://accounts.google.com/gsi/client"
         strategy="afterInteractive"
