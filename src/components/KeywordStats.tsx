@@ -1,4 +1,6 @@
 import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { TrendingUp, Clock } from 'lucide-react';
 
 interface KeywordStatsProps {
   keywords: string[];
@@ -14,20 +16,27 @@ interface KeywordCardProps {
 }
 
 const KeywordCard = ({ keyword, stats }: KeywordCardProps) => (
-  <Card className="p-4 hover:shadow-sm transition-shadow duration-200">
-    <div className="space-y-2">
-      <h3 className="text-sm font-medium text-gray-900 truncate" title={keyword}>
-        {keyword}
-      </h3>
-      <div>
-        <h4 className="text-xs font-medium text-gray-500 mb-1">Mentions</h4>
-        <div className="flex justify-between text-xs">
-          <span className="text-gray-600">
-            Last month: <span className="font-semibold text-gray-900">{stats.lastMonth}</span>
-          </span>
-          <span className="text-gray-600">
-            Last 24h: <span className="font-semibold text-gray-900">{stats.last24h}</span>
-          </span>
+  <Card className="p-4 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-white to-gray-50/50">
+    <div className="space-y-3">
+      <div className="flex items-center justify-between">
+        <Badge variant="secondary" className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 px-3 py-1">
+          {keyword}
+        </Badge>
+      </div>
+      <div className="grid grid-cols-2 gap-2">
+        <div className="flex items-center gap-2">
+          <Clock className="h-3.5 w-3.5 text-gray-400" />
+          <div className="flex flex-col">
+            <span className="text-[11px] text-gray-500">24h</span>
+            <span className="text-sm font-semibold text-gray-900">{stats.last24h}</span>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
+          <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
+          <div className="flex flex-col">
+            <span className="text-[11px] text-gray-500">30d</span>
+            <span className="text-sm font-semibold text-gray-900">{stats.lastMonth}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -54,7 +63,7 @@ export const KeywordStats = ({ keywords, mentions }: KeywordStatsProps) => {
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-semibold">Keywords</h2>
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3">
         {keywords.map((keyword, index) => (
           <KeywordCard
             key={index}
