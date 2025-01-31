@@ -135,12 +135,16 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
   };
 
   return (
-    <Card className="w-full">
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle>{project.name}</CardTitle>
-            <CardDescription>{project.description}</CardDescription>
+    <Card className="w-full transition-all duration-200 hover:shadow-lg">
+      <CardHeader className="space-y-2">
+        <div className="flex items-start justify-between">
+          <div className="space-y-1 flex-grow">
+            <CardTitle className="text-xl font-semibold line-clamp-2 hover:line-clamp-none transition-all duration-200">
+              {project.name}
+            </CardTitle>
+            <CardDescription className="text-sm text-gray-600 line-clamp-3 hover:line-clamp-none transition-all duration-200">
+              {project.description}
+            </CardDescription>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -151,31 +155,31 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setIsEditOpen(true)}>
-                <Edit className="h-4 w-4 mr-2" />
+                <Edit className="mr-2 h-4 w-4" />
                 Edit Project
               </DropdownMenuItem>
               <DropdownMenuItem
                 className="text-red-600"
                 onClick={handleDelete}
               >
-                <Trash2 className="h-4 w-4 mr-2" />
+                <Trash2 className="mr-2 h-4 w-4" />
                 Delete Project
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </CardHeader>
-      <CardContent>
+
+      <CardContent className="space-y-6">
         <div className="space-y-4">
-          {/* Keywords */}
           <div>
-            <Label className="text-sm text-gray-500 mb-2">Keywords</Label>
-            <div className="flex flex-wrap gap-2">
+            <Label className="text-sm font-medium mb-2 block">Keywords</Label>
+            <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300 pr-2">
               {project.keywords.map((keyword) => (
                 <Badge
                   key={keyword}
                   variant="secondary"
-                  className="bg-orange-50 text-orange-700"
+                  className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors"
                 >
                   {keyword}
                 </Badge>
@@ -183,14 +187,14 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
             </div>
           </div>
 
-          {/* Subreddits */}
           <div>
-            <Label className="text-sm text-gray-500 mb-2">Subreddits</Label>
-            <div className="flex flex-wrap gap-2">
+            <Label className="text-sm font-medium mb-2 block">Subreddits</Label>
+            <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300 pr-2">
               {project.subreddits.map((subreddit) => (
                 <Badge
                   key={subreddit}
-                  className="bg-indigo-100 text-indigo-800"
+                  variant="secondary"
+                  className="bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
                 >
                   r/{subreddit}
                 </Badge>
@@ -199,10 +203,10 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-between">
+
+      <CardFooter>
         <Button
-          variant="outline"
-          size="sm"
+          className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white transition-colors"
           onClick={handleViewMentions}
           disabled={loading || !project.keywords.length || !project.subreddits.length}
         >
@@ -222,9 +226,9 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
       <EditProjectDialog
         project={project}
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        onSave={handleEditProject}
+        open={isEditOpen}
+        onOpenChange={setIsEditOpen}
+        onSuccess={handleEditProject}
       />
     </Card>
   );
