@@ -226,9 +226,9 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
       <EditProjectDialog
         project={project}
-        open={isEditOpen}
-        onOpenChange={setIsEditOpen}
-        onSuccess={handleEditProject}
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        onSave={handleEditProject}
       />
     </Card>
   );
