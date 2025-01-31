@@ -345,6 +345,9 @@ export default function MentionsPage() {
                 <Badge variant="outline" className="text-sm">
                   {project.subreddits?.length || 0} Subreddits
                 </Badge>
+                <Badge variant="outline" className="text-sm bg-[#ff4500]/5 text-[#ff4500] border-[#ff4500]/20">
+                  {mentions.length} Total Mentions
+                </Badge>
               </div>
               <p className="text-gray-600">{project.description}</p>
             </div>
