@@ -265,7 +265,7 @@ export default function ProjectsPage() {
       <CreateProjectDialog
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
-        onSuccess={handleCreateProject}
+        onSubmit={handleCreateProject}
       />
       <Toaster position="top-center" />
       {/* Only show FreeAccessMessage for unpaid users */}
