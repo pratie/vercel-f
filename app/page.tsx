@@ -43,11 +43,11 @@ export default function LandingPage() {
                 </div>
               </div>
 
-              <div className="max-w-[800px] mx-auto px-4 sm:px-6 text-center">
-                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-14 sm:mb-16">
+              <div className="max-w-[750px] mx-auto px-4 sm:px-6 text-center">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-12 sm:mb-14">
                   Turn Reddit Discussions Into
-                  <div className="mt-2">
-                    <span className="bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent inline-block text-2xl sm:text-4xl lg:text-5xl">
+                  <div className="mt-6 sm:mt-8">
+                    <span className="bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent inline-block text-xl sm:text-2xl lg:text-3xl font-semibold">
                       Qualified B2B Leads
                     </span>
                   </div>
