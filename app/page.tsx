@@ -37,46 +37,39 @@ export default function LandingPage() {
           <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="pt-20 pb-16 text-center">
               {/* Target Audience Badge */}
-              <div className="flex justify-center mb-6 sm:mb-12 px-4">
+              <div className="flex justify-center mb-8 sm:mb-10 px-4">
                 <div className="inline-block bg-white/90 backdrop-blur-sm px-5 py-2.5 rounded-full shadow-sm border border-[#ff4500]/10">
                   <p className="text-[15px] sm:text-base text-gray-700 font-medium whitespace-nowrap">For B2B SaaS Companies & Growth Teams</p>
                 </div>
               </div>
 
               <div className="max-w-[800px] mx-auto px-4 sm:px-6 text-center">
-                <h1 className="text-[28px] sm:text-4xl lg:text-5xl font-bold tracking-tight text-gray-900 mb-5 sm:mb-6 leading-[1.15]">
-                  Turn Reddit Discussions Into{" "}
-                  <div className="mt-1 sm:mt-0 sm:inline">
-                    <span className="bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-gray-900 mb-14 sm:mb-16">
+                  Turn Reddit Discussions Into
+                  <div className="mt-2">
+                    <span className="bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent inline-block text-2xl sm:text-4xl lg:text-5xl">
                       Qualified B2B Leads
                     </span>
                   </div>
                 </h1>
 
-                <p className="text-[15px] leading-relaxed sm:text-lg text-gray-600 mb-8 sm:mb-12 max-w-2xl mx-auto">
-                  AI-powered tool that finds and qualifies B2B leads from Reddit discussions, saving you <span className="font-semibold text-[#ff4500]">50+ hours monthly</span> on manual prospecting.
-                </p>
               </div>
 
               {/* Features Section */}
-              <div className="max-w-[800px] mx-auto px-4 mb-10 sm:mb-16">
+              <div className="max-w-[850px] mx-auto px-4 mb-12 sm:mb-16">
                 <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-12">
-                  <div className="flex items-start sm:items-center gap-4 text-[15px] leading-relaxed sm:text-lg text-gray-600 max-w-[280px] sm:max-w-none group bg-white/50 p-4 rounded-xl border border-[#ff4500]/5">
+                  <div className="flex items-start sm:items-center gap-4 text-base sm:text-lg text-gray-600 max-w-[300px] sm:max-w-none group bg-white/80 p-5 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white flex items-center justify-center flex-shrink-0 shadow-sm border border-[#ff4500]/10 group-hover:border-[#ff4500]/20 transition-all duration-200">
                       <MessageSquare className="h-6 w-6 text-[#ff4500]" />
                     </div>
                     <span className="text-left sm:text-center group-hover:text-gray-900 transition-colors duration-200">Find conversations to mention your product keywords with AI relevancy score</span>
                   </div>
                   
-                  <div className="flex sm:hidden items-center">
+                  <div className="hidden sm:flex items-center">
                     <span className="text-[#ff4500] text-2xl font-medium animate-pulse px-2">+</span>
                   </div>
                   
-                  <div className="hidden sm:flex items-center">
-                    <span className="text-[#ff4500] text-3xl font-medium animate-pulse px-2">+</span>
-                  </div>
-                  
-                  <div className="flex items-start sm:items-center gap-4 text-[15px] leading-relaxed sm:text-lg text-gray-600 max-w-[280px] sm:max-w-none group bg-white/50 p-4 rounded-xl border border-[#ff4500]/5">
+                  <div className="flex items-start sm:items-center gap-4 text-base sm:text-lg text-gray-600 max-w-[300px] sm:max-w-none group bg-white/80 p-5 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
                     <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white flex items-center justify-center flex-shrink-0 shadow-sm border border-[#ff4500]/10 group-hover:border-[#ff4500]/20 transition-all duration-200">
                       <Brain className="h-6 w-6 text-[#ff4500]" />
                     </div>
@@ -94,6 +87,26 @@ export default function LandingPage() {
                   Find leads
                   <ArrowRight className="ml-2 h-5 w-5 sm:h-6 sm:w-6" />
                 </Button>
+              </div>
+
+              {/* Dashboard Preview */}
+              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-gradient-to-b from-gray-50/0 to-gray-50 rounded-3xl" />
+                  <div className="relative rounded-3xl overflow-hidden border border-gray-200/60 shadow-2xl">
+                    <div className="aspect-[16/9] relative">
+                      <Image
+                        src="/dash_design.png"
+                        alt="Reddit Tracker Dashboard"
+                        fill
+                        className="object-cover"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                        priority
+                      />
+                    </div>
+                  </div>
+                  <div className="absolute inset-0 pointer-events-none border border-gray-100 rounded-3xl" />
+                </div>
               </div>
 
               {/* Customer Achievements Section */}
@@ -119,26 +132,6 @@ export default function LandingPage() {
                       <p className="text-gray-600">Higher response rate from Reddit-sourced leads</p>
                     </div>
                   </div>
-                </div>
-              </div>
-
-              {/* Dashboard Preview */}
-              <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-gradient-to-b from-gray-50/0 to-gray-50 rounded-3xl" />
-                  <div className="relative rounded-3xl overflow-hidden border border-gray-200/60 shadow-2xl">
-                    <div className="aspect-[16/9] relative">
-                      <Image
-                        src="/dash_design.png"
-                        alt="Reddit Tracker Dashboard"
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
-                        priority
-                      />
-                    </div>
-                  </div>
-                  <div className="absolute inset-0 pointer-events-none border border-gray-100 rounded-3xl" />
                 </div>
               </div>
 

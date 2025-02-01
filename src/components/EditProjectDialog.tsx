@@ -92,60 +92,60 @@ export function EditProjectDialog({ project, isOpen, onClose, onSave }: EditProj
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-2xl overflow-y-auto max-h-[85vh] p-4 sm:p-6 bg-white">
-        <DialogHeader className="space-y-2 sm:space-y-3 border-b pb-4">
-          <DialogTitle className="text-lg sm:text-xl font-semibold">Edit Project</DialogTitle>
-          <p className="text-sm text-muted-foreground">
+      <DialogContent className="max-w-[90vw] sm:max-w-xl overflow-y-auto max-h-[85vh] p-3 sm:p-4 bg-white shadow-lg rounded-xl">
+        <DialogHeader className="space-y-1.5 sm:space-y-2 border-b border-gray-200/80 pb-3">
+          <DialogTitle className="text-base sm:text-lg font-semibold text-gray-900">Edit Project</DialogTitle>
+          <p className="text-xs sm:text-sm text-gray-500">
             Customize your project settings to improve lead generation accuracy.
           </p>
         </DialogHeader>
 
-        <div className="grid gap-4 sm:gap-6 py-4">
-          <div className="grid gap-4">
-            <div className="space-y-2">
+        <div className="grid gap-3 sm:gap-4 py-3">
+          <div className="grid gap-3">
+            <div className="space-y-1.5">
               <Label htmlFor="name" className="text-sm font-medium text-gray-700">Project Name</Label>
               <Input
                 id="name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isSaving}
-                className="h-10 sm:h-9 bg-white border-gray-200 focus:border-[#ff4500] focus:ring-[#ff4500]/10"
+                className="h-9 bg-white border-gray-200 focus:border-gray-300 focus:ring-gray-100 shadow-sm text-sm"
                 placeholder="Enter project name"
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               <Label htmlFor="description" className="text-sm font-medium text-gray-700">Description</Label>
               <textarea
                 id="description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 disabled={isSaving}
-                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 bg-white h-24 sm:h-20 resize-none focus:border-[#ff4500] focus:ring-[#ff4500]/10"
+                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 bg-white h-20 resize-none focus:border-gray-300 focus:ring-gray-100 shadow-sm"
                 placeholder="Describe your project's purpose and goals"
               />
             </div>
           </div>
 
-          <div className="grid gap-4 sm:gap-6 p-4 bg-gray-50 rounded-lg border border-gray-100">
-            <div className="space-y-3">
+          <div className="grid gap-3 sm:gap-4 p-3 bg-gray-50/40 rounded-lg border border-gray-200/80">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium text-gray-700">Keywords</Label>
-                <span className="text-xs px-2 py-1 rounded-full bg-[#ff4500]/10 text-[#ff4500] font-medium">
+                <span className="text-xs text-gray-500 bg-white/80 px-1.5 py-0.5 rounded border border-gray-200/80">
                   {keywords.length} keywords
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2 min-h-[2.5rem]">
+              <div className="flex flex-wrap gap-1.5 min-h-[2.5rem]">
                 {keywords.map((keyword, index) => (
                   <div
                     key={`${keyword}-${index}`}
-                    className="inline-flex items-center gap-1.5 bg-white border border-gray-200 hover:border-[#ff4500]/30 hover:bg-[#ff4500]/5 text-sm px-2.5 py-1.5 rounded-md transition-colors group shadow-sm"
+                    className="inline-flex items-center gap-1 bg-white text-sm px-2 py-1 rounded border border-gray-200/80 hover:border-gray-300"
                   >
                     <span className="text-gray-700">{keyword}</span>
                     <button
                       onClick={() => handleRemoveKeyword(keyword)}
                       disabled={isSaving}
-                      className="opacity-50 hover:opacity-100 focus:opacity-100 transition-opacity p-0.5 hover:text-[#ff4500]"
+                      className="text-gray-400 hover:text-gray-600 focus:text-gray-600 transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -159,7 +159,7 @@ export function EditProjectDialog({ project, isOpen, onClose, onSave }: EditProj
                   placeholder="Type keyword and press Enter"
                   onKeyDown={(e) => e.key === 'Enter' && handleAddKeyword()}
                   disabled={isSaving}
-                  className="h-10 sm:h-9 text-sm bg-white border-gray-200 focus:border-[#ff4500] focus:ring-[#ff4500]/10"
+                  className="h-8 text-sm bg-white border-gray-200 focus:border-gray-300 focus:ring-gray-100 shadow-sm"
                 />
                 <Button
                   type="button"
@@ -167,31 +167,31 @@ export function EditProjectDialog({ project, isOpen, onClose, onSave }: EditProj
                   size="sm"
                   onClick={handleAddKeyword}
                   disabled={isSaving}
-                  className="px-4 h-10 sm:h-9 whitespace-nowrap bg-white hover:bg-gray-100 border border-gray-200"
+                  className="px-3 h-8 whitespace-nowrap bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 shadow-sm text-sm"
                 >
                   Add
                 </Button>
               </div>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium text-gray-700">Subreddits to Monitor</Label>
-                <span className="text-xs px-2 py-1 rounded-full bg-[#ff4500]/10 text-[#ff4500] font-medium">
+                <span className="text-xs text-gray-500 bg-white/80 px-1.5 py-0.5 rounded border border-gray-200/80">
                   {subreddits.length} subreddits
                 </span>
               </div>
-              <div className="flex flex-wrap gap-2 min-h-[2.5rem]">
+              <div className="flex flex-wrap gap-1.5 min-h-[2.5rem]">
                 {subreddits.map((subreddit, index) => (
                   <div
                     key={`${subreddit}-${index}`}
-                    className="inline-flex items-center gap-1.5 bg-white border border-gray-200 hover:border-[#ff4500]/30 hover:bg-[#ff4500]/5 text-sm px-2.5 py-1.5 rounded-md transition-colors group shadow-sm"
+                    className="inline-flex items-center gap-1 bg-white text-sm px-2 py-1 rounded border border-gray-200/80 hover:border-gray-300"
                   >
-                    <span className="text-[#ff4500] font-medium">r/{subreddit}</span>
+                    <span className="text-gray-900 font-medium">r/{subreddit}</span>
                     <button
                       onClick={() => handleRemoveSubreddit(subreddit)}
                       disabled={isSaving}
-                      className="opacity-50 hover:opacity-100 focus:opacity-100 transition-opacity p-0.5 hover:text-[#ff4500]"
+                      className="text-gray-400 hover:text-gray-600 focus:text-gray-600 transition-colors"
                     >
                       <X className="h-3.5 w-3.5" />
                     </button>
@@ -205,7 +205,7 @@ export function EditProjectDialog({ project, isOpen, onClose, onSave }: EditProj
                   placeholder="Type subreddit name and press Enter"
                   onKeyDown={(e) => e.key === 'Enter' && handleAddSubreddit()}
                   disabled={isSaving}
-                  className="h-10 sm:h-9 text-sm bg-white border-gray-200 focus:border-[#ff4500] focus:ring-[#ff4500]/10"
+                  className="h-8 text-sm bg-white border-gray-200 focus:border-gray-300 focus:ring-gray-100 shadow-sm"
                 />
                 <Button
                   type="button"
@@ -213,7 +213,7 @@ export function EditProjectDialog({ project, isOpen, onClose, onSave }: EditProj
                   size="sm"
                   onClick={handleAddSubreddit}
                   disabled={isSaving}
-                  className="px-4 h-10 sm:h-9 whitespace-nowrap bg-white hover:bg-gray-100 border border-gray-200"
+                  className="px-3 h-8 whitespace-nowrap bg-white hover:bg-gray-50 border border-gray-200 text-gray-700 shadow-sm text-sm"
                 >
                   Add
                 </Button>
@@ -222,19 +222,19 @@ export function EditProjectDialog({ project, isOpen, onClose, onSave }: EditProj
           </div>
         </div>
 
-        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 sm:gap-3 pt-4 border-t">
+        <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2 pt-3 border-t border-gray-200/80">
           <Button 
             variant="outline" 
             onClick={onClose} 
             disabled={isSaving}
-            className="h-11 sm:h-9 border-gray-200 hover:bg-gray-100 hover:text-gray-900"
+            className="h-9 border-gray-200 hover:bg-gray-50 text-gray-700 shadow-sm text-sm"
           >
             Cancel
           </Button>
           <Button 
             onClick={handleSave} 
             disabled={isSaving}
-            className="h-11 sm:h-9 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+            className="h-9 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white shadow-sm text-sm font-medium"
           >
             {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>
