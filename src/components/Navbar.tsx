@@ -50,6 +50,7 @@ export function Navbar() {
                   src="/logo.png"
                   alt="Sneakylogo"
                   fill
+                  sizes="(max-width: 768px) 50px, 44px"
                   className="object-contain"
                 />
               </div>

@@ -270,6 +270,18 @@ export default function MentionsPage() {
     return highlightedText;
   };
 
+  const handleGenerateReply = (mention: RedditMention) => {
+    console.log('Generating reply for:', {
+      title: mention.title,
+      content: mention.content,
+      subreddit: mention.subreddit,
+      author: mention.author,
+      url: mention.url,
+      matching_keywords: mention.matching_keywords,
+      relevance_score: mention.relevance_score
+    });
+  };
+
   // Calculate pagination values
   const totalPages = Math.ceil(mentions.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -447,7 +459,7 @@ export default function MentionsPage() {
                               href={mention.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-sm font-medium"
+                              className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-sm font-medium h-8"
                             >
                               View Post
                               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -470,21 +482,41 @@ export default function MentionsPage() {
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-4 text-sm text-gray-600">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-4 w-4" />
-                        {mention.formatted_date}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="h-4 w-4" />
+                          {mention.formatted_date}
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <Target className="h-4 w-4" />
+                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
+                            {mention.relevance_score}% Relevant
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <MessageSquare className="h-4 w-4" />
+                          {mention.num_comments} comments
+                        </div>
                       </div>
-                      <div className="flex items-center gap-1.5">
-                        <Target className="h-4 w-4" />
-                        <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
-                          {mention.relevance_score}% Relevant
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1.5">
-                        <MessageSquare className="h-4 w-4" />
-                        {mention.num_comments} comments
-                      </div>
+                      
+                      <Button
+                        onClick={() => handleGenerateReply(mention)}
+                        className="inline-flex items-center gap-1.5 px-3 py-1 h-8 text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 rounded-md transition-colors"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+                        </svg>
+                        Generate reply
+                      </Button>
                     </div>
 
                     {mention.suggested_comment && (
@@ -513,7 +545,7 @@ export default function MentionsPage() {
                   className="flex items-center gap-2"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7-7 18 7 18 7-7z" />
                   </svg>
                   Previous
                 </Button>
