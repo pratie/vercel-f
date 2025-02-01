@@ -438,74 +438,72 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {currentMentions.map((mention, index) => (
-                <Card key={index} className="p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-r from-white to-gray-50/30">
-                  <div className="space-y-4">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-grow space-y-2">
-                        <div className="flex items-start gap-3 flex-wrap">
-                          <h3 className="text-lg font-medium flex-grow">
-                            <span
-                              className="hover:text-[#ff4500] transition-colors duration-200"
-                              dangerouslySetInnerHTML={{ 
-                                __html: highlightKeywords(mention.title, mention.matching_keywords)
-                              }}
-                            />
-                          </h3>
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors">
-                              r/{mention.subreddit}
-                            </Badge>
-                            <a 
-                              href={mention.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-3 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-sm font-medium h-8"
-                            >
-                              View Post
-                              <ArrowUpRight className="h-3.5 w-3.5" />
-                            </a>
-                          </div>
+                <Card key={index} className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-r from-white to-gray-50/30">
+                  <div className="space-y-3 sm:space-y-4">
+                    <div className="flex flex-col space-y-2">
+                      <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
+                        <h3 className="text-base sm:text-lg font-medium flex-grow order-2 sm:order-1">
+                          <span
+                            className="hover:text-[#ff4500] transition-colors duration-200"
+                            dangerouslySetInnerHTML={{ 
+                              __html: highlightKeywords(mention.title, mention.matching_keywords)
+                            }}
+                          />
+                        </h3>
+                        <div className="flex items-center gap-2 order-1 sm:order-2 self-start">
+                          <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
+                            r/{mention.subreddit}
+                          </Badge>
+                          <a 
+                            href={mention.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
+                          >
+                            View Post
+                            <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                          </a>
                         </div>
-                        {mention.matching_keywords?.length > 0 && (
-                          <div className="flex flex-wrap gap-2 items-center">
-                            <span className="text-sm font-medium text-gray-700">Matched:</span>
-                            {mention.matching_keywords.map((keyword) => (
-                              <Badge 
-                                key={keyword} 
-                                className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors"
-                              >
-                                {keyword}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
                       </div>
+                      {mention.matching_keywords?.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-3">
+                          <span className="text-xs sm:text-sm font-medium text-gray-700">Matched:</span>
+                          {mention.matching_keywords.map((keyword) => (
+                            <Badge 
+                              key={keyword} 
+                              className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors text-xs"
+                            >
+                              {keyword}
+                            </Badge>
+                          ))}
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-4 text-sm text-gray-600">
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
                         <div className="flex items-center gap-1.5">
-                          <Calendar className="h-4 w-4" />
+                          <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           {mention.formatted_date}
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <Target className="h-4 w-4" />
-                          <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
+                          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                          <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
                             {mention.relevance_score}% Relevant
                           </span>
                         </div>
                         <div className="flex items-center gap-1.5">
-                          <MessageSquare className="h-4 w-4" />
+                          <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           {mention.num_comments} comments
                         </div>
                       </div>
                       
                       <Button
                         onClick={() => handleGenerateReply(mention)}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 h-8 text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 rounded-md transition-colors"
+                        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 h-7 sm:h-8 text-xs sm:text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 rounded-md transition-colors self-end sm:self-auto"
                       >
                         <svg
-                          className="w-4 h-4"
+                          className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                           viewBox="0 0 24 24"
                           fill="none"
                           stroke="currentColor"
@@ -520,9 +518,9 @@ export default function MentionsPage() {
                     </div>
 
                     {mention.suggested_comment && (
-                      <div className="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div className="text-sm font-medium text-gray-700 mb-2">Suggested Response:</div>
-                        <div className="text-sm text-gray-600">{mention.suggested_comment}</div>
+                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
+                        <div className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Suggested Response:</div>
+                        <div className="text-xs sm:text-sm text-gray-600">{mention.suggested_comment}</div>
                       </div>
                     )}
                   </div>
