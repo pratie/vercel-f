@@ -122,6 +122,13 @@ export interface PaymentStatus {
     payment_link: string | null;
 }
 
+interface GenerateReplyRequest {
+    post_title: string;
+    post_content: string;
+    brand_id: number;
+    include_experience: boolean;
+}
+
 export const api = {
     // Project Management
     async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
@@ -327,7 +334,7 @@ export const api = {
     },
 
     // Generate reply for a mention
-    generateReply: async (mention: RedditMention): Promise<string> => {
+    generateReply: async (mention: { title: string; content: string; brand_id: number }): Promise<string> => {
         try {
             const response = await fetchWithAuth(`${API_BASE_URL}/generate-custom-comment/`, {
                 method: 'POST',
@@ -336,7 +343,7 @@ export const api = {
                     post_content: mention.content,
                     brand_id: mention.brand_id,
                     include_experience: true
-                })
+                } as GenerateReplyRequest)
             });
             const data = await response.json();
             return data.comment;

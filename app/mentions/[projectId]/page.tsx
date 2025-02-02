@@ -278,7 +278,11 @@ export default function MentionsPage() {
     
     setGeneratingReplyFor(mention.id);
     try {
-      const reply = await api.generateReply(mention);
+      const reply = await api.generateReply({
+        title: mention.title,
+        content: mention.content,
+        brand_id: mention.brand_id
+      });
       // Store the generated reply
       setGeneratedReplies(prev => ({
         ...prev,
