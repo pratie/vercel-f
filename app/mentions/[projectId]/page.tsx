@@ -270,16 +270,29 @@ export default function MentionsPage() {
     return highlightedText;
   };
 
-  const handleGenerateReply = (mention: RedditMention) => {
-    console.log('Generating reply for:', {
-      title: mention.title,
-      content: mention.content,
-      subreddit: mention.subreddit,
-      author: mention.author,
-      url: mention.url,
-      matching_keywords: mention.matching_keywords,
-      relevance_score: mention.relevance_score
-    });
+  const [generatingReplyFor, setGeneratingReplyFor] = useState<number | null>(null);
+  const [generatedReplies, setGeneratedReplies] = useState<Record<number, string>>({});
+
+  const handleGenerateReply = async (mention: RedditMention) => {
+    if (generatingReplyFor !== null) return; // Prevent multiple simultaneous generations
+    
+    setGeneratingReplyFor(mention.id);
+    try {
+      const reply = await api.generateReply(mention);
+      // Store the generated reply
+      setGeneratedReplies(prev => ({
+        ...prev,
+        [mention.id]: reply
+      }));
+      // Copy to clipboard
+      await navigator.clipboard.writeText(reply);
+      toast.success('Reply generated and copied to clipboard!');
+    } catch (error) {
+      console.error('Error generating reply:', error);
+      toast.error('Failed to generate reply. Please try again.');
+    } finally {
+      setGeneratingReplyFor(null);
+    }
   };
 
   // Calculate pagination values
@@ -480,49 +493,62 @@ export default function MentionsPage() {
                       )}
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
-                        <div className="flex items-center gap-1.5">
-                          <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                          {mention.formatted_date}
+                    <div className="flex flex-col space-y-3">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            {mention.formatted_date}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
+                              {mention.relevance_score}%
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                            {mention.num_comments} comments
+                          </div>
                         </div>
-                        <div className="flex items-center gap-1.5">
-                          <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                          <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
-                            {mention.relevance_score}% Relevant
-                          </span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                          {mention.num_comments} comments
-                        </div>
-                      </div>
-                      
-                      <Button
-                        onClick={() => handleGenerateReply(mention)}
-                        className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 h-7 sm:h-8 text-xs sm:text-sm font-medium text-white bg-teal-500 hover:bg-teal-600 rounded-md transition-colors self-end sm:self-auto"
-                      >
-                        <svg
-                          className="w-3.5 h-3.5 sm:w-4 sm:h-4"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
+                        <Button
+                          onClick={() => handleGenerateReply(mention)}
+                          disabled={generatingReplyFor === mention.id}
+                          className="flex items-center gap-2 bg-[#556B2F] hover:bg-[#556B2F]/90 text-white border-none shadow-sm h-8 px-3"
+                          size="sm"
                         >
-                          <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                        </svg>
-                        Generate reply
-                      </Button>
-                    </div>
-
-                    {mention.suggested_comment && (
-                      <div className="bg-gray-50 p-3 sm:p-4 rounded-lg border border-gray-100">
-                        <div className="text-xs sm:text-sm font-medium text-gray-700 mb-1.5 sm:mb-2">Suggested Response:</div>
-                        <div className="text-xs sm:text-sm text-gray-600">{mention.suggested_comment}</div>
+                          {generatingReplyFor === mention.id ? (
+                            <>
+                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              <span>Generating...</span>
+                            </>
+                          ) : (
+                            <>
+                              <MessageSquare className="h-4 w-4" />
+                              <span>Generate Reply</span>
+                            </>
+                          )}
+                        </Button>
                       </div>
-                    )}
+
+                      {/* Show generated reply if available */}
+                      {generatedReplies[mention.id] && (
+                        <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                          <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm font-medium text-gray-700">Generated Reply</span>
+                            <Button
+                              onClick={() => navigator.clipboard.writeText(generatedReplies[mention.id])}
+                              variant="ghost"
+                              size="sm"
+                              className="h-7 text-xs"
+                            >
+                              Copy
+                            </Button>
+                          </div>
+                          <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </Card>
               ))}

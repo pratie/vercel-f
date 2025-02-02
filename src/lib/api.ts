@@ -326,6 +326,25 @@ export const api = {
         }
     },
 
+    // Generate reply for a mention
+    generateReply: async (mention: RedditMention): Promise<string> => {
+        try {
+            const response = await fetchWithAuth(`${API_BASE_URL}/generate-custom-comment/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    post_title: mention.title,
+                    post_content: mention.content,
+                    brand_id: mention.brand_id,
+                    include_experience: true
+                })
+            });
+            const data = await response.json();
+            return data.comment;
+        } catch (error) {
+            throw new Error('Failed to generate reply');
+        }
+    },
+
     // Payment
     async getPaymentStatus(): Promise<PaymentStatus> {
         const response = await fetchWithAuth(`${API_BASE_URL}/payment/status`);
