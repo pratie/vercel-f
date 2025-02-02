@@ -518,7 +518,7 @@ export default function MentionsPage() {
                         <Button
                           onClick={() => handleGenerateReply(mention)}
                           disabled={generatingReplyFor === mention.id}
-                          className="flex items-center gap-2 bg-[#556B2F] hover:bg-[#556B2F]/90 text-white border-none shadow-sm h-8 px-3"
+                          className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white border-none shadow-sm h-8 px-3 transition-colors duration-200"
                           size="sm"
                         >
                           {generatingReplyFor === mention.id ? (
