@@ -87,41 +87,55 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
-          <DialogTitle>Create New Project</DialogTitle>
+          <DialogTitle className="text-xl">Create New Project</DialogTitle>
+          {step === 2 && (
+            <p className="text-sm text-gray-500 mt-1">
+              Review and confirm your project's targeting
+            </p>
+          )}
         </DialogHeader>
 
         {step === 1 ? (
           <div className="space-y-4 py-4">
             <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">Project Name</label>
+              <label htmlFor="name" className="text-sm font-medium text-gray-700">Project Name</label>
               <Input
                 id="name"
                 placeholder="Enter project name"
                 value={projectData.name}
                 onChange={(e) => setProjectData({ ...projectData, name: e.target.value })}
                 disabled={analyzing}
+                className="w-full"
               />
             </div>
 
             <div className="space-y-2">
-              <label htmlFor="description" className="text-sm font-medium">Description</label>
+              <label htmlFor="description" className="text-sm font-medium text-gray-700">Description</label>
               <Textarea
                 id="description"
                 placeholder="Describe your project (min. 10 characters)"
                 value={projectData.description}
                 onChange={(e) => setProjectData({ ...projectData, description: e.target.value })}
-                className="min-h-[100px]"
+                className="min-h-[120px] w-full"
                 disabled={analyzing}
               />
             </div>
 
-            <div className="flex justify-end gap-3">
-              <Button variant="outline" onClick={() => onOpenChange(false)}>
+            <div className="flex justify-end gap-3 pt-2">
+              <Button 
+                variant="outline" 
+                onClick={() => onOpenChange(false)}
+                className="px-4"
+              >
                 Cancel
               </Button>
-              <Button onClick={handleAnalyze} disabled={analyzing}>
+              <Button 
+                onClick={handleAnalyze} 
+                disabled={analyzing}
+                className="bg-teal-500 hover:bg-teal-600 text-white px-4"
+              >
                 {analyzing ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -135,46 +149,80 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
           </div>
         ) : (
           <div className="space-y-6 py-4">
+            {/* Keywords Section */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Keywords</h3>
-                <span className="text-sm text-gray-500">({projectData.keywords.length})</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-medium text-gray-900">Keywords</h3>
+                  <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">
+                    {projectData.keywords.length}
+                  </span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setStep(1)}
+                  className="text-gray-500 hover:text-gray-700 h-8"
+                >
+                  Edit
+                </Button>
               </div>
-              <div className="flex flex-wrap gap-2 bg-gray-50 p-4 rounded-lg min-h-[100px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-50/50 p-3 sm:p-4 rounded-lg border border-gray-100">
                 {projectData.keywords.map((keyword) => (
                   <div
                     key={keyword}
-                    className="bg-white border border-red-100 text-red-500 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all hover:shadow-md hover:scale-105 hover:border-red-200"
+                    className="bg-white px-3 py-2 rounded-md text-sm border border-gray-200 shadow-sm hover:shadow transition-all overflow-hidden text-ellipsis whitespace-nowrap flex items-center"
                   >
-                    {keyword}
+                    <span className="overflow-hidden text-ellipsis font-medium text-gray-700">{keyword}</span>
                   </div>
                 ))}
               </div>
             </div>
 
+            {/* Subreddits Section */}
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <h3 className="text-lg font-medium">Subreddits</h3>
-                <span className="text-sm text-gray-500">({projectData.subreddits.length})</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base sm:text-lg font-medium text-gray-900">Subreddits</h3>
+                  <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">
+                    {projectData.subreddits.length}
+                  </span>
+                </div>
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={() => setStep(1)}
+                  className="text-gray-500 hover:text-gray-700 h-8"
+                >
+                  Edit
+                </Button>
               </div>
-              <div className="flex flex-wrap gap-2 bg-gray-50 p-4 rounded-lg min-h-[100px]">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 bg-gray-50/50 p-3 sm:p-4 rounded-lg border border-gray-100">
                 {projectData.subreddits.map((subreddit) => (
                   <div
                     key={subreddit}
-                    className="bg-white border border-red-100 text-red-500 px-3 py-1.5 rounded-full text-sm font-medium shadow-sm transition-all hover:shadow-md hover:scale-105 hover:border-red-200 flex items-center gap-1"
+                    className="bg-white px-3 py-2 rounded-md text-sm border border-gray-200 shadow-sm hover:shadow transition-all overflow-hidden text-ellipsis whitespace-nowrap flex items-center gap-1.5"
                   >
-                    <span className="text-red-400 font-normal">r/</span>
-                    {subreddit}
+                    <span className="text-teal-500 font-medium">r/</span>
+                    <span className="overflow-hidden text-ellipsis font-medium text-gray-700">{subreddit}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="flex justify-end gap-3 pt-2">
-              <Button variant="outline" onClick={() => setStep(1)}>
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => setStep(1)}
+                className="w-full sm:w-auto"
+              >
                 Back
               </Button>
-              <Button onClick={handleSubmit} disabled={loading} className="bg-[#ff4500] hover:bg-[#ff4500]/90">
+              <Button 
+                onClick={handleSubmit} 
+                disabled={loading} 
+                className="bg-teal-500 hover:bg-teal-600 text-white w-full sm:w-auto"
+              >
                 {loading ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
