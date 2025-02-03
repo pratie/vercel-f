@@ -50,13 +50,13 @@ export function Navbar() {
                   src="/logo.png"
                   alt="Sneakylogo"
                   fill
-                  sizes="(max-width: 768px) 50px, 44px"
                   className="object-contain"
                 />
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-3">
+
+          <div className="flex items-center gap-4">
             {user ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -93,12 +93,11 @@ export function Navbar() {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button 
-                variant="ghost" 
+              <Button
                 onClick={() => router.push('/login')}
-                className="text-sm font-medium text-gray-600 hover:text-gray-900"
+                className="bg-[#ff4500] hover:bg-[#ff6634] text-white font-medium px-6"
               >
-                Login
+                Sign up
               </Button>
             )}
           </div>
