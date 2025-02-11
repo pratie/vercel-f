@@ -69,8 +69,8 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         brand_id: project.id,
         keywords: project.keywords,
         subreddits: project.subreddits,
-        time_period: 'day', // Default to last day
-        limit: 20, // Default to 20 posts
+        time_period: 'month', // Changed from 'day' to 'month'
+        limit: 100, // Changed from 20 to 100
       });
 
       if (analysisResult.status === 'success' && analysisResult.posts.length > 0) {
