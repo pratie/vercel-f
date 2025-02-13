@@ -5,12 +5,13 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, RefreshCw } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, RefreshCw, Clock, Download } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 import KeywordStats from '@/components/KeywordStats';
+import { checkRefreshRateLimit, formatTimeRemaining } from '@/lib/rateLimit';
 
 interface RawMention {
   id: number;
@@ -61,6 +62,8 @@ export default function MentionsPage() {
   const [postsLimit, setPostsLimit] = useState<number>(100); // Default to 100 posts
   const [timePeriod, setTimePeriod] = useState<'day' | 'week' | 'month'>('month'); // Default to month
   const [currentPage, setCurrentPage] = useState(1);
+  const [nextRefreshTime, setNextRefreshTime] = useState<number | null>(null);
+  const [refreshDisabled, setRefreshDisabled] = useState(false);
   const itemsPerPage = 15;
   const { user } = useAuth();
   const router = useRouter();
@@ -136,6 +139,15 @@ export default function MentionsPage() {
   const refreshMentions = async () => {
     if (!project) return;
 
+    // Check rate limit
+    const rateLimitStatus = checkRefreshRateLimit(projectId);
+    if (!rateLimitStatus.canRefresh) {
+      setNextRefreshTime(rateLimitStatus.nextAllowedTime);
+      setRefreshDisabled(true);
+      toast.error(`Please wait ${formatTimeRemaining(rateLimitStatus.timeRemaining)} before refreshing again`);
+      return;
+    }
+
     setIsLoading(true);
     try {
       // First, get the latest project data to ensure we have current keywords and subreddits
@@ -188,6 +200,10 @@ export default function MentionsPage() {
 
       setMentions(transformedMentions);
       toast.success('Mentions refreshed successfully');
+      
+      // Update next refresh time
+      setNextRefreshTime(rateLimitStatus.nextAllowedTime);
+      setRefreshDisabled(true);
     } catch (error) {
       console.error('Error refreshing mentions:', error);
       toast.error('Failed to refresh mentions. Please try again.');
@@ -195,6 +211,27 @@ export default function MentionsPage() {
       setIsLoading(false);
     }
   };
+
+  // Add effect to update refresh button state
+  useEffect(() => {
+    const updateRefreshState = () => {
+      if (!projectId) return;
+      
+      const rateLimitStatus = checkRefreshRateLimit(projectId);
+      if (!rateLimitStatus.canRefresh) {
+        setNextRefreshTime(rateLimitStatus.nextAllowedTime);
+        setRefreshDisabled(true);
+      } else {
+        setNextRefreshTime(null);
+        setRefreshDisabled(false);
+      }
+    };
+
+    updateRefreshState();
+    const interval = setInterval(updateRefreshState, 1000); // Update every second
+    
+    return () => clearInterval(interval);
+  }, [projectId]);
 
   const exportToCSV = () => {
     try {
@@ -322,115 +359,155 @@ export default function MentionsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6 sm:py-8">
+    <div className="container mx-auto px-4 py-6">
       <div className="space-y-4 sm:space-y-6">
         {/* Header Section */}
-        <div className="flex flex-col space-y-4 sm:space-y-6">
-          {/* Top Navigation Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <Button 
-                variant="ghost" 
-                onClick={() => router.push('/projects')} 
-                className="group flex items-center gap-2 text-gray-600 hover:text-gray-900 h-9"
-              >
-                <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-0.5" />
-                <span className="hidden sm:inline">Back to Projects</span>
-                <span className="sm:hidden">Back</span>
-              </Button>
-              <div className="h-4 w-px bg-gray-200" />
-              <h1 className="text-xl sm:text-2xl font-semibold">Mentions</h1>
-            </div>
+        <div className="flex flex-col space-y-4">
+          {/* Back button and Actions Row */}
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+            <Button
+              onClick={() => router.push('/projects')}
+              className="
+                group relative flex items-center gap-2
+                bg-white/80 hover:bg-white
+                text-gray-700 hover:text-gray-900
+                border border-gray-200
+                shadow-sm hover:shadow-md
+                transition-all duration-200
+                px-4 py-2 rounded-lg
+                hover:-translate-x-0.5
+                w-full sm:w-auto
+              "
+              variant="ghost"
+            >
+              <div className="
+                absolute left-0 top-0 bottom-0 w-1
+                bg-gradient-to-b from-[#ff4500] to-[#ff6d3f]
+                rounded-l-lg
+              "/>
+              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+              <span className="font-medium">Back to Projects</span>
+            </Button>
 
-            {/* Action Buttons */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Button
                 onClick={exportToCSV}
-                variant="outline"
-                className="flex items-center gap-2 text-gray-600 hover:text-gray-900 px-2 sm:px-3 h-9"
+                className="
+                  relative group flex items-center gap-2
+                  bg-gradient-to-r from-emerald-500 to-teal-500 
+                  hover:from-emerald-600 hover:to-teal-600
+                  text-white shadow-sm
+                  transition-all duration-300 ease-in-out
+                  hover:shadow-md hover:-translate-y-0.5
+                  h-9 px-4 rounded-md
+                "
                 size="sm"
               >
-                <svg 
-                  xmlns="http://www.w3.org/2000/svg" 
-                  width="16" 
-                  height="16" 
-                  viewBox="0 0 24 24" 
-                  fill="none" 
-                  stroke="currentColor" 
-                  strokeWidth="2" 
-                  strokeLinecap="round" 
-                  strokeLinejoin="round"
-                  className="transition-transform group-hover:translate-y-0.5"
-                >
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                  <polyline points="7 10 12 15 17 10" />
-                  <line x1="12" y1="15" x2="12" y2="3" />
-                </svg>
+                <Download className="h-4 w-4" />
                 <span className="hidden sm:inline">Export CSV</span>
                 <span className="sm:hidden">Export</span>
+                
+                {/* Tooltip */}
+                <div className="
+                  invisible group-hover:visible 
+                  absolute -top-10 left-1/2 transform -translate-x-1/2 
+                  bg-gray-800 text-white text-xs px-3 py-1.5 rounded-md
+                  whitespace-nowrap z-50
+                  opacity-0 group-hover:opacity-100
+                  transition-all duration-200
+                  shadow-lg
+                ">
+                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 
+                    border-t-4 border-l-4 border-r-4 
+                    border-transparent border-t-gray-800
+                  "></div>
+                  Download all mentions as CSV
+                </div>
               </Button>
+
               <Button
                 onClick={refreshMentions}
-                disabled={isLoading}
-                className="flex items-center gap-2 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white h-9 px-2 sm:px-3"
+                disabled={isLoading || refreshDisabled}
+                className={`
+                  relative group flex items-center gap-2 
+                  ${isLoading || refreshDisabled 
+                    ? 'bg-gray-100 text-gray-500 cursor-not-allowed hover:bg-gray-100' 
+                    : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
+                  } 
+                  transition-all duration-200 h-9 px-4 rounded-md
+                `}
                 size="sm"
               >
-                <RefreshCw className={`w-4 h-4 ${isLoading ? 'animate-spin' : ''}`} />
-                <span className="hidden sm:inline">{isLoading ? 'Refreshing...' : 'Refresh Mentions'}</span>
-                <span className="sm:hidden">{isLoading ? 'Loading...' : 'Refresh'}</span>
+                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+                <span className="hidden sm:inline">
+                  {isLoading ? 'Refreshing...' : 'Refresh Mentions'}
+                </span>
+                <span className="sm:hidden">
+                  {isLoading ? 'Loading...' : 'Refresh'}
+                </span>
+                
+                {refreshDisabled && nextRefreshTime && (
+                  <div className="
+                    invisible group-hover:visible 
+                    absolute -top-10 left-1/2 transform -translate-x-1/2 
+                    bg-gray-800 text-white text-xs px-3 py-1.5 rounded-md
+                    whitespace-nowrap z-50
+                    opacity-0 group-hover:opacity-100
+                    transition-all duration-200
+                    shadow-lg
+                  ">
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 
+                      border-t-4 border-l-4 border-r-4 
+                      border-transparent border-t-gray-800
+                    "></div>
+                    <Clock className="h-3 w-3 inline-block mr-1.5" />
+                    <span>Available in {formatTimeRemaining(nextRefreshTime - Date.now())}</span>
+                  </div>
+                )}
               </Button>
             </div>
           </div>
 
-          {/* Project Info and Filters */}
+          {/* Compact Keywords Stats */}
           {project && (
-            <div className="rounded-lg border border-gray-100 bg-white shadow-sm">
-              <div className="p-4 sm:p-6 space-y-4">
-                {/* Project Stats */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <h2 className="text-lg sm:text-xl font-semibold text-gray-900">{project.name}</h2>
-                  <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                    <Badge variant="outline" className="bg-[#ff4500]/5 text-[#ff4500] border-[#ff4500]/20 h-7">
-                      {mentions.length} Mentions
-                    </Badge>
-                    <Badge variant="outline" className="h-7">
-                      {project.keywords?.length || 0} Keywords
-                    </Badge>
-                    <Badge variant="outline" className="h-7">
-                      {project.subreddits?.length || 0} Subreddits
-                    </Badge>
-                  </div>
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-lg p-3">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold text-gray-900">{project.name}</h2>
+                <div className="h-4 w-px bg-gray-200" />
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline" className="bg-[#ff4500]/5 text-[#ff4500] border-[#ff4500]/20">
+                    {mentions.length} Mentions
+                  </Badge>
+                  <Badge variant="outline">
+                    {project.keywords?.length || 0} Keywords
+                  </Badge>
+                  <Badge variant="outline">
+                    {project.subreddits?.length || 0} Subreddits
+                  </Badge>
                 </div>
-
-                {/* Filters Row */}
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-gray-100">
-                  <div className="text-sm text-gray-600 hidden sm:block">
-                    Showing mentions from the selected time period
-                  </div>
-                  <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto">
-                    <select
-                      value={timePeriod}
-                      onChange={(e) => setTimePeriod(e.target.value as 'day' | 'week' | 'month')}
-                      className="h-9 rounded-md border border-gray-200 bg-white px-2 sm:px-3 py-1 text-sm shadow-sm transition-colors hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 flex-1 sm:flex-none"
-                      disabled={isLoading}
-                    >
-                      <option value="day">Last 24 hours</option>
-                      <option value="week">Last 7 days</option>
-                      <option value="month">Last 30 days</option>
-                    </select>
-                    <select
-                      value={postsLimit}
-                      onChange={(e) => setPostsLimit(Number(e.target.value))}
-                      className="h-9 rounded-md border border-gray-200 bg-white px-2 sm:px-3 py-1 text-sm shadow-sm transition-colors hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 flex-1 sm:flex-none"
-                      disabled={isLoading}
-                    >
-                      <option value={20}>20 posts</option>
-                      <option value={50}>50 posts</option>
-                      <option value={100}>100 posts</option>
-                      <option value={200}>200 posts</option>
-                    </select>
-                  </div>
-                </div>
+              </div>
+              <div className="flex items-center gap-2 self-end sm:self-auto">
+                <select
+                  value={timePeriod}
+                  onChange={(e) => setTimePeriod(e.target.value as 'day' | 'week' | 'month')}
+                  className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm shadow-sm transition-colors hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20"
+                  disabled={isLoading}
+                >
+                  <option value="day">Last 24 hours</option>
+                  <option value="week">Last 7 days</option>
+                  <option value="month">Last 30 days</option>
+                </select>
+                <select
+                  value={postsLimit}
+                  onChange={(e) => setPostsLimit(Number(e.target.value))}
+                  className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm shadow-sm transition-colors hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20"
+                  disabled={isLoading}
+                >
+                  <option value={20}>20 posts</option>
+                  <option value={50}>50 posts</option>
+                  <option value={100}>100 posts</option>
+                  <option value={200}>200 posts</option>
+                </select>
               </div>
             </div>
           )}
@@ -455,105 +532,107 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {currentMentions.map((mention, index) => (
-                <Card key={index} className="p-4 sm:p-6 hover:shadow-lg transition-all duration-200 bg-gradient-to-r from-white to-gray-50/30">
-                  <div className="space-y-3 sm:space-y-4">
-                    <div className="flex flex-col space-y-2">
-                      <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
-                        <h3 className="text-base sm:text-lg font-medium flex-grow order-2 sm:order-1">
-                          <span
-                            className="hover:text-[#ff4500] transition-colors duration-200"
-                            dangerouslySetInnerHTML={{ 
-                              __html: highlightKeywords(mention.title, mention.matching_keywords)
-                            }}
-                          />
-                        </h3>
-                        <div className="flex items-center gap-2 order-1 sm:order-2 self-start">
-                          <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
-                            r/{mention.subreddit}
-                          </Badge>
-                          <a 
-                            href={mention.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
-                          >
-                            View Post
-                            <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                          </a>
-                        </div>
-                      </div>
-                      {mention.matching_keywords?.length > 0 && (
-                        <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-3">
-                          <span className="text-xs sm:text-sm font-medium text-gray-700">Matched:</span>
-                          {mention.matching_keywords.map((keyword) => (
-                            <Badge 
-                              key={keyword} 
-                              className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors text-xs"
-                            >
-                              {keyword}
+                <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80">
+                  <CardContent className="p-6">
+                    <div className="space-y-3 sm:space-y-4">
+                      <div className="flex flex-col space-y-2">
+                        <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
+                          <h3 className="text-base sm:text-lg font-medium flex-grow order-2 sm:order-1">
+                            <span
+                              className="hover:text-[#ff4500] transition-colors duration-200"
+                              dangerouslySetInnerHTML={{ 
+                                __html: highlightKeywords(mention.title, mention.matching_keywords)
+                              }}
+                            />
+                          </h3>
+                          <div className="flex items-center gap-2 order-1 sm:order-2 self-start">
+                            <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
+                              r/{mention.subreddit}
                             </Badge>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex flex-col space-y-3">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            {mention.formatted_date}
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
-                              {mention.relevance_score}%
-                            </span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                            {mention.num_comments} comments
+                            <a 
+                              href={mention.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
+                            >
+                              View Post
+                              <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                            </a>
                           </div>
                         </div>
-                        <Button
-                          onClick={() => handleGenerateReply(mention)}
-                          disabled={generatingReplyFor === mention.id}
-                          className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white border-none shadow-sm h-8 px-3 transition-colors duration-200"
-                          size="sm"
-                        >
-                          {generatingReplyFor === mention.id ? (
-                            <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                              <span>Generating...</span>
-                            </>
-                          ) : (
-                            <>
-                              <MessageSquare className="h-4 w-4" />
-                              <span>Generate Reply</span>
-                            </>
-                          )}
-                        </Button>
+                        {mention.matching_keywords?.length > 0 && (
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-3">
+                            <span className="text-xs sm:text-sm font-medium text-gray-700">Matched:</span>
+                            {mention.matching_keywords.map((keyword) => (
+                              <Badge 
+                                key={keyword} 
+                                className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors text-xs"
+                              >
+                                {keyword}
+                              </Badge>
+                            ))}
+                          </div>
+                        )}
                       </div>
 
-                      {/* Show generated reply if available */}
-                      {generatedReplies[mention.id] && (
-                        <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                          <div className="flex items-center justify-between mb-2">
-                            <span className="text-sm font-medium text-gray-700">Generated Reply</span>
-                            <Button
-                              onClick={() => navigator.clipboard.writeText(generatedReplies[mention.id])}
-                              variant="ghost"
-                              size="sm"
-                              className="h-7 text-xs"
-                            >
-                              Copy
-                            </Button>
+                      <div className="flex flex-col space-y-3">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
+                            <div className="flex items-center gap-1.5">
+                              <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                              {mention.formatted_date}
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                              <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
+                                {mention.relevance_score}%
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5">
+                              <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                              {mention.num_comments} comments
+                            </div>
                           </div>
-                          <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                          <Button
+                            onClick={() => handleGenerateReply(mention)}
+                            disabled={generatingReplyFor === mention.id}
+                            className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white border-none shadow-sm h-8 px-3 transition-colors duration-200"
+                            size="sm"
+                          >
+                            {generatingReplyFor === mention.id ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                <span>Generating...</span>
+                              </>
+                            ) : (
+                              <>
+                                <MessageSquare className="h-4 w-4" />
+                                <span>Generate Reply</span>
+                              </>
+                            )}
+                          </Button>
                         </div>
-                      )}
+
+                        {/* Show generated reply if available */}
+                        {generatedReplies[mention.id] && (
+                          <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                            <div className="flex items-center justify-between mb-2">
+                              <span className="text-sm font-medium text-gray-700">Generated Reply</span>
+                              <Button
+                                onClick={() => navigator.clipboard.writeText(generatedReplies[mention.id])}
+                                variant="ghost"
+                                size="sm"
+                                className="h-7 text-xs"
+                              >
+                                Copy
+                              </Button>
+                            </div>
+                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
+                  </CardContent>
                 </Card>
               ))}
             </div>

@@ -35,7 +35,7 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
       </head>
-      <body className={`min-h-screen bg-white font-sans antialiased ${spaceGrotesk.className}`}>
+      <body className={`${inter.className} min-h-screen bg-gradient-to-br from-[#fff5f2] via-white to-[#f0f7ff] font-sans antialiased ${spaceGrotesk.className}`}>
         <AuthProvider>
           <Navbar />
           {children}

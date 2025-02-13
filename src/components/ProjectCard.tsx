@@ -15,6 +15,7 @@ import { useRouter } from 'next/navigation';
 import { api, Project, RedditPost, RedditMention } from '@/lib/api';
 import { toast } from 'sonner';
 import { EditProjectDialog } from './EditProjectDialog';
+import { RedditAnalysisLoading } from './RedditAnalysisLoading';
 
 interface ProjectCardProps {
   project: Project;
@@ -69,8 +70,8 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         brand_id: project.id,
         keywords: project.keywords,
         subreddits: project.subreddits,
-        time_period: 'month', // Changed from 'day' to 'month'
-        limit: 100, // Changed from 20 to 100
+        time_period: 'month',
+        limit: 100,
       });
 
       if (analysisResult.status === 'success' && analysisResult.posts.length > 0) {
@@ -135,7 +136,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
   };
 
   return (
-    <Card className="w-full transition-all duration-200 hover:shadow-lg">
+    <Card className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80">
       <CardHeader className="space-y-2">
         <div className="flex items-start justify-between">
           <div className="space-y-1 flex-grow">
@@ -171,57 +172,64 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
       </CardHeader>
 
       <CardContent className="space-y-6">
-        <div className="space-y-4">
-          <div>
-            <Label className="text-sm font-medium mb-2 block">Keywords</Label>
-            <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300 pr-2">
-              {project.keywords.map((keyword) => (
-                <Badge
-                  key={keyword}
-                  variant="secondary"
-                  className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors"
-                >
-                  {keyword}
-                </Badge>
-              ))}
-            </div>
-          </div>
+        {loading ? (
+          <RedditAnalysisLoading />
+        ) : (
+          <>
+            <div className="space-y-4">
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Keywords</Label>
+                <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300 pr-2">
+                  {project.keywords.map((keyword) => (
+                    <Badge
+                      key={keyword}
+                      variant="secondary"
+                      className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors"
+                    >
+                      {keyword}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
 
-          <div>
-            <Label className="text-sm font-medium mb-2 block">Subreddits</Label>
-            <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300 pr-2">
-              {project.subreddits.map((subreddit) => (
-                <Badge
-                  key={subreddit}
-                  variant="secondary"
-                  className="bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
-                >
-                  r/{subreddit}
-                </Badge>
-              ))}
+              <div>
+                <Label className="text-sm font-medium mb-2 block">Subreddits</Label>
+                <div className="flex flex-wrap gap-2 max-h-[120px] overflow-y-auto scrollbar-thin scrollbar-thumb-gray-200 hover:scrollbar-thumb-gray-300 pr-2">
+                  {project.subreddits.map((subreddit) => (
+                    <Badge
+                      key={subreddit}
+                      variant="secondary"
+                      className="bg-blue-50 text-blue-700 hover:bg-blue-100 transition-colors"
+                    >
+                      r/{subreddit}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+
+            <Button
+              onClick={handleViewMentions}
+              className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white transition-colors"
+              disabled={loading || !project.keywords.length || !project.subreddits.length}
+            >
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Loading...
+                </>
+              ) : (
+                <>
+                  <MessageSquare className="mr-2 h-4 w-4" />
+                  View Mentions
+                </>
+              )}
+            </Button>
+          </>
+        )}
       </CardContent>
 
       <CardFooter>
-        <Button
-          className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white transition-colors"
-          onClick={handleViewMentions}
-          disabled={loading || !project.keywords.length || !project.subreddits.length}
-        >
-          {loading ? (
-            <>
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              Loading...
-            </>
-          ) : (
-            <>
-              <MessageSquare className="mr-2 h-4 w-4" />
-              View Mentions
-            </>
-          )}
-        </Button>
       </CardFooter>
 
       <EditProjectDialog

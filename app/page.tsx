@@ -14,7 +14,7 @@ export default function LandingPage() {
   const { user } = useAuth();
 
   useEffect(() => {
-    if (user) {
+    if (user && window.location.pathname === '/') {
       router.push('/projects');
     }
   }, [user, router]);
@@ -33,22 +33,24 @@ export default function LandingPage() {
       {/* Early Adopter Offer Banner */}
       <div className="bg-[#ff4500] text-white">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
-          <div className="flex flex-wrap justify-center items-center gap-x-2 gap-y-1 text-sm md:text-base">
+          <div className="flex flex-wrap justify-center items-center gap-x-3 gap-y-1 text-sm md:text-base">
             <div className="flex items-center gap-2">
               <span className="text-lg">🔥</span>
               <span className="font-medium whitespace-nowrap">Early Access Offer:</span>
             </div>
+            <div className="flex items-center gap-2">
+              <span className="line-through text-white/80">$120</span>
+              <span className="font-bold">$39</span>
+              <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs font-medium">Save 67%</span>
+            </div>
             <span className="flex items-center gap-1 whitespace-nowrap">
-              <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs font-medium">4 spots left</span>
+              <span className="px-1.5 py-0.5 bg-white/10 rounded text-xs font-medium">3 spots left</span>
             </span>
-            <span className="font-bold whitespace-nowrap">$39</span>
             <span className="hidden sm:inline opacity-75 mx-1">•</span>
             <span className="hidden sm:inline whitespace-nowrap">One-time Payment</span>
-            <span className="hidden sm:inline opacity-75 mx-1">•</span>
-            <span className="hidden sm:inline whitespace-nowrap">Lifetime Access</span>
             {/* Mobile version of additional info */}
             <div className="w-full sm:hidden text-center mt-1 text-xs">
-              <span>One-time Payment • Lifetime Access</span>
+              <span>One-time Payment</span>
             </div>
           </div>
         </div>
@@ -115,16 +117,6 @@ export default function LandingPage() {
                 </Button>
               </div>
 
-              {/* Pricing Tag */}
-              <div className="text-center mb-12">
-                <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full bg-gray-50 border border-gray-200">
-                  <span className="text-gray-700">One-time Payment</span>
-                  <span className="text-[#ff4500] font-bold">$39</span>
-                  <span className="text-gray-700">•</span>
-                  <span className="text-gray-700">Lifetime Access</span>
-                </div>
-              </div>
-
               {/* Dashboard Preview */}
               <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
                 <div className="relative">
@@ -142,6 +134,14 @@ export default function LandingPage() {
                     </div>
                   </div>
                   <div className="absolute inset-0 pointer-events-none border border-gray-100 rounded-3xl" />
+                </div>
+              </div>
+
+              {/* Time Savings Message */}
+              <div className="text-center mt-12">
+                <div className="inline-flex items-center gap-2 bg-gray-800 text-white px-6 py-3 rounded-full text-base">
+                  <span className="font-medium">You save 30-60 hours monthly</span>
+                  <span className="text-gray-200">for each project!</span>
                 </div>
               </div>
 
@@ -172,228 +172,92 @@ export default function LandingPage() {
               </div>
 
               {/* Value Proposition Section */}
-              <div className="py-12 sm:py-20 bg-gradient-to-b from-white to-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <div className="text-center mb-8 sm:mb-12">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">
-                      Automate Your Reddit Lead Generation
+              <div className="py-12 sm:py-20">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                  <div className="text-center mb-12">
+                    <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">
+                      See how <span className="text-[#ff4500] text-3xl">SNEAKYGUY</span> helps you find and convert qualified<br />
+                      leads from Reddit discussions
                     </h2>
-                    <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto px-4 sm:px-0">
-                      See how SNEAKYGUY helps you find and convert qualified leads from Reddit discussions
-                    </p>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-8 max-w-5xl mx-auto">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {/* Manual Process Card */}
-                    <div className="bg-red-50 rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-red-100">
-                      <div className="flex flex-col sm:flex-row sm:items-center mb-6 gap-2 sm:gap-0">
-                        <h3 className="text-lg sm:text-xl font-semibold text-gray-900">To find customers</h3>
-                        <span className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-medium sm:mx-2 inline-block sm:inline">
-                          manually
-                        </span>
-                        <span className="text-gray-900">you need:</span>
+                    <div className="relative bg-[#fff4f2] rounded-2xl p-6">
+                      <div className="absolute -top-4 left-6 bg-white px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="bg-gray-800 text-white text-xs px-2 py-0.5 rounded-full">manually</span>
+                          <span className="text-gray-700 font-medium">Finding customers takes</span>
+                        </div>
                       </div>
                       
-                      <div className="space-y-4 sm:space-y-6">
-                        <div className="flex items-start gap-3 sm:gap-4">
-                          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 text-red-600 mt-0.5">
-                            1
+                      <div className="relative space-y-6 mt-8">
+                        <div className="flex gap-4">
+                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff4500]/10 flex items-center justify-center text-[#ff4500] font-medium">1</span>
+                          <div>
+                            <p className="text-gray-700">Monitor social networks for relevant discussions about your product</p>
+                            <p className="text-gray-500 text-sm mt-1">15-30 min</p>
                           </div>
-                          <p className="text-sm sm:text-base text-gray-700 flex-1">
-                            Monitor each social network every few hours, searching for keywords related to your product
-                            <span className="text-gray-500 block mt-1 text-sm">(15 - 30 min)</span>
-                          </p>
                         </div>
-                        <div className="flex items-start gap-3 sm:gap-4">
-                          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 text-red-600 mt-0.5">
-                            2
+                        
+                        <div className="flex gap-4">
+                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff4500]/10 flex items-center justify-center text-[#ff4500] font-medium">2</span>
+                          <div>
+                            <p className="text-gray-700">Review each mention to assess promotion opportunities</p>
+                            <p className="text-gray-500 text-sm mt-1">15-30 min</p>
                           </div>
-                          <p className="text-sm sm:text-base text-gray-700 flex-1">
-                            Read every mention and analyze whether you can offer your product
-                            <span className="text-gray-500 block mt-1 text-sm">(15 - 30 min)</span>
-                          </p>
                         </div>
-                        <div className="flex items-start gap-3 sm:gap-4">
-                          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-red-100 text-red-600 mt-0.5">
-                            3
+                        
+                        <div className="flex gap-4">
+                          <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff4500]/10 flex items-center justify-center text-[#ff4500] font-medium">3</span>
+                          <div>
+                            <p className="text-gray-700">Craft personalized responses for each opportunity</p>
+                            <p className="text-gray-500 text-sm mt-1">30-60 min</p>
                           </div>
-                          <p className="text-sm sm:text-base text-gray-700 flex-1">
-                            Write a personal text for each suitable mention in which your product will be mentioned
-                            <span className="text-gray-500 block mt-1 text-sm">(30 - 60 min)</span>
-                          </p>
                         </div>
-                        <div className="mt-8 border-t border-red-100 pt-6">
-                          <div className="flex items-center">
-                            <span className="font-semibold text-gray-900">Total:</span>
-                            <span className="bg-gray-800 text-white px-3 py-1 rounded-full text-sm font-medium mx-2">
-                              1 - 2 hours per day
-                            </span>
-                            <span className="text-gray-600">for 1 project</span>
+
+                        <div className="mt-8 pt-6 border-t border-[#ff4500]/10">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-medium">Total:</span>
+                            <span className="text-[#ff4500] font-medium">1-2 hours per day</span>
+                            <span className="text-gray-500">→</span>
+                            <span className="text-gray-700">per project</span>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* SNEAKYGUY Process Card */}
-                    <div className="bg-green-50 rounded-xl sm:rounded-2xl p-6 sm:p-8 border border-green-100">
-                      <div className="flex flex-col sm:flex-row sm:items-center mb-6 gap-2 sm:gap-0">
-                        <h3 className="text-lg sm:text-xl font-semibold text-gray-900">To get leads using</h3>
-                        <span className="bg-[#ff4500] text-white px-3 py-1 rounded-full text-sm font-medium sm:mx-2 inline-block sm:inline">
-                          SNEAKYGUY
-                        </span>
-                        <span className="text-gray-900">you need:</span>
+                    {/* SneakGuy Process Card */}
+                    <div className="relative bg-[#f0fdf4] rounded-2xl p-6">
+                      <div className="absolute -top-4 left-6 bg-white px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
+                        <div className="flex items-center gap-2">
+                          <span className="bg-[#ff4500] text-white text-sm px-3 py-1 rounded-full font-medium">SNEAKYGUY</span>
+                          <span className="text-gray-700 font-medium">With us, you just need</span>
+                        </div>
                       </div>
                       
-                      <div className="space-y-4 sm:space-y-6">
-                        <div className="flex items-start gap-3 sm:gap-4">
-                          <div className="flex-shrink-0 h-6 w-6 rounded-full bg-green-100 text-green-600 mt-0.5">
-                            ✓
+                      <div className="relative mt-8">
+                        <div className="flex items-start gap-4">
+                          <div className="flex-1">
+                            <p className="text-gray-700">Create a project and add keywords</p>
+                            <p className="text-sm text-gray-500 mt-1">AI suggests relevant keywords for your product</p>
                           </div>
-                          <p className="text-sm sm:text-base text-gray-700 flex-1">
-                            Create a project and add keywords
-                            <span className="text-gray-500 block mt-1 text-sm">(AI will suggest suitable keywords for your product)</span>
-                          </p>
-                        </div>
-                        <div className="mt-8 border-t border-green-100 pt-6">
-                          <div className="flex items-center">
-                            <span className="font-semibold text-gray-900">Total:</span>
-                            <span className="bg-[#ff4500] text-white px-3 py-1 rounded-full text-sm font-medium mx-2">
-                              2 minutes one time
-                            </span>
-                            <span className="text-gray-600">per project</span>
+                          <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
+                            <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                            </svg>
                           </div>
                         </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Bottom CTA */}
-                  <div className="text-center mt-8 sm:mt-12">
-                    <div className="inline-flex flex-col items-center">
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-6 sm:mb-8 px-4">
-                        You will <span className="bg-gray-800 text-white px-3 sm:px-4 py-1 rounded-full mx-2 whitespace-nowrap">save 30 - 60 hours monthly</span> for each project!
-                      </h3>
-                      <Button
-                        onClick={() => router.push('/login')}
-                        className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold w-full sm:w-auto"
-                      >
-                        Get Started Now
-                        <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Comparison Section */}
-              <div className="max-w-[1000px] mx-auto px-4 py-12">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Manual Process */}
-                  <div className="bg-[#fff1f0] rounded-2xl p-6">
-                    <div className="flex items-center gap-2 mb-6">
-                      <div className="px-3 py-1 rounded-full bg-gray-800/90 text-white text-sm">
-                        manually
-                      </div>
-                      <h3 className="text-lg font-medium">Finding customers takes</h3>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff45001a] text-[#ff4500] flex items-center justify-center text-sm">1</span>
-                        <p className="text-gray-700">Monitor social networks for relevant discussions about your product
-                          <span className="block text-sm text-gray-500 mt-1">15-30 min</span>
-                        </p>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff45001a] text-[#ff4500] flex items-center justify-center text-sm">2</span>
-                        <p className="text-gray-700">Review each mention to assess promotion opportunities
-                          <span className="block text-sm text-gray-500 mt-1">15-30 min</span>
-                        </p>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff45001a] text-[#ff4500] flex items-center justify-center text-sm">3</span>
-                        <p className="text-gray-700">Craft personalized responses for each opportunity
-                          <span className="block text-sm text-gray-500 mt-1">30-60 min</span>
-                        </p>
-                      </div>
-
-                      <div className="mt-6 pt-4 border-t border-[#ff4500]/10">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-700 font-medium">Total:</span>
-                          <span className="px-3 py-1 rounded-full bg-gray-800/90 text-white text-sm">1-2 hours per day</span>
-                          <span className="text-gray-600">per project</span>
+                        <div className="mt-8 pt-6 border-t border-green-200">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-medium">Total:</span>
+                            <span className="text-green-600 font-medium">2 minutes one time</span>
+                            <span className="text-gray-500">→</span>
+                            <span className="text-gray-700">per project</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </div>
-
-                  {/* SneakyGuy Process */}
-                  <div className="bg-[#f0fff4] rounded-2xl p-6">
-                    <div className="flex items-center gap-2 mb-6">
-                      <div className="px-3 py-1 rounded-full bg-[#ff4500] text-white text-sm">
-                        SNEAKYGUY
-                      </div>
-                      <h3 className="text-lg font-medium">With us, you just need</h3>
-                    </div>
-
-                    <div className="space-y-4">
-                      <div className="flex items-start gap-3">
-                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 text-green-600 flex items-center justify-center">✓</span>
-                        <div>
-                          <p className="text-gray-700">Create a project and add keywords</p>
-                          <p className="text-sm text-gray-500 mt-1">AI suggests relevant keywords for your product</p>
-                        </div>
-                      </div>
-
-                      <div className="mt-6 pt-4 border-t border-green-100">
-                        <div className="flex items-center gap-2">
-                          <span className="text-gray-700 font-medium">Total:</span>
-                          <span className="px-3 py-1 rounded-full bg-[#ff4500] text-white text-sm">2 minutes one time</span>
-                          <span className="text-gray-600">per project</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Time Savings Summary */}
-                <div className="text-center mt-8">
-                  <div className="inline-flex items-center gap-2 bg-gray-800/90 text-white px-4 py-2 rounded-full">
-                    <span className="font-medium">You save 30-60 hours monthly</span>
-                    <span>for each project!</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* How It Works Section */}
-              <div className="py-12 sm:py-20 bg-white">
-                <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-                  <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 text-center mb-10 sm:mb-16">
-                    How It Works
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
-                    <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-                      <div className="mb-4 h-12 w-12 rounded-xl bg-[#fff3f0] flex items-center justify-center">
-                        <span className="text-[#ff4500] font-semibold text-xl">1</span>
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Create Your Project</h3>
-                      <p className="text-sm sm:text-base text-gray-600">Describe your business, and our AI will generate targeted keywords and relevant subreddits.</p>
-                    </div>
-                    <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-                      <div className="mb-4 h-12 w-12 rounded-xl bg-[#fff3f0] flex items-center justify-center">
-                        <span className="text-[#ff4500] font-semibold text-xl">2</span>
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">AI-Powered Discovery</h3>
-                      <p className="text-sm sm:text-base text-gray-600">Our AI continuously monitors Reddit, finding and scoring relevant opportunities.</p>
-                    </div>
-                    <div className="bg-white p-6 sm:p-8 rounded-xl sm:rounded-2xl border border-gray-100 hover:shadow-md transition-shadow">
-                      <div className="mb-4 h-12 w-12 rounded-xl bg-[#fff3f0] flex items-center justify-center">
-                        <span className="text-[#ff4500] font-semibold text-xl">3</span>
-                      </div>
-                      <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-2">Smart Engagement</h3>
-                      <p className="text-sm sm:text-base text-gray-600">Get AI-generated reply suggestions that naturally promote your brand.</p>
                     </div>
                   </div>
                 </div>
@@ -527,13 +391,13 @@ export default function LandingPage() {
                   <div className="flex flex-col items-center gap-4">
                     <div className="flex items-center gap-3 text-lg text-gray-700">
                       <span>One-time Payment</span>
-                      <span className="text-gray-400">•</span>
+                      <span className="text-gray-300">•</span>
                       <span>Lifetime Access</span>
                     </div>
                     
-                    <div className="flex items-center gap-2 text-gray-700">
-                      <span className="text-lg">🔥</span>
-                      <span>Only 4 spots remaining</span>
+                    <div className="flex items-center gap-2 text-[#ff4500]">
+                      <span>🔥</span>
+                      <span>Only 3 spots remaining</span>
                     </div>
                   </div>
 
