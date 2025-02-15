@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAuthStore, User } from '../lib/auth';
+import { useAuthStore, User } from '@/lib/auth';
 
 interface AuthContextType {
   user: User | null;
@@ -16,7 +16,8 @@ const PUBLIC_ROUTES = ['/', '/login', '/signup', '/forgot-password', '/privacy',
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
-  const { user, logout, initialize, isInitialized } = useAuthStore();
+  const store = useAuthStore();
+  const { user, logout, initialize, isInitialized } = store;
 
   // Initialize auth state
   useEffect(() => {

@@ -1,20 +1,28 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Inter, Poppins, Space_Grotesk } from 'next/font/google';
 import './globals.css';
-import { Navbar } from '@/components/Navbar';
 import { Toaster } from 'sonner';
 import { AuthProvider } from '@/components/AuthContext';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
+import { RootLayoutContent } from '@/components/RootLayoutContent';
 
 const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter',
+  display: 'swap',
 })
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-space-grotesk',
+})
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-poppins',
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -31,14 +39,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable}`}>
       <head>
         <GoogleAnalytics />
       </head>
-      <body className={`${inter.className} min-h-screen bg-gradient-to-br from-[#fff5f2] via-white to-[#f0f7ff] font-sans antialiased ${spaceGrotesk.className}`}>
+      <body className={`${inter.className} font-sans antialiased ${spaceGrotesk.className}`}>
         <AuthProvider>
-          <Navbar />
-          {children}
+          <RootLayoutContent>
+            {children}
+          </RootLayoutContent>
           <Toaster />
         </AuthProvider>
       </body>

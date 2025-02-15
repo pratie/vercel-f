@@ -38,7 +38,7 @@ const removeCookie = (name: string) => {
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
 };
 
-export const useAuthStore = create<AuthState>((set) => ({
+const authStore = create<AuthState>((set) => ({
   user: null,
   isInitialized: false,
   setUser: (user) => {
@@ -101,6 +101,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   }
 }));
+
+export const useAuthStore = () => authStore((state) => state);
 
 export const getAuthToken = (): string | null => {
   if (typeof window === 'undefined') return null;

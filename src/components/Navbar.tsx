@@ -1,104 +1,46 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useAuth } from '@/components/AuthContext';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Button } from './ui/button';
-import { LogOut, User, Settings } from 'lucide-react';
-import Image from 'next/image';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { useAuth } from './AuthContext';
 
 export function Navbar() {
-  const router = useRouter();
   const { user, logout } = useAuth();
+  const pathname = usePathname();
 
-  const handleLogout = () => {
-    logout();
-    router.push('/');
-  };
-
-  const handleLogoClick = () => {
-    if (user) {
-      router.push('/projects');
-    } else {
-      router.push('/');
-    }
-  };
-
-  // Get first letter of email for avatar
-  const getInitial = (email: string) => {
-    return email ? email[0].toUpperCase() : 'U';
-  };
+  // Only show navbar on landing page
+  if (pathname !== '/') return null;
 
   return (
-    <nav className="border-b border-gray-200 bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-14 items-center justify-between">
+    <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16">
           <div className="flex">
-            <div className="flex flex-shrink-0 items-center gap-2 group cursor-pointer" onClick={handleLogoClick}>
-              <span className="text-[#ff4500] text-2xl font-bold tracking-tight">
-                SNEAKYGUY
-              </span>
-              <div className="relative h-12 w-11">
-                <Image 
-                  src="/logo.png"
-                  alt="Sneakylogo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </div>
+            <Link href="/" className="flex items-center">
+              <span className="text-2xl font-bold text-orange-500">SNEAKYGUY</span>
+            </Link>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center space-x-4">
             {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="relative h-9 w-9 rounded-full bg-gray-100 hover:bg-gray-200"
-                  >
-                    <span className="font-medium text-sm text-gray-700">
-                      {getInitial(user.email)}
-                    </span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end">
-                  <DropdownMenuLabel>
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none">Account</p>
-                      <p className="text-xs leading-none text-gray-500">{user.email}</p>
-                    </div>
-                  </DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => router.push('/projects')}>
-                    <User className="mr-2 h-4 w-4" />
-                    <span>Projects</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => router.push('/settings')}>
-                    <Settings className="mr-2 h-4 w-4" />
-                    <span>Settings</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={handleLogout}>
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Log out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <>
+                <Link href="/projects">
+                  <Button variant="ghost">Dashboard</Button>
+                </Link>
+                <Button variant="ghost" onClick={logout}>
+                  Logout
+                </Button>
+              </>
             ) : (
-              <Button
-                onClick={() => router.push('/login')}
-                className="bg-[#ff4500] hover:bg-[#ff6634] text-white font-medium px-6"
-              >
-                Sign up
-              </Button>
+              <>
+                <Link href="/login">
+                  <Button variant="ghost">Login</Button>
+                </Link>
+                <Link href="/signup">
+                  <Button>Get Started</Button>
+                </Link>
+              </>
             )}
           </div>
         </div>
