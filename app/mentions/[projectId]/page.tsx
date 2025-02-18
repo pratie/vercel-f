@@ -64,6 +64,7 @@ export default function MentionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [nextRefreshTime, setNextRefreshTime] = useState<number | null>(null);
   const [refreshDisabled, setRefreshDisabled] = useState(false);
+  const [isPosting, setIsPosting] = useState<number | null>(null);
   const itemsPerPage = 15;
   const { user } = useAuth();
   const router = useRouter();
@@ -209,6 +210,41 @@ export default function MentionsPage() {
       toast.error('Failed to refresh mentions. Please try again.');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const postComment = async (mention: RedditMention) => {
+    if (!project) return;
+
+    setIsPosting(mention.id);
+    try {
+      const payload = {
+        post_title: mention.title,
+        post_content: mention.content,
+        brand_id: mention.brand_id,
+        post_url: mention.url,
+        comment_text: generatedReplies[mention.id]
+      };
+
+      console.log('Sending payload to backend:', payload);
+      
+      const response = await api.postRedditComment(payload);
+      console.log('Response from backend:', response);
+
+      toast.success('Comment posted successfully!', {
+        description: 'Your comment has been posted to Reddit'
+      });
+    } catch (error) {
+      console.error('Error posting comment:', error);
+      // Log the error details
+      if (error instanceof Error) {
+        console.error('Error message:', error.message);
+      }
+      toast.error('Failed to post comment', {
+        description: 'Please try again or contact support if the issue persists'
+      });
+    } finally {
+      setIsPosting(null);
     }
   };
 
@@ -475,7 +511,7 @@ export default function MentionsPage() {
                 <h2 className="text-lg font-semibold text-gray-900">{project.name}</h2>
                 <div className="h-4 w-px bg-gray-200" />
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-[#ff4500]/5 text-[#ff4500] border-[#ff4500]/20">
+                  <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
                     {mentions.length} Mentions
                   </Badge>
                   <Badge variant="outline">
@@ -615,19 +651,79 @@ export default function MentionsPage() {
 
                         {/* Show generated reply if available */}
                         {generatedReplies[mention.id] && (
-                          <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                            <div className="flex items-center justify-between mb-2">
-                              <span className="text-sm font-medium text-gray-700">Generated Reply</span>
+                          <div className="mt-3 space-y-3">
+                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="flex items-center justify-between mb-2">
+                                <span className="text-sm font-medium text-gray-700">Generated Reply</span>
+                              </div>
+                              <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                            </div>
+                            
+                            {/* Action Buttons */}
+                            <div className="flex items-center gap-2">
                               <Button
                                 onClick={() => navigator.clipboard.writeText(generatedReplies[mention.id])}
-                                variant="ghost"
+                                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700"
                                 size="sm"
-                                className="h-7 text-xs"
                               >
+                                <svg 
+                                  className="w-4 h-4" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
                                 Copy
                               </Button>
+
+                              <Button
+                                onClick={() => postComment(mention)}
+                                disabled={isPosting === mention.id}
+                                className={`
+                                  flex items-center gap-2 
+                                  ${isPosting === mention.id
+                                    ? 'bg-gray-100 text-gray-500'
+                                    : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
+                                  }
+                                `}
+                                size="sm"
+                              >
+                                {isPosting === mention.id ? (
+                                  <>
+                                    <RefreshCw className="w-4 h-4 animate-spin" />
+                                    Posting...
+                                  </>
+                                ) : (
+                                  <>
+                                    <MessageSquare className="w-4 h-4" />
+                                    Publish
+                                  </>
+                                )}
+                              </Button>
+
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-gray-500 hover:text-gray-700"
+                                onClick={() => {
+                                  setGeneratedReplies(prev => {
+                                    const newReplies = { ...prev };
+                                    delete newReplies[mention.id];
+                                    return newReplies;
+                                  });
+                                }}
+                              >
+                                <svg 
+                                  className="w-4 h-4" 
+                                  fill="none" 
+                                  stroke="currentColor" 
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </Button>
                             </div>
-                            <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
                           </div>
                         )}
                       </div>

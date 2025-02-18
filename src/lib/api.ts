@@ -336,7 +336,7 @@ export const api = {
     // Generate reply for a mention
     generateReply: async (mention: { title: string; content: string; brand_id: number }): Promise<string> => {
         try {
-            const response = await fetchWithAuth(`${API_BASE_URL}/generate-custom-comment/`, {
+            const response = await fetchWithAuth(`${API_BASE_URL}/generate-comment/`, {
                 method: 'POST',
                 body: JSON.stringify({
                     post_title: mention.title,
@@ -350,6 +350,25 @@ export const api = {
         } catch (error) {
             throw new Error('Failed to generate reply');
         }
+    },
+
+    // Post comment to Reddit
+    async postRedditComment(data: {
+        post_title: string;
+        post_content: string;
+        brand_id: number;
+        post_url: string;
+        comment_text: string;
+    }): Promise<{ comment: string; comment_url: string; status: string }> {
+        console.log('Making request to:', `${API_BASE_URL}/post-reddit-comment/`);
+        console.log('Request body:', data);
+
+        const response = await fetchWithAuth(`${API_BASE_URL}/post-reddit-comment/`, {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+
+        return response.json();
     },
 
     // Payment

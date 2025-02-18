@@ -41,7 +41,7 @@ export function Sidebar() {
   ];
 
   return (
-    <div className="fixed top-0 left-0 h-screen flex flex-col bg-[#ff4500] w-64 font-inter">
+    <div className="h-screen flex-none bg-[#ff4500] w-64 font-inter">
       {/* Logo section with white background */}
       <div className="bg-white p-4 border-b border-[#ff4500]/10">
         <div className="flex items-center gap-2">

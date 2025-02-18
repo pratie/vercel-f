@@ -21,9 +21,9 @@ export default function AuthenticatedLayout({
   }, [user, router]);
 
   return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen w-full">
       <Sidebar />
-      <main className="flex-1 bg-gradient-to-br from-[#fff5f2] via-white to-[#f0f7ff]">
+      <main className="flex-1 bg-gradient-to-br from-[#fff5f2] via-white to-[#f0f7ff] p-6">
         {children}
       </main>
     </div>
