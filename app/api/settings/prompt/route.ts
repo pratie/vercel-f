@@ -1,33 +1,25 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
+import { getAuthToken, getUserEmail } from '@/src/lib/auth';
 
 // GET /api/settings
 export async function GET() {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const userEmail = getUserEmail();
+    if (!userEmail) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const userSettings = await prisma.userSettings.findUnique({
-      where: {
-        userId: session.user.email,
+    // TODO: Implement your actual settings retrieval logic here
+    // This is just a placeholder that returns default settings
+    return NextResponse.json({
+      tone: 'friendly',
+      basePrompt: getDefaultBasePrompt(),
+      templates: {
+        productInfo: getDefaultProductTemplate(),
+        support: getDefaultSupportTemplate(),
+        feedback: getDefaultFeedbackTemplate(),
       },
     });
-
-    return NextResponse.json(
-      userSettings || {
-        tone: 'friendly',
-        basePrompt: getDefaultBasePrompt(),
-        templates: {
-          productInfo: getDefaultProductTemplate(),
-          support: getDefaultSupportTemplate(),
-          feedback: getDefaultFeedbackTemplate(),
-        },
-      }
-    );
   } catch (error) {
     console.error('Error fetching settings:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
@@ -37,49 +29,34 @@ export async function GET() {
 // POST /api/settings
 export async function POST(req: Request) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session?.user?.email) {
+    const userEmail = getUserEmail();
+    if (!userEmail) {
       return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const settings = await req.json();
-
-    await prisma.userSettings.upsert({
-      where: {
-        userId: session.user.email,
-      },
-      update: {
-        tone: settings.tone,
-        basePrompt: settings.basePrompt,
-        templates: settings.templates,
-      },
-      create: {
-        userId: session.user.email,
-        tone: settings.tone,
-        basePrompt: settings.basePrompt,
-        templates: settings.templates,
-      },
-    });
-
-    return NextResponse.json({ success: true });
+    const body = await req.json();
+    
+    // TODO: Implement your actual settings update logic here
+    // This is just a placeholder that returns the posted settings
+    return NextResponse.json(body);
   } catch (error) {
-    console.error('Error saving settings:', error);
+    console.error('Error updating settings:', error);
     return new NextResponse('Internal Server Error', { status: 500 });
   }
 }
 
 function getDefaultBasePrompt() {
-  return `Start with a friendly greeting, address the main points of the post, and provide helpful information. End with a relevant call to action or invitation for further discussion.`;
+  return "Analyze the following Reddit mention:";
 }
 
 function getDefaultProductTemplate() {
-  return `Thank you for your interest! Let me share some details about our product. [Insert key features and benefits here] Feel free to ask if you have any specific questions!`;
+  return "This mention is about our product. Key points:";
 }
 
 function getDefaultSupportTemplate() {
-  return `I understand your concern. Let me help you with that. [Address the specific issue] Please let me know if you need any clarification.`;
+  return "This user needs support. Key issues:";
 }
 
 function getDefaultFeedbackTemplate() {
-  return `Thank you for your feedback! We really appreciate you taking the time to share your thoughts. [Address specific points] Your input helps us improve our service.`;
+  return "This user provided feedback. Main points:";
 }
