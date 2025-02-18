@@ -108,7 +108,7 @@ export default function MentionsPage() {
               <p className="text-[0.875rem] text-gray-600 mb-3">{mention.text}</p>
               <div className="flex items-center gap-2">
                 <Badge 
-                  variant={mention.sentiment === 'positive' ? 'success' : mention.sentiment === 'negative' ? 'destructive' : 'secondary'}
+                  variant={mention.sentiment === 'positive' ? 'default' : mention.sentiment === 'negative' ? 'destructive' : 'secondary'}
                   className="text-[0.75rem]"
                 >
                   {mention.sentiment}
