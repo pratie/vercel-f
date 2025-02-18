@@ -81,7 +81,7 @@ export default function LandingPage() {
               size="lg"
               className="font-semibold text-sm sm:text-base md:text-lg bg-[#ff4500] hover:bg-[#ff4500]/90 px-4 sm:px-6 py-2.5 sm:py-3 w-full sm:w-auto"
             >
-              Get Started Free
+              Find Customers
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
             <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-gray-600">
@@ -287,7 +287,8 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mb-4 px-4">
-              See how SNEAKYGUY helps you find and convert qualified leads from Reddit discussions
+              See how SNEAKYGUY helps you 
+               and convert qualified leads from Reddit discussions
             </h2>
           </div>
 
