@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { getAuthToken, getUserEmail } from '@/src/lib/auth';
+import { getAuthToken, getUserEmail } from '@/lib/auth';
 
 // GET /api/settings
 export async function GET() {
@@ -12,13 +12,10 @@ export async function GET() {
     // TODO: Implement your actual settings retrieval logic here
     // This is just a placeholder that returns default settings
     return NextResponse.json({
-      tone: 'friendly',
       basePrompt: getDefaultBasePrompt(),
-      templates: {
-        productInfo: getDefaultProductTemplate(),
-        support: getDefaultSupportTemplate(),
-        feedback: getDefaultFeedbackTemplate(),
-      },
+      productTemplate: getDefaultProductTemplate(),
+      supportTemplate: getDefaultSupportTemplate(),
+      feedbackTemplate: getDefaultFeedbackTemplate(),
     });
   } catch (error) {
     console.error('Error fetching settings:', error);
