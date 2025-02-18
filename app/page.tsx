@@ -32,31 +32,25 @@ export default function LandingPage() {
     <div className="font-poppins min-h-screen bg-white">
       {/* Navigation */}
       <nav className="relative bg-white border-b border-gray-100">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span className="text-[#ff4500] font-bold text-2xl md:text-3xl tracking-wide">SNEAKYGUY</span>
+        <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+          <div className="flex h-14 sm:h-16 items-center justify-between">
+            <div className="flex items-center gap-1 sm:gap-2">
+              <span className="text-[#ff4500] font-bold text-xl sm:text-2xl md:text-3xl tracking-wide">SNEAKYGUY</span>
               <Image
                 src="/logo.png"
                 alt="SneakyGuy Logo"
                 width={35}
                 height={30}
-                className="w-10 h-10 md:w-10 md:h-10"
+                className="w-8 h-8 sm:w-10 sm:h-10"
               />
             </div>
-            <div className="flex items-center gap-4">
-              <Link
-                href="/login"
-                className="text-gray-600 hover:text-gray-900 font-medium"
-              >
-                Login
-              </Link>
-              <Link
-                href="/login"
-                className="bg-[#ff4500] text-white px-4 py-2 rounded-lg hover:bg-[#ff4500]/90 font-medium"
+            <div className="flex items-center">
+              <Button
+                onClick={handleStartFreeTrial}
+                className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold text-sm sm:text-base px-3 sm:px-4 py-1.5 sm:py-2"
               >
                 Get Started
-              </Link>
+              </Button>
             </div>
           </div>
         </div>
@@ -85,71 +79,71 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <div className="px-6 lg:px-8 py-24 sm:py-32">
+      <div className="px-4 sm:px-6 lg:px-8 py-16 sm:py-24 md:py-32">
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="font-extrabold text-[3.5rem] leading-tight tracking-tight text-gray-900 sm:text-6xl">
+          <h1 className="font-extrabold text-[2.5rem] sm:text-[3.5rem] md:text-6xl leading-tight tracking-tight text-gray-900">
             Find relevent Discussions &
-            <span className="inline-block bg-gradient-to-r from-[#ff4500]/10 to-[#ff6b3d]/10 px-6 py-2 rounded-lg">
-              <span className="text-[#ff4500] font-black text-[3.5rem] sm:text-6xl">Generate Leads</span>
+            <span className="inline-block bg-gradient-to-r from-[#ff4500]/10 to-[#ff6b3d]/10 px-4 sm:px-6 py-2 rounded-lg mt-2 sm:mt-0">
+              <span className="text-[#ff4500] font-black text-[2.5rem] sm:text-[3.5rem] md:text-6xl">Generate Leads</span>
             </span>
           </h1>
-          <p className="mt-6 text-[1.5rem] font-medium leading-8 text-gray-600">
+          <p className="mt-6 text-lg sm:text-xl md:text-2xl font-medium leading-8 text-gray-600 px-4">
             Never miss a relevant Reddit mention again. Track keywords, and generate quality leads with AI powered relevancy scoring and response generation.
           </p>
-          <div className="mt-10 flex items-center justify-center gap-x-6">
+          <div className="mt-8 sm:mt-10 flex items-center justify-center gap-x-6">
             <Button 
               onClick={() => router.push('/login')}
               size="lg"
-              className="font-semibold text-[1.125rem] bg-[#ff4500] hover:bg-[#ff4500]/90"
+              className="font-semibold text-base sm:text-lg md:text-xl bg-[#ff4500] hover:bg-[#ff4500]/90 px-6 py-3 sm:py-4"
             >
               Find Leads
-              <ArrowRight className="ml-2 h-5 w-5" />
+              <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
             </Button>
           </div>
         </div>
       </div>
 
       {/* Features Section */}
-      <div className="py-24 sm:py-32">
-        <div className="mx-auto max-w-7xl px-6 lg:px-8">
+      <div className="py-16 sm:py-24 md:py-32">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="font-semibold text-[1.5rem] leading-7 text-[#ff4500]">
+            <h2 className="font-semibold text-xl sm:text-2xl leading-7 text-[#ff4500]">
               Supercharge Your Reddit Presence
             </h2>
-            <p className="mt-2 font-extrabold text-[2.5rem] tracking-tight text-gray-900">
+            <p className="mt-2 font-extrabold text-2xl sm:text-3xl md:text-4xl tracking-tight text-gray-900">
               Everything you need to track and engage
             </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-12">
-            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start space-x-6">
-                <div className="h-14 w-14 rounded-full bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
-                  <MessageSquare className="h-6 w-6 text-[#ff4500]" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-8 mt-8 sm:mt-12">
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start space-x-4 sm:space-x-6">
+                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
+                  <MessageSquare className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-gray-900 truncate">AI-Powered Relevancy Scoring</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">AI-Powered Relevancy Scoring</h3>
                   <p className="text-sm text-gray-600 mt-1">Get accurate and relevant Reddit mentions with our AI-powered scoring system.</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start space-x-6">
-                <div className="h-14 w-14 rounded-full bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
-                  <Brain className="h-6 w-6 text-[#ff4500]" />
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start space-x-4 sm:space-x-6">
+                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
+                  <Brain className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-gray-900 truncate">AI-Crafted Response Suggestions</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">AI-Crafted Response Suggestions</h3>
                   <p className="text-sm text-gray-600 mt-1">Get personalized response suggestions to engage with your audience naturally.</p>
                 </div>
               </div>
             </div>
-            <div className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
-              <div className="flex items-start space-x-6">
-                <div className="h-14 w-14 rounded-full bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
-                  <Rocket className="h-6 w-6 text-[#ff4500]" />
+            <div className="bg-white p-6 sm:p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-start space-x-4 sm:space-x-6">
+                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#fff3f0] flex items-center justify-center flex-shrink-0">
+                  <Rocket className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg font-semibold text-gray-900 truncate">Boost Your Lead Generation</h3>
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900 truncate">Boost Your Lead Generation</h3>
                   <p className="text-sm text-gray-600 mt-1">Increase your lead generation with our AI-powered Reddit tracking and engagement tools.</p>
                 </div>
               </div>
@@ -167,52 +161,52 @@ export default function LandingPage() {
       </div>
 
       {/* Customer Achievements Section */}
-      <div className="py-12 bg-gray-50">
+      <div className="py-8 sm:py-12 bg-gray-50">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl text-gray-600 text-center mb-8">
+          <h2 className="text-lg sm:text-xl text-gray-600 text-center mb-6 sm:mb-8">
             What our customers achieve with SNEAKYGUY
           </h2>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <div className="bg-white p-8 rounded-xl">
-              <div className="text-[2.5rem] font-bold text-[#ff4500] mb-3">3.5x</div>
-              <p className="text-gray-600">More qualified leads compared to traditional prospecting</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-8 max-w-4xl mx-auto">
+            <div className="bg-white p-6 sm:p-8 rounded-xl">
+              <div className="text-2xl sm:text-[2.5rem] font-bold text-[#ff4500] mb-2 sm:mb-3">3.5x</div>
+              <p className="text-sm sm:text-base text-gray-600">More qualified leads compared to traditional prospecting</p>
             </div>
             
-            <div className="bg-white p-8 rounded-xl">
-              <div className="text-[2.5rem] font-bold text-[#ff4500] mb-3">50+</div>
-              <p className="text-gray-600">Hours saved monthly on manual lead generation</p>
+            <div className="bg-white p-6 sm:p-8 rounded-xl">
+              <div className="text-2xl sm:text-[2.5rem] font-bold text-[#ff4500] mb-2 sm:mb-3">50+</div>
+              <p className="text-sm sm:text-base text-gray-600">Hours saved monthly on manual lead generation</p>
             </div>
             
-            <div className="bg-white p-8 rounded-xl">
-              <div className="text-[2.5rem] font-bold text-[#ff4500] mb-3">89%</div>
-              <p className="text-gray-600">Higher response rate from Reddit-sourced leads</p>
+            <div className="bg-white p-6 sm:p-8 rounded-xl">
+              <div className="text-2xl sm:text-[2.5rem] font-bold text-[#ff4500] mb-2 sm:mb-3">89%</div>
+              <p className="text-sm sm:text-base text-gray-600">Higher response rate from Reddit-sourced leads</p>
             </div>
           </div>
         </div>
       </div>
 
       {/* Value Proposition Section */}
-      <div className="py-12 sm:py-20">
+      <div className="py-8 sm:py-12 md:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl sm:text-3xl font-semibold text-gray-800 mb-4">
+          <div className="text-center mb-8 sm:mb-12">
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mb-4 px-4">
               See how SNEAKYGUY helps you find and convert qualified leads from Reddit discussions
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
             {/* Manual Process Card */}
-            <div className="relative bg-[#fff4f2] rounded-2xl p-6">
-              <div className="absolute -top-4 left-6 bg-white px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
+            <div className="relative bg-[#fff4f2] rounded-2xl p-4 sm:p-6">
+              <div className="absolute -top-4 left-4 sm:left-6 bg-white px-3 sm:px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-2">
                   <span className="bg-gray-800 text-white text-xs px-2 py-0.5 rounded-full">manually</span>
-                  <span className="text-gray-700 font-medium">Finding customers takes</span>
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">Finding customers takes</span>
                 </div>
               </div>
               
-              <div className="relative space-y-6 mt-8">
-                <div className="flex gap-4">
+              <div className="relative mt-8">
+                <div className="flex items-start gap-4">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff4500]/10 flex items-center justify-center text-[#ff4500] font-medium">1</span>
                   <div>
                     <p className="text-gray-700">Monitor social networks for relevant discussions about your product</p>
@@ -220,7 +214,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-4">
+                <div className="flex items-start gap-4">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff4500]/10 flex items-center justify-center text-[#ff4500] font-medium">2</span>
                   <div>
                     <p className="text-gray-700">Review each mention to assess promotion opportunities</p>
@@ -228,7 +222,7 @@ export default function LandingPage() {
                   </div>
                 </div>
                 
-                <div className="flex gap-4">
+                <div className="flex items-start gap-4">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#ff4500]/10 flex items-center justify-center text-[#ff4500] font-medium">3</span>
                   <div>
                     <p className="text-gray-700">Craft personalized responses for each opportunity</p>
@@ -248,11 +242,11 @@ export default function LandingPage() {
             </div>
 
             {/* SneakGuy Process Card */}
-            <div className="relative bg-[#f0fdf4] rounded-2xl p-6">
-              <div className="absolute -top-4 left-6 bg-white px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
+            <div className="relative bg-[#f0fdf4] rounded-2xl p-4 sm:p-6">
+              <div className="absolute -top-4 left-4 sm:left-6 bg-white px-3 sm:px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-2">
                   <span className="bg-[#ff4500] text-white text-sm px-3 py-1 rounded-full font-medium">SNEAKYGUY</span>
-                  <span className="text-gray-700 font-medium">With us, you just need</span>
+                  <span className="text-gray-700 font-medium text-sm sm:text-base">With us, you just need</span>
                 </div>
               </div>
               
@@ -304,40 +298,40 @@ export default function LandingPage() {
       </div>
 
       {/* Early Adopter Benefits */}
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 text-center">
-        <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 text-center">
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">
           Early Adopter Benefits
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white mx-auto mb-4 flex items-center justify-center">
-              <Star className="h-6 w-6 text-[#ff4500]" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <Star className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Priority Feature Requests</h3>
-            <p className="text-gray-600">Your feature requests get top priority in our development roadmap. Help shape the future of SNEAKYGUY.</p>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Priority Feature Requests</h3>
+            <p className="text-sm sm:text-base text-gray-600">Your feature requests get top priority in our development roadmap. Help shape the future of SNEAKYGUY.</p>
           </div>
-          <div className="bg-white p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white mx-auto mb-4 flex items-center justify-center">
-              <Users className="h-6 w-6 text-[#ff4500]" />
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Direct Access to Founders</h3>
-            <p className="text-gray-600">Get direct access to our team. Your feedback is invaluable in making SNEAKYGUY better for everyone.</p>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Direct Access to Founders</h3>
+            <p className="text-sm sm:text-base text-gray-600">Get direct access to our team. Your feedback is invaluable in making SNEAKYGUY better for everyone.</p>
           </div>
         </div>
       </div>
 
       {/* Final CTA Section */}
-      <div className="py-12 sm:py-20 bg-gradient-to-b from-gray-50 to-white">
+      <div className="py-8 sm:py-12 md:py-20 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
             Ready to Automate Your Reddit Lead Generation?
           </h2>
-          <p className="text-lg sm:text-xl text-gray-600 mb-8 sm:mb-12 max-w-3xl mx-auto px-4 sm:px-0">
+          <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 sm:mb-8 md:mb-12 max-w-3xl mx-auto px-4">
             Join the early access program and start saving 30-60 hours monthly on your lead generation efforts.
           </p>
           <Button
             onClick={() => router.push('/login')}
-            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold w-full sm:w-auto"
+            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
           >
             Find Leads
             <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
