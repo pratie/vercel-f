@@ -19,13 +19,8 @@ export default function LandingPage() {
     }
   }, [user, router]);
 
-  const handleStartFreeTrial = () => {
+  const handleGetStarted = () => {
     router.push('/login');
-  };
-
-  const handleLiveDemo = () => {
-    const demoSection = document.getElementById('demo');
-    demoSection?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -102,30 +97,21 @@ export default function LandingPage() {
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                   <Button
                     className="button-primary w-full sm:w-auto mb-4 sm:mb-0 text-lg py-6"
-                    onClick={handleStartFreeTrial}
+                    onClick={handleGetStarted}
                   >
-                    Start Free Trial
+                    Find Leads Now
                     <ArrowRight className="ml-2 h-5 w-5" />
-                  </Button>
-                  
-                  <Button
-                    variant="outline"
-                    className="button-secondary w-full sm:w-auto text-lg py-6"
-                    onClick={handleLiveDemo}
-                  >
-                    Watch Demo (2:15)
-                    <ChevronRight className="ml-2 h-5 w-5" />
                   </Button>
                 </div>
 
                 <div className="mt-8 flex items-center gap-4 text-sm text-gray-500 justify-center lg:justify-start">
                   <div className="flex items-center">
                     <Check className="h-5 w-5 text-[#ff4500] mr-2" />
-                    No credit card required
+                    AI-powered lead generation
                   </div>
                   <div className="flex items-center">
                     <Check className="h-5 w-5 text-[#ff4500] mr-2" />
-                    14-day free trial
+                    24/7 Reddit monitoring
                   </div>
                 </div>
               </div>
