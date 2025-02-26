@@ -77,60 +77,55 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03", "cv04";
   }
   
   /* Modern Typography */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-sans tracking-tight;
+    @apply font-sans font-bold tracking-tight text-gray-900;
   }
   
   h1 {
-    @apply text-3xl font-medium;
-    letter-spacing: -0.02em;
+    @apply text-4xl md:text-5xl lg:text-6xl leading-tight;
+    letter-spacing: -0.03em;
   }
   
   h2 {
-    @apply text-2xl font-medium;
-    letter-spacing: -0.01em;
+    @apply text-3xl md:text-4xl leading-snug mb-6;
+    letter-spacing: -0.02em;
   }
   
   h3 {
-    @apply text-xl font-medium;
+    @apply text-2xl md:text-3xl leading-snug mb-4;
     letter-spacing: -0.01em;
   }
-  
-  p, span {
-    @apply text-base leading-relaxed;
-  }
-  
-  .text-balance {
-    text-wrap: balance;
-  }
-  
-  .font-poppins {
-    font-family: var(--font-poppins);
+
+  p {
+    @apply text-base md:text-lg leading-relaxed text-gray-600;
   }
 
-  .font-inter {
-    font-family: var(--font-inter);
+  /* Navigation and Links */
+  nav a {
+    @apply text-base font-medium transition-colors duration-200;
   }
 
-  /* Brand Colors */
-  .text-brand {
-    color: #ff4500;
+  /* Buttons */
+  .button-primary {
+    @apply bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 shadow-sm hover:shadow-md;
   }
 
-  .bg-brand {
-    background-color: #ff4500;
+  .button-secondary {
+    @apply bg-white hover:bg-gray-50 text-gray-900 font-semibold py-2.5 px-6 rounded-lg transition-all duration-200 border border-gray-200 hover:border-gray-300;
   }
 
-  .hover\:bg-brand-hover:hover {
-    background-color: rgba(255, 69, 0, 0.9);
+  /* Spacing */
+  section {
+    @apply py-16 md:py-24;
   }
 
-  .border-brand {
-    border-color: #ff4500;
+  /* Cards and Containers */
+  .card {
+    @apply bg-white rounded-2xl shadow-sm hover:shadow-md transition-shadow duration-200 p-6;
   }
 }

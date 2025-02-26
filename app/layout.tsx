@@ -2,35 +2,36 @@
 import type { Metadata } from 'next';
 import { Inter, Poppins, Space_Grotesk } from 'next/font/google';
 import './globals.css';
-import { Toaster } from 'sonner';
-import { AuthProvider } from '@/components/AuthContext';
+import '@mantine/core/styles.css';
+import '@mantine/notifications/styles.css';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
-import { RootLayoutContent } from '@/components/RootLayoutContent';
+import { Providers } from './providers';
 
 const inter = Inter({ 
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
-})
+});
+
+const poppins = Poppins({ 
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-poppins',
+  display: 'swap',
+});
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
   variable: '--font-space-grotesk',
-})
-
-const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800'],
-  variable: '--font-poppins',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
-  title: 'SneakyGuy - Reddit Tracking & Lead Generation',
+  title: 'Sneakyguy | Reddit Tracking & Lead Generation',
   description: 'Track Reddit keyword mentions and generate leads with AI-powered relevancy scoring',
   icons: {
-    icon: '/logo.png'
-  }
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -42,14 +43,12 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable}`}>
       <head>
         <GoogleAnalytics />
+        <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </head>
       <body className={`${inter.className} font-sans antialiased ${spaceGrotesk.className}`}>
-        <AuthProvider>
-          <RootLayoutContent>
-            {children}
-          </RootLayoutContent>
-          <Toaster />
-        </AuthProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
