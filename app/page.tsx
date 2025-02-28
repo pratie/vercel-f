@@ -65,38 +65,41 @@ export default function LandingPage() {
 
       {/* Hot Selling Feature Banner */}
       <div className="bg-[#ff4500] text-white py-3 px-4 text-center">
-        <p className="text-sm font-medium">
-          <span className="font-semibold">New:</span> AI-powered response generation now available!
+        <p className="text-sm font-medium text-white">
+          AI-powered response generation now available!
         </p>
       </div>
 
-      {/* Hero Section - Redesigned for better readability */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-white to-gray-50 pt-8 sm:pt-12 lg:pt-16">
+      {/* Hero Section */}
+      <div className="relative bg-gradient-to-b from-white to-gray-50">
         <div className="absolute inset-0">
-          <div className="absolute inset-y-0 right-0 w-1/2 bg-[#fff3f0] rounded-bl-[100px] opacity-80"></div>
+          <div className="absolute inset-y-0 right-0 w-1/2">
+            <div className="h-full bg-gradient-to-r from-transparent to-[#fff3f0]/20" />
+          </div>
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12">
             <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center">
               <div>
-                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#fff3f0] text-[#ff4500] mb-8">
+                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#ff4500]/10 text-[#ff4500] mb-8">
                   <Sparkles className="h-4 w-4 mr-2" />
                   <span>AI-Powered Lead Generation</span>
                 </div>
                 
-                <h1 className="mb-6 text-gray-900">
-                  Find Reddit Leads<br />
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6">
+                  Find Reddit Leads
+                  <br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-                <p className="mt-3 text-lg sm:text-xl text-gray-600 mb-8">
+                <p className="mt-3 text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl">
                   Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI-powered monitoring and response generation.
                 </p>
 
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                   <Button
-                    className="button-primary w-full sm:w-auto mb-4 sm:mb-0 text-lg py-6"
+                    className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20"
                     onClick={handleGetStarted}
                   >
                     Find Leads Now
@@ -104,7 +107,7 @@ export default function LandingPage() {
                   </Button>
                 </div>
 
-                <div className="mt-8 flex items-center gap-4 text-sm text-gray-500 justify-center lg:justify-start">
+                <div className="mt-8 flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
                   <div className="flex items-center">
                     <Check className="h-5 w-5 text-[#ff4500] mr-2" />
                     AI-powered lead generation
@@ -118,7 +121,7 @@ export default function LandingPage() {
             </div>
 
             <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-6 relative">
-              <div className="relative mx-auto w-full rounded-lg shadow-lg overflow-hidden">
+              <div className="relative mx-auto w-full rounded-2xl shadow-lg overflow-hidden bg-white">
                 <div style={{ position: 'relative', paddingBottom: '51.67%', height: 0 }}>
                   <iframe 
                     src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83" 
@@ -129,6 +132,94 @@ export default function LandingPage() {
                   ></iframe>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Social Proof Section */}
+      <div className="bg-white py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="text-[28px] font-bold text-gray-900 mb-2">What People Are Saying</h2>
+            <p className="text-[15px] text-gray-600">Real feedback from our users</p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto mb-12">
+            {/* Twitter Card 1 */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="flex items-center min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-medium text-purple-700">SK</span>
+                  </div>
+                  <div className="ml-3 truncate">
+                    <h3 className="text-[15px] font-semibold text-gray-900 leading-none mb-1">Sara Kamdod</h3>
+                    <p className="text-[13px] text-gray-500 leading-none">@sara_kamdod</p>
+                  </div>
+                </div>
+                <Twitter className="h-4 w-4 text-[#1DA1F2] flex-shrink-0 ml-4" />
+              </div>
+              <p className="text-[15px] leading-[1.3] text-gray-900 mb-2.5">
+                "Just discovered @sneakyguysaas - it's revolutionizing how we find leads on Reddit! The AI responses are spot-on and it's already bringing in quality leads. Game-changer for anyone doing B2B marketing 🚀"
+              </p>
+              <div className="flex items-center text-[13px] text-gray-500">
+                <Link href="https://x.com/sara_kamdod" target="_blank" className="hover:text-[#1DA1F2] transition-colors flex items-center gap-1">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                  View on X
+                </Link>
+              </div>
+            </div>
+
+            {/* Twitter Card 2 */}
+            <div className="bg-white rounded-xl border border-gray-200 p-4 hover:border-gray-300 transition-colors">
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="flex items-center min-w-0">
+                  <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <span className="text-sm font-medium text-blue-700">RM</span>
+                  </div>
+                  <div className="ml-3 truncate">
+                    <h3 className="text-[15px] font-semibold text-gray-900 leading-none mb-1">Ryan Martinez</h3>
+                    <p className="text-[13px] text-gray-500 leading-none">@snow_stark17</p>
+                  </div>
+                </div>
+                <Twitter className="h-4 w-4 text-[#1DA1F2] flex-shrink-0 ml-4" />
+              </div>
+              <p className="text-[15px] leading-[1.3] text-gray-900 mb-2.5">
+                "As the founder of @rapidshorts, finding the right leads is crucial. @sneakyguysaas has been incredible - it's like having a 24/7 lead gen team on Reddit. The AI understands context perfectly! 💯"
+              </p>
+              <div className="flex items-center text-[13px] text-gray-500">
+                <Link href="https://x.com/snow_stark17" target="_blank" className="hover:text-[#1DA1F2] transition-colors flex items-center gap-1">
+                  <ArrowRight className="h-3.5 w-3.5" />
+                  View on X
+                </Link>
+              </div>
+            </div>
+          </div>
+
+          {/* User Group Display */}
+          <div className="text-center">
+            <div className="flex flex-col items-center">
+              <div className="flex items-center justify-center -space-x-2 mb-4">
+                {/* User avatars */}
+                <div className="w-12 h-12 rounded-full border-2 border-white bg-[#ff4500] flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">JD</span>
+                </div>
+                <div className="w-12 h-12 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">TK</span>
+                </div>
+                <div className="w-12 h-12 rounded-full border-2 border-white bg-purple-500 flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">AM</span>
+                </div>
+                <div className="w-12 h-12 rounded-full border-2 border-white bg-green-500 flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">RJ</span>
+                </div>
+                <div className="w-12 h-12 rounded-full border-2 border-white bg-yellow-500 flex items-center justify-center">
+                  <span className="text-sm font-medium text-white">+</span>
+                </div>
+              </div>
+              <p className="text-lg font-medium text-gray-900">Join 50+ happy customers</p>
+              <p className="text-[15px] text-gray-500 mt-1">From startups to enterprises, teams love SneakyGuy</p>
             </div>
           </div>
         </div>
@@ -247,8 +338,8 @@ export default function LandingPage() {
               <h3 className="text-2xl sm:text-3xl font-bold mb-4">Get Lifetime Access Today</h3>
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
                 <div className="text-lg">
-                  <span className="line-through opacity-75">$120/month</span>
-                  <span className="font-bold text-2xl ml-2">$39</span>
+                  <span className="line-through opacity-75 text-base">$120/month</span>
+                  <span className="font-bold text-4xl ml-2">$39</span>
                   <span className="ml-2 text-sm bg-white/10 rounded-full px-3 py-1">Save 67%</span>
                 </div>
                 <div className="h-4 w-px bg-white/20 hidden sm:block"></div>

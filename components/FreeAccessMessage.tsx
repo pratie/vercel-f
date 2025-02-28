@@ -2,7 +2,7 @@ import { ArrowRight, Mail, Sparkles } from 'lucide-react';
 
 export function FreeAccessMessage() {
   return (
-    <div className="mt-12 bg-[#fff3f0] rounded-2xl p-8 max-w-2xl mx-auto">
+    <div className="mt-12 mb-20 bg-[#fff3f0] rounded-2xl p-8 max-w-2xl mx-auto">
       <div className="flex items-center justify-center gap-2 mb-4">
         <Sparkles className="h-6 w-6 text-[#ff4500]" />
         <span className="text-lg font-medium text-gray-900">Psst! Want to be an early adopter? 🚀</span>
