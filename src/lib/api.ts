@@ -2,7 +2,7 @@
 import { getAuthToken, getUserEmail } from './auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const API_TIMEOUT = 600000; // 10 minutes
+const API_TIMEOUT = 120000; // 2 minutes
 
 const getHeaders = () => {
     const token = getAuthToken();
@@ -262,8 +262,8 @@ export const api = {
                     brand_id: parseInt(params.brand_id, 10), // Convert string ID to number
                     keywords: params.keywords,
                     subreddits: params.subreddits,
-                    time_period: params.time_period || 'day',
-                    limit: params.limit || 20,
+                    time_period: params.time_period || 'month',
+                    limit: params.limit || 500,
                 }),
             });
 
