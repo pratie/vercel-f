@@ -2,7 +2,7 @@
 import { getAuthToken, getUserEmail } from './auth';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-const API_TIMEOUT = 120000; // 2 minutes
+const API_TIMEOUT = 1200000; // 2 minutes
 
 const getHeaders = () => {
     const token = getAuthToken();
