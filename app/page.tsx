@@ -936,10 +936,10 @@ export default function LandingPage() {
                   <a href="#" className="text-gray-600 hover:text-[#ff4500]">About Us</a>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-[#ff4500]">Privacy Policy</a>
+                  <Link href="/privacy" className="text-gray-600 hover:text-[#ff4500]">Privacy Policy</Link>
                 </li>
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-[#ff4500]">Terms of Service</a>
+                  <Link href="/terms" className="text-gray-600 hover:text-[#ff4500]">Terms of Service</Link>
                 </li>
               </ul>
             </div>
