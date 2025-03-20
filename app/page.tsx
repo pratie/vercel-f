@@ -933,7 +933,7 @@ export default function LandingPage() {
               <h3 className="font-semibold text-gray-900 mb-4">Company</h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="#" className="text-gray-600 hover:text-[#ff4500]">About Us</a>
+                  <Link href="/about" className="text-gray-600 hover:text-[#ff4500]">About Me</Link>
                 </li>
                 <li>
                   <Link href="/privacy" className="text-gray-600 hover:text-[#ff4500]">Privacy Policy</Link>
@@ -951,9 +951,14 @@ export default function LandingPage() {
                 &copy; {new Date().getFullYear()} SneakyGuy. All rights reserved.
               </p>
               <div className="mt-4 md:mt-0">
-                <Button variant="ghost" className="text-gray-500 hover:text-[#ff4500] text-sm">
+                <a 
+                  href="https://x.com/snow_stark17" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="text-gray-500 hover:text-[#ff4500] text-sm font-medium"
+                >
                   Contact Support
-                </Button>
+                </a>
               </div>
             </div>
           </div>

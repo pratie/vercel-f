@@ -8,7 +8,7 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup');
   const isLandingPage = pathname === '/';
-  const isPublicPage = isAuthPage || isLandingPage || pathname === '/privacy' || pathname === '/terms';
+  const isPublicPage = isAuthPage || isLandingPage || pathname === '/privacy' || pathname === '/terms' || pathname === '/about';
 
   if (isPublicPage) {
     return <>{children}</>;
