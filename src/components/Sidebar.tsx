@@ -9,7 +9,8 @@ import {
   Settings,
   LogOut,
   Menu,
-  X
+  X,
+  Search
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
@@ -37,6 +38,7 @@ export function Sidebar() {
   const isActive = (path: string) => {
     if (path === '/projects' && pathname === '/projects') return true;
     if (path === '/mentions' && pathname.includes('/mentions')) return true;
+    if (path === '/explore' && pathname.includes('/explore')) return true;
     return pathname === path;
   };
 
@@ -50,6 +52,11 @@ export function Sidebar() {
       name: 'Mentions',
       href: '/mentions',
       icon: MessageCircle
+    },
+    {
+      name: 'Explore Posts',
+      href: '/explore',
+      icon: Search
     },
     {
       name: 'Settings',
