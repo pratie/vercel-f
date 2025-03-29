@@ -357,7 +357,7 @@ export default function LandingPage() {
                   <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
                     <Check className="w-3 h-3" />
                   </div>
-                  <span>90 Replies/month</span>
+                  <span>60 Replies/month</span>
                 </div>
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
@@ -823,7 +823,7 @@ export default function LandingPage() {
                         <Check className="w-3 h-3 text-[#ff4500]" />
                       </div>
                       <div>
-                        <span className="font-medium text-gray-900">90 Replies/month</span>
+                        <span className="font-medium text-gray-900">60 Replies/month</span>
                         <p className="text-sm text-gray-600">AI-generated responses to Reddit posts</p>
                       </div>
                     </li>
