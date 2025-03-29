@@ -42,7 +42,8 @@ export default function ExplorePage() {
         params.append('subreddit', subreddit.trim());
       }
       
-      const response = await fetch(`http://127.0.0.1:8000/explore/posts/?${params.toString()}`, {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const response = await fetch(`${apiUrl}/explore/posts/?${params.toString()}`, {
         headers: {
           'accept': 'application/json'
         }
