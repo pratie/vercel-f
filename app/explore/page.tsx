@@ -26,6 +26,11 @@ export default function ExplorePage() {
   const [subreddit, setSubreddit] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
 
+  const isSingleKeyword = (text: string) => {
+    const trimmed = text.trim();
+    return trimmed.length > 0 && !trimmed.includes(' ');
+  };
+
   const searchPosts = async () => {
     if (!query.trim()) return;
     
@@ -99,6 +104,11 @@ export default function ExplorePage() {
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
               </div>
+              {isSingleKeyword(query) && (
+                <p className="mt-1 text-sm text-amber-600">
+                  <span className="font-medium">Note:</span> Searching with a single keyword may take longer to process.
+                </p>
+              )}
             </div>
             <div>
               <label htmlFor="subreddit" className="block text-sm font-medium text-gray-700 mb-1">
