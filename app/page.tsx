@@ -19,6 +19,22 @@ export default function LandingPage() {
     }
   }, [user, router]);
 
+  // Add the meta tag to the document head using useEffect
+  useEffect(() => {
+    // Create meta element
+    const meta = document.createElement('meta');
+    meta.name = 'google-site-verification';
+    meta.content = 'f_tSBk9IVfHsqWhQ4MXGWYuBFys3IYsWQSxo9iwpb-g';
+    
+    // Append to head
+    document.head.appendChild(meta);
+    
+    // Clean up function
+    return () => {
+      document.head.removeChild(meta);
+    };
+  }, []);
+
   const handleGetStarted = () => {
     router.push('/login');
   };

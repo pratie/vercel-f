@@ -32,6 +32,9 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
   },
+  verification: {
+    google: 'f_tSBk9IVfHsqWhQ4MXGWYuBFys3IYsWQSxo9iwpb-g',
+  },
 };
 
 export default function RootLayout({
@@ -44,7 +47,6 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-        <meta name="google-site-verification" content="f_tSBk9IVfHsqWhQ4MXGWYuBFys3IYsWQSxo9iwpb-g" />
       </head>
       <body className={`${inter.className} font-sans antialiased ${spaceGrotesk.className}`}>
         <Providers>
