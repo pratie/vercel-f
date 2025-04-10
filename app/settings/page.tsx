@@ -60,7 +60,7 @@ export default function SettingsPage() {
       redditAuth.checkStatus(true);
     }
     // Don't automatically check status otherwise - let the user connect manually
-  }, []);
+  }, [redditAuth]);
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -200,7 +200,7 @@ export default function SettingsPage() {
             <CardContent>
               <RadioGroup
                 value={settings.tone}
-                onValueChange={(value) => setSettings({ ...settings, tone: value })}
+                onValueChange={(value: Tone) => setSettings({ ...settings, tone: value })}
                 className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"
               >
                 <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-orange-500">
