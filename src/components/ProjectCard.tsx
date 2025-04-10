@@ -90,9 +90,9 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
           content: post.content,
           url: post.url,
           subreddit: post.subreddit,
-          keyword: post.matching_keywords[0] || '', // Use first matching keyword
-          score: post.score,
-          num_comments: post.num_comments,
+          keyword: (post.matching_keywords && post.matching_keywords.length > 0) ? post.matching_keywords[0] : '', // Safe access with null check
+          score: post.score || 0,
+          num_comments: post.num_comments || 0,
           suggested_comment: post.suggested_comment || '',
           created_at: new Date(post.created_utc * 1000).toISOString(),
           formatted_date: new Date(post.created_utc * 1000).toLocaleDateString('en-US', {
@@ -101,7 +101,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
             day: 'numeric'
           }),
           created_utc: post.created_utc,
-          matching_keywords: post.matching_keywords,
+          matching_keywords: post.matching_keywords || [], // Ensure matching_keywords is always an array
           relevance_score: 0 // Set to 0 since we're not using it
         }))
         // Sort by created_utc in descending order (latest first)
