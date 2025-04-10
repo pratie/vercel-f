@@ -83,16 +83,26 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
       if (analysisResult.status === 'success' && analysisResult.posts.length > 0) {
         // Process posts to ensure consistent data structure
-        const processedPosts = analysisResult.posts.map(post => ({
-          ...post,
-          matching_keywords: Array.isArray(post.matching_keywords) ? 
-            post.matching_keywords : [],
-          relevance_score: post.relevance_score || post.score || 0,
+        const processedPosts: RedditMention[] = analysisResult.posts.map(post => ({
+          id: Date.now(), // Generate a temporary ID
+          brand_id: parseInt(project.id), // Convert project.id to number
+          title: post.title,
+          content: post.content,
+          url: post.url,
+          subreddit: post.subreddit,
+          keyword: post.matching_keywords[0] || '', // Use first matching keyword
+          score: post.score,
+          num_comments: post.num_comments,
+          suggested_comment: post.suggested_comment || '',
+          created_at: new Date(post.created_utc * 1000).toISOString(),
           formatted_date: new Date(post.created_utc * 1000).toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric'
-          })
+          }),
+          created_utc: post.created_utc,
+          matching_keywords: post.matching_keywords,
+          relevance_score: 0 // Set to 0 since we're not using it
         }))
         // Sort by created_utc in descending order (latest first)
         .sort((a, b) => b.created_utc - a.created_utc);
