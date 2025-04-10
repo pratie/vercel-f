@@ -48,7 +48,7 @@ export default function RootLayout({
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </head>
-      <body className={`${inter.className} font-sans antialiased ${spaceGrotesk.className}`}>
+      <body className={`${poppins.className} font-sans antialiased`}>
         <Providers>
           {children}
         </Providers>

@@ -15,6 +15,7 @@ import {
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import { RedditStatusIndicator } from './RedditStatusIndicator';
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -49,16 +50,6 @@ export function Sidebar() {
       icon: LayoutGrid
     },
     {
-      name: 'Mentions',
-      href: '/mentions',
-      icon: MessageCircle
-    },
-    {
-      name: 'Explore Posts',
-      href: '/explore',
-      icon: Search
-    },
-    {
       name: 'Settings',
       href: '/settings',
       icon: Settings
@@ -77,26 +68,26 @@ export function Sidebar() {
 
       <div className={cn(
         "fixed md:static inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out",
-        "h-screen flex-none bg-[#ff4500] w-64 font-inter",
+        "h-screen flex-none bg-[#ff4500] w-56 font-inter",
         isMobile && !isOpen ? "-translate-x-full" : "translate-x-0",
         isMobile ? "shadow-lg" : ""
       )}>
         {/* Logo section with white background */}
-        <div className="bg-white p-4 border-b border-[#ff4500]/10">
+        <div className="bg-white p-3 border-b border-[#ff4500]/10">
           <div className="flex items-center gap-2">
             <Image
               src="/logo.png"
               alt="SneakyGuy Logo"
-              width={32}
-              height={32}
-              className="w-8 h-8"
+              width={28}
+              height={28}
+              className="w-7 h-7"
             />
-            <span className="text-[#ff4500] font-bold text-xl">SNEAKYGUY</span>
+            <span className="text-[#ff4500] font-bold text-lg">SNEAKYGUY</span>
           </div>
         </div>
 
         {/* Navigation Links */}
-        <nav className="flex-1 py-4 px-2 space-y-1 overflow-y-auto">
+        <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
           {navigation.map((item) => {
             const isActiveRoute = isActive(item.href);
             return (
@@ -105,26 +96,48 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => isMobile && setIsOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+                  "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
                   isActiveRoute
-                    ? 'bg-white text-[#ff4500]'
-                    : 'text-white/90 hover:bg-white/10'
+                    ? "bg-white text-[#ff4500]"
+                    : "text-white hover:bg-white/10"
                 )}
               >
-                <item.icon className={cn('h-5 w-5', isActiveRoute ? 'text-[#ff4500]' : 'text-white/90')} />
+                <item.icon className="h-5 w-5 flex-shrink-0" />
                 {item.name}
               </Link>
             );
           })}
         </nav>
 
+        {/* Reddit Connection Status */}
+        <div className="mt-auto border-t border-white/10 pt-2">
+          <RedditStatusIndicator />
+        </div>
+
+        {/* Explore Posts - Moved to bottom */}
+        <div className="px-2 py-1">
+          <Link
+            href="/explore"
+            onClick={() => isMobile && setIsOpen(false)}
+            className={cn(
+              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
+              isActive('/explore')
+                ? "bg-white text-[#ff4500]"
+                : "text-white hover:bg-white/10"
+            )}
+          >
+            <Search className="h-5 w-5 flex-shrink-0" />
+            Explore Posts
+          </Link>
+        </div>
+
         {/* Logout Button */}
-        <div className="p-4 mt-auto border-t border-white/10">
+        <div className="p-3 border-t border-white/10">
           <button
             onClick={logout}
-            className="flex w-full items-center gap-3 px-3 py-2 text-sm font-medium text-white/90 hover:bg-white/10 rounded-lg transition-colors"
+            className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10"
           >
-            <LogOut className="h-5 w-5" />
+            <LogOut className="h-5 w-5 flex-shrink-0" />
             Logout
           </button>
         </div>

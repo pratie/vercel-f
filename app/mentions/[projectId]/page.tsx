@@ -5,13 +5,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, RefreshCw, Clock, Download } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
-import { toast } from 'sonner';
-import KeywordStats from '@/components/KeywordStats';
+import { toast, Toaster } from 'sonner';
 import { checkRefreshRateLimit, formatTimeRemaining } from '@/lib/rateLimit';
+import { useRedditAuthStore } from '@/lib/redditAuth';
+import { PaymentGuard } from '@/components/PaymentGuard';
 
 interface RawMention {
   id: number;
@@ -59,17 +60,17 @@ export default function MentionsPage() {
   const [mentions, setMentions] = useState<RedditMention[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [postsLimit, setPostsLimit] = useState<number>(100); // Default to 100 posts
-  const [timePeriod, setTimePeriod] = useState<'day' | 'week' | 'month'>('month'); // Default to month
   const [currentPage, setCurrentPage] = useState(1);
   const [nextRefreshTime, setNextRefreshTime] = useState<number | null>(null);
   const [refreshDisabled, setRefreshDisabled] = useState(false);
   const [isPosting, setIsPosting] = useState<number | null>(null);
+  const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
   const itemsPerPage = 15;
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
   const projectId = params?.projectId as string;
+  const redditAuth = useRedditAuthStore();
 
   const fetchMentions = useCallback(async () => {
     // Add additional type safety check
@@ -109,8 +110,8 @@ export default function MentionsPage() {
           day: 'numeric'
         })
       }))
-      // Sort by relevance score in descending order
-      .sort((a, b) => b.relevance_score - a.relevance_score);
+      // Sort by date (created_utc) in descending order (latest first)
+      .sort((a, b) => b.created_utc - a.created_utc);
 
       setMentions(transformedMentions);
     } catch (error) {
@@ -137,136 +138,93 @@ export default function MentionsPage() {
     fetchMentions();
   }, [projectId, user, router, fetchMentions]);
 
-  const refreshMentions = async () => {
-    if (!project) return;
+  useEffect(() => {
+    if (!projectId) return;
+    
+    // Project data is already loaded in fetchMentions
+    fetchMentions();
+    
+    // Reddit auth status is now checked with caching in the redditAuth store
+    // No need to call it explicitly here as it's already checked in AuthContext
+  }, [projectId, fetchMentions]);
 
-    // Check rate limit
-    const rateLimitStatus = checkRefreshRateLimit(projectId);
-    if (!rateLimitStatus.canRefresh) {
-      setNextRefreshTime(rateLimitStatus.nextAllowedTime);
-      setRefreshDisabled(true);
-      toast.error(`Please wait ${formatTimeRemaining(rateLimitStatus.timeRemaining)} before refreshing again`);
-      return;
-    }
-
-    setIsLoading(true);
+  const postComment = async (mention: RedditMention) => {
+    if (isPosting !== null) return; // Prevent multiple simultaneous posts
+    
+    setIsPosting(mention.id);
     try {
-      // First, get the latest project data to ensure we have current keywords and subreddits
-      const latestProject = await api.getProject(projectId);
+      // Check if we have a generated reply for this mention
+      const commentText = generatedReplies[mention.id] || mention.suggested_comment;
       
-      if (!latestProject.keywords.length || !latestProject.subreddits.length) {
-        toast.error('Project must have keywords and subreddits to analyze');
+      if (!commentText) {
+        toast.error('No comment text available. Please generate a reply first.');
+        setIsPosting(null);
         return;
       }
-
-      // Use the updated refreshMentions API with latest project data and limit
-      const updatedMentions: RawMention[] = await api.refreshMentions(
-        projectId,
-        latestProject.keywords,
-        latestProject.subreddits,
+      
+      // The postComment function now handles authentication internally
+      const result = await redditAuth.postComment({
+        brand_id: mention.brand_id,
+        post_url: mention.url,
+        post_title: mention.title,
+        comment_text: commentText
+      });
+      
+      // Store the published comment URL
+      setPublishedComments(prev => ({
+        ...prev,
+        [mention.id]: result.comment_url
+      }));
+      
+      // Show success message with link to the comment
+      toast.success(
+        result.status === 'already_exists' 
+          ? 'Comment already exists on this post' 
+          : 'Comment posted successfully',
         {
-          time_period: timePeriod,
-          limit: postsLimit
+          description: 'View your comment on Reddit',
+          action: {
+            label: 'View',
+            onClick: () => window.open(result.comment_url, '_blank')
+          }
         }
       );
       
-      // Update the project state with latest data
-      setProject(latestProject);
-      
-      // Transform mentions to match RedditPost interface
-      const transformedMentions = updatedMentions.map(mention => ({
-        id: mention.id,
-        brand_id: mention.brand_id,
-        title: mention.title,
-        content: mention.content,
-        url: mention.url,
-        subreddit: mention.subreddit,
-        author: mention.author || 'unknown',
-        created_utc: mention.created_utc,
-        score: mention.score,
-        num_comments: mention.num_comments,
-        matching_keywords: Array.isArray(mention.matching_keywords) ? 
-          mention.matching_keywords : 
-          (mention.keyword ? [mention.keyword] : []),
-        relevance_score: mention.relevance_score,
-        suggested_comment: mention.suggested_comment,
-        formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
+      // Save to localStorage to persist between page refreshes
+      const COMMENTS_STORAGE_KEY = `published-comments-${projectId}`;
+      const savedComments = JSON.parse(localStorage.getItem(COMMENTS_STORAGE_KEY) || '{}');
+      localStorage.setItem(
+        COMMENTS_STORAGE_KEY, 
+        JSON.stringify({
+          ...savedComments,
+          [mention.id]: result.comment_url
         })
-      }))
-      // Sort by relevance score in descending order
-      .sort((a, b) => b.relevance_score - a.relevance_score);
-
-      setMentions(transformedMentions);
-      toast.success('Mentions refreshed successfully');
+      );
       
-      // Update next refresh time
-      setNextRefreshTime(rateLimitStatus.nextAllowedTime);
-      setRefreshDisabled(true);
-    } catch (error) {
-      console.error('Error refreshing mentions:', error);
-      toast.error('Failed to refresh mentions. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const postComment = async (mention: RedditMention) => {
-    if (!project) return;
-
-    setIsPosting(mention.id);
-    try {
-      const payload = {
-        post_title: mention.title,
-        post_content: mention.content,
-        brand_id: mention.brand_id,
-        post_url: mention.url,
-        comment_text: generatedReplies[mention.id]
-      };
-
-      console.log('Sending payload to backend:', payload);
-      
-      const response = await api.postRedditComment(payload);
-      console.log('Response from backend:', response);
-
-      toast.success('Comment posted successfully!', {
-        description: 'Your comment has been posted to Reddit'
-      });
     } catch (error) {
       console.error('Error posting comment:', error);
-      // Log the error details
+      
+      let errorMessage = 'Failed to post comment';
+      
       if (error instanceof Error) {
-        console.error('Error message:', error.message);
+        errorMessage = error.message;
       }
-      toast.error('Failed to post comment', {
-        description: 'Please try again or contact support if the issue persists'
+      
+      toast.error(errorMessage, {
+        description: 'Please try again later'
       });
     } finally {
       setIsPosting(null);
     }
   };
 
-  // Add effect to update refresh button state
   useEffect(() => {
-    const updateRefreshState = () => {
-      if (!projectId) return;
-      
-      const rateLimitStatus = checkRefreshRateLimit(projectId);
-      if (!rateLimitStatus.canRefresh) {
-        setNextRefreshTime(rateLimitStatus.nextAllowedTime);
-        setRefreshDisabled(true);
-      } else {
-        setNextRefreshTime(null);
-        setRefreshDisabled(false);
-      }
-    };
-
-    updateRefreshState();
-    const interval = setInterval(updateRefreshState, 1000); // Update every second
-    
-    return () => clearInterval(interval);
+    // Load published comments from localStorage
+    if (projectId) {
+      const COMMENTS_STORAGE_KEY = `published-comments-${projectId}`;
+      const savedComments = JSON.parse(localStorage.getItem(COMMENTS_STORAGE_KEY) || '{}');
+      setPublishedComments(savedComments);
+    }
   }, [projectId]);
 
   const exportToCSV = () => {
@@ -275,27 +233,30 @@ export default function MentionsPage() {
       const headers = [
         'Title',
         'URL',
-        'Author',
         'Subreddit',
         'Created At',
         'Score',
         'Comments',
-        'Relevance Score',
         'Matching Keywords'
       ].join(',');
 
       // Convert mentions to CSV rows
       const rows = mentions.map(mention => {
+        // Format date with quotes to keep it in one column
+        const formattedDate = `"${new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })}"`;
+        
         return [
           `"${mention.title?.replace(/"/g, '""') || ''}"`,
           `"${mention.url || ''}"`,
-          `"${mention.author || ''}"`,
           `"${mention.subreddit || ''}"`,
-          new Date(mention.created_utc * 1000).toLocaleString(),
+          formattedDate,
           mention.score,
           mention.num_comments,
-          mention.relevance_score,
-          `"${Array.isArray(mention.matching_keywords) ? mention.matching_keywords.join(', ') : ''}"`,
+          `"${Array.isArray(mention.matching_keywords) ? mention.matching_keywords.join('; ') : ''}"` // Use semicolons instead of commas
         ].join(',');
       });
 
@@ -395,169 +356,81 @@ export default function MentionsPage() {
   };
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="space-y-4 sm:space-y-6">
-        {/* Header Section */}
-        <div className="flex flex-col space-y-4">
-          {/* Back button and Actions Row */}
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
-            <Button
-              onClick={() => router.push('/projects')}
-              className="
-                group relative flex items-center gap-2
-                bg-white/80 hover:bg-white
-                text-gray-700 hover:text-gray-900
-                border border-gray-200
-                shadow-sm hover:shadow-md
-                transition-all duration-200
-                px-4 py-2 rounded-lg
-                hover:-translate-x-0.5
-                w-full sm:w-auto
-              "
-              variant="ghost"
-            >
-              <div className="
-                absolute left-0 top-0 bottom-0 w-1
-                bg-gradient-to-b from-[#ff4500] to-[#ff6d3f]
-                rounded-l-lg
-              "/>
-              <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-              <span className="font-medium">Back to Projects</span>
-            </Button>
+    <PaymentGuard>
+      <div className="container mx-auto px-4 py-6 max-w-6xl">
+        <Toaster position="top-center" />
+        
+        {/* Page Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
+          <Button
+            onClick={() => router.push('/projects')}
+            className="
+              group relative flex items-center gap-2
+              bg-white/80 hover:bg-white
+              text-gray-700 hover:text-gray-900
+              border border-gray-200
+              shadow-sm hover:shadow-md
+              transition-all duration-200
+              px-4 py-2 rounded-lg
+              hover:-translate-x-0.5
+              w-auto
+            "
+            variant="ghost"
+          >
+            <div className="
+              absolute left-0 top-0 bottom-0 w-1
+              bg-gradient-to-b from-[#ff4500] to-[#ff6d3f]
+              rounded-l-lg
+            "/>
+            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
+            <span className="font-medium">Back to Projects</span>
+          </Button>
 
-            <div className="flex items-center gap-2 sm:gap-3">
-              <Button
-                onClick={exportToCSV}
-                className="
-                  relative group flex items-center gap-2
-                  bg-gradient-to-r from-emerald-500 to-teal-500 
-                  hover:from-emerald-600 hover:to-teal-600
-                  text-white shadow-sm
-                  transition-all duration-300 ease-in-out
-                  hover:shadow-md hover:-translate-y-0.5
-                  h-9 px-4 rounded-md
-                "
-                size="sm"
-              >
-                <Download className="h-4 w-4" />
-                <span className="hidden sm:inline">Export CSV</span>
-                <span className="sm:hidden">Export</span>
-                
-                {/* Tooltip */}
-                <div className="
-                  invisible group-hover:visible 
-                  absolute -top-10 left-1/2 transform -translate-x-1/2 
-                  bg-gray-800 text-white text-xs px-3 py-1.5 rounded-md
-                  whitespace-nowrap z-50
-                  opacity-0 group-hover:opacity-100
-                  transition-all duration-200
-                  shadow-lg
-                ">
-                  <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 
-                    border-t-4 border-l-4 border-r-4 
-                    border-transparent border-t-gray-800
-                  "></div>
-                  Download all mentions as CSV
-                </div>
-              </Button>
-
-              <Button
-                onClick={refreshMentions}
-                disabled={isLoading || refreshDisabled}
-                className={`
-                  relative group flex items-center gap-2 
-                  ${isLoading || refreshDisabled 
-                    ? 'bg-gray-100 text-gray-500 cursor-not-allowed hover:bg-gray-100' 
-                    : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
-                  } 
-                  transition-all duration-200 h-9 px-4 rounded-md
-                `}
-                size="sm"
-              >
-                <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-                <span className="hidden sm:inline">
-                  {isLoading ? 'Refreshing...' : 'Refresh Mentions'}
-                </span>
-                <span className="sm:hidden">
-                  {isLoading ? 'Loading...' : 'Refresh'}
-                </span>
-                
-                {refreshDisabled && nextRefreshTime && (
-                  <div className="
-                    invisible group-hover:visible 
-                    absolute -top-10 left-1/2 transform -translate-x-1/2 
-                    bg-gray-800 text-white text-xs px-3 py-1.5 rounded-md
-                    whitespace-nowrap z-50
-                    opacity-0 group-hover:opacity-100
-                    transition-all duration-200
-                    shadow-lg
-                  ">
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 
-                      border-t-4 border-l-4 border-r-4 
-                      border-transparent border-t-gray-800
-                    "></div>
-                    <Clock className="h-3 w-3 inline-block mr-1.5" />
-                    <span>Available in {formatTimeRemaining(nextRefreshTime - Date.now())}</span>
-                  </div>
-                )}
-              </Button>
-            </div>
-          </div>
-
-          {/* Compact Keywords Stats */}
           {project && (
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-lg p-3">
-              <div className="flex items-center gap-3">
-                <h2 className="text-lg font-semibold text-gray-900">{project.name}</h2>
-                <div className="h-4 w-px bg-gray-200" />
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
-                    {mentions.length} Mentions
-                  </Badge>
-                  <Badge variant="outline">
-                    {project.keywords?.length || 0} Keywords
-                  </Badge>
-                  <Badge variant="outline">
-                    {project.subreddits?.length || 0} Subreddits
-                  </Badge>
-                </div>
-              </div>
-              <div className="flex items-center gap-2 self-end sm:self-auto">
-                <select
-                  value={timePeriod}
-                  onChange={(e) => setTimePeriod(e.target.value as 'day' | 'week' | 'month')}
-                  className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm shadow-sm transition-colors hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20"
-                  disabled={isLoading}
-                >
-                  <option value="day">Last 24 hours</option>
-                  <option value="week">Last 7 days</option>
-                  <option value="month">Last 30 days</option>
-                </select>
-                <select
-                  value={postsLimit}
-                  onChange={(e) => setPostsLimit(Number(e.target.value))}
-                  className="h-8 rounded-md border border-gray-200 bg-white px-2 text-sm shadow-sm transition-colors hover:border-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20"
-                  disabled={isLoading}
-                >
-                  <option value={20}>20 posts</option>
-                  <option value={50}>50 posts</option>
-                  <option value={100}>100 posts</option>
-                  <option value={200}>200 posts</option>
-                </select>
-              </div>
+            <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-lg p-3">
+              <h2 className="text-lg font-semibold text-gray-900">{project.name}</h2>
+              <div className="h-4 w-px bg-gray-200" />
+              <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
+                {mentions.length} Mentions
+              </Badge>
             </div>
           )}
+
+          <Button
+            onClick={exportToCSV}
+            className="
+              relative group flex items-center gap-2
+              bg-gradient-to-r from-emerald-500 to-teal-500 
+              hover:from-emerald-600 hover:to-teal-600
+              text-white shadow-sm
+              transition-all duration-300 ease-in-out
+              hover:shadow-md hover:-translate-y-0.5
+              h-9 px-4 rounded-md
+            "
+            size="sm"
+          >
+            <Download className="h-4 w-4" />
+            <span>Export CSV</span>
+            
+            {/* Tooltip */}
+            <div className="
+              invisible group-hover:visible 
+              absolute -top-10 left-1/2 transform -translate-x-1/2 
+              bg-gray-800 text-white text-xs px-3 py-1.5 rounded-md
+              whitespace-nowrap z-50
+              opacity-0 group-hover:opacity-100
+              transition-all duration-200
+              shadow-lg
+            ">
+              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 
+                border-t-4 border-l-4 border-r-4 
+                border-transparent border-t-gray-800
+              "></div>
+              Download all mentions as CSV
+            </div>
+          </Button>
         </div>
 
-        {/* Keywords Stats Section */}
-        {project && (
-          <div className="space-y-6 sm:space-y-8">
-            <KeywordStats 
-              keywords={project.keywords || []}
-              mentions={mentions}
-            />
-          </div>
-        )}
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
@@ -619,15 +492,15 @@ export default function MentionsPage() {
                               {mention.formatted_date}
                             </div>
                             <div className="flex items-center gap-1.5">
-                              <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              <span className={`px-1.5 sm:px-2 py-0.5 rounded-full text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
-                                {mention.relevance_score}%
-                              </span>
-                            </div>
-                            <div className="flex items-center gap-1.5">
                               <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                               {mention.num_comments} comments
                             </div>
+                            {publishedComments[mention.id] && (
+                              <div className="flex items-center gap-1.5">
+                                <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+                                <span className="text-green-600 font-medium">Published</span>
+                              </div>
+                            )}
                           </div>
                           <Button
                             onClick={() => handleGenerateReply(mention)}
@@ -679,12 +552,14 @@ export default function MentionsPage() {
 
                               <Button
                                 onClick={() => postComment(mention)}
-                                disabled={isPosting === mention.id}
+                                disabled={isPosting === mention.id || !!publishedComments[mention.id]}
                                 className={`
                                   flex items-center gap-2 
                                   ${isPosting === mention.id
                                     ? 'bg-gray-100 text-gray-500'
-                                    : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
+                                    : publishedComments[mention.id]
+                                      ? 'bg-green-600 hover:bg-green-700 text-white'
+                                      : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
                                   }
                                 `}
                                 size="sm"
@@ -693,6 +568,11 @@ export default function MentionsPage() {
                                   <>
                                     <RefreshCw className="w-4 h-4 animate-spin" />
                                     Posting...
+                                  </>
+                                ) : publishedComments[mention.id] ? (
+                                  <>
+                                    <CheckCircle className="w-4 h-4" />
+                                    Published
                                   </>
                                 ) : (
                                   <>
@@ -784,7 +664,28 @@ export default function MentionsPage() {
             </div>
           </>
         )}
+        {!redditAuth.isAuthenticated && (
+          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
+            <div className="flex items-center gap-2 text-amber-800">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <span className="text-sm font-medium">
+                Connect your Reddit account to post comments directly
+              </span>
+              <Button 
+                size="sm"
+                className="ml-auto bg-[#ff4500] hover:bg-[#ff4500]/90 text-xs"
+                onClick={() => redditAuth.ensureRedditConnection()}
+              >
+                Connect
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </PaymentGuard>
   );
 }

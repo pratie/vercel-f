@@ -66,15 +66,6 @@ export default function MentionsPage() {
         </Link>
         <div className="flex items-center justify-between">
           <h1 className="text-[1.25rem] font-semibold text-gray-900">Recent Mentions</h1>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {}}
-            className="text-[0.875rem]"
-          >
-            <RefreshCw className="h-4 w-4 mr-2" />
-            Refresh
-          </Button>
         </div>
       </div>
 

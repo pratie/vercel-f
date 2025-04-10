@@ -82,7 +82,7 @@ export default function LandingPage() {
       {/* Hot Selling Feature Banner */}
       <div className="bg-[#ff4500] text-white py-3 px-4 text-center">
         <p className="text-sm font-medium text-white">
-          AI-powered response generation now available!
+          AI powered response generation now available!
         </p>
       </div>
 
@@ -110,7 +110,7 @@ export default function LandingPage() {
                 </h1>
                 
                 <p className="mt-3 text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl">
-                  Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI-powered monitoring and response generation.
+                  Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI powered monitoring and response generation.
                 </p>
 
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">

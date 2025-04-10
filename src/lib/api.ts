@@ -1,8 +1,15 @@
 // API configuration and endpoints
 import { getAuthToken, getUserEmail } from './auth';
+import { handleError, logError } from './errorUtils';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const API_TIMEOUT = 1200000; // 2 minutes
+
+// Ensure API_BASE_URL doesn't have a trailing slash
+const getApiBaseUrl = () => {
+    const baseUrl = API_BASE_URL.endsWith('/') ? API_BASE_URL.slice(0, -1) : API_BASE_URL;
+    return baseUrl;
+};
 
 const getHeaders = () => {
     const token = getAuthToken();
@@ -20,12 +27,13 @@ const fetchWithTimeout = async (url: string, options: RequestInit): Promise<Resp
         const response = await fetch(url, {
             ...options,
             signal: controller.signal,
-            credentials: 'include',
         });
         clearTimeout(id);
         
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            // Instead of throwing a generic HTTP error, use the handleApiError function
+            // which will extract the actual error message from the response
+            return handleApiError(response, `HTTP error! status: ${response.status}`);
         }
         
         return response;
@@ -42,33 +50,60 @@ const fetchWithTimeout = async (url: string, options: RequestInit): Promise<Resp
 
 const fetchWithAuth = async (url: string, options: RequestInit = {}): Promise<Response> => {
     const headers = getHeaders();
-    return fetchWithTimeout(url, {
-        ...options,
-        headers: {
-            ...headers,
-            ...options.headers,
-        },
-        mode: 'cors',
-        credentials: 'include',
-    });
+    const token = getAuthToken();
+    
+    // Only log in development environment
+    if (process.env.NODE_ENV === 'development') {
+        console.log(`API Request: ${options.method || 'GET'} ${url}`);
+        console.log('Auth token present:', !!token);
+    }
+    
+    // Ensure we have the Authorization header with the token
+    const authHeaders = {
+        ...headers,
+        ...options.headers,
+        'Authorization': token ? `Bearer ${token}` : '',
+    };
+    
+    try {
+        const response = await fetchWithTimeout(url, {
+            ...options,
+            headers: authHeaders,
+            mode: 'cors',
+        });
+        
+        // Only log in development environment
+        if (process.env.NODE_ENV === 'development') {
+            console.log(`API Response: ${options.method || 'GET'} ${url} - Status: ${response.status}`);
+        }
+        
+        return response;
+    } catch (error) {
+        console.error(`API Error: ${options.method || 'GET'} ${url}`, error);
+        throw error;
+    }
 };
 
 const handleApiError = async (response: Response, defaultMessage: string): Promise<never> => {
-    let errorMessage = defaultMessage;
-    try {
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-            const errorData = await response.json();
-            errorMessage = errorData.detail || defaultMessage;
-        } else {
-            const errorText = await response.text();
-            if (errorText) errorMessage = errorText;
+    logError(response, `API Error: ${response.url}`);
+  
+    return response.json()
+      .then(data => {
+        const message = data.detail || data.message || defaultMessage;
+        const error = new Error(message);
+        // Add status code to error for better handling
+        (error as any).statusCode = response.status;
+        throw error;
+      })
+      .catch(error => {
+        // If JSON parsing fails, use the default message
+        if (error instanceof SyntaxError) {
+          const fallbackError = new Error(defaultMessage);
+          (fallbackError as any).statusCode = response.status;
+          throw fallbackError;
         }
-    } catch (error) {
-        console.error('Error parsing error response:', error);
-        if (response.statusText) errorMessage = response.statusText;
-    }
-    throw new Error(errorMessage);
+        throw error;
+      });
 };
 
 export interface Project {
@@ -129,10 +164,23 @@ interface GenerateReplyRequest {
     include_experience: boolean;
 }
 
+interface PreferencesResponse {
+  tone: "friendly" | "professional" | "technical";
+  response_style: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+interface PreferencesRequest {
+  tone: "friendly" | "professional" | "technical";
+  response_style: string | null;
+}
+
 export const api = {
     // Project Management
     async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/projects/`, {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/projects/`, {
             method: 'POST',
             body: JSON.stringify(projectData),
         });
@@ -145,19 +193,30 @@ export const api = {
     },
 
     async getProjects(): Promise<Project[]> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/projects/`, {
-            method: 'GET',
-        });
+        try {
+            const baseUrl = getApiBaseUrl();
+            console.log('Fetching projects from:', `${baseUrl}/projects/`);
+            const response = await fetchWithAuth(`${baseUrl}/projects/`, {
+                method: 'GET',
+            });
 
-        if (!response.ok) {
-            await handleApiError(response, 'Failed to fetch projects');
+            if (!response.ok) {
+                console.error('Failed to fetch projects:', response.status, response.statusText);
+                await handleApiError(response, 'Failed to fetch projects');
+            }
+
+            const data = await response.json();
+            console.log('Projects fetched successfully:', data);
+            return data;
+        } catch (error) {
+            console.error('Error fetching projects:', error);
+            throw error;
         }
-
-        return response.json();
     },
 
     async getProject(projectId: string): Promise<Project> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/projects/${projectId}`, {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/projects/${projectId}`, {
             method: 'GET',
         });
 
@@ -169,7 +228,8 @@ export const api = {
     },
 
     async deleteProject(projectId: string): Promise<void> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/projects/${projectId}`, {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/projects/${projectId}`, {
             method: 'DELETE',
         });
 
@@ -186,8 +246,9 @@ export const api = {
 
         try {
             // Send all project data in a single request
+            const baseUrl = getApiBaseUrl();
             const response = await fetchWithAuth(
-                `${API_BASE_URL}/projects/${projectId}`,
+                `${baseUrl}/projects/${projectId}`,
                 {
                     method: 'PUT',
                     body: JSON.stringify({
@@ -224,7 +285,8 @@ export const api = {
     // Initial Analysis
     async analyzeInitial(data: { name: string; description: string }): Promise<{ keywords: string[]; subreddits: string[] }> {
         try {
-            const response = await fetchWithTimeout(`${API_BASE_URL}/analyze/initial`, {
+            const baseUrl = getApiBaseUrl();
+            const response = await fetchWithTimeout(`${baseUrl}/analyze/initial`, {
                 method: 'POST',
                 headers: getHeaders(),
                 body: JSON.stringify({
@@ -255,7 +317,8 @@ export const api = {
         limit?: number;
     }): Promise<AnalysisResponse> {
         try {
-            const response = await fetchWithTimeout(`${API_BASE_URL}/analyze/reddit`, {
+            const baseUrl = getApiBaseUrl();
+            const response = await fetchWithTimeout(`${baseUrl}/analyze/reddit`, {
                 method: 'POST',
                 headers: getHeaders(),
                 body: JSON.stringify({
@@ -282,7 +345,8 @@ export const api = {
 
     // Mentions
     async getMentions(brandId: string): Promise<RedditMention[]> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/mentions/${parseInt(brandId, 10)}/`, {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/mentions/${parseInt(brandId, 10)}/`, {
             method: 'GET',
         });
 
@@ -336,7 +400,8 @@ export const api = {
     // Generate reply for a mention
     generateReply: async (mention: { title: string; content: string; brand_id: number }): Promise<string> => {
         try {
-            const response = await fetchWithAuth(`${API_BASE_URL}/generate-comment/`, {
+            const baseUrl = getApiBaseUrl();
+            const response = await fetchWithAuth(`${baseUrl}/generate-comment/`, {
                 method: 'POST',
                 body: JSON.stringify({
                     post_title: mention.title,
@@ -360,10 +425,11 @@ export const api = {
         post_url: string;
         comment_text: string;
     }): Promise<{ comment: string; comment_url: string; status: string }> {
-        console.log('Making request to:', `${API_BASE_URL}/post-reddit-comment/`);
+        const baseUrl = getApiBaseUrl();
+        console.log('Making request to:', `${baseUrl}/post-reddit-comment/`);
         console.log('Request body:', data);
 
-        const response = await fetchWithAuth(`${API_BASE_URL}/post-reddit-comment/`, {
+        const response = await fetchWithAuth(`${baseUrl}/post-reddit-comment/`, {
             method: 'POST',
             body: JSON.stringify(data)
         });
@@ -371,9 +437,157 @@ export const api = {
         return response.json();
     },
 
+    // Reddit OAuth
+    async getRedditAuthUrl(): Promise<{ auth_url: string }> {
+        try {
+            // Make sure we're using the correct endpoint path
+            const baseUrl = getApiBaseUrl();
+            // Let the backend handle the redirect URI - don't specify it in frontend
+            const endpoint = `${baseUrl}/api/reddit-auth/login/`;
+            if (process.env.NODE_ENV === 'development') {
+                console.log('Requesting Reddit auth URL from:', endpoint);
+            }
+            
+            // Use fetch directly but without credentials mode to avoid CORS issues
+            const token = getAuthToken();
+            const response = await fetch(endpoint, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token ? `Bearer ${token}` : '',
+                },
+            });
+            
+            if (!response.ok) {
+                console.error('Reddit auth URL request failed:', response.status, response.statusText);
+                throw new Error(`Failed to get Reddit auth URL: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            
+            // Validate the auth URL is from a trusted source
+            try {
+                if (data.auth_url) {
+                    const authUrl = new URL(data.auth_url);
+                    const allowedDomains = ['reddit.com', 'www.reddit.com', 'oauth.reddit.com'];
+                    if (!allowedDomains.includes(authUrl.hostname)) {
+                        throw new Error('Invalid authorization URL domain');
+                    }
+                }
+            } catch (urlError) {
+                console.error('Invalid Reddit authorization URL:', urlError);
+                throw new Error('Invalid Reddit authorization URL');
+            }
+            
+            if (process.env.NODE_ENV === 'development') {
+                console.log('Received Reddit auth URL:', data);
+            }
+            return data;
+        } catch (error) {
+            console.error('Error getting Reddit auth URL:', error);
+            throw error;
+        }
+    },
+
+    async getRedditAuthStatus(): Promise<{ is_authenticated: boolean; username: string | null; expires_at: number | null; error?: string }> {
+        // Maximum number of retry attempts
+        const maxRetries = 3;
+        let retryCount = 0;
+        let lastError: Error | null = null;
+        
+        while (retryCount < maxRetries) {
+            try {
+                // Make sure we're using the correct endpoint path
+                const baseUrl = getApiBaseUrl();
+                const endpoint = `${baseUrl}/api/reddit-auth/status/`;
+                console.log(`Checking Reddit auth status from: ${endpoint} (attempt ${retryCount + 1}/${maxRetries})`);
+                
+                const response = await fetchWithAuth(endpoint);
+                
+                if (!response.ok) {
+                    // If we get a 429 (rate limit), don't retry but return a structured error response
+                    if (response.status === 429) {
+                        const data = await response.json().catch(() => ({}));
+                        return {
+                            is_authenticated: true, // User is still authenticated
+                            username: null, // We don't know the username from this error
+                            expires_at: null,
+                            error: data.detail || 'Rate limit exceeded. You can only post 5 comments per 24 hours.'
+                        };
+                    }
+                    
+                    throw new Error(`Failed to check Reddit auth status: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Reddit auth status response:', data);
+                
+                // Check if the response contains rate limit info even with a 200 status
+                if (data.rate_limited) {
+                    return {
+                        is_authenticated: true,
+                        username: data.username,
+                        expires_at: data.expires_at,
+                        error: `Rate limit exceeded. You can only post ${data.limit || 5} comments per ${data.period || '24 hours'}.`
+                    };
+                }
+                
+                return data;
+            } catch (error) {
+                lastError = error instanceof Error ? error : new Error(String(error));
+                console.error(`Error checking Reddit auth status (attempt ${retryCount + 1}/${maxRetries}):`, error);
+                
+                // If it's not a network error, don't retry
+                if (!(error instanceof Error) || !error.message.includes('Failed to fetch')) {
+                    break;
+                }
+                
+                // Exponential backoff
+                const waitTime = 1000 * Math.pow(2, retryCount);
+                console.log(`Retrying in ${waitTime}ms...`);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+                retryCount++;
+            }
+        }
+        
+        // If we've exhausted all retries, throw the last error
+        if (lastError) {
+            throw lastError;
+        }
+        
+        // This should never happen, but TypeScript requires a return
+        throw new Error('Failed to check Reddit auth status after maximum retries');
+    },
+
+    async disconnectReddit(): Promise<{ success: boolean }> {
+        try {
+            // Make sure we're using the correct endpoint path
+            const baseUrl = getApiBaseUrl();
+            const endpoint = `${baseUrl}/api/reddit-auth/logout/`;
+            console.log('Disconnecting Reddit account from:', endpoint);
+            
+            const response = await fetchWithAuth(endpoint, {
+                method: 'POST'
+            });
+            
+            if (!response.ok) {
+                console.error('Reddit disconnect failed:', response.status, response.statusText);
+                throw new Error(`Failed to disconnect Reddit account: ${response.status} ${response.statusText}`);
+            }
+            
+            const data = await response.json();
+            console.log('Reddit disconnect result:', data);
+            return data;
+        } catch (error) {
+            console.error('Error disconnecting Reddit:', error);
+            throw error;
+        }
+    },
+
     // Payment
     async getPaymentStatus(): Promise<PaymentStatus> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/payment/status`);
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/payment/status`);
         if (!response.ok) {
             throw await handleApiError(response, 'Failed to get payment status');
         }
@@ -382,7 +596,8 @@ export const api = {
 
     async createCheckoutSession(): Promise<string> {
         try {
-            const response = await fetchWithAuth(`${API_BASE_URL}/payment/create-checkout-session`, {
+            const baseUrl = getApiBaseUrl();
+            const response = await fetchWithAuth(`${baseUrl}/payment/create-checkout-session`, {
                 method: 'POST'
             });
             if (!response.ok) {
@@ -401,11 +616,49 @@ export const api = {
     },
 
     async updatePaymentStatus(): Promise<void> {
-        const response = await fetchWithAuth(`${API_BASE_URL}/payment/success`, {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/payment/success`, {
             method: 'POST'
         });
         if (!response.ok) {
             throw await handleApiError(response, 'Failed to update payment status');
         }
-    }
+    },
+
+    // Preferences
+    getPreferences: async (): Promise<PreferencesResponse> => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Fetching preferences...');
+        }
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/preferences`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch preferences');
+        }
+        const data = await response.json();
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Received preferences:', data);
+        }
+        return data;
+    },
+
+    updatePreferences: async (preferences: PreferencesRequest): Promise<PreferencesResponse> => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Updating preferences with:', preferences);
+        }
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/preferences`, {
+            method: 'POST',
+            body: JSON.stringify({
+                tone: preferences.tone,
+                response_style: preferences.response_style
+            }),
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to update preferences');
+        }
+        const data = await response.json();
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Update preferences response:', data);
+        }
+        return data;
+    },
 };
