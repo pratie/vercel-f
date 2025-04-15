@@ -167,15 +167,6 @@ export default function SettingsPage() {
                   <div className="text-sm text-red-500 mt-2 p-2 bg-red-50 border border-red-200 rounded">
                     <div className="font-medium">Error connecting to Reddit:</div>
                     <div>{redditAuth.error}</div>
-                    <div className="text-xs mt-1">
-                      <p>Troubleshooting steps:</p>
-                      <ol className="list-decimal list-inside mt-1">
-                        <li>Check that your backend server is running at {process.env.NEXT_PUBLIC_API_URL}</li>
-                        <li>Ensure you're logged in with your Google account</li>
-                        <li>Try refreshing the page and trying again</li>
-                        <li>Check the browser console for more detailed error information</li>
-                      </ol>
-                    </div>
                   </div>
                 )}
                 
