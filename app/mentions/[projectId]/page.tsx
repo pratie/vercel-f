@@ -443,8 +443,8 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {currentMentions.map((mention, index) => (
-                <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80">
-                  <CardContent className="p-6">
+                <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl">
+                  <CardContent className="p-4 sm:p-6">
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex flex-col space-y-2">
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
@@ -456,8 +456,8 @@ export default function MentionsPage() {
                               }}
                             />
                           </h3>
-                          <div className="flex items-center gap-2 order-1 sm:order-2 self-start">
-                            <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
+                          <div className="flex items-center gap-2 order-1 sm:order-2 self-start flex-wrap">
+                            <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-xs sm:text-sm">
                               r/{mention.subreddit}
                             </Badge>
                             <a 
@@ -507,7 +507,7 @@ export default function MentionsPage() {
                           <Button
                             onClick={() => handleGenerateReply(mention)}
                             disabled={generatingReplyFor === mention.id}
-                            className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white border-none shadow-sm h-8 px-3 transition-colors duration-200"
+                            className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white border-none shadow-sm h-8 px-3 transition-colors duration-200 w-full sm:w-auto mt-2 sm:mt-0"
                             size="sm"
                           >
                             {generatingReplyFor === mention.id ? (
@@ -523,26 +523,25 @@ export default function MentionsPage() {
                             )}
                           </Button>
                         </div>
-
                         {/* Show generated reply if available */}
                         {generatedReplies[mention.id] && (
                           <div className="mt-3 space-y-3">
-                            <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-                              <div className="flex items-center justify-between mb-2">
+                            <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
+                              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
                                 <span className="text-sm font-medium text-gray-700">Generated Reply</span>
                                 {editingReplyId === mention.id ? (
-                                  <>
-                                    <Button size="sm" className="ml-2 bg-green-500 hover:bg-green-600 text-white" onClick={() => {
+                                  <div className="flex gap-2 mt-2 sm:mt-0">
+                                    <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white" onClick={() => {
                                       setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] }));
                                       setEditingReplyId(null);
                                     }}>Save</Button>
-                                    <Button size="sm" variant="ghost" className="ml-1 text-gray-500 hover:text-gray-700" onClick={() => {
+                                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-gray-700" onClick={() => {
                                       setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
                                       setEditingReplyId(null);
                                     }}>Cancel</Button>
-                                  </>
+                                  </div>
                                 ) : (
-                                  <Button size="sm" variant="ghost" className="ml-2 text-gray-500 hover:text-gray-700" onClick={() => {
+                                  <Button size="sm" variant="ghost" className="text-gray-500 hover:text-gray-700" onClick={() => {
                                     setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
                                     setEditingReplyId(mention.id);
                                   }}>Edit</Button>
@@ -556,15 +555,14 @@ export default function MentionsPage() {
                                   onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
                                 />
                               ) : (
-                                <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                                <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">{generatedReplies[mention.id]}</p>
                               )}
                             </div>
-                            
                             {/* Action Buttons */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                               <Button
                                 onClick={() => navigator.clipboard.writeText(generatedReplies[mention.id])}
-                                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700"
+                                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 w-full sm:w-auto"
                                 size="sm"
                               >
                                 <svg 
@@ -577,11 +575,10 @@ export default function MentionsPage() {
                                 </svg>
                                 Copy
                               </Button>
-
                               <Button
                                 onClick={() => postComment(mention)}
                                 disabled={isPosting === mention.id || !!publishedComments[mention.id]}
-                                className={`flex items-center gap-2 ${isPosting === mention.id ? 'bg-gray-100 text-gray-500' : publishedComments[mention.id] ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'}`}
+                                className={`flex items-center gap-2 ${isPosting === mention.id ? 'bg-gray-100 text-gray-500' : publishedComments[mention.id] ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'} w-full sm:w-auto`}
                                 size="sm"
                               >
                                 {isPosting === mention.id ? (
@@ -601,11 +598,10 @@ export default function MentionsPage() {
                                   </>
                                 )}
                               </Button>
-
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className="text-gray-500 hover:text-gray-700"
+                                className="text-gray-500 hover:text-gray-700 w-full sm:w-auto"
                                 onClick={() => {
                                   setGeneratedReplies(prev => {
                                     const newReplies = { ...prev };

@@ -8,10 +8,13 @@ import { useEffect } from 'react';
 import Image from 'next/image';
 import { FreeAccessMessage } from './components/FreeAccessMessage';
 import Link from 'next/link';
+import { useRef } from 'react';
+import confetti from 'canvas-confetti'; // You may need to install this package
 
 export default function LandingPage() {
   const router = useRouter();
   const { user } = useAuth();
+  const ctaRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     if (user && window.location.pathname === '/') {
@@ -36,6 +39,15 @@ export default function LandingPage() {
   }, []);
 
   const handleGetStarted = () => {
+    // Confetti burst for delight
+    if (ctaRef.current) {
+      const rect = ctaRef.current.getBoundingClientRect();
+      confetti({
+        particleCount: 80,
+        spread: 60,
+        origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: rect.top / window.innerHeight },
+      });
+    }
     router.push('/login');
   };
 
@@ -87,35 +99,36 @@ export default function LandingPage() {
       </div>
 
       {/* Hero Section */}
-      <div className="relative bg-gradient-to-b from-white to-gray-50">
-        <div className="absolute inset-0">
-          <div className="absolute inset-y-0 right-0 w-1/2">
-            <div className="h-full bg-gradient-to-r from-transparent to-[#fff3f0]/20" />
-          </div>
+      <div className="relative bg-gradient-to-b from-white to-gray-50 overflow-hidden">
+        {/* Subtle background illustration */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <svg width="100%" height="100%" className="absolute opacity-10" style={{top:0,left:0}}>
+            <circle cx="30%" cy="20%" r="180" fill="#ff4500" fillOpacity="0.07" />
+            <circle cx="80%" cy="80%" r="120" fill="#ff4500" fillOpacity="0.08" />
+          </svg>
         </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 z-10">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12">
-            <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center">
+            <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center animate-fade-in-up">
               <div>
-                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#ff4500]/10 text-[#ff4500] mb-8">
+                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#ff4500]/10 text-[#ff4500] mb-8 animate-fade-in">
                   <Sparkles className="h-4 w-4 mr-2" />
                   <span>AI-Powered Lead Generation</span>
                 </div>
                 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6">
-                  Find Reddit Leads
-                  <br />
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 animate-slide-up">
+                  Find Reddit Leads<br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-                <p className="mt-3 text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl">
+                <p className="mt-3 text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl animate-fade-in">
                   Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI powered monitoring and response generation.
                 </p>
 
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                   <Button
-                    className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20"
+                    ref={ctaRef}
+                    className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105 animate-bounce"
                     onClick={handleGetStarted}
                   >
                     Find Leads Now
@@ -136,7 +149,7 @@ export default function LandingPage() {
               </div>
             </div>
 
-            <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-6 relative">
+            <div className="mt-12 sm:mt-16 lg:mt-0 lg:col-span-6 relative animate-fade-in">
               <div className="relative mx-auto w-full rounded-2xl shadow-lg overflow-hidden bg-white">
                 <div style={{ position: 'relative', paddingBottom: '51.67%', height: 0 }}>
                   <iframe 
@@ -150,6 +163,13 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
+          {/* --- Scroll Down Indicator for Mobile --- */}
+          <div className="block lg:hidden absolute left-1/2 transform -translate-x-1/2 bottom-2 animate-bounce z-20">
+            <span className="flex flex-col items-center text-xs text-gray-400">
+              <svg width="24" height="24" fill="none" stroke="#ff4500" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M19 12l-7 7-7-7"/></svg>
+              Scroll Down
+            </span>
+          </div>
         </div>
       </div>
 
@@ -157,7 +177,7 @@ export default function LandingPage() {
       <div className="bg-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h2 className="text-[28px] font-bold text-gray-900 mb-2">What People Are Saying</h2>
+            <h2 className="text-[28px] font-bold text-gray-900">What People Are Saying</h2>
             <p className="text-[15px] text-gray-600">Real feedback from our users</p>
           </div>
           
@@ -413,209 +433,26 @@ export default function LandingPage() {
       {/* Features Section */}
       <div id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">Enterprise-Grade Reddit Lead Generation</h2>
-            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-              Powerful features designed to help B2B companies find and convert qualified leads from Reddit
-            </p>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900">Why SneakyGuy?</h2>
+            <p className="text-lg text-gray-600">Everything you need to turn Reddit into your best lead source.</p>
           </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white rounded-xl shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className="bg-[#fff3f0] w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <Target className="h-7 w-7 text-[#ff4500]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Intelligent Lead Discovery</h3>
-              <p className="text-gray-600 mb-4">
-                Our AI identifies high-intent discussions where users are actively seeking solutions like yours.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Advanced relevancy scoring</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Real-time monitoring</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Custom keyword tracking</span>
-                </li>
-              </ul>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
+              <Brain className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">AI-Powered Replies</h3>
+              <p className="text-gray-600">Get smart, context-aware replies generated for every lead opportunity. Review and edit before posting.</p>
             </div>
-            
-            {/* Feature 2 */}
-            <div className="bg-white rounded-xl shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className="bg-[#fff3f0] w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <Brain className="h-7 w-7 text-[#ff4500]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Response Generation</h3>
-              <p className="text-gray-600 mb-4">
-                Create personalized, natural-sounding responses that subtly promote your product while providing value.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Contextual understanding</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Multiple response variations</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Brand voice customization</span>
-                </li>
-              </ul>
+            <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
+              <Target className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Smart Keyword & Subreddit Suggestions</h3>
+              <p className="text-gray-600">We suggest the best keywords and subreddits for your business, so you never miss a relevant conversation.</p>
             </div>
-            
-            {/* Feature 3 */}
-            <div className="bg-white rounded-xl shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className="bg-[#fff3f0] w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <Filter className="h-7 w-7 text-[#ff4500]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Subreddit Targeting</h3>
-              <p className="text-gray-600 mb-4">
-                Focus your lead generation efforts on the most relevant communities for your business.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Subreddit recommendations</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Engagement analytics</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Competitor monitoring</span>
-                </li>
-              </ul>
+            <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
+              <Shield className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
+              <h3 className="text-xl font-semibold text-gray-900 mb-2">Build Your Brand Presence</h3>
+              <p className="text-gray-600">Connect your Reddit account and manage your brand’s presence on Reddit from one place.</p>
             </div>
-            
-            {/* Feature 4 */}
-            <div className="bg-white rounded-xl shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className="bg-[#fff3f0] w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <Clock className="h-7 w-7 text-[#ff4500]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">24/7 Automated Monitoring</h3>
-              <p className="text-gray-600 mb-4">
-                Never miss a potential lead with round-the-clock monitoring of Reddit discussions.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Instant notifications</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Email alerts</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Priority-based queuing</span>
-                </li>
-              </ul>
-            </div>
-            
-            {/* Feature 5 */}
-            <div className="bg-white rounded-xl shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className="bg-[#fff3f0] w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <ChevronRight className="h-7 w-7 text-[#ff4500]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Lead Conversion Tracking</h3>
-              <p className="text-gray-600 mb-4">
-                Track the performance of your Reddit lead generation efforts with detailed analytics.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Conversion attribution</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Performance dashboards</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">ROI calculation</span>
-                </li>
-              </ul>
-            </div>
-            
-            {/* Feature 6 */}
-            <div className="bg-white rounded-xl shadow-md p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-              <div className="bg-[#fff3f0] w-14 h-14 rounded-lg flex items-center justify-center mb-6">
-                <MessageSquare className="h-7 w-7 text-[#ff4500]" />
-              </div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-3">Response Management</h3>
-              <p className="text-gray-600 mb-4">
-                Review, edit, and approve AI-generated responses before they're posted to Reddit.
-              </p>
-              <ul className="space-y-2">
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Approval workflows</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Response templates</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                    <Check className="w-3 h-3 text-[#ff4500]" />
-                  </div>
-                  <span className="text-gray-700">Team collaboration</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="mt-16 text-center">
-            <Button
-              onClick={() => router.push('/login')}
-              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-3 text-lg font-medium"
-            >
-              Explore All Features
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
           </div>
         </div>
       </div>
