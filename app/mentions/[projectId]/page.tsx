@@ -306,6 +306,8 @@ export default function MentionsPage() {
 
   const [generatingReplyFor, setGeneratingReplyFor] = useState<number | null>(null);
   const [generatedReplies, setGeneratedReplies] = useState<Record<number, string>>({});
+  const [editingReplyId, setEditingReplyId] = useState<number | null>(null);
+  const [editedReplies, setEditedReplies] = useState<Record<number, string>>({});
 
   const handleGenerateReply = async (mention: RedditMention) => {
     if (generatingReplyFor !== null) return; // Prevent multiple simultaneous generations
@@ -528,8 +530,34 @@ export default function MentionsPage() {
                             <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
                               <div className="flex items-center justify-between mb-2">
                                 <span className="text-sm font-medium text-gray-700">Generated Reply</span>
+                                {editingReplyId === mention.id ? (
+                                  <>
+                                    <Button size="sm" className="ml-2 bg-green-500 hover:bg-green-600 text-white" onClick={() => {
+                                      setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] }));
+                                      setEditingReplyId(null);
+                                    }}>Save</Button>
+                                    <Button size="sm" variant="ghost" className="ml-1 text-gray-500 hover:text-gray-700" onClick={() => {
+                                      setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
+                                      setEditingReplyId(null);
+                                    }}>Cancel</Button>
+                                  </>
+                                ) : (
+                                  <Button size="sm" variant="ghost" className="ml-2 text-gray-500 hover:text-gray-700" onClick={() => {
+                                    setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
+                                    setEditingReplyId(mention.id);
+                                  }}>Edit</Button>
+                                )}
                               </div>
-                              <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                              {editingReplyId === mention.id ? (
+                                <textarea
+                                  className="w-full border rounded-md p-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#ff4500]"
+                                  rows={4}
+                                  value={editedReplies[mention.id] || ''}
+                                  onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
+                                />
+                              ) : (
+                                <p className="text-sm text-gray-600 whitespace-pre-wrap">{generatedReplies[mention.id]}</p>
+                              )}
                             </div>
                             
                             {/* Action Buttons */}
@@ -553,15 +581,7 @@ export default function MentionsPage() {
                               <Button
                                 onClick={() => postComment(mention)}
                                 disabled={isPosting === mention.id || !!publishedComments[mention.id]}
-                                className={`
-                                  flex items-center gap-2 
-                                  ${isPosting === mention.id
-                                    ? 'bg-gray-100 text-gray-500'
-                                    : publishedComments[mention.id]
-                                      ? 'bg-green-600 hover:bg-green-700 text-white'
-                                      : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
-                                  }
-                                `}
+                                className={`flex items-center gap-2 ${isPosting === mention.id ? 'bg-gray-100 text-gray-500' : publishedComments[mention.id] ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'}`}
                                 size="sm"
                               >
                                 {isPosting === mention.id ? (
