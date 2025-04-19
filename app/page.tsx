@@ -96,7 +96,7 @@ export default function LandingPage() {
       {/* Hot Selling Feature Banner */}
       <div className="bg-[#ff4500] text-white py-3 px-4 text-center">
         <p className="text-sm font-medium text-white">
-          AI powered response generation now available!
+          App is under repair for 2 days
         </p>
       </div>
 
