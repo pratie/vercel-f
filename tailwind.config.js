@@ -70,6 +70,23 @@ module.exports = {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
       },
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+      },
+      scrollbar: {
+        width: '14px',
+        height: '14px',
+        thumbBG: 'hsl(var(--scrollbar-thumb))',
+        thumbBGHover: 'hsl(var(--scrollbar-thumb-hover)',
+        thumbBGActive: 'hsl(var(--scrollbar-thumb-active)',
+        trackBG: 'hsl(var(--scrollbar-track))',
+        trackBGHover: 'hsl(var(--scrollbar-track-hover)',
+        corner: 'hsl(var(--scrollbar-corner))',
+      },
+      scrollbarThumb: {
+        rounded: 'rounded',
+        roundedFull: 'rounded-full',
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

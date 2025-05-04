@@ -35,13 +35,14 @@ const api = {
   },
 
   // Update payment status after successful payment
-  async updatePaymentStatus() {
+  async updatePaymentStatus(data?: { paymentId?: string | null }) {
     const response = await fetch(`${API_BASE_URL}/payment/success`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token')}`
-      }
+      },
+      body: data ? JSON.stringify(data) : undefined
     });
 
     if (!response.ok) {

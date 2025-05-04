@@ -9,7 +9,6 @@ import { Toaster, toast } from 'sonner';
 import { api, Project } from '@/lib/api';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { getStripe } from '@/lib/stripe';
 import Image from 'next/image';
 import { FreeAccessMessage } from '../components/FreeAccessMessage';
 
@@ -30,11 +29,14 @@ export default function ProjectsPage() {
     }
 
     const handlePaymentSuccess = async () => {
-      const isPaymentSuccess = searchParams.get('payment') === 'success';
+      const isPaymentSuccess = searchParams.get('payment') === 'success' || 
+                              searchParams.get('status') === 'succeeded';
+      const paymentId = searchParams.get('payment_id');
+      
       if (isPaymentSuccess && !hasPaid) {
         setIsProcessingPayment(true);
         try {
-          await api.updatePaymentStatus();
+          await api.updatePaymentStatus(paymentId ? { paymentId } : undefined);
           setHasPaid(true);
           toast.success('Payment successful! You can now create projects.');
         } catch (error) {
@@ -115,15 +117,11 @@ export default function ProjectsPage() {
     if (!hasPaid) {
       try {
         const checkoutUrl = await api.createCheckoutSession();
-        const stripe = await getStripe();
-        if (!stripe) {
-          throw new Error('Failed to load Stripe');
-        }
         
         // Log the URL for debugging
         console.log('Redirecting to checkout URL:', checkoutUrl);
         
-        // Use window.location.assign for better error handling
+        // Redirect directly to DodoPayments checkout
         window.location.assign(checkoutUrl);
       } catch (error) {
         console.error('Payment process error:', error);
@@ -230,14 +228,6 @@ export default function ProjectsPage() {
         </div>
       ) : projects.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[400px] space-y-4 text-center">
-          <div className="relative w-64 h-64">
-            <Image
-              src="/empty-projects.svg"
-              alt="No projects"
-              fill
-              className="object-contain"
-            />
-          </div>
           <h2 className="text-xl font-semibold">No Projects Yet</h2>
           <p className="text-gray-600 max-w-md">
             Create your first project to start tracking Reddit mentions and generating leads

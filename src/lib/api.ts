@@ -176,6 +176,14 @@ interface PreferencesRequest {
   response_style: string | null;
 }
 
+interface AlertSettings {
+  telegram_chat_id: string;
+  enable_telegram_alerts: boolean;
+  enable_email_alerts: boolean;
+  alert_frequency: 'daily' | 'weekly' | 'realtime';
+  is_active?: boolean;
+}
+
 export const api = {
     // Project Management
     async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
@@ -615,10 +623,11 @@ export const api = {
         }
     },
 
-    async updatePaymentStatus(): Promise<void> {
+    async updatePaymentStatus(data?: { paymentId?: string }): Promise<void> {
         const baseUrl = getApiBaseUrl();
         const response = await fetchWithAuth(`${baseUrl}/payment/success`, {
-            method: 'POST'
+            method: 'POST',
+            ...(data?.paymentId ? { body: JSON.stringify({ payment_id: data.paymentId }) } : {})
         });
         if (!response.ok) {
             throw await handleApiError(response, 'Failed to update payment status');
@@ -658,6 +667,40 @@ export const api = {
         const data = await response.json();
         if (process.env.NODE_ENV === 'development') {
             console.log('Update preferences response:', data);
+        }
+        return data;
+    },
+
+    // Alert Settings
+    getAlertSettings: async (): Promise<AlertSettings> => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Fetching alert settings...');
+        }
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/alerts/settings`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch alert settings');
+        }
+        const data = await response.json();
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Received alert settings:', data);
+        }
+        return data;
+    },
+
+    updateAlertSettings: async (settings: AlertSettings): Promise<AlertSettings> => {
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Updating alert settings with:', settings);
+        }
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/alerts/settings`, {
+            method: 'POST',
+            body: JSON.stringify(settings),
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to update alert settings');
+        }
+        const data = await response.json();
+        if (process.env.NODE_ENV === 'development') {
+            console.log('Update alert settings response:', data);
         }
         return data;
     },

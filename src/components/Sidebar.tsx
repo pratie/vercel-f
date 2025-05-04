@@ -9,8 +9,7 @@ import {
   Settings,
   LogOut,
   Menu,
-  X,
-  Search
+  X
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
@@ -39,7 +38,6 @@ export function Sidebar() {
   const isActive = (path: string) => {
     if (path === '/projects' && pathname === '/projects') return true;
     if (path === '/mentions' && pathname.includes('/mentions')) return true;
-    if (path === '/explore' && pathname.includes('/explore')) return true;
     return pathname === path;
   };
 
@@ -67,13 +65,14 @@ export function Sidebar() {
       </button>
 
       <div className={cn(
-        "fixed md:static inset-y-0 left-0 z-40 transform transition-transform duration-300 ease-in-out",
-        "h-screen flex-none bg-[#ff4500] w-56 font-inter",
+        "fixed md:sticky top-0 left-0 z-40 transform transition-transform duration-300 ease-in-out",
+        "h-screen flex flex-col bg-[#ff4500] w-56 font-inter",
+        "overflow-hidden", // Prevent any overflow issues
         isMobile && !isOpen ? "-translate-x-full" : "translate-x-0",
         isMobile ? "shadow-lg" : ""
       )}>
         {/* Logo section with white background */}
-        <div className="bg-white p-3 border-b border-[#ff4500]/10">
+        <div className="bg-white p-3 border-b border-[#ff4500]/10 shrink-0">
           <div className="flex items-center gap-2">
             <Image
               src="/logo.png"
@@ -86,8 +85,21 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* Navigation Links */}
-        <nav className="flex-1 py-3 px-2 space-y-1 overflow-y-auto">
+        {/* Navigation Links - Scrollable area with hidden scrollbar */}
+        <nav 
+          className="flex-1 py-3 px-2 space-y-1 overflow-y-auto"
+          style={{
+            scrollbarWidth: 'none', /* Firefox */
+            msOverflowStyle: 'none', /* IE and Edge */
+          }}
+        >
+          {/* Hide scrollbar for Chrome, Safari and Opera */}
+          <style jsx>{`
+            nav::-webkit-scrollbar {
+              display: none;
+            }
+          `}</style>
+          
           {navigation.map((item) => {
             const isActiveRoute = isActive(item.href);
             return (
@@ -109,37 +121,23 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Reddit Connection Status */}
-        <div className="mt-auto border-t border-white/10 pt-2">
-          <RedditStatusIndicator />
-        </div>
+        {/* Bottom section with Reddit status and logout - Fixed at bottom */}
+        <div className="shrink-0 mt-auto border-t border-white/20">
+          {/* Reddit Connection Status */}
+          <div className="px-2 py-2">
+            <RedditStatusIndicator />
+          </div>
 
-        {/* Explore Posts - Moved to bottom */}
-        <div className="px-2 py-1">
-          <Link
-            href="/explore"
-            onClick={() => isMobile && setIsOpen(false)}
-            className={cn(
-              "flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium",
-              isActive('/explore')
-                ? "bg-white text-[#ff4500]"
-                : "text-white hover:bg-white/10"
-            )}
-          >
-            <Search className="h-5 w-5 flex-shrink-0" />
-            Explore Posts
-          </Link>
-        </div>
-
-        {/* Logout Button */}
-        <div className="p-3 border-t border-white/10">
-          <button
-            onClick={logout}
-            className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10"
-          >
-            <LogOut className="h-5 w-5 flex-shrink-0" />
-            Logout
-          </button>
+          {/* Logout Button */}
+          <div className="p-2 border-t border-white/20">
+            <button
+              onClick={logout}
+              className="flex w-full items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium text-white hover:bg-white/10"
+            >
+              <LogOut className="h-5 w-5 flex-shrink-0" />
+              Logout
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -96,7 +96,7 @@ export default function LandingPage() {
       {/* Hot Selling Feature Banner */}
       <div className="bg-[#ff4500] text-white py-3 px-4 text-center">
         <p className="text-sm font-medium text-white">
-          App is under repair for 2 days
+           Customizable AI comments that reflect your brand identity
         </p>
       </div>
 
@@ -130,7 +130,7 @@ export default function LandingPage() {
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                   <Button
                     ref={ctaRef}
-                    className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105 animate-bounce"
+                    className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105"
                     onClick={handleGetStarted}
                   >
                     Find Leads Now
