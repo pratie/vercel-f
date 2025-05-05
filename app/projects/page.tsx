@@ -11,6 +11,7 @@ import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { FreeAccessMessage } from '../components/FreeAccessMessage';
+import { trackGoal, GOALS } from '@/lib/analytics';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -39,6 +40,9 @@ export default function ProjectsPage() {
           await api.updatePaymentStatus(paymentId ? { paymentId } : undefined);
           setHasPaid(true);
           toast.success('Payment successful! You can now create projects.');
+          trackGoal(GOALS.PAYMENT_COMPLETED, { 
+            description: 'User completed payment and upgraded their account'
+          });
         } catch (error) {
           console.error('Error updating payment status:', error);
           toast.error('Error processing payment. Please contact support.');
@@ -94,6 +98,7 @@ export default function ProjectsPage() {
       });
       setProjects(prevProjects => [...prevProjects, newProject]);
       toast.success('Project created successfully!');
+      trackGoal(GOALS.PROJECT_CREATE, { description: 'User created a new project' });
     } catch (error) {
       console.error('Failed to create project:', error);
       toast.error('Failed to create project. Please try again.');

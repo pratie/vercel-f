@@ -4,6 +4,7 @@ import { create } from 'zustand';
 import { getAuthToken } from './auth';
 import { api } from './api';
 import { toast } from 'sonner';
+import { trackGoal, GOALS } from './analytics';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
@@ -289,6 +290,7 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
             
             // Show success notification
             toast.success('Successfully connected to Reddit!');
+            trackGoal(GOALS.REDDIT_CONNECT);
           }
         };
         
@@ -367,6 +369,7 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
           isLoading: false,
           lastChecked: Date.now()
         });
+        trackGoal(GOALS.REDDIT_DISCONNECT);
         return true;
       } else {
         throw new Error('Unexpected response from disconnect endpoint');
@@ -399,63 +402,51 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
   },
 
   postComment: async (params: PostCommentParams) => {
-    // First ensure we're connected to Reddit
-    const connected = await get().ensureRedditConnection({
-      silent: false
-    });
-    
-    if (!connected) {
-      throw new Error('Reddit connection required to post comments');
-    }
-    
-    set({ isLoading: true, error: null });
     try {
-      const token = getAuthToken();
+      set({ isLoading: true, error: null });
+      
+      const token = await getAuthToken();
       if (!token) {
-        throw new Error('You must be logged in to post a comment');
+        throw new Error('Authentication required');
       }
-
-      const response = await api.postRedditComment({
-        post_title: params.post_title,
-        post_content: '', // This will be populated by the backend
-        brand_id: params.brand_id,
-        post_url: params.post_url,
-        comment_text: params.comment_text
-      });
-
-      set({ isLoading: false });
-      return response;
-    } catch (error) {
-      console.error('Reddit post comment error:', error);
       
-      // Handle specific error cases better
-      let errorMessage = 'Unknown error';
-      if (error instanceof Error) {
-        // Check for Reddit rate limiting errors
-        if (error.message.includes('rate limit') || error.message.includes('try again later')) {
-          errorMessage = 'Reddit limits comments to prevent spam. Please wait a few minutes before trying again.';
-          
-          // Store rate limiting information to prevent further attempts
-          const currentTime = Date.now();
-          localStorage.setItem('reddit_comment_rate_limited', String(currentTime + 5 * 60 * 1000)); // 5 minute cooldown
-          
-          toast.error('Rate limited by Reddit', {
-            description: 'Reddit limits how frequently you can post comments. Please wait a few minutes before trying again.',
-            duration: 5000
-          });
-        } else if (error.message.includes('already posted')) {
-          errorMessage = 'You have already posted this comment on Reddit.';
-        } else {
-          errorMessage = error.message;
+      const response = await fetch(`${API_BASE_URL}/api/reddit/comment/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(params)
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        const errorMessage = errorData.detail || errorData.message || 'Failed to post comment';
+        
+        // Handle specific error cases
+        if (response.status === 401) {
+          set({ isAuthenticated: false, username: null });
+          throw new Error('Reddit authentication required');
+        } else if (response.status === 429) {
+          throw new Error('Rate limit exceeded. Please try again later.');
         }
+        
+        throw new Error(errorMessage);
       }
       
-      set({
-        isLoading: false,
-        error: errorMessage
+      const data = await response.json();
+      
+      // Track successful comment posting
+      trackGoal(GOALS.REDDIT_POST_COMMENT, {
+        description: 'User posted a comment to Reddit'
       });
       
-      throw error; // Throw the original error to preserve the message
+      return data;
+    } catch (error: any) {
+      set({ error: error.message });
+      throw error;
+    } finally {
+      set({ isLoading: false });
     }
-  }
+  },
 }));
