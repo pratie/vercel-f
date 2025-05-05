@@ -46,6 +46,12 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable}`}>
       <head>
         <GoogleAnalytics />
+        <script
+          defer
+          data-website-id="6818d5abb401f52ad91f2054"
+          data-domain="sneakyguy.com"
+          src="https://datafa.st/js/script.js">
+        </script>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </head>
       <body className={`${poppins.className} font-sans antialiased`}>
