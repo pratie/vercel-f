@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, ChevronDown, ChevronUp, Eye } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, ChevronDown, ChevronUp, Eye, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -66,6 +66,7 @@ export default function MentionsPage() {
   const [isPosting, setIsPosting] = useState<number | null>(null);
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
   const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
+  const [visitedPosts, setVisitedPosts] = useState<Record<string, boolean>>({});
   const itemsPerPage = 15;
   const { user } = useAuth();
   const router = useRouter();
@@ -225,6 +226,11 @@ export default function MentionsPage() {
       const COMMENTS_STORAGE_KEY = `published-comments-${projectId}`;
       const savedComments = JSON.parse(localStorage.getItem(COMMENTS_STORAGE_KEY) || '{}');
       setPublishedComments(savedComments);
+      
+      // Load visited posts from localStorage
+      const VISITED_POSTS_KEY = 'visited-reddit-posts';
+      const savedVisitedPosts = JSON.parse(localStorage.getItem(VISITED_POSTS_KEY) || '{}');
+      setVisitedPosts(savedVisitedPosts);
     }
   }, [projectId]);
 
@@ -480,10 +486,28 @@ export default function MentionsPage() {
                               href={mention.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md ${visitedPosts[mention.url] ? 'bg-gray-500 hover:bg-gray-600' : 'bg-[#ff4500] hover:bg-[#ff4500]/90'} text-white transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8`}
+                              onClick={() => {
+                                // Mark post as visited
+                                const updatedVisitedPosts = { ...visitedPosts, [mention.url]: true };
+                                setVisitedPosts(updatedVisitedPosts);
+                                
+                                // Save to localStorage
+                                const VISITED_POSTS_KEY = 'visited-reddit-posts';
+                                localStorage.setItem(VISITED_POSTS_KEY, JSON.stringify(updatedVisitedPosts));
+                              }}
                             >
-                              View Post
-                              <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                              {visitedPosts[mention.url] ? (
+                                <>
+                                  Visited
+                                  <CheckCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                </>
+                              ) : (
+                                <>
+                                  View Post
+                                  <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
+                                </>
+                              )}
                             </a>
                           </div>
                         </div>
@@ -679,9 +703,7 @@ export default function MentionsPage() {
                   variant="outline"
                   className="flex items-center gap-2"
                 >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7-7 18 7 18 7-7z" />
-                  </svg>
+                  <ChevronLeft className="h-4 w-4" />
                   Previous
                 </Button>
                 <div className="flex items-center gap-1">
@@ -708,9 +730,7 @@ export default function MentionsPage() {
                   className="flex items-center gap-2"
                 >
                   Next
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <ChevronRight className="h-4 w-4" />
                 </Button>
               </div>
             </div>
