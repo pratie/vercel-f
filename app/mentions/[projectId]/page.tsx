@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, ChevronDown, ChevronUp, Eye } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -65,6 +65,7 @@ export default function MentionsPage() {
   const [refreshDisabled, setRefreshDisabled] = useState(false);
   const [isPosting, setIsPosting] = useState<number | null>(null);
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
+  const [expandedPosts, setExpandedPosts] = useState<Record<number, boolean>>({});
   const itemsPerPage = 15;
   const { user } = useAuth();
   const router = useRouter();
@@ -460,6 +461,21 @@ export default function MentionsPage() {
                             <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-xs sm:text-sm">
                               r/{mention.subreddit}
                             </Badge>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
+                              onClick={() => setExpandedPosts(prev => ({
+                                ...prev,
+                                [mention.id]: !prev[mention.id]
+                              }))}
+                            >
+                              <Eye className="h-3 w-3 sm:h-3.5 sm:w-3.5 mr-1" />
+                              {expandedPosts[mention.id] ? 'Hide Preview' : 'Preview'}
+                              {expandedPosts[mention.id] ? 
+                                <ChevronUp className="h-3 w-3 sm:h-3.5 sm:w-3.5 ml-1" /> : 
+                                <ChevronDown className="h-3 w-3 sm:h-3.5 sm:w-3.5 ml-1" />}
+                            </Button>
                             <a 
                               href={mention.url}
                               target="_blank"
@@ -482,6 +498,26 @@ export default function MentionsPage() {
                                 {keyword}
                               </Badge>
                             ))}
+                          </div>
+                        )}
+                        
+                        {/* Post Preview Section */}
+                        {expandedPosts[mention.id] && (
+                          <div className="mt-3 p-4 bg-gray-50 rounded-lg border border-gray-200 order-4 animate-fadeIn">
+                            <div className="mb-2">
+                              <h4 className="text-sm font-medium text-gray-700 mb-2">Post Content:</h4>
+                              <div 
+                                className="text-sm text-gray-600 whitespace-pre-wrap break-words max-h-[200px] overflow-y-auto p-2 bg-white rounded border border-gray-100"
+                                dangerouslySetInnerHTML={{ 
+                                  __html: highlightKeywords(mention.content, mention.matching_keywords)
+                                }}
+                              />
+                            </div>
+                            <div className="flex justify-end items-center mt-3 text-xs text-gray-500">
+                              <Badge variant="outline" className="bg-white text-xs">
+                                Score: {mention.score}
+                              </Badge>
+                            </div>
                           </div>
                         )}
                       </div>
