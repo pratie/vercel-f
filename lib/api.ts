@@ -60,14 +60,14 @@ const api = {
     post_url: string;
     comment_text: string;
   }) {
-    console.log('Making request to:', `${API_BASE_URL}/post-reddit-comment/`);
+    console.log('Making request to:', `${API_BASE_URL}/api/reddit/comment/`);
     console.log('Request headers:', {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${localStorage.getItem('token')}`
     });
     console.log('Request body:', data);
 
-    const response = await fetch(`${API_BASE_URL}/post-reddit-comment/`, {
+    const response = await fetch(`${API_BASE_URL}/api/reddit/comment/`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

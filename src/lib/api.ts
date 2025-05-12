@@ -434,10 +434,10 @@ export const api = {
         comment_text: string;
     }): Promise<{ comment: string; comment_url: string; status: string }> {
         const baseUrl = getApiBaseUrl();
-        console.log('Making request to:', `${baseUrl}/post-reddit-comment/`);
+        console.log('Making request to:', `${baseUrl}/api/reddit/comment/`);
         console.log('Request body:', data);
 
-        const response = await fetchWithAuth(`${baseUrl}/post-reddit-comment/`, {
+        const response = await fetchWithAuth(`${baseUrl}/api/reddit/comment/`, {
             method: 'POST',
             body: JSON.stringify(data)
         });
