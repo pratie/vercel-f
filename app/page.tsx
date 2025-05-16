@@ -662,15 +662,13 @@ export default function LandingPage() {
                 Enterprise-grade Reddit lead generation for businesses. Automate your Reddit presence and never miss a potential lead again.
               </p>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-500 hover:text-[#ff4500]">
+                <a href="https://x.com/snow_stark17" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#ff4500]">
                   <Twitter className="h-5 w-5" />
                 </a>
-                <a href="#" className="text-gray-500 hover:text-[#ff4500]">
+                <a href="https://www.linkedin.com/in/sneakyguyai/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#ff4500]">
                   <Linkedin className="h-5 w-5" />
                 </a>
-                <a href="#" className="text-gray-500 hover:text-[#ff4500]">
-                  <Mail className="h-5 w-5" />
-                </a>
+                
               </div>
             </div>
             
