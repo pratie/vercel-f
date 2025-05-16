@@ -10,7 +10,6 @@ import { FreeAccessMessage } from './components/FreeAccessMessage';
 import Link from 'next/link';
 import { useRef } from 'react';
 import confetti from 'canvas-confetti'; // You may need to install this package
-import BetaSlots from '@/components/BetaSlots';
 import SocialProof from '@/components/SocialProof';
 
 export default function LandingPage() {
@@ -138,7 +137,6 @@ export default function LandingPage() {
                   </Button>
                 </div>
 
-                <BetaSlots totalSlots={25} usedSlots={24} />
 
                 <div className="mt-8 flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
                   <div className="flex items-center">
