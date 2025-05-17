@@ -18,6 +18,7 @@ import { EditProjectDialog } from './EditProjectDialog';
 import { RedditAnalysisLoading } from './RedditAnalysisLoading';
 import { useRedditAuthStore } from '@/lib/redditAuth';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+
 import { getCache, setCache } from '@/lib/cacheUtils';
 import { isValidRedditUrl, safeJsonParse } from '@/lib/securityUtils';
 import { logError } from '@/lib/errorUtils';
@@ -32,6 +33,8 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
   const [loading, setLoading] = useState(false);
   const [mentions, setMentions] = useState<RedditMention[]>([]);
   const [showMentions, setShowMentions] = useState(false);
+  const [showAllKeywords, setShowAllKeywords] = useState(false);
+  const [showAllSubreddits, setShowAllSubreddits] = useState(false);
   const router = useRouter();
   const redditAuth = useRedditAuthStore();
 
@@ -48,7 +51,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
     }
 
     const CACHE_KEY = `mentions-${project.id}`;
-    const CACHE_DURATION = 6 * 60 * 60 * 1000; // 6 hours in milliseconds
+    const CACHE_DURATION = 1 * 60 * 60 * 1000; // 1 hour in milliseconds
 
     // Check if we have cached mentions using the new utility
     const cachedMentions = getCache<{mentions: RedditMention[], timestamp: number}>(CACHE_KEY, CACHE_DURATION);
@@ -204,24 +207,104 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         <CardContent className="pb-2">
           <div className="space-y-3">
             <div>
-              <Label className="text-xs text-gray-500">Keywords</Label>
-              <div className="flex flex-wrap gap-1 mt-1">
-                {project.keywords.map((keyword, index) => (
-                  <Badge key={index} variant="secondary" className="bg-orange-100 text-orange-800 hover:bg-orange-200">
-                    {keyword}
-                  </Badge>
-                ))}
-              </div>
-            </div>
-            <div>
-              <Label className="text-xs text-gray-500">Subreddits</Label>
-              <div className="flex flex-wrap gap-1 mt-1">
-                {project.subreddits.map((subreddit, index) => (
-                  <Badge key={index} variant="outline" className="text-blue-600 border-blue-300">
-                    r/{subreddit}
-                  </Badge>
-                ))}
-              </div>
+               <div className="space-y-4">
+                 <div>
+                   <div className="flex justify-between items-center">
+                     <Label className="text-sm font-medium text-gray-900">Keywords</Label>
+                     <Button
+                       variant="ghost"
+                       size="icon"
+                       className="h-6 w-6 p-1 hover:bg-gray-100"
+                       onClick={() => setShowAllKeywords(!showAllKeywords)}
+                     >
+                       {showAllKeywords ? (
+                         <ChevronUp className="h-4 w-4 text-gray-500" />
+                       ) : (
+                         <ChevronDown className="h-4 w-4 text-gray-500" />
+                       )}
+                     </Button>
+                   </div>
+                   <div className="mt-2 flex flex-wrap gap-2 transition-all duration-300 ease-in-out">
+                     {showAllKeywords 
+                       ? project.keywords.map((keyword, index) => (
+                           <div 
+                             key={index} 
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-[#fff3f0] text-[#ff4500] text-sm font-medium hover:bg-[#fff3f0]/90 transition-colors"
+                           >
+                             <span className="mr-1">#</span>
+                             {keyword}
+                           </div>
+                         ))
+                       : project.keywords.slice(0, 5).map((keyword, index) => (
+                           <div 
+                             key={index} 
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-[#fff3f0] text-[#ff4500] text-sm font-medium hover:bg-[#fff3f0]/90 transition-colors"
+                           >
+                             <span className="mr-1">#</span>
+                             {keyword}
+                           </div>
+                         ))}
+                   </div>
+                   {!showAllKeywords && project.keywords.length > 5 && (
+                     <div className="text-xs text-gray-500 mt-1">
+                       +{project.keywords.length - 5} more keywords
+                     </div>
+                   )}
+                   {showAllKeywords && project.keywords.length > 5 && (
+                     <div className="text-xs text-gray-500 mt-1">
+                       Showing all {project.keywords.length} keywords
+                     </div>
+                   )}
+                 </div>
+                 <div>
+                   <div className="flex justify-between items-center">
+                     <Label className="text-sm font-medium text-gray-900">Subreddits</Label>
+                     <Button
+                       variant="ghost"
+                       size="icon"
+                       className="h-6 w-6 p-1 hover:bg-gray-100"
+                       onClick={() => setShowAllSubreddits(!showAllSubreddits)}
+                     >
+                       {showAllSubreddits ? (
+                         <ChevronUp className="h-4 w-4 text-gray-500" />
+                       ) : (
+                         <ChevronDown className="h-4 w-4 text-gray-500" />
+                       )}
+                     </Button>
+                   </div>
+                   <div className="mt-2 flex flex-wrap gap-2 transition-all duration-300 ease-in-out">
+                     {showAllSubreddits 
+                       ? project.subreddits.map((subreddit, index) => (
+                           <div 
+                             key={index} 
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-50/90 transition-colors"
+                           >
+                             <span className="mr-1">r/</span>
+                             {subreddit}
+                           </div>
+                         ))
+                       : project.subreddits.slice(0, 5).map((subreddit, index) => (
+                           <div 
+                             key={index} 
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-50/90 transition-colors"
+                           >
+                             <span className="mr-1">r/</span>
+                             {subreddit}
+                           </div>
+                         ))}
+                   </div>
+                   {!showAllSubreddits && project.subreddits.length > 5 && (
+                     <div className="text-xs text-gray-500 mt-1">
+                       +{project.subreddits.length - 5} more subreddits
+                     </div>
+                   )}
+                   {showAllSubreddits && project.subreddits.length > 5 && (
+                     <div className="text-xs text-gray-500 mt-1">
+                       Showing all {project.subreddits.length} subreddits
+                     </div>
+                   )}
+                 </div>
+               </div>
             </div>
           </div>
         </CardContent>
