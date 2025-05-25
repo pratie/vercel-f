@@ -11,21 +11,5 @@ export function HighlightedText({ text, keywords }: HighlightedTextProps) {
   const regex = new RegExp(`(${keywords.join('|')})`, 'gi');
   const parts = text.split(regex);
 
-  return (
-    <>
-      {parts.map((part, i) => {
-        const isMatch = keywords.some(keyword => 
-          part.toLowerCase() === keyword.toLowerCase()
-        );
-        
-        return isMatch ? (
-          <span key={i} className="bg-yellow-200 rounded px-0.5">
-            {part}
-          </span>
-        ) : (
-          <span key={i}>{part}</span>
-        );
-      })}
-    </>
-  );
+  return <>{text}</>;
 }

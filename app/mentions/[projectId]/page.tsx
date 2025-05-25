@@ -309,13 +309,7 @@ export default function MentionsPage() {
   };
 
   const highlightKeywords = (text: string, keywords: string[]) => {
-    if (!text || !keywords) return text;
-    let highlightedText = text;
-    keywords.forEach(keyword => {
-      const regex = new RegExp(`(${keyword})`, 'gi');
-      highlightedText = highlightedText.replace(regex, '<mark class="bg-yellow-200 font-medium">$1</mark>');
-    });
-    return highlightedText;
+    return text;
   };
 
   const [generatingReplyFor, setGeneratingReplyFor] = useState<number | null>(null);
