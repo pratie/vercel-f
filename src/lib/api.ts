@@ -352,9 +352,23 @@ export const api = {
     },
 
     // Mentions
-    async getMentions(brandId: string): Promise<RedditMention[]> {
+    async getMentions(brandId: string, skip?: number, limit?: number): Promise<RedditMention[]> {
         const baseUrl = getApiBaseUrl();
-        const response = await fetchWithAuth(`${baseUrl}/mentions/${parseInt(brandId, 10)}/`, {
+        let url = `${baseUrl}/mentions/${parseInt(brandId, 10)}/`;
+
+        const queryParams = new URLSearchParams();
+        if (skip !== undefined) {
+            queryParams.append('skip', String(skip));
+        }
+        if (limit !== undefined) {
+            queryParams.append('limit', String(limit));
+        }
+
+        if (queryParams.toString()) {
+            url += `?${queryParams.toString()}`;
+        }
+
+        const response = await fetchWithAuth(url, {
             method: 'GET',
         });
 

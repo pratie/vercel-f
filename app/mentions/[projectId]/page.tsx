@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, Loader2 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -56,71 +56,47 @@ interface Project {
   subreddits: string[];
 }
 
+const MENTIONS_PER_PAGE = 25;
+
+const transformRawMention = (mention: RawMention): RedditMention => ({
+  id: mention.id,
+  brand_id: mention.brand_id,
+  title: mention.title,
+  content: mention.content,
+  url: mention.url,
+  subreddit: mention.subreddit,
+  author: mention.author || 'unknown',
+  created_utc: mention.created_utc,
+  score: mention.score,
+  num_comments: mention.num_comments,
+  matching_keywords: Array.isArray(mention.matching_keywords)
+    ? mention.matching_keywords
+    : (mention.keyword ? [mention.keyword] : []),
+  relevance_score: mention.relevance_score,
+  suggested_comment: mention.suggested_comment,
+  formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }),
+});
+
 export default function MentionsPage() {
   const [mentions, setMentions] = useState<RedditMention[]>([]);
   const [project, setProject] = useState<Project | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(true); // For initial project and first page load
+  const [isLoadingMore, setIsLoadingMore] = useState(false); // For 'Load More' button
+  const [currentSkip, setCurrentSkip] = useState(0);
+  const [hasMoreMentions, setHasMoreMentions] = useState(true);
   const [nextRefreshTime, setNextRefreshTime] = useState<number | null>(null);
   const [refreshDisabled, setRefreshDisabled] = useState(false);
   const [isPosting, setIsPosting] = useState<number | null>(null);
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
-  const itemsPerPage = 15;
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
   const projectId = params?.projectId as string;
   const redditAuth = useRedditAuthStore();
-
-  const fetchMentions = useCallback(async () => {
-    // Add additional type safety check
-    if (!projectId || typeof projectId !== 'string' || isNaN(parseInt(projectId, 10))) {
-      toast.error('Invalid project ID');
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const projectData = await api.getProject(projectId);
-      setProject(projectData);
-
-      // Get mentions from database
-      const mentions: RawMention[] = await api.getMentions(projectId);
-      
-      // Transform mentions to match RedditPost interface
-      const transformedMentions = mentions.map(mention => ({
-        id: mention.id,
-        brand_id: mention.brand_id,
-        title: mention.title,
-        content: mention.content,
-        url: mention.url,
-        subreddit: mention.subreddit,
-        author: mention.author || 'unknown',
-        created_utc: mention.created_utc,
-        score: mention.score,
-        num_comments: mention.num_comments,
-        matching_keywords: Array.isArray(mention.matching_keywords) ? 
-          mention.matching_keywords : 
-          (mention.keyword ? [mention.keyword] : []),
-        relevance_score: mention.relevance_score,
-        suggested_comment: mention.suggested_comment,
-        formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })
-      }))
-      // Sort by date (created_utc) in descending order (latest first)
-      .sort((a, b) => b.created_utc - a.created_utc);
-
-      setMentions(transformedMentions);
-    } catch (error) {
-      console.error('Error fetching mentions:', error);
-      toast.error('Failed to fetch mentions. Please try again.');
-    } finally {
-      setIsLoading(false);
-    }
-  }, [projectId]);
 
   useEffect(() => {
     if (!user) {
@@ -128,25 +104,63 @@ export default function MentionsPage() {
       return;
     }
 
-    // Check if projectId exists and is valid
-    if (!projectId || typeof projectId !== 'string' || isNaN(parseInt(projectId, 10))) {
+    if (projectId && typeof projectId === 'string' && !isNaN(parseInt(projectId, 10))) {
+      setIsLoading(true);
+      setMentions([]);
+      setCurrentSkip(0);
+      setHasMoreMentions(true);
+      setProject(null);
+
+      api.getProject(projectId)
+        .then(projectData => {
+          setProject(projectData);
+          return api.getMentions(projectId, 0, MENTIONS_PER_PAGE);
+        })
+        .then(newMentionsRaw => {
+          const transformed = newMentionsRaw
+            .map(transformRawMention)
+            .sort((a, b) => b.created_utc - a.created_utc); // Sort initial batch
+          setMentions(transformed);
+          setCurrentSkip(transformed.length);
+          setHasMoreMentions(transformed.length === MENTIONS_PER_PAGE);
+        })
+        .catch(error => {
+          console.error('Error fetching initial project data or mentions:', error);
+          toast.error('Failed to load project mentions. Please try again.');
+          // Consider setting hasMoreMentions to false or other error state handling
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    } else if (projectId) { // projectId exists but is invalid
       toast.error('Invalid project ID');
       router.push('/projects');
-      return;
+      setIsLoading(false); // Ensure loading is stopped
     }
+  }, [projectId, user, router]);
 
-    fetchMentions();
-  }, [projectId, user, router, fetchMentions]);
+  const handleLoadMore = async () => {
+    if (!projectId || isLoadingMore || !hasMoreMentions || isLoading) return;
 
-  useEffect(() => {
-    if (!projectId) return;
-    
-    // Project data is already loaded in fetchMentions
-    fetchMentions();
-    
-    // Reddit auth status is now checked with caching in the redditAuth store
-    // No need to call it explicitly here as it's already checked in AuthContext
-  }, [projectId, fetchMentions]);
+    setIsLoadingMore(true);
+    try {
+      const newMentionsRaw = await api.getMentions(projectId, currentSkip, MENTIONS_PER_PAGE);
+      const transformedNewMentions = newMentionsRaw.map(transformRawMention);
+
+      setMentions(prevMentions => {
+        const combined = [...prevMentions, ...transformedNewMentions];
+        return combined.sort((a, b) => b.created_utc - a.created_utc); // Sort combined list
+      });
+      setCurrentSkip(prevSkip => prevSkip + transformedNewMentions.length);
+      setHasMoreMentions(transformedNewMentions.length === MENTIONS_PER_PAGE);
+    } catch (error) {
+      console.error('Error fetching more mentions:', error);
+      toast.error('Failed to fetch more mentions.');
+      // Potentially set hasMoreMentions to false here too
+    } finally {
+      setIsLoadingMore(false);
+    }
+  };
 
   const postComment = async (mention: RedditMention) => {
     if (isPosting !== null) return; // Prevent multiple simultaneous posts
@@ -335,28 +349,6 @@ export default function MentionsPage() {
     }
   };
 
-  // Calculate pagination values
-  const totalPages = Math.ceil(mentions.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentMentions = mentions.slice(startIndex, endIndex);
-
-  const goToNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(prev => prev + 1);
-      // Smooth scroll to top of mentions
-      document.getElementById('mentions-list')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
-  const goToPreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(prev => prev - 1);
-      // Smooth scroll to top of mentions
-      document.getElementById('mentions-list')?.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <PaymentGuard>
       <div className="container mx-auto px-4 py-6 max-w-6xl">
@@ -442,7 +434,7 @@ export default function MentionsPage() {
         ) : (
           <>
             <div id="mentions-list" className="space-y-6">
-              {currentMentions.map((mention, index) => (
+              {mentions.map((mention, index) => (
                 <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl">
                   <CardContent className="p-4 sm:p-6">
                     <div className="space-y-3 sm:space-y-4">
@@ -629,55 +621,27 @@ export default function MentionsPage() {
               ))}
             </div>
 
-            {/* Pagination Controls */}
-            <div className="mt-8 flex items-center justify-between border-t border-gray-200 pt-4">
-              <div className="flex items-center text-sm text-gray-500">
-                Showing <span className="font-medium mx-1">{startIndex + 1}</span>
-                to <span className="font-medium mx-1">{Math.min(endIndex, mentions.length)}</span>
-                of <span className="font-medium mx-1">{mentions.length}</span> mentions
-              </div>
-              <div className="flex items-center gap-2">
-                <Button
-                  onClick={goToPreviousPage}
-                  disabled={currentPage === 1}
+            {!isLoading && hasMoreMentions && mentions.length > 0 && (
+              <div className="mt-8 text-center">
+                <Button 
+                  onClick={handleLoadMore} 
+                  disabled={isLoadingMore}
                   variant="outline"
-                  className="flex items-center gap-2"
+                  className="bg-white hover:bg-gray-50 text-gray-700 border-gray-300 shadow-sm"
                 >
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7-7 18 7 18 7-7z" />
-                  </svg>
-                  Previous
-                </Button>
-                <div className="flex items-center gap-1">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <Button
-                      key={page}
-                      onClick={() => {
-                        setCurrentPage(page);
-                        document.getElementById('mentions-list')?.scrollIntoView({ behavior: 'smooth' });
-                      }}
-                      variant={currentPage === page ? "default" : "outline"}
-                      className={`w-8 h-8 p-0 ${
-                        currentPage === page ? 'bg-[#ff4500] hover:bg-[#ff4500]/90' : ''
-                      }`}
-                    >
-                      {page}
-                    </Button>
-                  ))}
-                </div>
-                <Button
-                  onClick={goToNextPage}
-                  disabled={currentPage === totalPages}
-                  variant="outline"
-                  className="flex items-center gap-2"
-                >
-                  Next
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
+                  {isLoadingMore ? (
+                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</>
+                  ) : (
+                    'Load More Mentions'
+                  )}
                 </Button>
               </div>
-            </div>
+            )}
+
+            {!isLoading && !isLoadingMore && !hasMoreMentions && mentions.length > 0 && (
+               <p className="mt-8 text-center text-gray-500">You've reached the end of the mentions list.</p>
+            )}
+
           </>
         )}
         {!redditAuth.isAuthenticated && (

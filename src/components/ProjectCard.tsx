@@ -134,15 +134,9 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
     if (!window.confirm(`Are you sure you want to delete ${project.name}?`)) {
       return;
     }
-
-    try {
-      await api.deleteProject(project.id);
-      toast.success('Project deleted successfully');
-      onDelete?.(project.id);
-    } catch (error) {
-      console.error('Failed to delete project:', error);
-      toast.error('Failed to delete project. Please try again.');
-    }
+    // Call the onDelete prop passed from the parent component (ProjectsPage)
+    // The parent component will handle the actual API call and toast notifications.
+    onDelete?.(project.id);
   };
 
   const handleEdit = async (updatedProject: Project) => {

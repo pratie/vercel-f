@@ -106,6 +106,12 @@ export default function ProjectsPage() {
       setProjects(prevProjects => prevProjects.filter(p => p.id !== projectId));
       await api.deleteProject(projectId);
       toast.success('Project deleted successfully');
+      
+      // Clear cached mentions for the deleted project
+      const mentionsCacheKey = `mentions-${projectId}`;
+      localStorage.removeItem(mentionsCacheKey);
+      console.log(`Cleared mentions cache for project ${projectId}: ${mentionsCacheKey}`);
+
     } catch (error) {
       console.error('Delete project error:', error);
       loadProjects();
