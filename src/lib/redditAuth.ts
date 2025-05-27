@@ -144,7 +144,10 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
     
     // Check if we're currently rate limited
     const rateLimitKey = 'reddit_auth_rate_limited';
-    const rateLimitUntil = localStorage.getItem(rateLimitKey);
+    let rateLimitUntil: string | null = null;
+    if (typeof window !== 'undefined') {
+      rateLimitUntil = localStorage.getItem(rateLimitKey);
+    }
     
     if (rateLimitUntil && parseInt(rateLimitUntil, 10) > currentTime) {
       console.log('Skipping Reddit auth check due to rate limiting');
@@ -164,7 +167,9 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
       console.log('Reddit auth status:', data);
       
       // Clear any stored rate limit if the request succeeds
-      localStorage.removeItem(rateLimitKey);
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem(rateLimitKey);
+      }
       
       set({
         isAuthenticated: data.is_authenticated,
@@ -181,7 +186,9 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
       
       // Handle rate limiting
       if (error instanceof Error && error.message.includes('429')) {
-        localStorage.setItem(rateLimitKey, String(currentTime + 10 * 60 * 1000));
+        if (typeof window !== 'undefined') {
+          localStorage.setItem(rateLimitKey, String(currentTime + 10 * 60 * 1000));
+        }
       }
       
       // Create a sanitized error message
@@ -437,7 +444,9 @@ export const useRedditAuthStore = create<RedditAuthState>((set, get) => ({
           
           // Store rate limiting information to prevent further attempts
           const currentTime = Date.now();
-          localStorage.setItem('reddit_comment_rate_limited', String(currentTime + 5 * 60 * 1000)); // 5 minute cooldown
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('reddit_comment_rate_limited', String(currentTime + 5 * 60 * 1000)); // 5 minute cooldown
+          }
           
           toast.error('Rate limited by Reddit', {
             description: 'Reddit limits how frequently you can post comments. Please wait a few minutes before trying again.',
