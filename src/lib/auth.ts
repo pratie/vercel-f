@@ -31,6 +31,7 @@ const getInitialUser = () => {
 
 // Set cookie with security attributes
 const setCookie = (name: string, value: string) => {
+  if (typeof window === 'undefined') return;
   // We can't set HttpOnly cookies from client-side JavaScript
   // This is a client-side cookie with secure attributes
   // The proper solution would be to set HttpOnly cookies from the server
@@ -40,6 +41,7 @@ const setCookie = (name: string, value: string) => {
 
 // Remove cookie
 const removeCookie = (name: string) => {
+  if (typeof window === 'undefined') return;
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict`;
 };
 
@@ -49,30 +51,32 @@ const authStore = create<AuthState>((set) => ({
   setUser: (user) => {
     if (user) {
       // Store minimal information in localStorage
-      localStorage.setItem('userEmail', user.email);
-      
-      // Store token in sessionStorage only (not localStorage)
-      // This reduces XSS risk as the token is cleared when the browser is closed
-      sessionStorage.setItem('token', user.token);
-      
-      // Don't set the token in a readable cookie - this should be done server-side as HttpOnly
-      // Using an insecure cookie as a fallback only
       if (typeof window !== 'undefined') {
+        localStorage.setItem('userEmail', user.email);
+        // Store token in sessionStorage only (not localStorage)
+        // This reduces XSS risk as the token is cleared when the browser is closed
+        sessionStorage.setItem('token', user.token);
+        // Don't set the token in a readable cookie - this should be done server-side as HttpOnly
+        // Using an insecure cookie as a fallback only
         setCookie('token', user.token);
       }
     } else {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('userEmail');
+        sessionStorage.removeItem('token');
+        localStorage.removeItem('token'); // Clear any legacy token storage
+        removeCookie('token');
+      }
+    }
+    set({ user });
+  },
+  logout: () => {
+    if (typeof window !== 'undefined') {
       localStorage.removeItem('userEmail');
       sessionStorage.removeItem('token');
       localStorage.removeItem('token'); // Clear any legacy token storage
       removeCookie('token');
     }
-    set({ user });
-  },
-  logout: () => {
-    localStorage.removeItem('userEmail');
-    sessionStorage.removeItem('token');
-    localStorage.removeItem('token'); // Clear any legacy token storage
-    removeCookie('token');
     set({ user: null });
   },
   initialize: () => {
@@ -106,17 +110,19 @@ const authStore = create<AuthState>((set) => ({
       }
 
       const user = { email: data.email, token: data.access_token };
-      localStorage.setItem('userEmail', data.email);
-      sessionStorage.setItem('token', data.access_token);
-      // Don't set the token in a readable cookie - this should be done server-side as HttpOnly
-      // Using an insecure cookie as a fallback only
       if (typeof window !== 'undefined') {
+        localStorage.setItem('userEmail', data.email);
+        sessionStorage.setItem('token', data.access_token);
+        // Don't set the token in a readable cookie - this should be done server-side as HttpOnly
+        // Using an insecure cookie as a fallback only
         setCookie('token', data.access_token);
       }
       set({ user });
       
       // Force a page reload to ensure middleware picks up the new cookie
-      window.location.href = '/projects';
+      if (typeof window !== 'undefined') {
+        window.location.href = '/projects';
+      }
       
       return user;
     } catch (error) {
