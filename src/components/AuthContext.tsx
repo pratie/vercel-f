@@ -31,13 +31,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // Check Reddit auth status when user is authenticated
   useEffect(() => {
     if (user?.token) {
-      console.log('User is logged in, checking Reddit auth status...');
-      // Use a ref to ensure we only check once per session
-      const checkOnce = sessionStorage.getItem('reddit_auth_checked');
-      if (!checkOnce) {
-        // Use the checkStatus directly with no automatic rechecking
-        redditAuthStore.checkStatus(true);
-        sessionStorage.setItem('reddit_auth_checked', 'true');
+      if (typeof window !== 'undefined') {
+        console.log('User is logged in, checking Reddit auth status...');
+        // Use a ref to ensure we only check once per session
+        const checkOnce = sessionStorage.getItem('reddit_auth_checked');
+        if (!checkOnce) {
+          // Use the checkStatus directly with no automatic rechecking
+          redditAuthStore.checkStatus(true);
+          sessionStorage.setItem('reddit_auth_checked', 'true');
+        }
       }
     }
   }, [user, redditAuthStore]);
