@@ -11,33 +11,19 @@ import Link from 'next/link';
 import { useRef } from 'react';
 import confetti from 'canvas-confetti'; // You may need to install this package
 import SocialProof from '@/components/SocialProof';
+import { usePathname } from 'next/navigation';
 
 export default function LandingPage() {
   const router = useRouter();
   const { user } = useAuth();
   const ctaRef = useRef<HTMLButtonElement>(null);
+  const pathname = usePathname();
 
   useEffect(() => {
-    if (user && window.location.pathname === '/') {
+    if (user && pathname === '/') {
       router.push('/projects');
     }
-  }, [user, router]);
-
-  // Add the meta tag to the document head using useEffect
-  useEffect(() => {
-    // Create meta element
-    const meta = document.createElement('meta');
-    meta.name = 'google-site-verification';
-    meta.content = 'f_tSBk9IVfHsqWhQ4MXGWYuBFys3IYsWQSxo9iwpb-g';
-    
-    // Append to head
-    document.head.appendChild(meta);
-    
-    // Clean up function
-    return () => {
-      document.head.removeChild(meta);
-    };
-  }, []);
+  }, [user, router, pathname]);
 
   const handleGetStarted = () => {
     // Confetti burst for delight
