@@ -460,7 +460,7 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {mentions.map((mention, index) => (
-                <Card key={mention.id} className={`w-full transition-all duration-200 hover:shadow-lg backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl ${viewedPosts.has(mention.id) ? 'bg-gray-100 opacity-70' : 'bg-white/70'}`}>
+                <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl">
                   <CardContent className="p-4 sm:p-6">
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex flex-col space-y-2">
@@ -484,7 +484,7 @@ export default function MentionsPage() {
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
                               onClick={() => handleMarkAsViewed(mention.id)}
                             >
-                              View Post
+                              {viewedPosts.has(mention.id) ? 'Viewed' : 'View Post'}
                               <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                             </a>
                           </div>
