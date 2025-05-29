@@ -98,6 +98,26 @@ export default function MentionsPage() {
   const projectId = params?.projectId as string;
   const redditAuth = useRedditAuthStore();
 
+  const VIEWED_POSTS_STORAGE_KEY_PREFIX = 'viewedPosts_';
+  const [viewedPosts, setViewedPosts] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    if (projectId) {
+      const key = `${VIEWED_POSTS_STORAGE_KEY_PREFIX}${projectId}`;
+      const storedViewedPosts = localStorage.getItem(key);
+      if (storedViewedPosts) {
+        try {
+          const parsedViewedPosts = JSON.parse(storedViewedPosts);
+          if (Array.isArray(parsedViewedPosts)) {
+            setViewedPosts(new Set(parsedViewedPosts));
+          }
+        } catch (error) {
+          console.error('Error parsing viewed posts from localStorage:', error);
+        }
+      }
+    }
+  }, [projectId]);
+
   useEffect(() => {
     if (!user) {
       router.push('/login');
@@ -343,6 +363,17 @@ export default function MentionsPage() {
     }
   };
 
+  const handleMarkAsViewed = (mentionId: number) => {
+    if (!projectId) return;
+    const key = `${VIEWED_POSTS_STORAGE_KEY_PREFIX}${projectId}`;
+    setViewedPosts(prevViewedPosts => {
+      const newViewedPosts = new Set(prevViewedPosts);
+      newViewedPosts.add(mentionId);
+      localStorage.setItem(key, JSON.stringify(Array.from(newViewedPosts)));
+      return newViewedPosts;
+    });
+  };
+
   return (
     <PaymentGuard>
       <div className="container mx-auto px-4 py-6 max-w-6xl">
@@ -429,7 +460,7 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {mentions.map((mention, index) => (
-                <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl">
+                <Card key={mention.id} className={`w-full transition-all duration-200 hover:shadow-lg backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl ${viewedPosts.has(mention.id) ? 'bg-gray-100 opacity-70' : 'bg-white/70'}`}>
                   <CardContent className="p-4 sm:p-6">
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex flex-col space-y-2">
@@ -451,6 +482,7 @@ export default function MentionsPage() {
                               target="_blank"
                               rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
+                              onClick={() => handleMarkAsViewed(mention.id)}
                             >
                               View Post
                               <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
