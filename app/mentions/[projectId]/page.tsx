@@ -481,7 +481,7 @@ export default function MentionsPage() {
                               href={mention.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500] text-white hover:bg-[#ff4500]/90 transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8"
+                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-white transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8 ${viewedPosts.has(mention.id) ? 'bg-gray-400 hover:bg-gray-500' : 'bg-[#ff4500] hover:bg-[#ff4500]/90'}`}
                               onClick={() => handleMarkAsViewed(mention.id)}
                             >
                               {viewedPosts.has(mention.id) ? 'Viewed' : 'View Post'}
