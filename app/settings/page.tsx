@@ -41,15 +41,14 @@ export default function SettingsPage() {
     updated_at: ''
   });
   const [alertSettings, setAlertSettings] = useState<AlertSettings>({
-    telegram_chat_id: '',
-    enable_telegram_alerts: false,
-    enable_email_alerts: false,
-    alert_frequency: 'daily'
+    telegram_chat_id: '', // Kept for API compatibility, not used in UI
+    enable_telegram_alerts: false, // Kept for API compatibility, always false
+    enable_email_alerts: false, // Main toggle for email notifications
+    alert_frequency: 'daily', // Default, options: 'daily', 'weekly'
+    is_active: false // Reflects overall notification status, tied to enable_email_alerts
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isAlertLoading, setIsAlertLoading] = useState(false);
-  const [isSaved, setIsSaved] = useState(false);
-  const [isAlertSaved, setIsAlertSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<string | null>('account');
   const redditAuth = useRedditAuthStore();
 
@@ -68,9 +67,23 @@ export default function SettingsPage() {
     const loadAlertSettings = async () => {
       try {
         const data = await api.getAlertSettings();
-        setAlertSettings(data);
+        const isActive = data.is_active !== undefined ? data.is_active : (data.enable_email_alerts || false);
+        setAlertSettings({
+          telegram_chat_id: data.telegram_chat_id || '',
+          enable_telegram_alerts: false, // Always false for UI logic
+          enable_email_alerts: isActive, // This is the primary UI toggle state
+          alert_frequency: data.alert_frequency === 'realtime' ? 'daily' : (data.alert_frequency || 'daily'),
+          is_active: isActive // Store the effective active state
+        });
       } catch (error) {
         console.error('Error loading alert settings:', error);
+        setAlertSettings({ // Fallback state on error
+            telegram_chat_id: '',
+            enable_telegram_alerts: false,
+            enable_email_alerts: false,
+            alert_frequency: 'daily',
+            is_active: false
+        });
         toast.error(error instanceof Error ? error.message : 'Failed to load alert settings');
       }
     };
@@ -95,7 +108,6 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     setIsLoading(true);
-    setIsSaved(false);
     console.log('Saving preferences:', {
       tone: settings.tone,
       response_style: settings.response_style
@@ -108,10 +120,7 @@ export default function SettingsPage() {
       });
       console.log('Save successful, updated settings:', data);
       setSettings(data);
-      toast.success('Settings saved successfully');
-      setIsSaved(true);
-      // Reset the saved state after 2 seconds
-      setTimeout(() => setIsSaved(false), 2000);
+      toast.success('Preferences saved successfully');
     } catch (error) {
       console.error('Error saving preferences:', error);
       toast.error(error instanceof Error ? error.message : 'Failed to save preferences');
@@ -120,26 +129,42 @@ export default function SettingsPage() {
     }
   };
 
-  const handleSaveAlertSettings = async () => {
+  const autoSaveAlertSettings = async (newSettings: Partial<AlertSettings>) => {
+    if (isAlertLoading) return; // Prevent multiple saves if one is in progress
     setIsAlertLoading(true);
-    setIsAlertSaved(false);
-    console.log('Saving alert settings:', alertSettings);
+
+    // Merge with current settings to ensure all fields are present for the API
+    const settingsToSave: AlertSettings = {
+      ...alertSettings, // Start with current state
+      ...newSettings,   // Override with new changes
+      telegram_chat_id: alertSettings.telegram_chat_id || '', // Ensure these are always set as per previous logic
+      enable_telegram_alerts: false,
+      is_active: newSettings.enable_email_alerts !== undefined ? newSettings.enable_email_alerts : alertSettings.enable_email_alerts
+    };
+    // Ensure frequency is valid
+    if (settingsToSave.alert_frequency === 'realtime' || !settingsToSave.alert_frequency) {
+        settingsToSave.alert_frequency = 'daily';
+    }
+
+    console.log('Auto-saving alert settings:', settingsToSave);
 
     try {
-      // Always set is_active to true since we removed the toggle
-      const data = await api.updateAlertSettings({
-        ...alertSettings,
-        is_active: true
+      const data = await api.updateAlertSettings(settingsToSave);
+      const isActive = data.is_active !== undefined ? data.is_active : (data.enable_email_alerts || false);
+      console.log('Auto-save successful, updated alert settings:', data);
+      // Update local state with the response from the server
+      setAlertSettings({
+        telegram_chat_id: data.telegram_chat_id || '',
+        enable_telegram_alerts: false,
+        enable_email_alerts: isActive,
+        alert_frequency: data.alert_frequency === 'realtime' ? 'daily' : (data.alert_frequency || 'daily'),
+        is_active: isActive
       });
-      console.log('Save successful, updated alert settings:', data);
-      setAlertSettings(data);
-      toast.success('Alert settings saved successfully');
-      setIsAlertSaved(true);
-      // Reset the saved state after 2 seconds
-      setTimeout(() => setIsAlertSaved(false), 2000);
+      toast.success('Notification settings saved!');
     } catch (error) {
-      console.error('Error saving alert settings:', error);
-      toast.error(error instanceof Error ? error.message : 'Failed to save alert settings');
+      console.error('Error auto-saving alert settings:', error);
+      toast.error(error instanceof Error ? error.message : 'Failed to save notification settings');
+      // Optionally, revert to previous settings on error, or let user retry by toggling again
     } finally {
       setIsAlertLoading(false);
     }
@@ -244,102 +269,90 @@ export default function SettingsPage() {
           </Tabs.Panel>
 
           <Tabs.Panel value="notifications">
-            {/* Alert Settings */}
+            {/* Simplified Alert Settings for Email */}
             <Card>
+              <CardHeader>
+                <CardTitle>Email Notifications</CardTitle>
+                <CardDescription>
+                  Configure how you receive email notifications for new Reddit mentions.
+                </CardDescription>
+              </CardHeader>
               <CardContent className="pt-4">
                 <Stack gap="lg">
-                  {/* Telegram Settings */}
-                  <Box>
-                    <Text fw={500} size="lg" mb="xs">Telegram Alerts</Text>
-                    
-                    <Stack gap="xs">
-                      <TextInput
-                        label="Telegram Chat ID"
-                        placeholder="Enter your Telegram Chat ID"
-                        value={alertSettings.telegram_chat_id}
-                        onChange={(e) => setAlertSettings({
+                  {/* Email Notification Settings */}
+                  <Stack gap="md">
+                    <Group justify="space-between" align="center">
+                      <Stack gap={2}>
+                        <Text>Enable Email Notifications</Text>
+                        <Text size="xs" c="dimmed">Receive alerts via Email</Text>
+                      </Stack>
+                      <Switch
+                        checked={alertSettings.enable_email_alerts}
+                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                        const newCheckedState = event.target.checked;
+                        const newFrequency = newCheckedState ? alertSettings.alert_frequency : 'daily';
+                        const updatedSettings = {
                           ...alertSettings,
-                          telegram_chat_id: e.target.value
-                        })}
+                          enable_email_alerts: newCheckedState,
+                          alert_frequency: newFrequency,
+                          is_active: newCheckedState
+                        };
+                        setAlertSettings(updatedSettings);
+                        autoSaveAlertSettings({ enable_email_alerts: newCheckedState, alert_frequency: newFrequency, is_active: newCheckedState });
+                      }}
+                        color="orange"
+                        size="md"
                       />
-                      
-                      <Box className="telegram-instructions" p="md" bg="#f8f9fa" style={{ borderLeft: '3px solid #ff4500', borderRadius: '4px' }}>
-                        <Text fw={600} mb="xs">How to get your Chat ID:</Text>
-                        <Text size="sm">1. Open Telegram and search for <a href="https://t.me/userinfobot" target="_blank" rel="noopener noreferrer">@userinfobot</a></Text>
-                        <Text size="sm">2. Start a chat with this bot and send the "/start" command</Text>
-                        <Text size="sm">3. Copy the ID number it provides and paste it here</Text>
-                      </Box>
-                      
-                      <Group justify="space-between" mt="md">
-                        <Stack gap={0}>
-                          <Text>Enable Telegram Alerts</Text>
-                          <Text size="xs" c="dimmed">Receive alerts via Telegram</Text>
-                        </Stack>
-                        <Switch
-                          checked={alertSettings.enable_telegram_alerts}
-                          onChange={(event) => setAlertSettings({
+                    </Group>
+                    
+                    <Select
+                      label="Notification Frequency"
+                      placeholder="Select frequency"
+                      value={(alertSettings.alert_frequency === 'realtime' || !alertSettings.alert_frequency) ? 'daily' : alertSettings.alert_frequency}
+                      onChange={(value) => {
+                        if (value === 'daily' || value === 'weekly') {
+                          const newFrequency = value as 'daily' | 'weekly';
+                          const updatedSettings = {
                             ...alertSettings,
-                            enable_telegram_alerts: event.currentTarget.checked
-                          })}
-                          color="orange"
-                        />
-                      </Group>
-                    </Stack>
-                  </Box>
+                            alert_frequency: newFrequency
+                          };
+                          setAlertSettings(updatedSettings);
+                          autoSaveAlertSettings({ alert_frequency: newFrequency });
+                        }
+                      }}
+                      data={[
+                        { value: 'daily', label: 'Daily Digest' },
+                        { value: 'weekly', label: 'Weekly Summary' }
+                      ]}
+                      disabled={!alertSettings.enable_email_alerts}
+                      mt="xs"
+                    />
+                  </Stack>
                   
-                  {/* Alert Frequency */}
-                  <Select
-                    label="Alert Frequency"
-                    placeholder="Select frequency"
-                    value={alertSettings.alert_frequency}
-                    onChange={(value) => setAlertSettings({
-                      ...alertSettings,
-                      alert_frequency: value as 'daily' | 'weekly' | 'realtime'
-                    })}
-                    data={[
-                      { value: 'realtime', label: 'Real-time' },
-                      { value: 'daily', label: 'Daily Digest' },
-                      { value: 'weekly', label: 'Weekly Summary' }
-                    ]}
-                  />
-                  
-                  {/* Only show warning if Telegram alerts are disabled */}
-                  {!alertSettings.enable_telegram_alerts && (
+                  {/* Conditional Alert Messages for Email */}
+                  {!alertSettings.enable_email_alerts && (
                     <Alert 
                       icon={<AlertTriangle size={16} />} 
-                      title="Alerts are disabled" 
+                      title="Email Notifications are disabled" 
                       color="yellow"
+                      variant="light"
                     >
-                      Enable Telegram alerts to receive notifications when new Reddit mentions are found.
+                      Enable email notifications to receive updates when new Reddit mentions are found.
                     </Alert>
                   )}
                   
-                  {/* Show success message when Telegram alerts are enabled */}
-                  {alertSettings.enable_telegram_alerts && (
+                  {alertSettings.enable_email_alerts && (
                     <Alert 
                       icon={<CheckCircle2 size={16} />} 
-                      title="Alerts are enabled" 
+                      title="Email Notifications are enabled" 
                       color="green"
+                      variant="light"
                     >
-                      You will receive Telegram notifications when new Reddit mentions are found.
+                      You will receive email notifications with a {alertSettings.alert_frequency === 'daily' ? 'daily digest' : 'weekly summary'} when new Reddit mentions are found.
                     </Alert>
                   )}
                   
-                  {/* Save Button */}
-                  <Button 
-                    onClick={handleSaveAlertSettings} 
-                    disabled={isAlertLoading}
-                    className={cn(
-                      "w-full transition-colors",
-                      isAlertLoading ? "bg-gray-400" :
-                      isAlertSaved ? "bg-green-500 hover:bg-green-600" :
-                      "bg-[#ff4500] hover:bg-[#ff4500]/90"
-                    )}
-                  >
-                    {isAlertLoading ? 'Saving...' : 
-                     isAlertSaved ? 'Saved!' : 
-                     'Save Alert Settings'}
-                  </Button>
+                  {/* Save Button has been removed, settings save automatically */}
                 </Stack>
               </CardContent>
             </Card>
@@ -400,12 +413,10 @@ export default function SettingsPage() {
                 className={cn(
                   "w-full transition-colors",
                   isLoading ? "bg-gray-400" :
-                  isSaved ? "bg-green-500 hover:bg-green-600" :
                   "bg-[#ff4500] hover:bg-[#ff4500]/90"
                 )}
               >
                 {isLoading ? 'Saving...' : 
-                 isSaved ? 'Saved!' : 
                  'Save Brand Settings'}
               </Button>
             </Stack>
