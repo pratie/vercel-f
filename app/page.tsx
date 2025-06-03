@@ -80,8 +80,8 @@ export default function LandingPage() {
 
       {/* Hot Selling Feature Banner */}
       <div className="w-full flex justify-center mt-2 mb-2">
-        <div className="bg-[#ff4500] text-white rounded-full px-6 py-2 shadow-md max-w-xl w-auto text-center">
-          <span className="text-sm font-medium whitespace-nowrap">
+        <div className="bg-[#ff4500] text-white rounded-full px-4 sm:px-6 py-1.5 sm:py-2 shadow-md max-w-xl w-auto text-center mx-2">
+          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
             Customizable AI comments that reflect your brand identity
           </span>
         </div>
@@ -102,51 +102,51 @@ export default function LandingPage() {
               <div className="w-full flex flex-col items-center lg:items-start">
 
                 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up text-left w-full">
+                <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up text-left w-full">
                   Find Reddit Leads<br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-                <div className="mb-6 w-full">
-                  <p className="text-gray-600 text-lg sm:text-xl font-normal mb-6 text-left">
+                <div className="mb-5 w-full">
+                  <p className="text-gray-600 text-sm sm:text-lg font-normal mb-3 text-left">
                     The easiest way to discover, engage, and convert leads from Reddit—powered by AI, built for modern teams.
                   </p>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div className="flex items-center">
-                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
-                        <Check className="h-5 w-5 text-green-500" />
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-3 sm:mr-4 h-6 w-6 sm:h-8 sm:w-8">
+                        <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                       </span>
-                      <span className="text-gray-800 text-base sm:text-lg">Instantly spot high-intent leads with AI scoring</span>
+                      <span className="text-gray-800 text-sm sm:text-lg">Instantly spot high-intent leads with AI scoring</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
-                        <Check className="h-5 w-5 text-green-500" />
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-3 sm:mr-4 h-6 w-6 sm:h-8 sm:w-8">
+                        <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                       </span>
-                      <span className="text-gray-800 text-base sm:text-lg">See what’s relevant—no noise, just signals</span>
+                      <span className="text-gray-800 text-sm sm:text-lg">See what’s relevant—no noise, just signals</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
-                        <Check className="h-5 w-5 text-green-500" />
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-3 sm:mr-4 h-6 w-6 sm:h-8 sm:w-8">
+                        <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                       </span>
-                      <span className="text-gray-800 text-base sm:text-lg">Get daily & weekly digests—never miss a hot lead</span>
+                      <span className="text-gray-800 text-sm sm:text-lg">Get daily & weekly digests—never miss a hot lead</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
-                        <Check className="h-5 w-5 text-green-500" />
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-3 sm:mr-4 h-6 w-6 sm:h-8 sm:w-8">
+                        <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                       </span>
-                      <span className="text-gray-800 text-base sm:text-lg">AI replies that gently pitch your product, adding value</span>
+                      <span className="text-gray-800 text-sm sm:text-lg">AI replies that gently pitch your product, adding value</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
-                        <Check className="h-5 w-5 text-green-500" />
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-3 sm:mr-4 h-6 w-6 sm:h-8 sm:w-8">
+                        <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                       </span>
-                      <span className="text-gray-800 text-base sm:text-lg">Smart keyword & subreddit suggestions for your niche</span>
+                      <span className="text-gray-800 text-sm sm:text-lg">Smart keyword & subreddit suggestions for your niche</span>
                     </div>
                     <div className="flex items-center">
-                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
-                        <Check className="h-5 w-5 text-green-500" />
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-3 sm:mr-4 h-6 w-6 sm:h-8 sm:w-8">
+                        <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500" />
                       </span>
-                      <span className="text-gray-800 text-base sm:text-lg">Powered by the latest Claude model for smarter results</span>
+                      <span className="text-gray-800 text-sm sm:text-lg">Powered by the latest Claude model for smarter results</span>
                     </div>
                   </div>
                 </div>
