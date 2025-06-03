@@ -104,7 +104,7 @@ export default function LandingPage() {
                 
                 <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up text-left w-full">
                   Find Reddit Leads<br />
-                  <span className="text-[#ff4500]">While You Sleep</span>
+                  <span className="text-[#ff4500] block mt-2">While You Sleep</span>
                 </h1>
                 
                 <div className="mb-5 w-full">
