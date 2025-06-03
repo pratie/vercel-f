@@ -108,9 +108,26 @@ export default function LandingPage() {
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-                <p className="mt-3 text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl animate-fade-in">
-                  Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI powered monitoring and response generation.
-                </p>
+
+
+                <div className="mt-10 mb-8 space-y-4">
+                  <div className="flex items-start">
+                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700 text-lg">AI Intent</span>
+                  </div>
+                  <div className="flex items-start">
+                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700 text-lg">Relevance Score</span>
+                  </div>
+                  <div className="flex items-start">
+                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700 text-lg">Weekly Digest</span>
+                  </div>
+                  <div className="flex items-start">
+                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
+                    <span className="text-gray-700 text-lg">Daily Alerts</span>
+                  </div>
+                </div>
 
                 <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
                   <Button
@@ -121,18 +138,6 @@ export default function LandingPage() {
                     Find Leads Now
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Button>
-                </div>
-
-
-                <div className="mt-8 flex items-center gap-6 text-sm text-gray-500 justify-center lg:justify-start">
-                  <div className="flex items-center">
-                    <Check className="h-5 w-5 text-[#ff4500] mr-2" />
-                    AI-powered lead generation
-                  </div>
-                  <div className="flex items-center">
-                    <Check className="h-5 w-5 text-[#ff4500] mr-2" />
-                    24/7 Reddit monitoring
-                  </div>
                 </div>
               </div>
             </div>
