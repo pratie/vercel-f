@@ -146,23 +146,24 @@ export default function ProjectsPage() {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-0 mb-8 sm:mb-12">
         <h1 className="text-2xl sm:text-[28px] font-bold text-gray-900">Your Projects</h1>
-        <Button
+        <button
           onClick={() => hasPaid ? setIsCreateOpen(true) : handleNewProject()}
-          className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-4 sm:px-6 w-full sm:w-auto"
-          size="lg"
+          className="flex items-center justify-center gap-2 px-6 py-3 bg-[#ff4500] hover:bg-[#e03e00] text-white text-sm font-medium rounded-lg transition-colors shadow-sm w-full sm:w-auto"
         >
           {hasPaid ? (
             <>
-              <Plus className="mr-2 h-5 w-5" />
+              <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-white/20">
+                <Plus className="h-4 w-4" />
+              </span>
               New Project
             </>
           ) : (
             <>
               Upgrade to Add Projects
-              <ArrowRight className="ml-2 h-4 w-4" />
+              <ArrowRight className="h-4 w-4" />
             </>
           )}
-        </Button>
+        </button>
       </div>
 
       {isLoading ? (

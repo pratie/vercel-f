@@ -25,15 +25,17 @@ export default function AuthenticatedLayout({
   const isProjectsPage = pathname === '/projects';
 
   return (
-    <div className="flex min-h-screen w-full">
+    <div className="flex min-h-screen w-full bg-gray-50">
       <Sidebar />
-      <main className="flex-1 bg-gradient-to-br from-[#fff5f2] via-white to-[#f0f7ff] p-6">
-        {isProjectsPage ? (
-          children
-        ) : (
-          <PaymentGuard>{children}</PaymentGuard>
-        )}
-      </main>
+      <div className="flex-1 overflow-auto">
+        <main className="min-h-full p-6 max-w-7xl mx-auto w-full">
+          {isProjectsPage ? (
+            children
+          ) : (
+            <PaymentGuard>{children}</PaymentGuard>
+          )}
+        </main>
+      </div>
     </div>
   );
 }

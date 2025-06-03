@@ -29,6 +29,7 @@ interface RawMention {
   keyword?: string;
   relevance_score: number;
   suggested_comment: string;
+  intent?: string;
 }
 
 interface RedditMention {
@@ -46,6 +47,7 @@ interface RedditMention {
   relevance_score: number;
   suggested_comment: string;
   formatted_date: string;
+  intent?: string;
 }
 
 interface Project {
@@ -74,6 +76,7 @@ const transformRawMention = (mention: RawMention): RedditMention => ({
     : (mention.keyword ? [mention.keyword] : []),
   relevance_score: mention.relevance_score,
   suggested_comment: mention.suggested_comment,
+  intent: mention.intent,
   formatted_date: new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -92,11 +95,19 @@ export default function MentionsPage() {
   const [refreshDisabled, setRefreshDisabled] = useState(false);
   const [isPosting, setIsPosting] = useState<number | null>(null);
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
+  const [expandedSuggestedComments, setExpandedSuggestedComments] = useState<Record<number, boolean>>({});
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
   const projectId = params?.projectId as string;
   const redditAuth = useRedditAuthStore();
+
+  const toggleSuggestedComment = (mentionId: number) => {
+    setExpandedSuggestedComments(prev => ({
+      ...prev,
+      [mentionId]: !prev[mentionId]
+    }));
+  };
 
   const VIEWED_POSTS_STORAGE_KEY_PREFIX = 'viewedPosts_';
   const [viewedPosts, setViewedPosts] = useState<Set<number>>(new Set());
@@ -352,9 +363,15 @@ export default function MentionsPage() {
         ...prev,
         [mention.id]: reply
       }));
+      // Store in edited replies and open editor
+      setEditedReplies(prev => ({
+        ...prev,
+        [mention.id]: reply
+      }));
+      setEditingReplyId(mention.id);
       // Copy to clipboard
       await navigator.clipboard.writeText(reply);
-      toast.success('Reply generated and copied to clipboard!');
+      toast.success('Reply generated and copied to clipboard! Editor is open for modifications.');
     } catch (error) {
       console.error('Error generating reply:', error);
       toast.error('Failed to generate reply. Please try again.');
@@ -460,8 +477,8 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {mentions.map((mention, index) => (
-                <Card key={mention.id} className="w-full transition-all duration-200 hover:shadow-lg bg-white/70 backdrop-blur-sm border-gray-100/80 rounded-xl sm:rounded-2xl">
-                  <CardContent className="p-4 sm:p-6">
+                <Card key={mention.id} className="w-full bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
+                  <CardContent className="p-3 sm:p-4">
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex flex-col space-y-2">
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
@@ -481,7 +498,7 @@ export default function MentionsPage() {
                               href={mention.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-md text-white transition-colors text-xs sm:text-sm font-medium h-7 sm:h-8 ${viewedPosts.has(mention.id) ? 'bg-gray-400 hover:bg-gray-500' : 'bg-[#ff4500] hover:bg-[#ff4500]/90'}`}
+                              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md transition-all duration-200 text-xs sm:text-sm font-medium h-7 sm:h-8 ${viewedPosts.has(mention.id) ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-orange-50 hover:bg-orange-100 text-[#ff4500] border border-orange-100 hover:border-orange-200'}`}
                               onClick={() => handleMarkAsViewed(mention.id)}
                             >
                               {viewedPosts.has(mention.id) ? 'Viewed' : 'View Post'}
@@ -500,6 +517,16 @@ export default function MentionsPage() {
                                 {keyword}
                               </Badge>
                             ))}
+                          </div>
+                        )}
+                        {mention.intent && (
+                          <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-4 mt-1.5 sm:mt-2">
+                            <span className="text-xs sm:text-sm font-medium text-gray-700">Post Intent:</span>
+                            <Badge
+                              className="bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-xs"
+                            >
+                              {mention.intent}
+                            </Badge>
                           </div>
                         )}
                       </div>
@@ -521,122 +548,202 @@ export default function MentionsPage() {
                                 <span className="text-green-600 font-medium">Published</span>
                               </div>
                             )}
+                            {typeof mention.relevance_score === 'number' && (
+                              <div className="flex items-center gap-1.5">
+                                <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
+                                Relevance Score:
+                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
+                                  {mention.relevance_score}/100
+                                </span>
+                              </div>
+                            )}
                           </div>
                           <Button
                             onClick={() => handleGenerateReply(mention)}
                             disabled={generatingReplyFor === mention.id}
-                            className="flex items-center gap-2 bg-teal-500 hover:bg-teal-600 text-white border-none shadow-sm h-8 px-3 transition-colors duration-200 w-full sm:w-auto mt-2 sm:mt-0"
+                            className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[#ff4500] border border-orange-200 shadow-sm h-8 px-4 transition-all duration-200 w-full sm:w-auto mt-2 sm:mt-0 hover:shadow-sm font-medium"
                             size="sm"
                           >
                             {generatingReplyFor === mention.id ? (
                               <>
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                <span>Generating...</span>
+                                <span>AI Reply</span>
                               </>
                             ) : (
-                              <>
-                                <MessageSquare className="h-4 w-4" />
-                                <span>Generate Reply</span>
-                              </>
+                              <span>AI Reply</span>
                             )}
                           </Button>
                         </div>
+                        {mention.suggested_comment && (
+                          <div className="mt-3 pt-3 border-t border-gray-100">
+                            <p className="text-xs sm:text-sm text-gray-600">
+                              <span className="font-medium text-gray-700">Score Explanation: </span>
+                              {
+                                expandedSuggestedComments[mention.id]
+                                  ? mention.suggested_comment
+                                  : `${mention.suggested_comment.substring(0, 120)}${mention.suggested_comment.length > 120 ? '...' : ''}`
+                              }
+                              {mention.suggested_comment.length > 120 && (
+                                <button 
+                                  onClick={() => toggleSuggestedComment(mention.id)}
+                                  className="text-blue-500 hover:text-blue-700 ml-1 text-xs font-medium"
+                                >
+                                  {expandedSuggestedComments[mention.id] ? 'Show less' : 'Show more'}
+                                </button>
+                              )}
+                            </p>
+                          </div>
+                        )}
                         {/* Show generated reply if available */}
                         {generatedReplies[mention.id] && (
-                          <div className="mt-3 space-y-3">
-                            <div className="p-3 sm:p-4 bg-gray-50 rounded-lg border border-gray-200">
-                              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
-                                <span className="text-sm font-medium text-gray-700">Generated Reply</span>
-                                {editingReplyId === mention.id ? (
-                                  <div className="flex gap-2 mt-2 sm:mt-0">
-                                    <Button size="sm" className="bg-green-500 hover:bg-green-600 text-white" onClick={() => {
-                                      setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] }));
-                                      setEditingReplyId(null);
-                                    }}>Save</Button>
-                                    <Button size="sm" variant="ghost" className="text-gray-500 hover:text-gray-700" onClick={() => {
-                                      setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
-                                      setEditingReplyId(null);
-                                    }}>Cancel</Button>
-                                  </div>
-                                ) : (
-                                  <Button size="sm" variant="ghost" className="text-gray-500 hover:text-gray-700" onClick={() => {
+                          <div className="mt-4 space-y-3">
+                            <div className="border border-gray-100 rounded-lg bg-white overflow-hidden">
+                              {/* Header */}
+                              <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+                                <h4 className="text-sm font-medium text-gray-700">Generated Reply</h4>
+                              </div>
+                              
+                              {/* Content */}
+                              <div 
+                                className={`p-4 cursor-text ${editingReplyId !== mention.id ? 'hover:bg-gray-50 transition-colors' : ''}`}
+                                onClick={() => {
+                                  if (editingReplyId !== mention.id) {
                                     setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
                                     setEditingReplyId(mention.id);
-                                  }}>Edit</Button>
-                                )}
-                              </div>
-                              {editingReplyId === mention.id ? (
-                                <textarea
-                                  className="w-full border rounded-md p-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#ff4500]"
-                                  rows={4}
-                                  value={editedReplies[mention.id] || ''}
-                                  onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
-                                />
-                              ) : (
-                                <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">{generatedReplies[mention.id]}</p>
-                              )}
-                            </div>
-                            {/* Action Buttons */}
-                            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-                              <Button
-                                onClick={() => navigator.clipboard.writeText(generatedReplies[mention.id])}
-                                className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-gray-700 w-full sm:w-auto"
-                                size="sm"
-                              >
-                                <svg 
-                                  className="w-4 h-4" 
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                </svg>
-                                Copy
-                              </Button>
-                              <Button
-                                onClick={() => postComment(mention)}
-                                disabled={isPosting === mention.id || !!publishedComments[mention.id]}
-                                className={`flex items-center gap-2 ${isPosting === mention.id ? 'bg-gray-100 text-gray-500' : publishedComments[mention.id] ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'} w-full sm:w-auto`}
-                                size="sm"
-                              >
-                                {isPosting === mention.id ? (
-                                  <>
-                                    <RefreshCw className="w-4 h-4 animate-spin" />
-                                    Posting...
-                                  </>
-                                ) : publishedComments[mention.id] ? (
-                                  <>
-                                    <CheckCircle className="w-4 h-4" />
-                                    Published
-                                  </>
-                                ) : (
-                                  <>
-                                    <MessageSquare className="w-4 h-4" />
-                                    Publish
-                                  </>
-                                )}
-                              </Button>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="text-gray-500 hover:text-gray-700 w-full sm:w-auto"
-                                onClick={() => {
-                                  setGeneratedReplies(prev => {
-                                    const newReplies = { ...prev };
-                                    delete newReplies[mention.id];
-                                    return newReplies;
-                                  });
+                                  }
                                 }}
                               >
-                                <svg 
-                                  className="w-4 h-4" 
-                                  fill="none" 
-                                  stroke="currentColor" 
-                                  viewBox="0 0 24 24"
-                                >
-                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </Button>
+                                {editingReplyId === mention.id ? (
+                                  <div className="space-y-3">
+                                    <textarea
+                                      autoFocus
+                                      className="w-full border border-gray-200 rounded-md p-3 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#ff4500] focus:border-transparent transition-all"
+                                      rows={4}
+                                      value={editedReplies[mention.id] || ''}
+                                      onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
+                                    />
+                                    <div className="flex justify-end gap-2 pt-1">
+                                      <Button 
+                                        variant="outline"
+                                        size="sm"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
+                                          setEditingReplyId(null);
+                                        }}
+                                        className="text-xs h-8"
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button 
+                                        size="sm"
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] }));
+                                          setEditingReplyId(null);
+                                        }}
+                                        className="text-xs h-8 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+                                      >
+                                        Save Changes
+                                      </Button>
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="group flex items-start justify-between">
+                                    <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">{generatedReplies[mention.id]}</p>
+                                    <button 
+                                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-600 p-1 -mr-1 -mt-1"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
+                                        setEditingReplyId(mention.id);
+                                      }}
+                                    >
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                )}
+                              </div>
+                              
+                              {/* Actions */}
+                              <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
+                                <div className="flex items-center gap-2">
+                                  <Button
+                                    onClick={async (e) => {
+                                      e.stopPropagation();
+                                      try {
+                                        await navigator.clipboard.writeText(generatedReplies[mention.id]);
+                                        window.open(mention.url, '_blank', 'noopener,noreferrer');
+                                        toast.success('Reply copied and opening post...');
+                                      } catch (error) {
+                                        console.error('Error:', error);
+                                        toast.error('Failed to copy or open post');
+                                      }
+                                    }}
+                                    className="h-8 px-3 text-xs bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 flex items-center gap-1.5"
+                                    size="sm"
+                                  >
+                                    <svg 
+                                      className="w-3.5 h-3.5" 
+                                      fill="none" 
+                                      stroke="currentColor" 
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                    </svg>
+                                    Copy & Go to Post
+                                  </Button>
+                                  
+                                  <Button
+                                    onClick={() => postComment(mention)}
+                                    disabled={isPosting === mention.id || !!publishedComments[mention.id]}
+                                    className={`h-8 px-3 text-xs ${isPosting === mention.id 
+                                      ? 'bg-gray-100 text-gray-500' 
+                                      : publishedComments[mention.id] 
+                                        ? 'bg-green-600 hover:bg-green-700 text-white' 
+                                        : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'} flex-shrink-0`}
+                                    size="sm"
+                                  >
+                                    {isPosting === mention.id ? (
+                                      <>
+                                        <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
+                                        Posting...
+                                      </>
+                                    ) : publishedComments[mention.id] ? (
+                                      <>
+                                        <CheckCircle className="w-3.5 h-3.5 mr-1.5" />
+                                        Published
+                                      </>
+                                    ) : (
+                                      'Publish'
+                                    )}
+                                  </Button>
+                                  
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100 ml-auto"
+                                    onClick={() => {
+                                      setGeneratedReplies(prev => {
+                                        const newReplies = { ...prev };
+                                        delete newReplies[mention.id];
+                                        return newReplies;
+                                      });
+                                    }}
+                                  >
+                                    <svg 
+                                      className="w-4 h-4" 
+                                      fill="none" 
+                                      stroke="currentColor" 
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    </svg>
+                                  </Button>
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}

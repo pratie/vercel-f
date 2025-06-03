@@ -19,7 +19,7 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-poppins)', 'var(--font-inter)'],
+        sans: ['var(--font-sniglet)', 'var(--font-poppins)', 'var(--font-inter)', ...require('tailwindcss/defaultTheme').fontFamily.sans],
         display: ['var(--font-space-grotesk)'],
       },
       colors: {

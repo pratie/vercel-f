@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter, Poppins, Space_Grotesk } from 'next/font/google';
+import { Inter, Poppins, Space_Grotesk, Sniglet } from 'next/font/google';
 import './globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -11,6 +11,12 @@ const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
   display: 'swap',
+});
+
+const sniglet = Sniglet({
+  subsets: ['latin'],
+  weight: ['400', '800'], 
+  variable: '--font-sniglet',
 });
 
 const poppins = Poppins({ 
@@ -43,7 +49,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${sniglet.variable} ${inter.variable} font-sans`}>
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />

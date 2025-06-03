@@ -149,6 +149,7 @@ export interface RedditMention {
     relevance_score: number;
     created_utc: number;
     matching_keywords: string[];
+    intent?: string;
 }
 
 export interface PaymentStatus {
