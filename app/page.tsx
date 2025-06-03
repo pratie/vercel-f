@@ -79,10 +79,12 @@ export default function LandingPage() {
       </header>
 
       {/* Hot Selling Feature Banner */}
-      <div className="bg-[#ff4500] text-white py-3 px-4 text-center">
-        <p className="text-sm font-medium text-white">
-           Customizable AI comments that reflect your brand identity
-        </p>
+      <div className="w-full flex justify-center mt-2 mb-2">
+        <div className="bg-[#ff4500] text-white rounded-full px-6 py-2 shadow-md max-w-xl w-auto text-center">
+          <span className="text-sm font-medium whitespace-nowrap">
+            Customizable AI comments that reflect your brand identity
+          </span>
+        </div>
       </div>
 
       {/* Hero Section */}
@@ -94,42 +96,62 @@ export default function LandingPage() {
             <circle cx="80%" cy="80%" r="120" fill="#ff4500" fillOpacity="0.08" />
           </svg>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20 z-10">
-          <div className="lg:grid lg:grid-cols-12 lg:gap-12">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12 z-10">
+          <div className="lg:grid lg:grid-cols-12 lg:gap-12 items-center">
             <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center animate-fade-in-up">
-              <div>
-                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#ff4500]/10 text-[#ff4500] mb-8 animate-fade-in">
-                  <Sparkles className="h-4 w-4 mr-2" />
-                  <span>AI-Powered Lead Generation</span>
-                </div>
+              <div className="w-full flex flex-col items-center lg:items-start">
+
                 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 animate-slide-up">
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up text-left w-full">
                   Find Reddit Leads<br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-
-
-                <div className="mt-10 mb-8 space-y-4">
-                  <div className="flex items-start">
-                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 text-lg">AI Intent</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 text-lg">Relevance Score</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 text-lg">Weekly Digest</span>
-                  </div>
-                  <div className="flex items-start">
-                    <Check className="h-6 w-6 text-green-500 mr-3 flex-shrink-0" />
-                    <span className="text-gray-700 text-lg">Daily Alerts</span>
+                <div className="mb-6 w-full">
+                  <p className="text-gray-600 text-lg sm:text-xl font-normal mb-6 text-left">
+                    The easiest way to discover, engage, and convert leads from Reddit—powered by AI, built for modern teams.
+                  </p>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
+                        <Check className="h-5 w-5 text-green-500" />
+                      </span>
+                      <span className="text-gray-800 text-base sm:text-lg">Instantly spot high-intent leads with AI scoring</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
+                        <Check className="h-5 w-5 text-green-500" />
+                      </span>
+                      <span className="text-gray-800 text-base sm:text-lg">See what’s relevant—no noise, just signals</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
+                        <Check className="h-5 w-5 text-green-500" />
+                      </span>
+                      <span className="text-gray-800 text-base sm:text-lg">Get daily & weekly digests—never miss a hot lead</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
+                        <Check className="h-5 w-5 text-green-500" />
+                      </span>
+                      <span className="text-gray-800 text-base sm:text-lg">AI replies that gently pitch your product, adding value</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
+                        <Check className="h-5 w-5 text-green-500" />
+                      </span>
+                      <span className="text-gray-800 text-base sm:text-lg">Smart keyword & subreddit suggestions for your niche</span>
+                    </div>
+                    <div className="flex items-center">
+                      <span className="inline-flex items-center justify-center rounded-full bg-green-100 mr-4 h-8 w-8">
+                        <Check className="h-5 w-5 text-green-500" />
+                      </span>
+                      <span className="text-gray-800 text-base sm:text-lg">Powered by the latest Claude model for smarter results</span>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-8 sm:flex sm:justify-center lg:justify-start gap-4">
+                <div className="mt-6 w-full flex sm:justify-center lg:justify-start">
                   <Button
                     ref={ctaRef}
                     className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105"
