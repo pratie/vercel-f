@@ -78,15 +78,6 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* Hot Selling Feature Banner */}
-      <div className="w-full flex justify-center mt-2 mb-2">
-        <div className="bg-[#ff4500] text-white rounded-full px-4 sm:px-6 py-1.5 sm:py-2 shadow-md max-w-xl w-auto text-center mx-2">
-          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
-            Customizable AI comments that reflect your brand identity
-          </span>
-        </div>
-      </div>
-
       {/* Hero Section */}
       <div className="relative bg-gradient-to-b from-white to-gray-50 overflow-hidden">
         {/* Subtle background illustration */}
