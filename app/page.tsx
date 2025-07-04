@@ -106,16 +106,16 @@ export default function LandingPage() {
                   <span>AI-Powered Lead Generation</span>
                 </div>
                 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 animate-slide-up font-heading">
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up font-heading">
                   Find Reddit Leads<br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-                <p className="text-lg text-gray-600 sm:text-xl lg:text-lg xl:text-xl mb-8 animate-fade-in-up animation-delay-200">
+                <p className="text-lg text-gray-600 sm:text-xl lg:text-lg xl:text-xl mb-6 animate-fade-in-up animation-delay-200">
                   Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI powered monitoring and response generation.
                 </p>
                 
-                <div className="mt-8 sm:flex sm:justify-center lg:justify-start">
+                <div className="sm:flex sm:justify-center lg:justify-start">
                   <Button
                     ref={ctaRef}
                     className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105"
@@ -126,7 +126,7 @@ export default function LandingPage() {
                   </Button>
                 </div>
 
-                <div className="mt-10 space-y-3 sm:flex sm:space-y-0 sm:space-x-6">
+                <div className="mt-8 space-y-3 sm:flex sm:space-y-0 sm:space-x-6">
                   <div className="flex items-center text-gray-600">
                     <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
                     <span>AI-powered lead generation</span>
