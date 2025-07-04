@@ -10,10 +10,13 @@ export interface User {
 interface AuthState {
   user: User | null;
   isInitialized: boolean;
+  isRequestingMagicLink: boolean;
   setUser: (user: User | null) => void;
   logout: () => void;
   initialize: () => void;
   googleLogin: (token: string) => Promise<User>;
+  requestMagicLink: (email: string) => Promise<void>;
+  verifyMagicToken: (token: string) => Promise<User>;
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -45,9 +48,10 @@ const removeCookie = (name: string) => {
   document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT; SameSite=Strict`;
 };
 
-const authStore = create<AuthState>((set) => ({
+const authStore = create<AuthState>((set, get) => ({
   user: null,
   isInitialized: false,
+  isRequestingMagicLink: false,
   setUser: (user) => {
     if (user) {
       // Store minimal information in localStorage
@@ -127,6 +131,67 @@ const authStore = create<AuthState>((set) => ({
       return user;
     } catch (error) {
       console.error('Google login error:', error);
+      throw error;
+    }
+  },
+  
+  requestMagicLink: async (email: string) => {
+    try {
+      set({ isRequestingMagicLink: true });
+      
+      const response = await fetch('/api/auth/request-login-link', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to request magic link');
+      }
+      
+      return;
+    } catch (error) {
+      console.error('Magic link request error:', error);
+      throw error;
+    } finally {
+      set({ isRequestingMagicLink: false });
+    }
+  },
+  
+  verifyMagicToken: async (token: string) => {
+    try {
+      const response = await fetch('/api/auth/verify-magic-token', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to verify magic link');
+      }
+
+      const data = await response.json();
+      if (!data.email || !data.access_token) {
+        throw new Error('Invalid response from server');
+      }
+
+      const user = { email: data.email, token: data.access_token };
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('userEmail', data.email);
+        sessionStorage.setItem('token', data.access_token);
+        setCookie('token', data.access_token);
+      }
+      set({ user });
+      
+      return user;
+    } catch (error) {
+      console.error('Magic token verification error:', error);
       throw error;
     }
   }
