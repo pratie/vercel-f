@@ -82,7 +82,7 @@ export default function LandingPage() {
       <div className="w-full bg-[#ff4500] text-white shadow-md mb-2">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 sm:py-2 text-center">
           <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
-            Subtly prompt your brand in Reddit
+            Join 100+ businesses making $25K+ monthly from Reddit leads
           </span>
         </div>
       </div>
