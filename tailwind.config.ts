@@ -19,8 +19,9 @@ const config: Config = {
     },
     extend: {
       fontFamily: {
-        sans: ['var(--font-sniglet)', 'var(--font-poppins)', 'var(--font-inter)', ...require('tailwindcss/defaultTheme').fontFamily.sans],
+        sans: ['var(--font-jakarta)', 'var(--font-inter)', ...require('tailwindcss/defaultTheme').fontFamily.sans],
         display: ['var(--font-space-grotesk)'],
+        heading: ['var(--font-space-grotesk)', 'var(--font-jakarta)'],
       },
       colors: {
         border: "hsl(var(--border))",

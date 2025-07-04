@@ -106,7 +106,7 @@ export default function LandingPage() {
                   <span>AI-Powered Lead Generation</span>
                 </div>
                 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 animate-slide-up">
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 animate-slide-up font-heading">
                   Find Reddit Leads<br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
@@ -167,7 +167,7 @@ export default function LandingPage() {
       <div id="how-it-works" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">How SneakyGuy Works</h2>
+            <h2 className="text-3xl font-bold text-gray-900 font-heading">How SneakyGuy Works</h2>
             <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
               Our platform automates the entire Reddit lead generation process in three simple steps
             </p>
@@ -183,7 +183,7 @@ export default function LandingPage() {
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
                   <span className="text-[#ff4500] font-bold text-xl">1</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left">Set Up Your Keywords</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">Set Up Your Keywords</h3>
                 <p className="text-gray-600 mb-6 text-center lg:text-left">
                   Enter your business keywords and select relevant subreddits. SneakyGuy will monitor these 24/7 for potential leads.
                 </p>
@@ -204,7 +204,7 @@ export default function LandingPage() {
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
                   <span className="text-[#ff4500] font-bold text-xl">2</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left">AI Identifies Opportunities</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">AI Identifies Opportunities</h3>
                 <p className="text-gray-600 mb-6 text-center lg:text-left">
                   Our AI analyzes Reddit posts and comments to find discussions where your product could be a solution.
                 </p>
@@ -229,7 +229,7 @@ export default function LandingPage() {
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
                   <span className="text-[#ff4500] font-bold text-xl">3</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left">Generate & Post Responses</h3>
+                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">Generate & Post Responses</h3>
                 <p className="text-gray-600 mb-6 text-center lg:text-left">
                   SneakyGuy creates personalized responses that subtly promote your product while providing genuine value.
                 </p>
@@ -338,23 +338,23 @@ export default function LandingPage() {
       <div id="features" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Why SneakyGuy?</h2>
+            <h2 className="text-3xl font-bold text-gray-900 font-heading">Why SneakyGuy?</h2>
             <p className="text-lg text-gray-600">Everything you need to turn Reddit into your best lead source.</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
               <Brain className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">AI-Powered Replies</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 font-heading">AI-Powered Replies</h3>
               <p className="text-gray-600">Get smart, context-aware replies generated for every lead opportunity. Review and edit before posting.</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
               <Target className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Smart Keyword & Subreddit Suggestions</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 font-heading">Smart Keyword & Subreddit Suggestions</h3>
               <p className="text-gray-600">We suggest the best keywords and subreddits for your business, so you never miss a relevant conversation.</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
               <Shield className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Build Your Brand Presence</h3>
+              <h3 className="text-xl font-semibold text-gray-900 mb-2 font-heading">Build Your Brand Presence</h3>
               <p className="text-gray-600">Connect your Reddit account and manage your brand’s presence on Reddit from one place.</p>
             </div>
           </div>

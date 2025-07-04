@@ -1,6 +1,6 @@
 // src/app/layout.tsx
 import type { Metadata } from 'next';
-import { Inter, Poppins, Space_Grotesk, Sniglet } from 'next/font/google';
+import { Inter, Poppins, Space_Grotesk, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
 import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
@@ -13,10 +13,11 @@ const inter = Inter({
   display: 'swap',
 });
 
-const sniglet = Sniglet({
+const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  weight: ['400', '800'], 
-  variable: '--font-sniglet',
+  weight: ['400', '500', '600', '700', '800'], 
+  variable: '--font-jakarta',
+  display: 'swap',
 });
 
 const poppins = Poppins({ 
@@ -28,6 +29,7 @@ const poppins = Poppins({
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
   variable: '--font-space-grotesk',
   display: 'swap',
 })
@@ -49,12 +51,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${sniglet.variable} ${inter.variable} font-sans`}>
+    <html lang="en" className={`${jakartaSans.variable} ${spaceGrotesk.variable} ${inter.variable} font-sans`}>
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
       </head>
-      <body className={`${poppins.className} font-sans antialiased`}>
+      <body className={`${jakartaSans.className} font-sans antialiased`}>
         <Providers>
           {children}
         </Providers>
