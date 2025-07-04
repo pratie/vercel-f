@@ -80,9 +80,10 @@ export default function LandingPage() {
 
       {/* Hot Selling Feature Banner */}
       <div className="w-full bg-[#ff4500] text-white shadow-md mb-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-1.5 sm:py-2 text-center">
-          <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
-            Join 100+ businesses making $25K+ monthly from Reddit leads
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-2 text-center">
+          <span className="text-xs sm:text-sm font-medium">
+            <span className="hidden sm:inline">Join 500+ businesses making $25K+ monthly from Reddit leads</span>
+            <span className="sm:hidden">500+ businesses making $25K+ monthly</span>
           </span>
         </div>
       </div>
@@ -96,9 +97,9 @@ export default function LandingPage() {
             <circle cx="80%" cy="80%" r="120" fill="#ff4500" fillOpacity="0.08" />
           </svg>
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10 lg:py-12 z-10">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10 lg:py-12 z-10">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12 items-center">
-            <div className="sm:text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center animate-fade-in-up">
+            <div className="text-center md:max-w-2xl md:mx-auto lg:col-span-6 lg:text-left lg:flex lg:items-center animate-fade-in-up">
               <div className="w-full flex flex-col items-center lg:items-start">
 
                 <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#ff4500]/10 text-[#ff4500] mb-8 animate-fade-in">
@@ -106,34 +107,34 @@ export default function LandingPage() {
                   <span>AI-Powered Lead Generation</span>
                 </div>
                 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up font-heading">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 mb-4 animate-slide-up font-heading leading-tight">
                   Find Reddit Leads<br />
                   <span className="text-[#ff4500]">While You Sleep</span>
                 </h1>
                 
-                <p className="text-lg text-gray-600 sm:text-xl lg:text-lg xl:text-xl mb-6 animate-fade-in-up animation-delay-200">
+                <p className="text-base sm:text-lg md:text-xl text-gray-600 mb-6 animate-fade-in-up animation-delay-200 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
                   Sneakyguy helps B2B companies discover and convert qualified leads from Reddit discussions with AI powered monitoring and response generation.
                 </p>
                 
-                <div className="sm:flex sm:justify-center lg:justify-start">
+                <div className="flex justify-center lg:justify-start mb-6">
                   <Button
                     ref={ctaRef}
-                    className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105"
+                    className="bg-[#ff4500] hover:bg-[#ff6d3f] text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-medium w-full sm:w-auto max-w-sm shadow-lg shadow-[#ff4500]/20 transition-transform duration-200 hover:scale-105"
                     onClick={handleGetStarted}
                   >
                     Find Leads Now
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                   </Button>
                 </div>
 
-                <div className="mt-8 space-y-3 sm:flex sm:space-y-0 sm:space-x-6">
-                  <div className="flex items-center text-gray-600">
-                    <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                    <span>AI-powered lead generation</span>
+                <div className="space-y-2 sm:space-y-3 md:flex md:space-y-0 md:space-x-6 md:justify-center lg:justify-start">
+                  <div className="flex items-center justify-center lg:justify-start text-gray-600">
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 mr-2 flex-shrink-0" />
+                    <span className="text-sm sm:text-base">AI-powered lead generation</span>
                   </div>
-                  <div className="flex items-center text-gray-600">
-                    <Check className="h-5 w-5 text-green-500 mr-2 flex-shrink-0" />
-                    <span>24/7 Reddit monitoring</span>
+                  <div className="flex items-center justify-center lg:justify-start text-gray-600">
+                    <Check className="h-4 w-4 sm:h-5 sm:w-5 text-green-500 mr-2 flex-shrink-0" />
+                    <span className="text-sm sm:text-base">24/7 Reddit monitoring</span>
                   </div>
                 </div>
               </div>
