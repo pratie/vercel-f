@@ -189,6 +189,11 @@ const authStore = create<AuthState>((set, get) => ({
       }
       set({ user });
       
+      // Force navigation to projects after successful verification
+      if (typeof window !== 'undefined') {
+        window.location.href = '/projects';
+      }
+      
       return user;
     } catch (error) {
       console.error('Magic token verification error:', error);
