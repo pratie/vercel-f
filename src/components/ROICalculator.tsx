@@ -11,11 +11,14 @@ export function ROICalculator() {
   const [results, setResults] = useState({
     leadsNeeded: 0,
     redditCost: 39,
+    redditReplyRate: 30,
+    redditMessagesNeeded: 0,
     emailCost: 0,
+    emailReplyRate: 3,
+    emailMessagesNeeded: 0,
     linkedinCost: 0,
-    redditROI: 0,
-    emailROI: 0,
-    linkedinROI: 0
+    linkedinReplyRate: 10,
+    linkedinMessagesNeeded: 0
   });
 
   useEffect(() => {
@@ -24,31 +27,37 @@ export function ROICalculator() {
 
   const calculateROI = () => {
     const leadsNeeded = Math.ceil(monthlyTarget / businessPrice);
-    const visitsNeeded = Math.ceil(leadsNeeded / (conversionRate / 100));
     
-    // Reddit costs (SneakyGuy one-time + time saved)
+    // Reddit with SneakyGuy (realistic engagement rates)
+    const redditReplyRate = 30; // 30% reply rate (much higher than cold outreach)
+    const redditMessagesNeeded = Math.ceil(leadsNeeded / (redditReplyRate / 100));
     const redditCost = 39; // One-time payment
     
-    // Email marketing costs (tools + time)
-    const emailCost = (visitsNeeded * 0.15) + 100; // $0.15 per lead + tools
+    // Cold Email (realistic rates)
+    const emailReplyRate = 3; // 3% reply rate
+    const emailMessagesNeeded = Math.ceil(leadsNeeded / (emailReplyRate / 100));
+    const emailCostPerMessage = 0.10; // $0.10 per email
+    const emailToolsCost = 100; // Monthly email tools
+    const emailTotalCost = (emailMessagesNeeded * emailCostPerMessage) + (emailToolsCost * 12);
     
-    // LinkedIn DM costs (premium + time)
-    const linkedinCost = (visitsNeeded * 0.50) + 200; // $0.50 per outreach + premium
-    
-    // Calculate annual ROI
-    const annualRevenue = monthlyTarget * 12;
-    const redditROI = ((annualRevenue - redditCost) / redditCost) * 100;
-    const emailROI = ((annualRevenue - (emailCost * 12)) / (emailCost * 12)) * 100;
-    const linkedinROI = ((annualRevenue - (linkedinCost * 12)) / (linkedinCost * 12)) * 100;
+    // LinkedIn DMs (realistic rates)
+    const linkedinReplyRate = 10; // 10% reply rate
+    const linkedinMessagesNeeded = Math.ceil(leadsNeeded / (linkedinReplyRate / 100));
+    const linkedinCostPerMessage = 0.25; // $0.25 per outreach
+    const linkedinPremiumCost = 60; // Monthly premium
+    const linkedinTotalCost = (linkedinMessagesNeeded * linkedinCostPerMessage) + (linkedinPremiumCost * 12);
 
     setResults({
       leadsNeeded,
       redditCost,
-      emailCost: emailCost * 12, // Annual cost
-      linkedinCost: linkedinCost * 12, // Annual cost
-      redditROI,
-      emailROI,
-      linkedinROI
+      redditReplyRate,
+      redditMessagesNeeded,
+      emailCost: emailTotalCost,
+      emailReplyRate,
+      emailMessagesNeeded,
+      linkedinCost: linkedinTotalCost,
+      linkedinReplyRate,
+      linkedinMessagesNeeded
     });
   };
 
@@ -160,46 +169,34 @@ export function ROICalculator() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.1 }}
-                className="relative bg-gradient-to-br from-[#ff4500] to-[#ff6b3d] rounded-xl p-6 text-white"
+                className="relative bg-gradient-to-br from-green-50 to-green-100 rounded-xl p-6 border-2 border-green-200"
               >
-                <div className="absolute top-4 right-4 bg-white/20 rounded-full px-3 py-1">
-                  <span className="text-sm font-semibold">Best Value</span>
+                <div className="absolute top-4 right-4 bg-green-500 text-white rounded-full px-3 py-1">
+                  <span className="text-sm font-semibold">Recommended</span>
                 </div>
                 
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center mr-3">
-                    <MessageSquare className="h-6 w-6" />
+                <div className="mb-6">
+                  <h4 className="text-xl font-bold text-gray-900 mb-1">Reddit (SneakyGuy)</h4>
+                  <p className="text-sm text-gray-600">Authentic conversations</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Reply Rate</p>
+                    <p className="text-2xl font-bold text-gray-900">{results.redditReplyRate}%</p>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold">Reddit + SneakyGuy</h4>
-                    <p className="text-sm text-white/80">Authentic conversations</p>
+                    <p className="text-sm text-gray-600 mb-1">Messages Needed</p>
+                    <p className="text-2xl font-bold text-gray-900">{results.redditMessagesNeeded.toLocaleString()}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Annual Cost:</span>
-                    <span className="font-bold">${results.redditCost}</span>
+                <div className="border-t border-green-200 pt-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-lg font-semibold text-gray-900">Total Cost</span>
+                    <span className="text-2xl font-bold text-green-600">${results.redditCost}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Annual ROI:</span>
-                    <span className="font-bold">{results.redditROI.toLocaleString()}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span>Leads needed:</span>
-                    <span>{results.leadsNeeded}/month</span>
-                  </div>
-                </div>
-                
-                <div className="mt-4 pt-4 border-t border-white/20">
-                  <div className="flex items-center text-sm">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    <span>One-time payment</span>
-                  </div>
-                  <div className="flex items-center text-sm mt-1">
-                    <CheckCircle className="h-4 w-4 mr-2" />
-                    <span>High engagement rates</span>
-                  </div>
+                  <p className="text-sm font-medium text-green-700">Most efficient</p>
                 </div>
               </motion.div>
 
@@ -210,40 +207,30 @@ export function ROICalculator() {
                 transition={{ duration: 0.5, delay: 0.2 }}
                 className="bg-gray-50 rounded-xl p-6 border border-gray-200"
               >
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center mr-3">
-                    <Mail className="h-6 w-6 text-gray-600" />
+                <div className="mb-6">
+                  <h4 className="text-xl font-bold text-gray-900 mb-1">Cold Email</h4>
+                  <p className="text-sm text-gray-600">Mass outreach</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Reply Rate</p>
+                    <p className="text-2xl font-bold text-gray-900">{results.emailReplyRate}%</p>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-gray-900">Cold Email</h4>
-                    <p className="text-sm text-gray-600">Mass outreach</p>
+                    <p className="text-sm text-gray-600 mb-1">Messages Needed</p>
+                    <p className="text-2xl font-bold text-gray-900">{results.emailMessagesNeeded.toLocaleString()}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Annual Cost:</span>
-                    <span className="font-bold">${results.emailCost.toLocaleString()}</span>
+                <div className="border-t border-gray-200 pt-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-lg font-semibold text-gray-900">Total Cost</span>
+                    <span className="text-2xl font-bold text-gray-900">${results.emailCost.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Annual ROI:</span>
-                    <span className="font-bold">{results.emailROI.toLocaleString()}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Avg. open rate:</span>
-                    <span>~1-3%</span>
-                  </div>
-                </div>
-                
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span className="w-4 h-4 mr-2 text-red-500">✗</span>
-                    <span>Recurring monthly costs</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600 mt-1">
-                    <span className="w-4 h-4 mr-2 text-red-500">✗</span>
-                    <span>Low engagement</span>
-                  </div>
+                  <p className="text-sm font-medium text-red-600">
+                    {(results.emailCost / results.redditCost).toFixed(1)}x more expensive
+                  </p>
                 </div>
               </motion.div>
 
@@ -252,42 +239,32 @@ export function ROICalculator() {
                 initial={{ opacity: 0, scale: 0.95 }}
                 whileInView={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
-                className="bg-gray-50 rounded-xl p-6 border border-gray-200"
+                className="bg-blue-50 rounded-xl p-6 border border-blue-200"
               >
-                <div className="flex items-center mb-4">
-                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-3">
-                    <Users className="h-6 w-6 text-blue-600" />
+                <div className="mb-6">
+                  <h4 className="text-xl font-bold text-gray-900 mb-1">LinkedIn DMs</h4>
+                  <p className="text-sm text-gray-600">Professional network</p>
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Reply Rate</p>
+                    <p className="text-2xl font-bold text-gray-900">{results.linkedinReplyRate}%</p>
                   </div>
                   <div>
-                    <h4 className="text-xl font-bold text-gray-900">LinkedIn DMs</h4>
-                    <p className="text-sm text-gray-600">Professional network</p>
+                    <p className="text-sm text-gray-600 mb-1">Messages Needed</p>
+                    <p className="text-2xl font-bold text-gray-900">{results.linkedinMessagesNeeded.toLocaleString()}</p>
                   </div>
                 </div>
                 
-                <div className="space-y-3">
-                  <div className="flex justify-between">
-                    <span>Annual Cost:</span>
-                    <span className="font-bold">${results.linkedinCost.toLocaleString()}</span>
+                <div className="border-t border-blue-200 pt-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-lg font-semibold text-gray-900">Total Cost</span>
+                    <span className="text-2xl font-bold text-gray-900">${results.linkedinCost.toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between">
-                    <span>Annual ROI:</span>
-                    <span className="font-bold">{results.linkedinROI.toLocaleString()}%</span>
-                  </div>
-                  <div className="flex justify-between text-sm text-gray-600">
-                    <span>Avg. response rate:</span>
-                    <span>~5-10%</span>
-                  </div>
-                </div>
-                
-                <div className="mt-4 pt-4 border-t border-gray-200">
-                  <div className="flex items-center text-sm text-gray-600">
-                    <span className="w-4 h-4 mr-2 text-red-500">✗</span>
-                    <span>High monthly costs</span>
-                  </div>
-                  <div className="flex items-center text-sm text-gray-600 mt-1">
-                    <span className="w-4 h-4 mr-2 text-red-500">✗</span>
-                    <span>Time-intensive</span>
-                  </div>
+                  <p className="text-sm font-medium text-red-600">
+                    {(results.linkedinCost / results.redditCost).toFixed(1)}x more expensive
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -332,13 +309,18 @@ export function ROICalculator() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-16"
         >
-          <p className="text-lg text-gray-600 mb-6">
-            Ready to achieve {results.redditROI.toLocaleString()}% ROI with Reddit lead generation?
-          </p>
-          <button className="bg-[#ff4500] hover:bg-[#ff6b3d] text-white font-bold py-4 px-8 rounded-xl transition-colors shadow-lg hover:shadow-xl">
-            Start Finding Leads Now
-            <ArrowRight className="ml-2 h-5 w-5 inline" />
-          </button>
+          <div className="bg-gradient-to-r from-[#ff4500] to-[#ff6b3d] rounded-2xl p-8 text-white">
+            <h3 className="text-2xl font-bold mb-4">
+              Save ${Math.max(results.emailCost - results.redditCost, results.linkedinCost - results.redditCost).toLocaleString()} annually
+            </h3>
+            <p className="text-lg mb-6 text-white/90">
+              One-time payment of $39 vs thousands in recurring costs
+            </p>
+            <button className="bg-white text-[#ff4500] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-lg">
+              Get SneakyGuy for $39 (One-time)
+              <ArrowRight className="ml-2 h-5 w-5 inline" />
+            </button>
+          </div>
         </motion.div>
       </div>
     </div>
