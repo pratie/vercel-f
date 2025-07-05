@@ -268,6 +268,111 @@ export default function LandingPage() {
 
       <SocialProof />
 
+      {/* Reddit Example Section */}
+      <div className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 font-heading mb-4">See SneakyGuy in Action</h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Real Reddit conversation where our AI identified a perfect opportunity and generated a helpful, authentic response that drives business value.
+            </p>
+          </div>
+          
+          <div className="max-w-5xl mx-auto">
+            <div className="bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden">
+              {/* Header with stats */}
+              <div className="bg-gradient-to-r from-[#ff4500]/5 to-[#ff6b3d]/5 px-6 py-4 border-b border-gray-200">
+                <div className="flex flex-wrap items-center justify-between gap-4">
+                  <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                      <span className="text-sm font-medium text-gray-700">80% Relevance Match</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-blue-500"></div>
+                      <span className="text-sm font-medium text-gray-700">High-Intent User</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full bg-purple-500"></div>
+                      <span className="text-sm font-medium text-gray-700">AI Response Generated</span>
+                    </div>
+                  </div>
+                  <div className="bg-[#ff4500] text-white px-3 py-1 rounded-full text-sm font-semibold">
+                    Lead Opportunity Detected
+                  </div>
+                </div>
+              </div>
+              
+              {/* Reddit conversation */}
+              <div className="relative">
+                <Image
+                  src="/reddit-example.png"
+                  alt="Reddit Lead Generation Example - SneakyGuy in Action"
+                  width={1200}
+                  height={600}
+                  className="w-full"
+                  priority
+                />
+                
+                {/* Floating highlights */}
+                <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium">
+                  ✨ Authentic & Helpful
+                </div>
+                <div className="absolute bottom-4 left-4 bg-blue-500 text-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium">
+                  🎯 Perfect Lead Match
+                </div>
+              </div>
+              
+              {/* Bottom insight */}
+              <div className="bg-gray-50 px-6 py-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-[#ff4500] flex items-center justify-center">
+                      <span className="text-white font-bold text-sm">AI</span>
+                    </div>
+                    <div>
+                      <p className="font-medium text-gray-900">SneakyGuy identified this opportunity</p>
+                      <p className="text-sm text-gray-600">Generated helpful response that builds trust and drives business</p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-sm font-medium text-green-600">Response Rate: 85%</p>
+                    <p className="text-xs text-gray-500">vs 3% for cold email</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Benefits callout */}
+          <div className="mt-16 grid md:grid-cols-3 gap-8">
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">🎯</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Perfect Targeting</h3>
+              <p className="text-gray-600 text-sm">AI identifies users with high purchase intent, not just keyword matches</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">💬</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Authentic Responses</h3>
+              <p className="text-gray-600 text-sm">Generate helpful replies that build trust, not obvious sales pitches</p>
+            </div>
+            
+            <div className="text-center">
+              <div className="w-16 h-16 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
+                <span className="text-2xl">⚡</span>
+              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Instant Results</h3>
+              <p className="text-gray-600 text-sm">Start finding qualified leads within 24 hours of setup</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* ROI Calculator */}
       <ROICalculator />
 
