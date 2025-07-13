@@ -12,6 +12,7 @@ import { useRef } from 'react';
 import confetti from 'canvas-confetti'; // You may need to install this package
 import SocialProof from '@/components/SocialProof';
 import { ROICalculator } from '@/components/ROICalculator';
+import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
 
 export default function LandingPage() {
@@ -36,7 +37,13 @@ export default function LandingPage() {
         origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: rect.top / window.innerHeight },
       });
     }
-    router.push('/login');
+    
+    // Smart redirect based on user status
+    if (user) {
+      router.push('/upgrade'); // Logged in users go to upgrade page
+    } else {
+      router.push('/login'); // Non-logged in users go to login
+    }
   };
 
   return (
@@ -70,7 +77,7 @@ export default function LandingPage() {
             
             <Button
               className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
-              onClick={() => router.push('/login')}
+              onClick={() => user ? router.push('/upgrade') : router.push('/login')}
             >
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -256,7 +263,7 @@ export default function LandingPage() {
           
           <div className="mt-16 text-center">
             <Button
-              onClick={() => router.push('/login')}
+              onClick={() => user ? router.push('/upgrade') : router.push('/login')}
               className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-3 text-lg font-medium"
             >
               Get Started Now
@@ -387,23 +394,31 @@ export default function LandingPage() {
                 <span className="text-lg">🔥</span>
                 <span>Limited Time Launch Offer</span>
               </div>
-              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Get Lifetime Access Today</h3>
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
-                <div className="text-lg">
-                  <span className="line-through opacity-75 text-base">$120/month</span>
-                  <span className="font-bold text-4xl ml-2">$39</span>
-                  <span className="ml-2 text-sm bg-white/10 rounded-full px-3 py-1">Save 67%</span>
-                </div>
-                <div className="h-4 w-px bg-white/20 hidden sm:block"></div>
-                <div className="text-sm">
-                  
+              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Choose Your Plan</h3>
+              <div className="text-center mb-6">
+                <p className="text-lg text-white/90 mb-4">Flexible pricing to match your business needs</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <div className="text-2xl font-bold">$9</div>
+                    <div className="text-sm opacity-90">per month</div>
+                  </div>
+                  <div className="bg-white/20 rounded-lg p-4 ring-2 ring-white/30">
+                    <div className="text-2xl font-bold">$39</div>
+                    <div className="text-sm opacity-90">6 months</div>
+                    <div className="text-xs bg-green-400/20 rounded px-2 py-1 mt-1">Save 28%</div>
+                  </div>
+                  <div className="bg-white/10 rounded-lg p-4">
+                    <div className="text-2xl font-bold">$69</div>
+                    <div className="text-sm opacity-90">per year</div>
+                    <div className="text-xs bg-green-400/20 rounded px-2 py-1 mt-1">Save 36%</div>
+                  </div>
                 </div>
               </div>
             </div>
 
             {/* Feature List */}
             <div className="bg-white/5 rounded-xl p-6 mb-6">
-              <h4 className="font-semibold mb-4 text-center">What's Included in Lifetime Access:</h4>
+              <h4 className="font-semibold mb-4 text-center">What's Included in All Plans:</h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="flex items-start gap-3">
                   <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
@@ -433,12 +448,12 @@ export default function LandingPage() {
             </div>
 
             <div className="text-center">
-              <p className="text-white/80 text-sm mb-6">One-time payment • No recurring fees • All future updates included</p>
+              <p className="text-white/80 text-sm mb-6">Flexible billing • Cancel anytime • All future updates included</p>
               <Button
-                onClick={() => router.push('/login')}
+                onClick={() => user ? router.push('/upgrade') : router.push('/login')}
                 className="bg-white text-[#ff4500] hover:bg-white/90 font-semibold px-8 py-3"
               >
-                Claim Your Lifetime Access
+                Choose Your Plan
                 <ArrowRight className="ml-2 h-4 w-4" />
               </Button>
             </div>
@@ -635,7 +650,7 @@ export default function LandingPage() {
             Join the early access program and start saving 30-60 hours monthly on your lead generation efforts.
           </p>
           <Button
-            onClick={() => router.push('/login')}
+            onClick={() => user ? router.push('/upgrade') : router.push('/login')}
             className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
           >
             Find Leads
@@ -645,96 +660,9 @@ export default function LandingPage() {
       </div>
 
       {/* Pricing Section */}
-      <div id="pricing" className="py-16 bg-white">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl font-bold text-gray-900">Simple, Transparent Pricing</h2>
-            <p className="text-lg text-gray-600 max-w-xl mx-auto">
-              Get started with SneakyGuy today and transform your Reddit lead generation
-            </p>
-          </div>
-          
-          <div className="bg-white rounded-xl shadow-md border border-gray-200 overflow-hidden">
-            <div className="px-6 py-8">
-              <div className="flex flex-col md:flex-row justify-between items-start gap-8">
-                <div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-2">Professional Plan</h3>
-                  <p className="text-gray-600 mb-4">Everything you need for effective Reddit lead generation</p>
-                  
-                  <div className="flex items-baseline mb-1">
-                    <span className="text-gray-500 text-lg line-through">$120/month</span>
-                    <span className="ml-2 bg-green-100 text-green-700 px-2 py-0.5 rounded text-sm font-medium">
-                      Save 67%
-                    </span>
-                  </div>
-                  
-                  <div className="flex items-baseline">
-                    <span className="text-4xl font-bold text-gray-900">$39</span>
-                    <span className="ml-2 text-gray-700">one-time payment</span>
-                  </div>
-                  
-                  <div className="mt-6">
-                    <Button
-                      onClick={() => router.push('/login')}
-                      className="w-full bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-6 py-3 font-medium"
-                    >
-                      Get Started
-                      <ArrowRight className="ml-2 h-5 w-5" />
-                    </Button>
-                  </div>
-                </div>
-                
-                <div className="bg-gray-50 p-6 rounded-lg w-full md:w-auto">
-                  <h4 className="font-medium text-gray-900 mb-4">What's included:</h4>
-                  <ul className="space-y-3">
-                    <li className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-[#ff4500]" />
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-900">300 Replies/month</span>
-                        <p className="text-sm text-gray-600">AI-generated responses to Reddit posts</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-[#ff4500]" />
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-900">Unlimited Business-specific Keywords</span>
-                        <p className="text-sm text-gray-600">Track mentions of your business-specific keywords</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-[#ff4500]" />
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-900">15 Relevant Subreddits relevant to your business</span>
-                        <p className="text-sm text-gray-600">Monitor the most valuable communities</p>
-                      </div>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                        <Check className="w-3 h-3 text-[#ff4500]" />
-                      </div>
-                      <div>
-                        <span className="font-medium text-gray-900">Unlimited Reply Generation</span>
-                        <p className="text-sm text-gray-600">Customize replies with more context and tone</p>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-            
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-200">
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <Shield className="h-4 w-4 text-[#ff4500]" />
-                <span>7-day money-back guarantee if no leads are found</span>
-              </div>
-            </div>
-          </div>
+      <div id="pricing" className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <PricingTable />
         </div>
       </div>
 

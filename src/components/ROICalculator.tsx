@@ -8,9 +8,10 @@ export function ROICalculator() {
   const [businessPrice, setBusinessPrice] = useState(100);
   const [conversionRate, setConversionRate] = useState(2);
   const [monthlyTarget, setMonthlyTarget] = useState(10000);
+  const [selectedPlan, setSelectedPlan] = useState('annual'); // Default to annual
   const [results, setResults] = useState({
     leadsNeeded: 0,
-    redditCost: 39,
+    redditCost: 69, // Default to annual pricing
     redditReplyRate: 30,
     redditMessagesNeeded: 0,
     emailCost: 0,
@@ -21,9 +22,15 @@ export function ROICalculator() {
     linkedinMessagesNeeded: 0
   });
 
+  const pricingPlans = {
+    monthly: { price: 9, duration: 1, label: '$9/month' },
+    '6month': { price: 39, duration: 6, label: '$39/6 months' },
+    annual: { price: 69, duration: 12, label: '$69/year' }
+  };
+
   useEffect(() => {
     calculateROI();
-  }, [businessPrice, conversionRate, monthlyTarget]);
+  }, [businessPrice, conversionRate, monthlyTarget, selectedPlan]);
 
   const calculateROI = () => {
     const leadsNeeded = Math.ceil(monthlyTarget / businessPrice);
@@ -31,7 +38,8 @@ export function ROICalculator() {
     // Reddit with SneakyGuy (realistic engagement rates)
     const redditReplyRate = 30; // 30% reply rate (much higher than cold outreach)
     const redditMessagesNeeded = Math.ceil(leadsNeeded / (redditReplyRate / 100));
-    const redditCost = 39; // One-time payment
+    const selectedPlanData = pricingPlans[selectedPlan as keyof typeof pricingPlans];
+    const redditCost = selectedPlanData.price; // Based on selected plan
     
     // Cold Email (realistic rates)
     const emailReplyRate = 3; // 3% reply rate
@@ -108,7 +116,7 @@ export function ROICalculator() {
           <div className="p-8 bg-gradient-to-r from-gray-50 to-white">
             <h3 className="text-2xl font-bold text-gray-900 mb-8 font-heading">Your Business Metrics</h3>
             
-            <div className="grid md:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-3 gap-8 mb-8">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Average Selling Price ($)
@@ -157,6 +165,38 @@ export function ROICalculator() {
                     placeholder="10000"
                   />
                 </div>
+              </div>
+            </div>
+
+            {/* Plan Selector */}
+            <div className="border-t border-gray-200 pt-8">
+              <h4 className="text-lg font-semibold text-gray-900 mb-4">Choose SneakyGuy Plan</h4>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {Object.entries(pricingPlans).map(([planId, plan]) => (
+                  <button
+                    key={planId}
+                    onClick={() => setSelectedPlan(planId)}
+                    className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
+                      selectedPlan === planId 
+                        ? 'border-[#ff4500] bg-[#fff3f0] ring-2 ring-[#ff4500]/20' 
+                        : 'border-gray-200 hover:border-[#ff4500]/50 bg-white'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-semibold text-gray-900">{plan.label}</span>
+                      {planId === 'annual' && (
+                        <span className="bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-medium">
+                          Best Value
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-sm text-gray-600">
+                      {planId === 'monthly' ? 'Flexible monthly billing' : 
+                       planId === '6month' ? 'Save 28% vs monthly' : 
+                       'Save 36% vs monthly'}
+                    </div>
+                  </button>
+                ))}
               </div>
             </div>
           </div>
@@ -314,10 +354,10 @@ export function ROICalculator() {
               Save ${Math.max(results.emailCost - results.redditCost, results.linkedinCost - results.redditCost).toLocaleString()} annually
             </h3>
             <p className="text-lg mb-6 text-white/90">
-              One-time payment of $39 vs thousands in recurring costs
+              {pricingPlans[selectedPlan as keyof typeof pricingPlans].label} vs thousands in recurring costs
             </p>
             <button className="bg-white text-[#ff4500] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-lg">
-              Get SneakyGuy for $39 (One-time)
+              Get SneakyGuy for {pricingPlans[selectedPlan as keyof typeof pricingPlans].label}
               <ArrowRight className="ml-2 h-5 w-5 inline" />
             </button>
           </div>

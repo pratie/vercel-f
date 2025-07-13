@@ -156,6 +156,22 @@ export interface PaymentStatus {
     has_paid: boolean;
     payment_date: string | null;
     payment_link: string | null;
+    subscription_plan?: string;
+    plan_expires_at?: string;
+}
+
+export interface PricingPlan {
+    id: string;
+    name: string;
+    price: string;
+    billing: string;
+    duration: string;
+    savings?: string;
+    popular?: boolean;
+}
+
+export interface PricingPlansResponse {
+    plans: PricingPlan[];
 }
 
 interface GenerateReplyRequest {
@@ -617,11 +633,21 @@ export const api = {
         return response.json();
     },
 
-    async createCheckoutSession(): Promise<string> {
+    async getPricingPlans(): Promise<PricingPlansResponse> {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/payment/plans`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to get pricing plans');
+        }
+        return response.json();
+    },
+
+    async createCheckoutSession(plan: string): Promise<{ checkout_url: string; plan: string; price: string }> {
         try {
             const baseUrl = getApiBaseUrl();
             const response = await fetchWithAuth(`${baseUrl}/payment/create-checkout-session`, {
-                method: 'POST'
+                method: 'POST',
+                body: JSON.stringify({ plan })
             });
             if (!response.ok) {
                 const errorData = await response.json();
@@ -631,9 +657,9 @@ export const api = {
             if (!data.checkout_url) {
                 throw new Error('No checkout URL returned from server');
             }
-            return data.checkout_url;
+            return data;
         } catch (error) {
-            console.error('Stripe checkout error:', error);
+            console.error('Checkout error:', error);
             throw error;
         }
     },

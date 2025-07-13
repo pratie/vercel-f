@@ -17,13 +17,14 @@ const api = {
   },
 
   // Create checkout session
-  async createCheckoutSession() {
+  async createCheckoutSession(plan: string) {
     const response = await fetch(`${API_BASE_URL}/payment/create-checkout-session`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
-      }
+      },
+      body: JSON.stringify({ plan })
     });
 
     if (!response.ok) {
@@ -31,7 +32,7 @@ const api = {
     }
 
     const data = await response.json();
-    return data.checkout_url;
+    return data;
   },
 
   // Update payment status after successful payment
