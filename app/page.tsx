@@ -87,7 +87,7 @@ export default function LandingPage() {
 
 
       {/* Hero Section - STUNNING Design That Converts */}
-      <div className="relative bg-gradient-to-br from-orange-100 via-rose-50 to-purple-100 overflow-hidden min-h-[95vh] flex items-center">
+      <div className="relative bg-white overflow-hidden min-h-[95vh] flex items-center">
         {/* Dynamic Background Effects */}
         <div className="absolute inset-0">
           {/* Animated gradient orbs */}
