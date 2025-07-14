@@ -143,7 +143,7 @@ export default function LandingPage() {
                 onClick={handleGetStarted}
               >
                 <div className="flex items-center">
-                  <span className="mr-2 text-lg">🚀</span>
+                  <span className="mr-2 text-lg"></span>
                   Start Finding Leads Today
                   <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
                 </div>
