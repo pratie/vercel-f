@@ -49,9 +49,9 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
+      <header className="sticky top-0 z-50 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
               <Image
                 src="/logo.png"
@@ -63,38 +63,28 @@ export default function LandingPage() {
               <span className="font-bold text-xl text-gray-900">Sneakyguy</span>
             </div>
             
-            <nav className="hidden md:flex space-x-8">
-              <a href="#how-it-works" className="text-gray-600 hover:text-[#ff4500] font-medium">
-                How It Works
-              </a>
-              <a href="#features" className="text-gray-600 hover:text-[#ff4500] font-medium">
+            <nav className="hidden md:flex space-x-10">
+              <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
                 Features
               </a>
-              <a href="#pricing" className="text-gray-600 hover:text-[#ff4500] font-medium">
+              <a href="#how-it-works" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                How it Works
+              </a>
+              <a href="#pricing" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
                 Pricing
               </a>
             </nav>
             
             <Button
-              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+              className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
               onClick={() => user ? router.push('/upgrade') : router.push('/login')}
             >
-              Get Started
-              <ArrowRight className="ml-2 h-5 w-5" />
+              Start Free Trial
             </Button>
           </div>
         </div>
       </header>
 
-      {/* Hot Selling Feature Banner */}
-      <div className="w-full bg-[#ff4500] text-white shadow-md mb-2">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-2 sm:py-2 text-center">
-          <span className="text-xs sm:text-sm font-medium">
-            <span className="hidden sm:inline">Find Reddit leads while you sleep</span>
-            <span className="sm:hidden">500+ businesses making $25K+ monthly</span>
-          </span>
-        </div>
-      </div>
 
       {/* Hero Section - STUNNING Design That Converts */}
       <div className="relative bg-gradient-to-br from-orange-100 via-rose-50 to-purple-100 overflow-hidden min-h-[95vh] flex items-center">
@@ -139,7 +129,7 @@ export default function LandingPage() {
             <p className="text-lg sm:text-xl md:text-2xl text-slate-700 mb-8 max-w-4xl mx-auto leading-relaxed">
               Monitor 15+ subreddits, get AI-generated responses, and never miss a mention.
             </p>
-            <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 rounded-full text-white font-semibold text-base shadow-lg mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white rounded-full text-gray-700 font-medium text-base shadow-sm border border-orange-200 mb-12">
               <span className="mr-2">💰</span>
               Starting at just $9/month — less than your daily coffee
               <span className="ml-2">☕</span>
