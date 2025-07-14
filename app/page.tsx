@@ -79,7 +79,7 @@ export default function LandingPage() {
               className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
               onClick={() => user ? router.push('/upgrade') : router.push('/login')}
             >
-              Start Free Trial
+              Dashboard
             </Button>
           </div>
         </div>
