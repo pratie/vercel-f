@@ -22,7 +22,7 @@ const fallbackPlans: PricingPlan[] = [
     billing: 'per month',
     duration: '1 month',
     popular: false,
-    savings: null
+    savings: undefined
   },
   {
     id: 'six_month',
