@@ -2,30 +2,42 @@
 
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Clock, Target, Brain, Filter, ChevronRight, MessageSquare, Rocket, Users, Star, Shield, Sparkles, Mail, Check, Twitter, Linkedin } from 'lucide-react';
+import { ArrowRight, Clock, Brain, MessageSquare, Users, Star, Shield, Check, Twitter, Linkedin } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
 import { useEffect } from 'react';
 import Image from 'next/image';
 import { FreeAccessMessage } from './components/FreeAccessMessage';
 import Link from 'next/link';
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import confetti from 'canvas-confetti'; // You may need to install this package
 import SocialProof from '@/components/SocialProof';
 import { ROICalculator } from '@/components/ROICalculator';
 import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
+import FloatingSubreddits from '@/components/FloatingSubreddits';
 
 export default function LandingPage() {
   const router = useRouter();
   const { user } = useAuth();
   const ctaRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (user && pathname === '/') {
       router.push('/projects');
     }
   }, [user, router, pathname]);
+
+  // Mouse tracking for floating subreddits
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const handleGetStarted = () => {
     // Confetti burst for delight
@@ -47,7 +59,10 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white relative overflow-hidden">
+      {/* Floating Subreddits Animation */}
+      <FloatingSubreddits mousePosition={mousePosition} count={40} />
+      
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -109,7 +124,7 @@ export default function LandingPage() {
           </div>
         </div>
         
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-10">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
           <div className="text-center">
             {/* Social Proof Badge - PREMIUM */}
             <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-bold bg-gradient-to-r from-white/95 to-orange-50/95 text-slate-800 mb-10 backdrop-blur-md border-2 border-orange-300/50 shadow-2xl shadow-orange-500/20 hover:shadow-orange-500/30 transition-all duration-300">
@@ -121,8 +136,8 @@ export default function LandingPage() {
             
             {/* Main Headline - Professional & Readable */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-              Turn Reddit conversations<br />
-              <span className="block bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">into qualified leads.</span>
+              <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Find Reddit leads</span><br />
+              while you sleep.
             </h1>
             
             {/* Subtitle - Clear & Compelling */}
@@ -271,20 +286,20 @@ export default function LandingPage() {
       <SocialProof />
 
       {/* Features Section - MIND BLOWING */}
-      <div id="features" className="py-24 bg-gradient-to-br from-purple-50 via-pink-50 to-orange-100 relative overflow-hidden">
+      <div id="features" className="py-24 bg-gray-50 relative overflow-hidden">
         {/* Dynamic background */}
         <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-r from-purple-300/20 to-pink-300/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-r from-orange-300/20 to-red-300/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+          <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-r from-gray-200/30 to-gray-300/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
+          <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-r from-gray-100/40 to-gray-200/40 rounded-full blur-3xl animate-pulse delay-1000" style={{ animationDuration: '6s' }}></div>
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <div className="inline-block px-6 py-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full text-white font-black text-sm mb-6 shadow-lg animate-bounce">
+            <div className="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-white font-black text-sm mb-6 shadow-lg animate-bounce">
               ⚡ POWERFUL FEATURES
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 leading-tight">
-              See the <span className="bg-gradient-to-r from-purple-600 to-orange-600 bg-clip-text text-transparent">Magic</span> in Action
+              See the <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Magic</span> in Action
             </h2>
             <p className="text-lg sm:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
               Watch SneakyGuy transform Reddit into your personal lead generation powerhouse
@@ -295,9 +310,6 @@ export default function LandingPage() {
             {/* Feature 1: Simple Setup - Project Creation */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="order-2 lg:order-1">
-                <div className="bg-gradient-to-br from-orange-400 to-red-500 rounded-xl w-12 h-12 flex items-center justify-center mb-6 shadow-lg">
-                  <Rocket className="h-6 w-6 text-white" />
-                </div>
                 <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
                   Get Started in Under 30 Seconds
                 </h3>
@@ -328,13 +340,13 @@ export default function LandingPage() {
               </div>
               
               <div className="order-1 lg:order-2">
-                <div className="bg-white rounded-2xl shadow-xl border border-orange-200 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-2xl border border-orange-200 overflow-hidden transform hover:scale-105 transition-transform duration-300">
                   <Image 
                     src="/create-project-screenshot.png" 
                     alt="Simple project creation - just name and description needed"
-                    width={600}
-                    height={400}
-                    className="w-full h-auto"
+                    width={800}
+                    height={600}
+                    className="w-full h-auto object-cover"
                     priority
                   />
                 </div>
@@ -356,9 +368,6 @@ export default function LandingPage() {
               </div>
 
               <div className="order-1 lg:order-2">
-                <div className="bg-gradient-to-br from-blue-400 to-purple-500 rounded-xl w-12 h-12 flex items-center justify-center mb-6 shadow-lg">
-                  <Brain className="h-6 w-6 text-white" />
-                </div>
                 <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
                   AI Generates Perfect Keywords & Subreddits
                 </h3>
@@ -386,14 +395,6 @@ export default function LandingPage() {
             {/* Feature 3: Lead Feed Dashboard */}
             <div className="group grid grid-cols-1 lg:grid-cols-2 gap-12 items-center hover:scale-[1.02] transition-all duration-500">
               <div className="order-2 lg:order-1 space-y-6">
-                <div className="relative">
-                  <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-2xl w-16 h-16 flex items-center justify-center mb-8 shadow-2xl shadow-emerald-500/50 group-hover:shadow-emerald-600/70 transition-all duration-300 group-hover:rotate-12">
-                    <Target className="h-8 w-8 text-white animate-spin" style={{animationDuration: '3s'}} />
-                  </div>
-                  <div className="absolute -top-2 -right-2 bg-yellow-400 text-emerald-900 px-2 py-1 rounded-full text-xs font-black animate-pulse">
-                    RESULTS
-                  </div>
-                </div>
                 <h3 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6 group-hover:text-emerald-600 transition-colors duration-300">
                   🎯 Discover High-Quality Leads Instantly
                 </h3>
@@ -560,12 +561,10 @@ export default function LandingPage() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
-              <Brain className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2 font-heading">AI-Powered Replies</h3>
               <p className="text-gray-600">Get smart, context-aware replies generated for every lead opportunity. Review and edit before posting.</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
-              <Target className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2 font-heading">Smart Keyword & Subreddit Suggestions</h3>
               <p className="text-gray-600">We suggest the best keywords and subreddits for your business, so you never miss a relevant conversation.</p>
             </div>
