@@ -13,25 +13,60 @@ interface PricingTableProps {
   compact?: boolean;
 }
 
+// Fallback pricing plans in case API fails
+const fallbackPlans: PricingPlan[] = [
+  {
+    id: 'monthly',
+    name: 'Monthly',
+    price: '$9',
+    billing: 'per month',
+    duration: '1 month',
+    popular: false,
+    savings: null
+  },
+  {
+    id: 'six_month',
+    name: '6 Months',
+    price: '$39',
+    billing: 'every 6 months',
+    duration: '6 months',
+    popular: true,
+    savings: 'Save 28%'
+  },
+  {
+    id: 'annual',
+    name: 'Annual',
+    price: '$69',
+    billing: 'per year',
+    duration: '12 months',
+    popular: false,
+    savings: 'Save 36%'
+  }
+];
+
 export function PricingTable({ onPlanSelect, showHeader = true, compact = false }: PricingTableProps) {
-  const [plans, setPlans] = useState<PricingPlan[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<string>('annual');
-  const [loading, setLoading] = useState(true);
+  const [plans, setPlans] = useState<PricingPlan[]>(fallbackPlans);
+  const [selectedPlan, setSelectedPlan] = useState<string>('six_month');
+  const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchPlans = async () => {
       try {
+        setLoading(true);
         const response = await api.getPricingPlans();
-        setPlans(response.plans);
-        // Set default to popular plan (annual)
-        const popularPlan = response.plans.find(plan => plan.popular);
-        if (popularPlan) {
-          setSelectedPlan(popularPlan.id);
+        if (response.plans && response.plans.length > 0) {
+          setPlans(response.plans);
+          // Set default to popular plan
+          const popularPlan = response.plans.find(plan => plan.popular);
+          if (popularPlan) {
+            setSelectedPlan(popularPlan.id);
+          }
         }
+        // If API succeeds but returns empty, keep fallback plans
       } catch (error) {
-        console.error('Failed to fetch pricing plans:', error);
-        toast.error('Failed to load pricing plans');
+        console.error('Failed to fetch pricing plans, using fallback:', error);
+        // Keep fallback plans, don't show error to user
       } finally {
         setLoading(false);
       }
@@ -85,7 +120,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 mb-6"
+            className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-orange-50 border border-orange-200 text-orange-700 mb-6"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             <span>Simple, Transparent Pricing</span>
@@ -126,7 +161,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
           >
             {plan.popular && (
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-gradient-to-r from-[#ff4500] to-[#ff6b3d] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                <div className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                   🔥 Most Popular
                 </div>
               </div>

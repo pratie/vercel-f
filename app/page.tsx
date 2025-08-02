@@ -101,42 +101,38 @@ export default function LandingPage() {
       </header>
 
 
-      {/* Hero Section - STUNNING Design That Converts */}
+      {/* Hero Section - Clean & Professional */}
       <div className="relative bg-white overflow-hidden min-h-[95vh] flex items-center">
-        {/* Dynamic Background Effects */}
+        {/* Subtle Background Pattern */}
         <div className="absolute inset-0">
-          {/* Animated gradient orbs */}
-          <div className="absolute top-20 left-10 w-72 h-72 bg-gradient-to-r from-orange-400/20 to-red-400/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-20 right-10 w-96 h-96 bg-gradient-to-r from-purple-400/15 to-pink-400/15 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-r from-orange-300/10 to-purple-300/10 rounded-full blur-3xl animate-pulse delay-500"></div>
-          
-          {/* Premium dot pattern */}
-          <div className="absolute inset-0 opacity-30">
+          {/* Minimal geometric pattern */}
+          <div className="absolute inset-0 opacity-[0.02]">
             <svg width="100%" height="100%" className="absolute">
               <defs>
-                <pattern id="premium-dots" x="0" y="0" width="60" height="60" patternUnits="userSpaceOnUse">
-                  <circle cx="30" cy="30" r="1" fill="#ff4500" fillOpacity="0.4" />
-                  <circle cx="30" cy="30" r="0.5" fill="#ff6b3d" fillOpacity="0.6" />
+                <pattern id="subtle-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#000" strokeWidth="1"/>
                 </pattern>
               </defs>
-              <rect width="100%" height="100%" fill="url(#premium-dots)" />
+              <rect width="100%" height="100%" fill="url(#subtle-grid)" />
             </svg>
           </div>
+          {/* Single subtle accent */}
+          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gray-100/30 rounded-full blur-3xl"></div>
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
           <div className="text-center">
             {/* Social Proof Badge - PREMIUM */}
-            <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-bold bg-gradient-to-r from-white/95 to-orange-50/95 text-slate-800 mb-10 backdrop-blur-md border-2 border-orange-300/50 shadow-2xl shadow-orange-500/20 hover:shadow-orange-500/30 transition-all duration-300">
+            <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-white text-slate-700 mb-10 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-2 h-2 rounded-full bg-green-500 mr-3 animate-pulse"></div>
               <Users className="h-5 w-5 mr-2 text-orange-600" />
-              <span className="bg-gradient-to-r from-slate-800 to-orange-700 bg-clip-text text-transparent">Trusted by 50+ founders & marketing teams</span>
+              <span className="text-slate-700">Trusted by 50+ founders & marketing teams</span>
               <div className="ml-2 px-2 py-1 bg-orange-500 text-white text-xs rounded-full font-black">LIVE</div>
             </div>
             
             {/* Main Headline - Professional & Readable */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-              <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Find Reddit leads</span><br />
+              <span className="text-orange-600">Find Reddit leads</span><br />
               while you sleep.
             </h1>
             
@@ -154,7 +150,7 @@ export default function LandingPage() {
             <div className="flex justify-center mb-16">
               <Button
                 ref={ctaRef}
-                className="group relative bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 ring-2 ring-orange-200/50"
+                className="group relative bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                 onClick={handleGetStarted}
               >
                 <div className="flex items-center">
@@ -285,21 +281,21 @@ export default function LandingPage() {
 
       <SocialProof />
 
-      {/* Features Section - MIND BLOWING */}
-      <div id="features" className="py-24 bg-gray-50 relative overflow-hidden">
-        {/* Dynamic background */}
+      {/* Features Section - Professional */}
+      <div id="features" className="py-24 bg-white relative overflow-hidden">
+        {/* Clean background with subtle accent */}
         <div className="absolute inset-0">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-gradient-to-r from-gray-200/30 to-gray-300/30 rounded-full blur-3xl animate-pulse" style={{ animationDuration: '4s' }}></div>
-          <div className="absolute bottom-10 right-10 w-96 h-96 bg-gradient-to-r from-gray-100/40 to-gray-200/40 rounded-full blur-3xl animate-pulse delay-1000" style={{ animationDuration: '6s' }}></div>
+          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
+          <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <div className="inline-block px-6 py-3 bg-gradient-to-r from-orange-500 to-red-500 rounded-full text-white font-black text-sm mb-6 shadow-lg animate-bounce">
+            <div className="inline-block px-6 py-3 bg-orange-600 rounded-full text-white font-semibold text-sm mb-6 shadow-sm">
               ⚡ POWERFUL FEATURES
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 leading-tight">
-              See the <span className="bg-gradient-to-r from-orange-500 to-red-500 bg-clip-text text-transparent">Magic</span> in Action
+              See the <span className="text-orange-600">Magic</span> in Action
             </h2>
             <p className="text-lg sm:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
               Watch SneakyGuy transform Reddit into your personal lead generation powerhouse
@@ -318,19 +314,19 @@ export default function LandingPage() {
                   automatically generating relevant keywords and suggesting the perfect subreddits for your business.
                 </p>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-emerald-50 to-green-50 rounded-xl border-l-4 border-emerald-500 shadow-lg hover:shadow-emerald-200/50 transition-all duration-300">
+                  <div className="flex items-center gap-4 p-4 bg-green-50 rounded-lg border-l-4 border-green-500 transition-all duration-200">
                     <div className="bg-emerald-500 rounded-full p-1">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <span className="text-slate-800 font-semibold">✨ 2-field setup: Name + Description</span>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border-l-4 border-blue-500 shadow-lg hover:shadow-blue-200/50 transition-all duration-300">
+                  <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500 transition-all duration-200">
                     <div className="bg-blue-500 rounded-full p-1">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <span className="text-slate-800 font-semibold">🤖 AI generates keywords automatically</span>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-xl border-l-4 border-purple-500 shadow-lg hover:shadow-purple-200/50 transition-all duration-300">
+                  <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500 transition-all duration-200">
                     <div className="bg-purple-500 rounded-full p-1">
                       <Check className="h-4 w-4 text-white" />
                     </div>
@@ -439,7 +435,7 @@ export default function LandingPage() {
       </div>
 
       {/* AI Response Example */}
-      <div className="py-20 bg-gradient-to-b from-white to-orange-50/30">
+      <div className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-slate-800 font-heading mb-4">Real AI-Generated Response</h2>
@@ -476,81 +472,6 @@ export default function LandingPage() {
       {/* ROI Calculator */}
       <ROICalculator />
 
-      {/* Special Offer Section - With Feature Breakdown */}
-      <div className="py-12 sm:py-16">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-[#ff4500] to-[#ff6b3d] rounded-2xl p-6 sm:p-8 text-white">
-            <div className="text-center">
-              <div className="inline-flex items-center gap-2 bg-white/10 rounded-full px-4 py-1 text-sm mb-4">
-                <span className="text-lg">🔥</span>
-                <span>Limited Time Launch Offer</span>
-              </div>
-              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Choose Your Plan</h3>
-              <div className="text-center mb-6">
-                <p className="text-lg text-white/90 mb-4">Flexible pricing to match your business needs</p>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
-                  <div className="bg-white/10 rounded-lg p-4">
-                    <div className="text-2xl font-bold">$9</div>
-                    <div className="text-sm opacity-90">per month</div>
-                  </div>
-                  <div className="bg-white/20 rounded-lg p-4 ring-2 ring-white/30">
-                    <div className="text-2xl font-bold">$39</div>
-                    <div className="text-sm opacity-90">6 months</div>
-                    <div className="text-xs bg-green-400/20 rounded px-2 py-1 mt-1">Save 28%</div>
-                  </div>
-                  <div className="bg-white/10 rounded-lg p-4">
-                    <div className="text-2xl font-bold">$69</div>
-                    <div className="text-sm opacity-90">per year</div>
-                    <div className="text-xs bg-green-400/20 rounded px-2 py-1 mt-1">Save 36%</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Feature List */}
-            <div className="bg-white/5 rounded-xl p-6 mb-6">
-              <h4 className="font-semibold mb-4 text-center">What's Included in All Plans:</h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
-                    <Check className="w-3 h-3" />
-                  </div>
-                  <span>300 Replies/month</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
-                    <Check className="w-3 h-3" />
-                  </div>
-                  <span>Unlimited Business-specific Keywords</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
-                    <Check className="w-3 h-3" />
-                  </div>
-                  <span>15 Relevant Subreddits relevant to your business</span>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="flex-shrink-0 w-5 h-5 rounded-full bg-white/10 flex items-center justify-center">
-                    <Check className="w-3 h-3" />
-                  </div>
-                  <span>Unlimited Reply Generation</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="text-center">
-              <p className="text-white/80 text-sm mb-6">Flexible billing • Cancel anytime • All future updates included</p>
-              <Button
-                onClick={() => user ? router.push('/upgrade') : router.push('/login')}
-                className="bg-white text-[#ff4500] hover:bg-white/90 font-semibold px-8 py-3"
-              >
-                Choose Your Plan
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Features Section */}
       <div id="features" className="py-20 bg-gray-50">
@@ -680,7 +601,7 @@ export default function LandingPage() {
       {/* Results Preview */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-20">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-b from-gray-50/0 to-gray-50 rounded-3xl" />
+          <div className="absolute inset-0 bg-white rounded-3xl border border-gray-100" />
           <div className="relative rounded-3xl overflow-hidden border border-gray-200/60 shadow-2xl">
             {/* Results Message - Moved outside the aspect ratio container */}
             <div className="relative z-10 bg-white pt-8 px-4">
@@ -713,14 +634,14 @@ export default function LandingPage() {
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           <div className="bg-white p-4 sm:p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 border border-orange-200 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
               <Star className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Priority Feature Requests</h3>
             <p className="text-sm sm:text-base text-gray-600">Your feature requests get top priority in our development roadmap. Help shape the future of SNEAKYGUY.</p>
           </div>
           <div className="bg-white p-4 sm:p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-[#fff3f0] to-white mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 border border-orange-200 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
               <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Direct Access to Founders</h3>
@@ -730,7 +651,7 @@ export default function LandingPage() {
       </div>
 
       {/* Final CTA Section */}
-      <div className="py-8 sm:py-12 md:py-20 bg-gradient-to-b from-gray-50 to-white">
+      <div className="py-8 sm:py-12 md:py-20 bg-white">
         <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
             Ready to Automate Your Reddit Lead Generation?
