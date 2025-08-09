@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, Loader2 } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, Loader2, Search, SlidersHorizontal } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -96,6 +96,11 @@ export default function MentionsPage() {
   const [isPosting, setIsPosting] = useState<number | null>(null);
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
   const [expandedSuggestedComments, setExpandedSuggestedComments] = useState<Record<number, boolean>>({});
+  // UI controls
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSubreddit, setSelectedSubreddit] = useState('all');
+  const [selectedIntent, setSelectedIntent] = useState('all');
+  const [sortBy, setSortBy] = useState<'new' | 'comments' | 'relevance'>('new');
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
@@ -128,6 +133,28 @@ export default function MentionsPage() {
       }
     }
   }, [projectId]);
+
+  // Derived filter options from current mentions
+  const availableSubreddits = Array.from(new Set(mentions.map(m => m.subreddit))).sort();
+  const availableIntents = Array.from(new Set(mentions.map(m => m.intent).filter(Boolean))) as string[];
+
+  // Apply search, filter, sort
+  const displayMentions = mentions
+    .filter(m => {
+      const q = searchQuery.trim().toLowerCase();
+      const matchesQuery = q
+        ? m.title.toLowerCase().includes(q) || m.content.toLowerCase().includes(q)
+        : true;
+      const matchesSubreddit = selectedSubreddit === 'all' || m.subreddit === selectedSubreddit;
+      const matchesIntent = selectedIntent === 'all' || (m.intent || '') === selectedIntent;
+      return matchesQuery && matchesSubreddit && matchesIntent;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'new') return b.created_utc - a.created_utc;
+      if (sortBy === 'comments') return b.num_comments - a.num_comments;
+      // relevance default
+      return b.relevance_score - a.relevance_score;
+    });
 
   useEffect(() => {
     if (!user) {
@@ -369,9 +396,8 @@ export default function MentionsPage() {
         [mention.id]: reply
       }));
       setEditingReplyId(mention.id);
-      // Copy to clipboard
-      await navigator.clipboard.writeText(reply);
-      toast.success('Reply generated and copied to clipboard! Editor is open for modifications.');
+      // Show success; users can use "Copy & Go to Post" when ready
+      toast.success('Reply generated! Editor is open for modifications.');
     } catch (error) {
       console.error('Error generating reply:', error);
       toast.error('Failed to generate reply. Please try again.');
@@ -467,16 +493,97 @@ export default function MentionsPage() {
           </Button>
         </div>
 
+        {/* Controls */}
+        {!isLoading && mentions.length > 0 && (
+          <div className="mb-6 grid grid-cols-1 md:grid-cols-12 gap-3">
+            {/* Search */}
+            <div className="md:col-span-5 min-w-0">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search title or content..."
+                  className="w-full h-10 pl-9 pr-3 rounded-md border border-gray-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500] text-sm"
+                />
+              </div>
+            </div>
+            {/* Subreddit */}
+            <div className="md:col-span-3 min-w-0">
+              <div className="flex items-center gap-2">
+                <SlidersHorizontal className="h-4 w-4 text-gray-400" />
+                <select
+                  value={selectedSubreddit}
+                  onChange={(e) => setSelectedSubreddit(e.target.value)}
+                  className="flex-1 h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500]"
+                >
+                  <option value="all">All subreddits</option>
+                  {availableSubreddits.map(sr => (
+                    <option key={sr} value={sr}>{`r/${sr}`}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
+            {/* Intent */}
+            <div className="md:col-span-2 min-w-0">
+              <select
+                value={selectedIntent}
+                onChange={(e) => setSelectedIntent(e.target.value)}
+                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500]"
+              >
+                <option value="all">All intents</option>
+                {availableIntents.map(int => (
+                  <option key={int} value={int}>{int}</option>
+                ))}
+              </select>
+            </div>
+            {/* Sort */}
+            <div className="md:col-span-2 min-w-0">
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value as any)}
+                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500]"
+              >
+                <option value="new">Newest</option>
+                <option value="comments">Most comments</option>
+                <option value="relevance">Highest relevance</option>
+              </select>
+            </div>
+            {/* Results + Clear */}
+            <div className="md:col-span-12 flex items-center justify-between text-xs text-gray-500">
+              <div>
+                Showing <span className="font-medium text-gray-700">{displayMentions.length}</span> of <span className="font-medium text-gray-700">{mentions.length}</span> mentions
+              </div>
+              {(searchQuery || selectedSubreddit !== 'all' || selectedIntent !== 'all' || sortBy !== 'new') && (
+                <button
+                  type="button"
+                  onClick={() => { setSearchQuery(''); setSelectedSubreddit('all'); setSelectedIntent('all'); setSortBy('new'); }}
+                  className="text-[#ff4500] hover:underline"
+                >
+                  Clear filters
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
           </div>
         ) : mentions.length === 0 ? (
-          <div className="text-center py-8">No mentions found.</div>
+          <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
+            No mentions found.
+          </div>
+        ) : displayMentions.length === 0 ? (
+          <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
+            No results match your filters.
+          </div>
         ) : (
           <>
             <div id="mentions-list" className="space-y-6">
-              {mentions.map((mention, index) => (
+              {displayMentions.map((mention, index) => (
                 <Card key={mention.id} className="w-full bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
                   <CardContent className="p-3 sm:p-4">
                     <div className="space-y-3 sm:space-y-4">

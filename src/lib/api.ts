@@ -450,8 +450,16 @@ export const api = {
                 } as GenerateReplyRequest)
             });
             const data = await response.json();
+            if (!data || typeof data.comment !== 'string' || data.comment.trim() === '') {
+                const detail = (data && (data.detail || data.message)) || 'No reply returned yet. Please try again in a moment.';
+                throw new Error(detail);
+            }
             return data.comment;
         } catch (error) {
+            if (error instanceof Error) {
+                // Surface original error to the UI toast
+                throw error;
+            }
             throw new Error('Failed to generate reply');
         }
     },

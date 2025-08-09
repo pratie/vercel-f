@@ -64,7 +64,7 @@ export default function LandingPage() {
       <FloatingSubreddits mousePosition={mousePosition} count={40} />
       
       {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-white">
+      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
@@ -116,8 +116,9 @@ export default function LandingPage() {
               <rect width="100%" height="100%" fill="url(#subtle-grid)" />
             </svg>
           </div>
-          {/* Single subtle accent */}
+          {/* Accents for depth */}
           <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gray-100/30 rounded-full blur-3xl"></div>
+          <div className="absolute -top-24 left-1/3 w-[520px] h-[520px] rounded-full bg-[hsl(var(--primary))]/10 blur-3xl opacity-40"></div>
         </div>
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
@@ -131,8 +132,8 @@ export default function LandingPage() {
             </div>
             
             {/* Main Headline - Professional & Readable */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight">
-              <span className="text-orange-600">Find Reddit leads</span><br />
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight tracking-tight">
+              <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">Find Reddit leads</span><br />
               while you sleep.
             </h1>
             
@@ -150,7 +151,7 @@ export default function LandingPage() {
             <div className="flex justify-center mb-16">
               <Button
                 ref={ctaRef}
-                className="group relative bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                className="group relative bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ring-1 ring-orange-600/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500"
                 onClick={handleGetStarted}
               >
                 <div className="flex items-center">
@@ -190,13 +191,13 @@ export default function LandingPage() {
           
           <div className="relative">
             {/* Connection Line */}
-            <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-[#ff4500]/0 via-[#ff4500] to-[#ff4500]/0 z-0"></div>
+            <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))]/0 via-[hsl(var(--primary))] to-[hsl(var(--primary))]/0 z-0"></div>
             
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
               {/* Step 1 */}
               <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                  <span className="text-[#ff4500] font-bold text-xl">1</span>
+                  <span className="text-primary font-bold text-xl">1</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">Set Up Your Keywords</h3>
                 <p className="text-gray-600 mb-6 text-center lg:text-left">
@@ -217,7 +218,7 @@ export default function LandingPage() {
               {/* Step 2 */}
               <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                  <span className="text-[#ff4500] font-bold text-xl">2</span>
+                  <span className="text-primary font-bold text-xl">2</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">AI Identifies Opportunities</h3>
                 <p className="text-gray-600 mb-6 text-center lg:text-left">
@@ -231,7 +232,7 @@ export default function LandingPage() {
                   </div>
                   <div className="bg-white rounded border border-gray-200 p-3 text-sm">
                     <div className="flex items-start gap-2">
-                      <Brain className="h-4 w-4 text-[#ff4500] mt-0.5" />
+                      <Brain className="h-4 w-4 text-primary mt-0.5" />
                       <span className="text-gray-700">Analyzing post: "Looking for a tool to find leads on social media..."</span>
                     </div>
                     <div className="mt-2 ml-6 text-green-600 font-medium">Match found! (92% relevance)</div>
@@ -242,7 +243,7 @@ export default function LandingPage() {
               {/* Step 3 */}
               <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                  <span className="text-[#ff4500] font-bold text-xl">3</span>
+                  <span className="text-primary font-bold text-xl">3</span>
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">Generate & Post Responses</h3>
                 <p className="text-gray-600 mb-6 text-center lg:text-left">
@@ -270,7 +271,7 @@ export default function LandingPage() {
           <div className="mt-16 text-center">
             <Button
               onClick={() => user ? router.push('/upgrade') : router.push('/login')}
-              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-3 text-lg font-medium"
+              className="button-primary px-8 py-3 text-lg font-medium"
             >
               Get Started Now
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -490,7 +491,7 @@ export default function LandingPage() {
               <p className="text-gray-600">We suggest the best keywords and subreddits for your business, so you never miss a relevant conversation.</p>
             </div>
             <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-200 hover:-translate-y-1 text-center">
-              <Shield className="mx-auto h-10 w-10 text-[#ff4500] mb-4" />
+              <Shield className="mx-auto h-10 w-10 text-primary mb-4" />
               <h3 className="text-xl font-semibold text-gray-900 mb-2 font-heading">Build Your Brand Presence</h3>
               <p className="text-gray-600">Connect your Reddit account and manage your brand’s presence on Reddit from one place.</p>
             </div>
@@ -528,7 +529,7 @@ export default function LandingPage() {
               
               <div className="relative mt-8">
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#fff3f0] flex items-center justify-center text-[#ff4500] font-medium">1</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">1</span>
                   <div>
                     <p className="text-gray-700">Monitor social networks for relevant discussions about your product</p>
                     <p className="text-gray-500 text-sm mt-1">15-30 min</p>
@@ -536,7 +537,7 @@ export default function LandingPage() {
                 </div>
                 
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#fff3f0] flex items-center justify-center text-[#ff4500] font-medium">2</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">2</span>
                   <div>
                     <p className="text-gray-700">Review each mention to assess promotion opportunities</p>
                     <p className="text-gray-500 text-sm mt-1">15-30 min</p>
@@ -544,17 +545,17 @@ export default function LandingPage() {
                 </div>
                 
                 <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[#fff3f0] flex items-center justify-center text-[#ff4500] font-medium">3</span>
+                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">3</span>
                   <div>
                     <p className="text-gray-700">Craft personalized responses for each opportunity</p>
                     <p className="text-gray-500 text-sm mt-1">30-60 min</p>
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-[#ff4500]/10">
+                <div className="mt-8 pt-6 border-t border-[hsl(var(--primary))]/10">
                   <div className="flex items-baseline gap-2">
                     <span className="font-medium">Total:</span>
-                    <span className="text-[#ff4500] font-medium">1-2 hours per day</span>
+                    <span className="text-primary font-medium">1-2 hours per day</span>
                     <span className="text-gray-500">→</span>
                     <span className="text-gray-700">per project</span>
                   </div>
@@ -566,7 +567,7 @@ export default function LandingPage() {
             <div className="relative bg-[#f0fdf4] rounded-2xl p-4 sm:p-6">
               <div className="absolute -top-4 left-4 sm:left-6 bg-white px-3 sm:px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-2">
-                  <span className="bg-[#ff4500] text-white text-sm px-3 py-1 rounded-full font-medium">SNEAKYGUY</span>
+                  <span className="bg-[hsl(var(--primary))] text-white text-sm px-3 py-1 rounded-full font-medium">SNEAKYGUY</span>
                   <span className="text-gray-700 font-medium text-sm sm:text-base">With us, you just need</span>
                 </div>
               </div>
