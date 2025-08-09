@@ -107,7 +107,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff4500]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
       </div>
     );
   }
@@ -120,7 +120,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-orange-50 border border-orange-200 text-orange-700 mb-6"
+            className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[hsl(var(--secondary))] border border-[hsl(var(--secondary))]/60 text-[hsl(var(--primary))] mb-6"
           >
             <Sparkles className="h-4 w-4 mr-2" />
             <span>Simple, Transparent Pricing</span>
@@ -155,13 +155,13 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className={`relative bg-white rounded-xl border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
               plan.popular 
-                ? 'border-[#ff4500] shadow-lg ring-2 ring-[#ff4500]/20' 
-                : 'border-gray-200 hover:border-[#ff4500]/50'
+                ? 'border-[hsl(var(--primary))] shadow-lg ring-2 ring-[hsl(var(--primary))]/20' 
+                : 'border-gray-200 hover:border-[hsl(var(--primary))]/50'
             } ${compact ? 'p-6' : 'p-8'}`}
           >
             {plan.popular && (
               <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-orange-600 text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
+                <div className="bg-[hsl(var(--primary))] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
                   🔥 Most Popular
                 </div>
               </div>
@@ -188,8 +188,8 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
               disabled={checkoutLoading === plan.id}
               className={`w-full mb-6 transition-all duration-200 ${
                 plan.popular
-                  ? 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-900 hover:bg-[#ff4500] hover:text-white'
+                  ? 'bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-900 hover:bg-[hsl(var(--primary))] hover:text-white'
               }`}
             >
               {checkoutLoading === plan.id ? (
@@ -210,8 +210,8 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
                 <h4 className="font-semibold text-gray-900 text-sm">What's included:</h4>
                 {features.slice(0, 4).map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[#fff3f0] flex items-center justify-center mt-0.5">
-                      <Check className="w-3 h-3 text-[#ff4500]" />
+                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[hsl(var(--secondary))] flex items-center justify-center mt-0.5">
+                      <Check className="w-3 h-3 text-[hsl(var(--primary))]" />
                     </div>
                     <span className="text-sm text-gray-600">{feature}</span>
                   </div>
@@ -237,7 +237,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {features.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-3">
-                  <Check className="w-4 h-4 text-[#ff4500] flex-shrink-0" />
+                  <Check className="w-4 h-4 text-[hsl(var(--primary))] flex-shrink-0" />
                   <span className="text-sm text-gray-600">{feature}</span>
                 </div>
               ))}

@@ -80,16 +80,16 @@ export function RedditAnalysisLoading() {
       {/* Loading Animation */}
       <div className="relative">
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="w-24 h-24 rounded-full border-4 border-[#ff4500]/20" />
+          <div className="w-24 h-24 rounded-full border-4 border-[hsl(var(--primary))]/20" />
         </div>
-        <Loader2 className="w-24 h-24 animate-spin text-[#ff4500]" />
+        <Loader2 className="w-24 h-24 animate-spin text-[hsl(var(--primary))]" />
       </div>
 
       {/* Progress Indicator */}
       <div className="w-full max-w-md space-y-2">
         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[#ff4500] transition-all duration-1000"
+            className="h-full bg-[hsl(var(--primary))] transition-all duration-1000"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -105,7 +105,7 @@ export function RedditAnalysisLoading() {
 
       {/* Reddit Fact Card */}
       <div className="max-w-md bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-3">
-        <h3 className="text-lg font-semibold text-[#ff4500]">
+        <h3 className="text-lg font-semibold text-[hsl(var(--primary))]">
           {redditFacts[currentFactIndex].title}
         </h3>
         <p className="text-gray-600">

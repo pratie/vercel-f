@@ -66,11 +66,11 @@ export default function VerifyEmailPage() {
   }, [searchParams, verifyMagicToken]);
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-white to-[#fff3f0] flex flex-col items-center justify-center p-4 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-b from-white to-[hsl(var(--secondary))] flex flex-col items-center justify-center p-4 overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <div className="absolute -right-20 top-20 w-96 h-96 bg-[#ff4500]/10 rounded-full blur-3xl transform-gpu" />
-        <div className="absolute -left-20 bottom-20 w-96 h-96 bg-[#ff4500]/10 rounded-full blur-3xl transform-gpu" />
+        <div className="absolute -right-20 top-20 w-96 h-96 bg-[hsl(var(--primary))]/10 rounded-full blur-3xl transform-gpu" />
+        <div className="absolute -left-20 bottom-20 w-96 h-96 bg-[hsl(var(--primary))]/10 rounded-full blur-3xl transform-gpu" />
       </div>
 
       {/* Main Content */}
@@ -79,7 +79,7 @@ export default function VerifyEmailPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#ff4500]/10 transform-gpu"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[hsl(var(--primary))]/10 transform-gpu"
         >
           {/* Reddit Snoo */}
           <div className="flex justify-center mb-6">
@@ -93,13 +93,13 @@ export default function VerifyEmailPage() {
             />
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
             Verifying Your Login
           </h1>
 
           {isVerifying ? (
             <div className="flex flex-col items-center justify-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#ff4500] mb-4"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[hsl(var(--primary))] mb-4"></div>
               <p className="text-gray-600 text-center">
                 Verifying your magic link...
               </p>
@@ -112,7 +112,7 @@ export default function VerifyEmailPage() {
               </div>
               <button
                 onClick={() => router.push('/login')}
-                className="w-full bg-gradient-to-r from-[#ff4500] to-[#ff6634] text-white py-2 px-4 rounded-md hover:opacity-90 transition"
+                className="w-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] text-white py-2 px-4 rounded-md hover:opacity-90 transition"
               >
                 Back to Login
               </button>

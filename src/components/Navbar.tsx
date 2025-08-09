@@ -18,7 +18,7 @@ export function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <Link href="/" className="flex items-center">
-              <span className="text-2xl font-bold text-orange-500">SNEAKYGUY</span>
+              <span className="text-2xl font-bold text-[hsl(var(--primary))]">SNEAKYGUY</span>
             </Link>
           </div>
 

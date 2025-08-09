@@ -360,10 +360,10 @@ export default function MentionsPage() {
   };
 
   const getRelevanceColor = (score: number) => {
-    if (score >= 80) return 'bg-green-500 text-white';
-    if (score >= 60) return 'bg-yellow-500 text-white';
-    if (score >= 40) return 'bg-orange-500 text-white';
-    return 'bg-red-500 text-white';
+    if (score >= 80) return 'bg-[hsl(var(--primary))] text-white';
+    if (score >= 60) return 'bg-[hsl(var(--secondary))] text-[hsl(var(--primary))]';
+    if (score >= 40) return 'bg-slate-400 text-white';
+    return 'bg-slate-600 text-white';
   };
 
   const highlightKeywords = (text: string, keywords: string[]) => {
@@ -440,8 +440,8 @@ export default function MentionsPage() {
             variant="ghost"
           >
             <div className="
-              absolute left-0 top-0 bottom-0 w-1
-              bg-gradient-to-b from-[#ff4500] to-[#ff6d3f]
+               absolute left-0 top-0 bottom-0 w-1
+              bg-gradient-to-b from-[hsl(var(--primary))] to-[hsl(var(--accent))]
               rounded-l-lg
             "/>
             <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
@@ -505,18 +505,18 @@ export default function MentionsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search title or content..."
-                  className="w-full h-10 pl-9 pr-3 rounded-md border border-gray-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500] text-sm"
+                  className="w-full h-10 pl-9 pr-3 rounded-md border border-gray-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))] text-sm"
                 />
               </div>
             </div>
             {/* Subreddit */}
             <div className="md:col-span-3 min-w-0">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-gray-400" />
+                <SlidersHorizontal className="h-4 w-4 text-[hsl(var(--primary))] opacity-70" />
                 <select
                   value={selectedSubreddit}
                   onChange={(e) => setSelectedSubreddit(e.target.value)}
-                  className="flex-1 h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500]"
+                  className="flex-1 h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))]"
                 >
                   <option value="all">All subreddits</option>
                   {availableSubreddits.map(sr => (
@@ -530,7 +530,7 @@ export default function MentionsPage() {
               <select
                 value={selectedIntent}
                 onChange={(e) => setSelectedIntent(e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500]"
+                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))]"
               >
                 <option value="all">All intents</option>
                 {availableIntents.map(int => (
@@ -543,14 +543,13 @@ export default function MentionsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/30 focus:border-[#ff4500]"
+                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))]"
               >
                 <option value="new">Newest</option>
                 <option value="comments">Most comments</option>
                 <option value="relevance">Highest relevance</option>
               </select>
             </div>
-            {/* Results + Clear */}
             <div className="md:col-span-12 flex items-center justify-between text-xs text-gray-500">
               <div>
                 Showing <span className="font-medium text-gray-700">{displayMentions.length}</span> of <span className="font-medium text-gray-700">{mentions.length}</span> mentions
@@ -559,7 +558,7 @@ export default function MentionsPage() {
                 <button
                   type="button"
                   onClick={() => { setSearchQuery(''); setSelectedSubreddit('all'); setSelectedIntent('all'); setSortBy('new'); }}
-                  className="text-[#ff4500] hover:underline"
+                  className="text-primary hover:underline"
                 >
                   Clear filters
                 </button>
@@ -570,7 +569,7 @@ export default function MentionsPage() {
 
         {isLoading ? (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-500"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
           </div>
         ) : mentions.length === 0 ? (
           <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
@@ -591,7 +590,7 @@ export default function MentionsPage() {
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
                           <h3 className="text-base sm:text-lg font-medium flex-grow order-2 sm:order-1">
                             <span
-                              className="hover:text-[#ff4500] transition-colors duration-200"
+                              className="hover:text-[hsl(var(--primary))] transition-colors duration-200"
                               dangerouslySetInnerHTML={{ 
                                 __html: highlightKeywords(mention.title, mention.matching_keywords)
                               }}
@@ -605,7 +604,7 @@ export default function MentionsPage() {
                               href={mention.url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md transition-all duration-200 text-xs sm:text-sm font-medium h-7 sm:h-8 ${viewedPosts.has(mention.id) ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-orange-50 hover:bg-orange-100 text-[#ff4500] border border-orange-100 hover:border-orange-200'}`}
+                              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md transition-all duration-200 text-xs sm:text-sm font-medium h-7 sm:h-8 ${viewedPosts.has(mention.id) ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-[hsl(var(--secondary))]/60 hover:bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] border border-[hsl(var(--primary))]/15 hover:border-[hsl(var(--primary))]/25'}`}
                               onClick={() => handleMarkAsViewed(mention.id)}
                             >
                               {viewedPosts.has(mention.id) ? 'Viewed' : 'View Post'}
@@ -619,7 +618,7 @@ export default function MentionsPage() {
                             {mention.matching_keywords.map((keyword) => (
                               <Badge 
                                 key={keyword} 
-                                className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 transition-colors text-xs"
+                                className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/20 transition-colors text-xs"
                               >
                                 {keyword}
                               </Badge>
@@ -668,7 +667,7 @@ export default function MentionsPage() {
                           <Button
                             onClick={() => handleGenerateReply(mention)}
                             disabled={generatingReplyFor === mention.id}
-                            className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[#ff4500] border border-orange-200 shadow-sm h-8 px-4 transition-all duration-200 w-full sm:w-auto mt-2 sm:mt-0 hover:shadow-sm font-medium"
+                            className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[hsl(var(--primary))] border border-[hsl(var(--primary))]/20 shadow-sm h-8 px-4 transition-all duration-200 w-full sm:w-auto mt-2 sm:mt-0 hover:shadow-sm font-medium"
                             size="sm"
                           >
                             {generatingReplyFor === mention.id ? (
@@ -724,7 +723,7 @@ export default function MentionsPage() {
                                   <div className="space-y-3">
                                     <textarea
                                       autoFocus
-                                      className="w-full border border-gray-200 rounded-md p-3 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[#ff4500] focus:border-transparent transition-all"
+                                      className="w-full border border-gray-200 rounded-md p-3 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-all"
                                       rows={4}
                                       value={editedReplies[mention.id] || ''}
                                       onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
@@ -749,7 +748,7 @@ export default function MentionsPage() {
                                           setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] }));
                                           setEditingReplyId(null);
                                         }}
-                                        className="text-xs h-8 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+                                        className="text-xs h-8 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white"
                                       >
                                         Save Changes
                                       </Button>
@@ -810,7 +809,7 @@ export default function MentionsPage() {
                                       ? 'bg-gray-100 text-gray-500' 
                                       : publishedComments[mention.id] 
                                         ? 'bg-green-600 hover:bg-green-700 text-white' 
-                                        : 'bg-[#ff4500] hover:bg-[#ff4500]/90 text-white'} flex-shrink-0`}
+                                        : 'bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white'} flex-shrink-0`}
                                     size="sm"
                                   >
                                     {isPosting === mention.id ? (
@@ -897,7 +896,7 @@ export default function MentionsPage() {
               </span>
               <Button 
                 size="sm"
-                className="ml-auto bg-[#ff4500] hover:bg-[#ff4500]/90 text-xs"
+                className="ml-auto bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-xs"
                 onClick={() => redditAuth.ensureRedditConnection()}
               >
                 Connect

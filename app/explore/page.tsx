@@ -109,7 +109,7 @@ export default function ExplorePage() {
             <div className="flex justify-end">
               <Button 
                 type="submit" 
-                className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
+                className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white"
                 disabled={isLoading || !query.trim()}
               >
                 {isLoading ? (
@@ -155,7 +155,7 @@ export default function ExplorePage() {
                     <div>
                       <span className="text-[0.875rem] font-medium text-gray-900">r/{post.subreddit}</span>
                       <span className="mx-2 text-gray-300">•</span>
-                      <span className="text-[0.875rem] font-medium text-[#ff4500]">u/{post.author}</span>
+                      <span className="text-[0.875rem] font-medium text-[hsl(var(--primary))]">u/{post.author}</span>
                     </div>
                     <span className="text-[0.75rem] text-gray-500">
                       {formatDistanceToNow(new Date(post.created_utc), { addSuffix: true })}

@@ -90,7 +90,7 @@ export default function MentionsPage() {
                 <div>
                   <span className="text-[0.875rem] font-medium text-gray-900">r/{mention.subreddit}</span>
                   <span className="mx-2 text-gray-300">•</span>
-                  <span className="text-[0.875rem] font-medium text-[#ff4500]">u/{mention.username}</span>
+                  <span className="text-[0.875rem] font-medium text-[hsl(var(--primary))]">u/{mention.username}</span>
                 </div>
                 <span className="text-[0.75rem] text-gray-500">
                   {formatDistanceToNow(new Date(mention.timestamp), { addSuffix: true })}

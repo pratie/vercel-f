@@ -19,7 +19,7 @@ const KeywordCard = ({ keyword, stats }: KeywordCardProps) => (
   <Card className="p-4 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-white to-gray-50/50">
     <div className="space-y-3">
       <div className="flex items-center justify-between">
-        <Badge variant="secondary" className="bg-[#ff4500]/10 text-[#ff4500] hover:bg-[#ff4500]/20 px-3 py-1">
+        <Badge variant="secondary" className="bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--secondary))]/80 px-3 py-1">
           {keyword}
         </Badge>
       </div>

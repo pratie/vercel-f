@@ -154,7 +154,7 @@ export function RedditCommentForm({
           <Button 
             onClick={handleSubmit} 
             disabled={isSubmitting || !comment.trim()}
-            className="bg-[#ff4500] hover:bg-[#ff4500]/90"
+            className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90"
           >
             {isSubmitting ? 'Posting...' : 'Post Comment'}
           </Button>

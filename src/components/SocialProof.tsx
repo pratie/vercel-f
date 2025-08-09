@@ -110,7 +110,7 @@ const SocialProof: React.FC = () => (
       <div className="text-center">
         <div className="flex flex-col items-center">
           <div className="flex items-center justify-center -space-x-2 mb-4">
-            <div className="w-12 h-12 rounded-full border-2 border-white bg-[#ff4500] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full border-2 border-white bg-[hsl(var(--primary))] flex items-center justify-center">
               <span className="text-sm font-medium text-white">JD</span>
             </div>
             <div className="w-12 h-12 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center">

@@ -39,7 +39,7 @@ export function AnalysisDialog({ isOpen, onClose, posts }: AnalysisDialogProps) 
                     r/{post.subreddit}
                   </Badge>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline" className="text-orange-600">
+                    <Badge variant="outline" className="text-[hsl(var(--primary))]">
                       {post.score} points
                     </Badge>
                     <Badge variant="outline" className="text-purple-600">

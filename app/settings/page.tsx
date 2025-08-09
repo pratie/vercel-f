@@ -234,7 +234,7 @@ export default function SettingsPage() {
                       </Button>
                     ) : (
                       <Button 
-                        className="bg-[#ff4500] hover:bg-[#ff4500]/90"
+                        className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90"
                         onClick={() => {
                           toast.info('Connecting to Reddit...', {
                             description: 'A popup window will open for authentication'
@@ -300,7 +300,7 @@ export default function SettingsPage() {
                         setAlertSettings(updatedSettings);
                         autoSaveAlertSettings({ enable_email_alerts: newCheckedState, alert_frequency: newFrequency, is_active: newCheckedState });
                       }}
-                        color="orange"
+                        color="teal"
                         size="md"
                       />
                     </Group>
@@ -369,21 +369,21 @@ export default function SettingsPage() {
                     onValueChange={(value: Tone) => setSettings({ ...settings, tone: value })}
                     className="grid grid-cols-1 sm:grid-cols-3 gap-4"
                   >
-                    <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-orange-500">
+                    <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-[hsl(var(--primary))]">
                       <RadioGroupItem value="friendly" id="friendly" />
                       <Label htmlFor="friendly" className="cursor-pointer">
                         <div className="font-medium">Friendly & Casual</div>
                         <p className="text-sm text-gray-500">Warm, approachable style</p>
                       </Label>
                     </div>
-                    <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-orange-500">
+                    <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-[hsl(var(--primary))]">
                       <RadioGroupItem value="professional" id="professional" />
                       <Label htmlFor="professional" className="cursor-pointer">
                         <div className="font-medium">Professional</div>
                         <p className="text-sm text-gray-500">Business-oriented approach</p>
                       </Label>
                     </div>
-                    <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-orange-500">
+                    <div className="flex items-center space-x-2 border rounded-lg p-4 cursor-pointer hover:border-[hsl(var(--primary))]">
                       <RadioGroupItem value="technical" id="technical" />
                       <Label htmlFor="technical" className="cursor-pointer">
                         <div className="font-medium">Technical</div>
@@ -413,7 +413,7 @@ export default function SettingsPage() {
                 className={cn(
                   "w-full transition-colors",
                   isLoading ? "bg-gray-400" :
-                  "bg-[#ff4500] hover:bg-[#ff4500]/90"
+                  "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90"
                 )}
               >
                 {isLoading ? 'Saving...' : 

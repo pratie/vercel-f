@@ -156,7 +156,7 @@ export default function ProjectAnalysisPage() {
                   r/{post.subreddit}
                 </Badge>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline" className="text-orange-600">
+                  <Badge variant="outline" className="text-[hsl(var(--primary))]">
                     {post.score} points
                   </Badge>
                   <Badge variant="outline" className="text-purple-600">
@@ -194,7 +194,7 @@ export default function ProjectAnalysisPage() {
                 <div className="mb-2 flex flex-wrap gap-2">
                   <span className="text-sm text-gray-600">Matched keywords:</span>
                   {post.matching_keywords.map((keyword) => (
-                    <Badge key={keyword} variant="secondary" className="bg-yellow-100 text-yellow-800">
+                    <Badge key={keyword} variant="secondary" className="bg-[hsl(var(--secondary))] text-[hsl(var(--primary))]">
                       {keyword}
                     </Badge>
                   ))}

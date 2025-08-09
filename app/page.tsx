@@ -59,7 +59,7 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-white relative overflow-hidden">
+    <main className="min-h-screen bg-[hsl(var(--secondary))] relative overflow-hidden">
       {/* Floating Subreddits Animation */}
       <FloatingSubreddits mousePosition={mousePosition} count={40} />
       
@@ -102,7 +102,7 @@ export default function LandingPage() {
 
 
       {/* Hero Section - Clean & Professional */}
-      <div className="relative bg-white overflow-hidden min-h-[95vh] flex items-center">
+      <div className="relative overflow-hidden min-h-[95vh] flex items-center">
         {/* Subtle Background Pattern */}
         <div className="absolute inset-0">
           {/* Minimal geometric pattern */}
@@ -126,14 +126,15 @@ export default function LandingPage() {
             {/* Social Proof Badge - PREMIUM */}
             <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-white text-slate-700 mb-10 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
               <div className="w-2 h-2 rounded-full bg-green-500 mr-3 animate-pulse"></div>
-              <Users className="h-5 w-5 mr-2 text-orange-600" />
+              <Users className="h-5 w-5 mr-2 text-[hsl(var(--primary))]" />
               <span className="text-slate-700">Trusted by 50+ founders & marketing teams</span>
-              <div className="ml-2 px-2 py-1 bg-orange-500 text-white text-xs rounded-full font-black">LIVE</div>
+              <div className="ml-2 px-2 py-1 bg-[hsl(var(--primary))] text-white text-xs rounded-full font-black">LIVE</div>
             </div>
             
             {/* Main Headline - Professional & Readable */}
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight tracking-tight">
-              <span className="bg-gradient-to-r from-indigo-500 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">Find Reddit leads</span><br />
+              Find Reddit leads
+              <br />
               while you sleep.
             </h1>
             
@@ -141,7 +142,7 @@ export default function LandingPage() {
             <p className="text-lg sm:text-xl md:text-2xl text-slate-700 mb-8 max-w-4xl mx-auto leading-relaxed">
               Monitor 15+ subreddits, get AI-generated responses, and never miss a mention.
             </p>
-            <div className="inline-flex items-center px-4 py-2 bg-white rounded-full text-gray-700 font-medium text-base shadow-sm border border-orange-200 mb-12">
+            <div className="inline-flex items-center px-4 py-2 bg-white rounded-full text-gray-700 font-medium text-base shadow-sm border border-[hsl(var(--primary))]/20 mb-12">
               <span className="mr-2">💰</span>
               Starting at just $9/month — less than your daily coffee
               <span className="ml-2">☕</span>
@@ -151,7 +152,7 @@ export default function LandingPage() {
             <div className="flex justify-center mb-16">
               <Button
                 ref={ctaRef}
-                className="group relative bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ring-1 ring-orange-600/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-orange-500"
+                className="group relative bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ring-1 ring-[hsl(var(--primary))]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[hsl(var(--primary))]"
                 onClick={handleGetStarted}
               >
                 <div className="flex items-center">
@@ -180,7 +181,7 @@ export default function LandingPage() {
       </div>
 
       {/* How It Works Section */}
-      <div id="how-it-works" className="py-20 bg-white">
+      <div id="how-it-works" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 font-heading">How SneakyGuy Works</h2>
@@ -283,7 +284,7 @@ export default function LandingPage() {
       <SocialProof />
 
       {/* Features Section - Professional */}
-      <div id="features" className="py-24 bg-white relative overflow-hidden">
+      <div id="features" className="py-24 relative overflow-hidden">
         {/* Clean background with subtle accent */}
         <div className="absolute inset-0">
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
@@ -292,11 +293,11 @@ export default function LandingPage() {
         
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
-            <div className="inline-block px-6 py-3 bg-orange-600 rounded-full text-white font-semibold text-sm mb-6 shadow-sm">
+            <div className="inline-block px-6 py-3 bg-[hsl(var(--primary))] rounded-full text-white font-semibold text-sm mb-6 shadow-sm">
               ⚡ POWERFUL FEATURES
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 leading-tight">
-              See the <span className="text-orange-600">Magic</span> in Action
+              See the <span className="text-[hsl(var(--primary))]">Magic</span> in Action
             </h2>
             <p className="text-lg sm:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
               Watch SneakyGuy transform Reddit into your personal lead generation powerhouse
@@ -327,7 +328,7 @@ export default function LandingPage() {
                     </div>
                     <span className="text-slate-800 font-semibold">🤖 AI generates keywords automatically</span>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-orange-50 rounded-lg border-l-4 border-orange-500 transition-all duration-200">
+                  <div className="flex items-center gap-4 p-4 bg-[hsl(var(--accent))]/15 rounded-lg border-l-4 border-[hsl(var(--accent))] transition-all duration-200">
                     <div className="bg-purple-500 rounded-full p-1">
                       <Check className="h-4 w-4 text-white" />
                     </div>
@@ -337,7 +338,7 @@ export default function LandingPage() {
               </div>
               
               <div className="order-1 lg:order-2">
-                <div className="bg-white rounded-2xl shadow-2xl border border-orange-200 overflow-hidden transform hover:scale-105 transition-transform duration-300">
+                <div className="bg-white rounded-2xl shadow-2xl border border-[hsl(var(--primary))]/30 overflow-hidden transform hover:scale-105 transition-transform duration-300">
                   <Image 
                     src="/create-project-screenshot.png" 
                     alt="Simple project creation - just name and description needed"
@@ -609,7 +610,7 @@ export default function LandingPage() {
               <div className="text-center">
                 <span className="inline-flex items-center gap-2 text-xl sm:text-2xl font-medium text-gray-900">
                   <MessageSquare className="w-6 h-6 text-[#FFFFFF]" />
-                  80% of SneakyGuy's AI crafted responses received <span className="bg-[#ff4500] px-2 py-1 rounded-md text-white font-semibold">positive replies</span> from OPs
+                  80% of SneakyGuy's AI crafted responses received <span className="bg-[hsl(var(--primary))] px-2 py-1 rounded-md text-white font-semibold">positive replies</span> from OPs
                 </span>
               </div>
             </div>
@@ -634,16 +635,16 @@ export default function LandingPage() {
           Early Adopter Benefits
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-          <div className="bg-white p-4 sm:p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 border border-orange-200 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-              <Star className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-[hsl(var(--primary))]/10 hover:border-[hsl(var(--primary))]/20 transition-all duration-200">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--accent))]/15 border border-[hsl(var(--accent))]/30 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <Star className="h-5 w-5 sm:h-6 sm:w-6 text-[hsl(var(--primary))]" />
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Priority Feature Requests</h3>
             <p className="text-sm sm:text-base text-gray-600">Your feature requests get top priority in our development roadmap. Help shape the future of SNEAKYGUY.</p>
           </div>
-          <div className="bg-white p-4 sm:p-6 rounded-xl border border-[#ff4500]/10 hover:border-[#ff4500]/20 transition-all duration-200">
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-orange-50 border border-orange-200 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
-              <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[#ff4500]" />
+          <div className="bg-white p-4 sm:p-6 rounded-xl border border-[hsl(var(--primary))]/10 hover:border-[hsl(var(--primary))]/20 transition-all duration-200">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--accent))]/15 border border-[hsl(var(--accent))]/30 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
+              <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[hsl(var(--primary))]" />
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Direct Access to Founders</h3>
             <p className="text-sm sm:text-base text-gray-600">Get direct access to our team. Your feedback is invaluable in making SNEAKYGUY better for everyone.</p>
@@ -662,7 +663,7 @@ export default function LandingPage() {
           </p>
           <Button
             onClick={() => user ? router.push('/upgrade') : router.push('/login')}
-            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
+            className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
           >
             Find Leads
             <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
@@ -689,12 +690,12 @@ export default function LandingPage() {
       </div>
 
       {/* Quirky Free Access Message */}
-      <div className="mt-12 bg-[#fff3f0] rounded-2xl p-8 max-w-2xl mx-auto">
+      <div className="mt-12 bg-[hsl(var(--secondary))] rounded-2xl p-8 max-w-2xl mx-auto">
         <FreeAccessMessage />
       </div>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200">
+      <footer className="bg-[hsl(var(--secondary))] border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
@@ -712,10 +713,10 @@ export default function LandingPage() {
                 Enterprise-grade Reddit lead generation for businesses. Automate your Reddit presence and never miss a potential lead again.
               </p>
               <div className="flex space-x-4">
-                <a href="https://x.com/snow_stark17" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#ff4500]">
+                <a href="https://x.com/snow_stark17" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[hsl(var(--primary))]">
                   <Twitter className="h-5 w-5" />
                 </a>
-                <a href="https://www.linkedin.com/in/sneakyguyai/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#ff4500]">
+                <a href="https://www.linkedin.com/in/sneakyguyai/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[hsl(var(--primary))]">
                   <Linkedin className="h-5 w-5" />
                 </a>
                 
@@ -726,13 +727,13 @@ export default function LandingPage() {
               <h3 className="font-semibold text-gray-900 mb-4">Product</h3>
               <ul className="space-y-2">
                 <li>
-                  <a href="#how-it-works" className="text-gray-600 hover:text-[#ff4500]">How It Works</a>
+                  <a href="#how-it-works" className="text-gray-600 hover:text-[hsl(var(--primary))]">How It Works</a>
                 </li>
                 <li>
-                  <a href="#features" className="text-gray-600 hover:text-[#ff4500]">Features</a>
+                  <a href="#features" className="text-gray-600 hover:text-[hsl(var(--primary))]">Features</a>
                 </li>
                 <li>
-                  <a href="#pricing" className="text-gray-600 hover:text-[#ff4500]">Pricing</a>
+                  <a href="#pricing" className="text-gray-600 hover:text-[hsl(var(--primary))]">Pricing</a>
                 </li>
               </ul>
             </div>
@@ -741,13 +742,13 @@ export default function LandingPage() {
               <h3 className="font-semibold text-gray-900 mb-4">Company</h3>
               <ul className="space-y-2">
                 <li>
-                  <Link href="/about" className="text-gray-600 hover:text-[#ff4500]">About Me</Link>
+                  <Link href="/about" className="text-gray-600 hover:text-[hsl(var(--primary))]">About Me</Link>
                 </li>
                 <li>
-                  <Link href="/privacy" className="text-gray-600 hover:text-[#ff4500]">Privacy Policy</Link>
+                  <Link href="/privacy" className="text-gray-600 hover:text-[hsl(var(--primary))]">Privacy Policy</Link>
                 </li>
                 <li>
-                  <Link href="/terms" className="text-gray-600 hover:text-[#ff4500]">Terms of Service</Link>
+                  <Link href="/terms" className="text-gray-600 hover:text-[hsl(var(--primary))]">Terms of Service</Link>
                 </li>
               </ul>
             </div>
@@ -763,7 +764,7 @@ export default function LandingPage() {
                   href="https://x.com/snow_stark17" 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="text-gray-500 hover:text-[#ff4500] text-sm font-medium"
+                  className="text-gray-500 hover:text-[hsl(var(--primary))] text-sm font-medium"
                 >
                   Contact Support
                 </a>

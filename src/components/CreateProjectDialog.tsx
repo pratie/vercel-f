@@ -111,7 +111,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] sm:max-w-xl overflow-y-auto max-h-[85vh] p-0 bg-white shadow-lg rounded-xl">
-        <div className="bg-gradient-to-r from-orange-500 to-red-500 p-4 rounded-t-xl">
+        <div className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] p-4 rounded-t-xl">
           <DialogHeader className="space-y-1.5 text-white">
             <DialogTitle className="text-xl font-bold flex items-center">
               <PlusCircle className="h-5 w-5 mr-2" />
@@ -171,7 +171,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
                   size="sm"
                   onClick={handleRegenerate}
                   disabled={loading || regenerateCount >= 2}
-                  className="text-orange-600 hover:text-orange-700 hover:bg-orange-50 px-3 py-1.5 h-auto font-normal"
+                  className="text-[hsl(var(--primary))] hover:text-[hsl(var(--primary))] hover:bg-[hsl(var(--secondary))]/60 px-3 py-1.5 h-auto font-normal"
                 >
                   Regenerate
                   {regenerateCount > 0 && ` (${2 - regenerateCount} left)`}
@@ -181,10 +181,10 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
                 {keywords.map((keyword) => (
                   <div
                     key={keyword}
-                    className="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-md text-sm flex items-center gap-1.5"
+                    className="bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] px-3 py-1.5 rounded-md text-sm flex items-center gap-1.5"
                   >
                     {keyword}
-                    <span className="text-orange-400 cursor-pointer select-none">×</span>
+                    <span className="text-[hsl(var(--primary))]/60 cursor-pointer select-none">×</span>
                   </div>
                 ))}
               </div>
@@ -199,10 +199,10 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit }: CreateProj
                 {subreddits.map((subreddit) => (
                   <div
                     key={subreddit}
-                    className="bg-orange-50 text-orange-600 px-3 py-1.5 rounded-md text-sm flex items-center gap-1.5"
+                    className="bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] px-3 py-1.5 rounded-md text-sm flex items-center gap-1.5"
                   >
                     r/{subreddit}
-                    <span className="text-orange-400 cursor-pointer select-none">×</span>
+                    <span className="text-[hsl(var(--primary))]/60 cursor-pointer select-none">×</span>
                   </div>
                 ))}
               </div>

@@ -86,7 +86,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] sm:max-w-xl overflow-y-auto max-h-[85vh] p-0 bg-white shadow-lg rounded-xl">
-        <div className="bg-gradient-to-r from-orange-500 to-red-500 p-4 rounded-t-xl">
+        <div className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] p-4 rounded-t-xl">
           <DialogHeader className="space-y-1.5 text-white">
             <DialogTitle className="text-xl font-bold flex items-center">
               <Pencil className="h-5 w-5 mr-2" />
@@ -102,7 +102,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
           <div className="grid gap-4">
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium flex items-center text-gray-700">
-                <Tag className="h-4 w-4 mr-1.5 text-orange-500" />
+                <Tag className="h-4 w-4 mr-1.5 text-[hsl(var(--primary))]" />
                 Project Name
               </Label>
               <Input
@@ -110,14 +110,14 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 disabled={isSaving}
-                className="h-10 bg-white border-gray-200 focus:border-orange-300 focus:ring-orange-100 shadow-sm text-sm"
+                className="h-10 bg-white border-gray-200 focus:border-[hsl(var(--primary))]/50 focus:ring-[hsl(var(--accent))]/30 shadow-sm text-sm"
                 placeholder="Enter project name"
               />
             </div>
 
             <div className="space-y-2">
               <Label htmlFor="description" className="text-sm font-medium flex items-center text-gray-700">
-                <MessageSquare className="h-4 w-4 mr-1.5 text-orange-500" />
+                <MessageSquare className="h-4 w-4 mr-1.5 text-[hsl(var(--primary))]" />
                 Description
               </Label>
               <textarea
@@ -125,7 +125,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 disabled={isSaving}
-                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 bg-white h-24 resize-none focus:border-orange-300 focus:ring-orange-100 shadow-sm"
+                className="w-full px-3 py-2 text-sm rounded-md border border-gray-200 bg-white h-24 resize-none focus:border-[hsl(var(--primary))]/50 focus:ring-[hsl(var(--accent))]/30 shadow-sm"
                 placeholder="Describe your project's purpose and goals"
               />
             </div>
@@ -135,10 +135,10 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium flex items-center text-gray-700">
-                  <Hash className="h-4 w-4 mr-1.5 text-orange-500" />
+                  <Hash className="h-4 w-4 mr-1.5 text-[hsl(var(--primary))]" />
                   Keywords
                 </Label>
-                <span className="text-xs text-white bg-orange-500 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-white bg-[hsl(var(--primary))] px-2 py-0.5 rounded-full">
                   {keywords.length} keywords
                 </span>
               </div>
@@ -170,13 +170,13 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
                   placeholder="Type keyword and press Enter"
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddKeyword())}
                   disabled={isSaving}
-                  className="h-9 text-sm bg-white border-gray-200 focus:border-orange-300 focus:ring-orange-100 shadow-sm"
+                  className="h-9 text-sm bg-white border-gray-200 focus:border-[hsl(var(--primary))]/50 focus:ring-[hsl(var(--accent))]/30 shadow-sm"
                 />
                 <Button
                   type="button"
                   onClick={handleAddKeyword}
                   disabled={isSaving || !newKeyword.trim()}
-                  className="h-9 whitespace-nowrap bg-orange-100 hover:bg-orange-200 text-orange-800 border-none shadow-sm text-sm"
+                  className="h-9 whitespace-nowrap bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/80 text-[hsl(var(--primary))] border-none shadow-sm text-sm"
                 >
                   <Plus className="h-4 w-4 mr-1" />
                   Add
@@ -187,10 +187,10 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <Label className="text-sm font-medium flex items-center text-gray-700">
-                  <MessageSquare className="h-4 w-4 mr-1.5 text-orange-500" />
+                  <MessageSquare className="h-4 w-4 mr-1.5 text-[hsl(var(--primary))]" />
                   Subreddits to Monitor
                 </Label>
-                <span className="text-xs text-white bg-orange-500 px-2 py-0.5 rounded-full">
+                <span className="text-xs text-white bg-[hsl(var(--primary))] px-2 py-0.5 rounded-full">
                   {subreddits.length} subreddits
                 </span>
               </div>
@@ -222,13 +222,13 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
                   placeholder="Type subreddit name and press Enter"
                   onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSubreddit())}
                   disabled={isSaving}
-                  className="h-9 text-sm bg-white border-gray-200 focus:border-orange-300 focus:ring-orange-100 shadow-sm"
+                  className="h-9 text-sm bg-white border-gray-200 focus:border-[hsl(var(--primary))]/50 focus:ring-[hsl(var(--accent))]/30 shadow-sm"
                 />
                 <Button
                   type="button"
                   onClick={handleAddSubreddit}
                   disabled={isSaving || !newSubreddit.trim()}
-                  className="h-9 whitespace-nowrap bg-orange-100 hover:bg-orange-200 text-orange-800 border-none shadow-sm text-sm"
+                  className="h-9 whitespace-nowrap bg-[hsl(var(--secondary))] hover:bg-[hsl(var(--secondary))]/80 text-[hsl(var(--primary))] border-none shadow-sm text-sm"
                 >
                   <Plus className="h-4 w-4 mr-1" />
                   Add
@@ -250,7 +250,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
           <Button 
             onClick={handleSave} 
             disabled={isSaving || !name.trim()}
-            className="h-10 bg-[#ff4500] hover:bg-[#ff4500]/90 text-white shadow-sm text-sm font-medium"
+            className="h-10 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white shadow-sm text-sm font-medium"
           >
             {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>

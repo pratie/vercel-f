@@ -33,7 +33,7 @@ export default function UpgradePage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#ff4500]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
       </div>
     );
   }
@@ -73,7 +73,7 @@ export default function UpgradePage() {
             </div>
             
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">
-              Ready to Scale Your <span className="text-[#ff4500]">Reddit Growth</span>?
+              Ready to Scale Your <span className="text-[hsl(var(--primary))]">Reddit Growth</span>?
             </h2>
             
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
@@ -125,15 +125,15 @@ export default function UpgradePage() {
               <h4 className="text-lg font-semibold text-gray-900 mb-4">Why Choose SneakyGuy?</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#ff4500] mb-1">500+</div>
+                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">500+</div>
                   <div className="text-sm text-gray-600">Active Users</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#ff4500] mb-1">85%</div>
+                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">85%</div>
                   <div className="text-sm text-gray-600">Response Rate</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#ff4500] mb-1">7-Day</div>
+                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">7-Day</div>
                   <div className="text-sm text-gray-600">Money-Back Guarantee</div>
                 </div>
               </div>
@@ -144,7 +144,7 @@ export default function UpgradePage() {
           <div className="mt-12 text-center">
             <p className="text-gray-600 mb-4">
               Questions about our plans? 
-              <a href="mailto:support@sneakyguy.com" className="text-[#ff4500] hover:underline ml-1">
+              <a href="mailto:support@sneakyguy.com" className="text-[hsl(var(--primary))] hover:underline ml-1">
                 Contact our support team
               </a>
             </p>

@@ -72,10 +72,10 @@ export default function RedditCallbackPage() {
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white p-4">
       <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg border border-gray-200">
-        <h1 className="text-2xl font-bold text-[#ff4500] mb-4">Reddit Authentication</h1>
+        <h1 className="text-2xl font-bold text-[hsl(var(--primary))] mb-4">Reddit Authentication</h1>
         
         <div className="flex items-center space-x-3">
-          <div className="h-4 w-4 bg-[#ff4500] rounded-full animate-pulse"></div>
+          <div className="h-4 w-4 bg-[hsl(var(--primary))] rounded-full animate-pulse"></div>
           <p className="text-gray-800">{status}</p>
         </div>
         

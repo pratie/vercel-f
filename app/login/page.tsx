@@ -172,11 +172,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-white to-[#fff3f0] flex flex-col items-center justify-center p-4 overflow-hidden">
+    <div className="fixed inset-0 bg-gradient-to-b from-white to-[hsl(var(--secondary))] flex flex-col items-center justify-center p-4 overflow-hidden">
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <div className="absolute -right-20 top-20 w-96 h-96 bg-[#ff4500]/10 rounded-full blur-3xl transform-gpu" />
-        <div className="absolute -left-20 bottom-20 w-96 h-96 bg-[#ff4500]/10 rounded-full blur-3xl transform-gpu" />
+        <div className="absolute -right-20 top-20 w-96 h-96 bg-[hsl(var(--primary))]/10 rounded-full blur-3xl transform-gpu" />
+        <div className="absolute -left-20 bottom-20 w-96 h-96 bg-[hsl(var(--primary))]/10 rounded-full blur-3xl transform-gpu" />
       </div>
 
       {/* Main Content */}
@@ -185,7 +185,7 @@ export default function LoginPage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, ease: "easeOut" }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[#ff4500]/10 transform-gpu"
+          className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[hsl(var(--primary))]/10 transform-gpu"
         >
           {/* Floating Reddit Snoo */}
           <motion.div
@@ -204,7 +204,7 @@ export default function LoginPage() {
             />
           </motion.div>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-[#ff4500] to-[#ff6634] bg-clip-text text-transparent">
+          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
             Welcome to SneakyGuy
           </h1>
           <p className="text-gray-600 text-center mb-6">
@@ -237,13 +237,13 @@ export default function LoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="Enter your email"
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[#ff4500] focus:border-[#ff4500] outline-none transition"
+                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] outline-none transition"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isRequestingMagicLink}
-                    className="w-full bg-gradient-to-r from-[#ff4500] to-[#ff6634] text-white py-2 px-4 rounded-md hover:opacity-90 transition flex items-center justify-center"
+                    className="w-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] text-white py-2 px-4 rounded-md hover:opacity-90 transition flex items-center justify-center"
                   >
                     {isRequestingMagicLink ? (
                       <>
@@ -261,7 +261,7 @@ export default function LoginPage() {
               )}
               <button 
                 onClick={toggleMagicLinkForm}
-                className="w-full mt-4 text-sm text-gray-600 hover:text-[#ff4500] transition text-center"
+                className="w-full mt-4 text-sm text-gray-600 hover:text-[hsl(var(--primary))] transition text-center"
               >
                 Back to login options
               </button>
@@ -297,7 +297,7 @@ export default function LoginPage() {
               {/* Magic Link Button */}
               <button 
                 onClick={toggleMagicLinkForm}
-                className="w-full bg-gradient-to-r from-[#ff4500] to-[#ff6634] text-white py-3 px-6 rounded-lg font-medium hover:from-[#e03e00] hover:to-[#e55a2b] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                className="w-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] text-white py-3 px-6 rounded-lg font-medium hover:from-[hsl(var(--primary))] hover:to-[hsl(var(--primary))] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
               >
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />

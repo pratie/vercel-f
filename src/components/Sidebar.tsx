@@ -60,7 +60,7 @@ export function Sidebar() {
       {/* Mobile Menu Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[#ff4500] text-white hover:bg-[#e03e00] transition-colors shadow-md"
+        className="md:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-[hsl(var(--primary))] text-white hover:bg-[hsl(var(--primary))]/90 transition-colors shadow-md"
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
       >
         {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -68,7 +68,7 @@ export function Sidebar() {
 
       <div className={cn(
         "fixed md:sticky top-0 left-0 z-40 transform transition-all duration-300 ease-in-out",
-        "h-screen flex flex-col w-56 font-sans bg-gradient-to-b from-white to-[#fff8f6]",
+        "h-screen flex flex-col w-56 font-sans bg-gradient-to-b from-[hsl(var(--secondary))] to-white",
         "border-r border-gray-100",
         isMobile && !isOpen ? "-translate-x-full" : "translate-x-0"
       )}>
@@ -83,7 +83,7 @@ export function Sidebar() {
               className="mr-2 w-8 h-8"
               priority
             />
-            <span className="text-[#ff4500] font-bold text-xl">Sneakyguy</span>
+            <span className="text-primary font-bold text-xl">Sneakyguy</span>
           </div>
         </div>
 
@@ -101,17 +101,17 @@ export function Sidebar() {
                   className={cn(
                     "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                     isActiveRoute
-                      ? "bg-[#FFF0E6] text-[#ff4500]"
+                      ? "bg-[hsl(var(--secondary))] text-primary"
                       : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
                   )}
                 >
                   <item.icon className={cn(
                     "h-5 w-5 flex-shrink-0",
-                    isActiveRoute ? "text-[#ff4500]" : "text-gray-400"
+                    isActiveRoute ? "text-primary" : "text-gray-400"
                   )} />
                   {item.name}
                   {isActiveRoute && (
-                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[#ff4500]" />
+                    <span className="ml-auto w-1.5 h-1.5 rounded-full bg-[hsl(var(--primary))]" />
                   )}
                 </Link>
               );

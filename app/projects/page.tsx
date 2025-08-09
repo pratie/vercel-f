@@ -166,14 +166,14 @@ export default function ProjectsPage() {
       {/* Background gradient for depth */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-gradient-to-b from-white via-white to-gray-50" />
-        <div className="absolute -top-20 left-1/2 -translate-x-1/2 size-[520px] rounded-full bg-[#ff4500]/10 blur-3xl opacity-30" />
+        <div className="absolute -top-20 left-1/2 -translate-x-1/2 size-[520px] rounded-full bg-[hsl(var(--primary))]/10 blur-3xl opacity-30" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:gap-6 mb-6 sm:mb-8">
           <div className="flex items-center gap-2">
-            <span className="inline-flex size-8 items-center justify-center rounded-lg bg-[#ff4500]/10 text-[#ff4500]">
+            <span className="inline-flex size-8 items-center justify-center rounded-lg bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))]">
               <Sparkles className="h-4 w-4" />
             </span>
             <h1 className="text-2xl sm:text-[28px] font-bold text-gray-900 tracking-tight">Your Projects</h1>
@@ -187,7 +187,7 @@ export default function ProjectsPage() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="Search projects, keywords..."
-                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40"
+                className="w-full pl-10 pr-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/20 focus:border-[hsl(var(--primary))]/40"
               />
             </div>
 
@@ -197,7 +197,7 @@ export default function ProjectsPage() {
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value as 'recent' | 'name')}
-                  className="appearance-none pl-9 pr-8 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40"
+                  className="appearance-none pl-9 pr-8 py-2.5 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/20 focus:border-[hsl(var(--primary))]/40"
                 >
                   <option value="recent">Sort: Recent</option>
                   <option value="name">Sort: Name</option>
@@ -225,7 +225,7 @@ export default function ProjectsPage() {
 
               <button
                 onClick={() => hasPaid ? setIsCreateOpen(true) : handleNewProject()}
-                className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 bg-[#ff4500] hover:bg-[#e03e00] text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+                className="flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
               >
                 {hasPaid ? (
                   <>
@@ -249,7 +249,7 @@ export default function ProjectsPage() {
           <div className="min-h-[50vh]">
             {/* Subtle loader with skeletons */}
             <div className="flex items-center gap-3 mb-6 text-gray-600">
-              <Loader2 className="h-5 w-5 animate-spin text-[#ff4500]" />
+              <Loader2 className="h-5 w-5 animate-spin text-[hsl(var(--primary))]" />
               <p>{isProcessingPayment ? 'Processing payment...' : (paymentStatusChecked && !hasPaid ? 'Redirecting to upgrade page...' : 'Loading projects...')}</p>
             </div>
             <div className={`grid ${view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-6`}>
@@ -264,12 +264,12 @@ export default function ProjectsPage() {
           </div>
       ) : !hasPaid ? (
         <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="h-8 w-8 animate-spin text-[#ff4500]" />
+          <Loader2 className="h-8 w-8 animate-spin text-[hsl(var(--primary))]" />
           <p className="ml-3 text-gray-600">Redirecting to upgrade page...</p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="flex flex-col items-center justify-center min-h-[380px] space-y-3 text-center">
-          <div className="inline-flex items-center justify-center size-12 rounded-xl bg-[#ff4500]/10 text-[#ff4500]">
+          <div className="inline-flex items-center justify-center size-12 rounded-xl bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))]">
             <Search className="h-5 w-5" />
           </div>
           <h2 className="text-lg font-semibold">No matching projects</h2>
@@ -279,7 +279,7 @@ export default function ProjectsPage() {
           {projects.length === 0 && (
             <Button
               onClick={() => setIsCreateOpen(true)}
-              className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white mt-2"
+              className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white mt-2"
             >
               <Plus className="mr-2 h-4 w-4" />
               Create Your First Project

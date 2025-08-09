@@ -181,9 +181,9 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
               <DropdownMenuContent align="end" className="w-48 p-1.5">
                 <DropdownMenuItem 
                   onClick={() => setIsEditOpen(true)}
-                  className="flex items-center p-2 cursor-pointer rounded-md hover:bg-orange-50 focus:bg-orange-50 text-gray-700"
+                  className="flex items-center p-2 cursor-pointer rounded-md hover:bg-[hsl(var(--secondary))] focus:bg-[hsl(var(--secondary))] text-gray-700"
                 >
-                  <Edit className="mr-2 h-4 w-4 text-orange-500" />
+                  <Edit className="mr-2 h-4 w-4 text-[hsl(var(--primary))]" />
                   Edit Project
                 </DropdownMenuItem>
                 <DropdownMenuItem 
@@ -223,7 +223,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
                        ? project.keywords.map((keyword, index) => (
                            <div 
                              key={index} 
-                             className="flex items-center px-3 py-1.5 rounded-lg bg-[#fff3f0] text-[#ff4500] text-sm font-medium hover:bg-[#fff3f0]/90 transition-colors"
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] text-sm font-medium hover:bg-[hsl(var(--secondary))] transition-colors"
                            >
                              <span className="mr-1">#</span>
                              {keyword}
@@ -232,7 +232,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
                        : project.keywords.slice(0, 5).map((keyword, index) => (
                            <div 
                              key={index} 
-                             className="flex items-center px-3 py-1.5 rounded-lg bg-[#fff3f0] text-[#ff4500] text-sm font-medium hover:bg-[#fff3f0]/90 transition-colors"
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] text-sm font-medium hover:bg-[hsl(var(--secondary))]/80 transition-colors"
                            >
                              <span className="mr-1">#</span>
                              {keyword}
@@ -271,7 +271,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
                        ? project.subreddits.map((subreddit, index) => (
                            <div 
                              key={index} 
-                             className="flex items-center px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-sm font-medium hover:bg-blue-50/90 transition-colors"
+                             className="flex items-center px-3 py-1.5 rounded-lg bg-[hsl(var(--accent))]/15 text-[hsl(var(--accent))] text-sm font-medium hover:bg-[hsl(var(--accent))]/20 transition-colors"
                            >
                              <span className="mr-1">r/</span>
                              {subreddit}
@@ -346,7 +346,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
                         <p className="text-sm line-clamp-3">{mention.content}</p>
                         <div className="flex flex-wrap gap-1">
                           {mention.matching_keywords.map((keyword, idx) => (
-                            <Badge key={idx} variant="secondary" className="bg-orange-100 text-orange-800">
+                            <Badge key={idx} variant="secondary" className="bg-[hsl(var(--secondary))] text-[hsl(var(--primary))]">
                               {keyword}
                             </Badge>
                           ))}

@@ -90,7 +90,7 @@ export function ROICalculator() {
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 font-heading"
           >
-            Why Reddit is a <span className="text-[#ff4500]">Goldmine</span><br />
+            Why Reddit is a <span className="text-[hsl(var(--primary))]">Goldmine</span><br />
             for Authentic Leads
           </motion.h2>
           
@@ -127,7 +127,7 @@ export function ROICalculator() {
                     type="number"
                     value={businessPrice}
                     onChange={(e) => setBusinessPrice(Number(e.target.value))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff4500] focus:border-[#ff4500] text-lg font-medium"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] text-lg font-medium"
                     placeholder="100"
                   />
                 </div>
@@ -145,7 +145,7 @@ export function ROICalculator() {
                     step="0.1"
                     value={conversionRate}
                     onChange={(e) => setConversionRate(Number(e.target.value))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff4500] focus:border-[#ff4500] text-lg font-medium"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] text-lg font-medium"
                     placeholder="2"
                   />
                 </div>
@@ -161,7 +161,7 @@ export function ROICalculator() {
                     type="number"
                     value={monthlyTarget}
                     onChange={(e) => setMonthlyTarget(Number(e.target.value))}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#ff4500] focus:border-[#ff4500] text-lg font-medium"
+                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] text-lg font-medium"
                     placeholder="10000"
                   />
                 </div>
@@ -178,8 +178,8 @@ export function ROICalculator() {
                     onClick={() => setSelectedPlan(planId)}
                     className={`p-4 rounded-lg border-2 transition-all duration-200 text-left ${
                       selectedPlan === planId 
-                        ? 'border-[#ff4500] bg-[#fff3f0] ring-2 ring-[#ff4500]/20' 
-                        : 'border-gray-200 hover:border-[#ff4500]/50 bg-white'
+                        ? 'border-[hsl(var(--primary))] bg-[hsl(var(--secondary))] ring-2 ring-[hsl(var(--primary))]/20' 
+                        : 'border-gray-200 hover:border-[hsl(var(--primary))]/50 bg-white'
                     }`}
                   >
                     <div className="flex items-center justify-between mb-2">
@@ -349,14 +349,14 @@ export function ROICalculator() {
           transition={{ duration: 0.6, delay: 0.4 }}
           className="text-center mt-16"
         >
-          <div className="bg-gradient-to-r from-[#ff4500] to-[#ff6b3d] rounded-2xl p-8 text-white">
+          <div className="bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] rounded-2xl p-8 text-white">
             <h3 className="text-2xl font-bold mb-4">
               Save ${Math.max(results.emailCost - results.redditCost, results.linkedinCost - results.redditCost).toLocaleString()} annually
             </h3>
             <p className="text-lg mb-6 text-white/90">
               {pricingPlans[selectedPlan as keyof typeof pricingPlans].label} vs thousands in recurring costs
             </p>
-            <button className="bg-white text-[#ff4500] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-lg">
+            <button className="bg-white text-[hsl(var(--primary))] font-bold py-4 px-8 rounded-xl hover:bg-gray-50 transition-colors shadow-lg">
               Get SneakyGuy for {pricingPlans[selectedPlan as keyof typeof pricingPlans].label}
               <ArrowRight className="ml-2 h-5 w-5 inline" />
             </button>
