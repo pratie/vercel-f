@@ -14,17 +14,17 @@
     --popover: 0 0% 100%;
     --popover-foreground: 210 24% 16%;
 
-    /* Brand palette (Deep Teal → Aqua) */
-    --brand-50: 186 55% 95%;   /* very light aqua tint */
-    --brand-100: 184 52% 90%;  /* aqua 10% */
-    --brand-200: 180 48% 80%;  /* aqua 20% */
-    --brand-300: 176 46% 68%;  /* soft aqua */
-    --brand-400: 173 44% 54%;  /* #4DB6AC approx */
-    --brand-500: 178 45% 45%;  /* mid teal */
-    --brand-600: 182 100% 18%; /* #005B5C deep teal */
-    --brand-700: 182 100% 15%; /* darker teal */
-    --brand-800: 182 100% 12%;
-    --brand-900: 182 100% 10%;
+    /* Brand palette (Vibrant Orange) */
+    --brand-50: 17 100% 97%;   /* very light orange tint */
+    --brand-100: 17 100% 92%;  /* light orange */
+    --brand-200: 17 100% 85%;  /* soft orange */
+    --brand-300: 17 100% 75%;  /* medium light orange */
+    --brand-400: 17 100% 65%;  /* medium orange */
+    --brand-500: 17 100% 56%;  /* #FF6F20 main orange */
+    --brand-600: 17 100% 50%;  /* vibrant orange */
+    --brand-700: 17 100% 45%;  /* deeper orange */
+    --brand-800: 17 100% 40%;  /* dark orange */
+    --brand-900: 17 90% 35%;   /* darkest orange */
 
     /* Semantic tokens wired to palette */
     --primary: var(--brand-600);

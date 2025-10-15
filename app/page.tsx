@@ -14,30 +14,18 @@ import SocialProof from '@/components/SocialProof';
 import { ROICalculator } from '@/components/ROICalculator';
 import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
-import FloatingSubreddits from '@/components/FloatingSubreddits';
 
 export default function LandingPage() {
   const router = useRouter();
   const { user } = useAuth();
   const ctaRef = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
     if (user && pathname === '/') {
       router.push('/projects');
     }
   }, [user, router, pathname]);
-
-  // Mouse tracking for floating subreddits
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   const handleGetStarted = () => {
     // Confetti burst for delight
@@ -59,9 +47,7 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[hsl(var(--secondary))] relative overflow-hidden">
-      {/* Floating Subreddits Animation */}
-      <FloatingSubreddits mousePosition={mousePosition} count={40} />
+    <main className="min-h-screen bg-white relative overflow-hidden">
       
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-100">
@@ -101,65 +87,38 @@ export default function LandingPage() {
       </header>
 
 
-      {/* Hero Section - Clean & Professional */}
+      {/* Hero Section - Clean & Minimalist */}
       <div className="relative overflow-hidden min-h-[95vh] flex items-center">
-        {/* Subtle Background Pattern */}
-        <div className="absolute inset-0">
-          {/* Minimal geometric pattern */}
-          <div className="absolute inset-0 opacity-[0.02]">
-            <svg width="100%" height="100%" className="absolute">
-              <defs>
-                <pattern id="subtle-grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                  <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#000" strokeWidth="1"/>
-                </pattern>
-              </defs>
-              <rect width="100%" height="100%" fill="url(#subtle-grid)" />
-            </svg>
-          </div>
-          {/* Accents for depth */}
-          <div className="absolute top-1/3 right-1/4 w-96 h-96 bg-gray-100/30 rounded-full blur-3xl"></div>
-          <div className="absolute -top-24 left-1/3 w-[520px] h-[520px] rounded-full bg-[hsl(var(--primary))]/10 blur-3xl opacity-40"></div>
-        </div>
-        
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
+        {/* Clean white background with subtle gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/30 to-white"></div>
+
+        <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
           <div className="text-center">
-            {/* Social Proof Badge - PREMIUM */}
-            <div className="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-white text-slate-700 mb-10 border border-gray-200 shadow-sm hover:shadow-md transition-all duration-300">
-              <div className="w-2 h-2 rounded-full bg-green-500 mr-3 animate-pulse"></div>
-              <Users className="h-5 w-5 mr-2 text-[hsl(var(--primary))]" />
-              <span className="text-slate-700">Trusted by 50+ founders & marketing teams</span>
-              <div className="ml-2 px-2 py-1 bg-[hsl(var(--primary))] text-white text-xs rounded-full font-black">LIVE</div>
-            </div>
-            
-            {/* Main Headline - Professional & Readable */}
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-900 mb-6 leading-tight tracking-tight">
-              Find Reddit leads
+            {/* Main Headline - Bold & Clean */}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-black mb-8 leading-tight">
+              Find Reddit{' '}
+              <span className="relative inline-block">
+                <span className="relative z-10 text-[#FF6F20]">leads</span>
+                <span className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-1 rounded-lg"></span>
+              </span>
               <br />
               while you sleep.
             </h1>
-            
-            {/* Subtitle - Clear & Compelling */}
-            <p className="text-lg sm:text-xl md:text-2xl text-slate-700 mb-8 max-w-4xl mx-auto leading-relaxed">
-              Monitor 15+ subreddits, get AI-generated responses, and never miss a mention.
+
+            {/* Subtitle - Simple & Clear */}
+            <p className="text-xl sm:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed font-normal">
+              Never miss a relevant Reddit mention again. Track keywords, and generate quality leads with AI powered relevancy scoring and response generation.
             </p>
-            <div className="inline-flex items-center px-4 py-2 bg-white rounded-full text-gray-700 font-medium text-base shadow-sm border border-[hsl(var(--primary))]/20 mb-12">
-              <span className="mr-2">💰</span>
-              Starting at just $9/month — less than your daily coffee
-              <span className="ml-2">☕</span>
-            </div>
-            
-            {/* CTA Button */}
-            <div className="flex justify-center mb-16">
+
+            {/* CTA Button - Clean Orange */}
+            <div className="flex justify-center mb-20">
               <Button
                 ref={ctaRef}
-                className="group relative bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white px-8 py-4 rounded-xl text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 ring-1 ring-[hsl(var(--primary))]/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[hsl(var(--primary))]"
+                className="bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white px-10 py-6 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
                 onClick={handleGetStarted}
               >
-                <div className="flex items-center">
-                  <span className="mr-2 text-lg"></span>
-                  Start Finding Leads Today
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform duration-300" />
-                </div>
+                Find Leads Now
+                <ArrowRight className="h-5 w-5" />
               </Button>
             </div>
 
@@ -167,8 +126,8 @@ export default function LandingPage() {
             <div className="relative mx-auto max-w-4xl">
               <div className="relative rounded-2xl shadow-2xl overflow-hidden bg-white border border-gray-200/50 p-2">
                 <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-                  <iframe 
-                    src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83" 
+                  <iframe
+                    src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83"
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
                     allowFullScreen
                     title="Sneakyguy Demo"
