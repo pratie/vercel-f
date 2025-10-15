@@ -633,7 +633,15 @@ export default function LandingPage() {
       {/* Pricing Section */}
       <div id="pricing" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <PricingTable 
+          {/* One-Time Payment Notice */}
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-50 border border-green-200 rounded-full">
+              <Check className="h-5 w-5 text-green-600" />
+              <span className="text-green-800 font-semibold">One-time payment. No recurring charges.</span>
+            </div>
+          </div>
+
+          <PricingTable
             onPlanSelect={() => {
               // Smart redirect based on user status
               if (user) {
