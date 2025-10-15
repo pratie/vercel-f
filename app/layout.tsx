@@ -6,6 +6,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { Providers } from './providers';
+import ChatWidget from '@/components/ChatWidget';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -60,6 +61,7 @@ export default function RootLayout({
         <Providers>
           {children}
         </Providers>
+        <ChatWidget />
       </body>
     </html>
   );
