@@ -6,8 +6,10 @@ export default function ChatWidget() {
   return (
     <Script
       src="https://www.bookmylead.app/embed.min.js"
-      id="6db40619-2dfc-4d09-9f11-b40679880006"
+      id="7b21e6f4-28c6-48e9-a954-a67b6c0ddd8f"
       data-app-origin="https://www.bookmylead.app"
+      data-margin="24"
+      data-size="md"
       strategy="lazyOnload"
     />
   );
