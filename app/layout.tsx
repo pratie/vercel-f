@@ -56,6 +56,14 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <script 
+          defer 
+          src="https://www.bookmylead.app/embed.min.js" 
+          id="7b21e6f4-28c6-48e9-a954-a67b6c0ddd8f" 
+          data-app-origin="https://www.bookmylead.app" 
+          data-margin="24" 
+          data-size="md"
+        />
       </head>
       <body className={`${jakartaSans.className} font-sans antialiased`}>
         <Providers>
