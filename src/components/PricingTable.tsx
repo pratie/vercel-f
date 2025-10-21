@@ -155,13 +155,12 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
                 <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
                 <span className="text-gray-600 ml-2">{plan.billing}</span>
               </div>
-              
-              {plan.savings && (
-                <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 mb-4">
-                  {plan.savings}
-                </div>
-              )}
-              
+
+              {/* Show monthly breakdown */}
+              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 mb-4">
+                Just $5.75/month
+              </div>
+
               <p className="text-sm text-gray-600">{plan.duration} access</p>
             </div>
 
