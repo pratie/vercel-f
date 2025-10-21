@@ -123,9 +123,9 @@ export default function LandingPage() {
 
             {/* Social Proof Below CTA */}
             <div className="flex justify-center mb-20">
-              <div className="inline-flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full">
-                <Users className="h-5 w-5 text-blue-600" />
-                <span className="text-blue-900 font-medium text-sm">Trusted by 41+ founders & solopreneurs</span>
+              <div className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-3 rounded-full shadow-lg">
+                <Users className="h-5 w-5 text-[#FFD700]" />
+                <span className="text-white font-semibold text-sm">Trusted by <span className="text-[#FFD700]">41</span> founders & solopreneurs</span>
               </div>
             </div>
 
@@ -732,7 +732,7 @@ export default function LandingPage() {
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full">
               <Users className="h-5 w-5 text-blue-600" />
-              <span className="text-blue-900 font-medium">Trusted by 41+ founders & solopreneurs generating Reddit leads</span>
+              <span className="text-blue-900 font-medium">Trusted by 41 founders & solopreneurs generating Reddit leads</span>
             </div>
           </div>
         </div>
