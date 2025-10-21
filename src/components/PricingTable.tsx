@@ -13,40 +13,22 @@ interface PricingTableProps {
   compact?: boolean;
 }
 
-// Fallback pricing plans in case API fails
+// Fallback pricing plans in case API fails - Only showing Annual plan
 const fallbackPlans: PricingPlan[] = [
-  {
-    id: 'monthly',
-    name: 'Monthly',
-    price: '$9',
-    billing: 'per month',
-    duration: '1 month',
-    popular: false,
-    savings: undefined
-  },
-  {
-    id: 'six_month',
-    name: '6 Months',
-    price: '$39',
-    billing: 'every 6 months',
-    duration: '6 months',
-    popular: true,
-    savings: 'Save 28%'
-  },
   {
     id: 'annual',
     name: 'Annual',
     price: '$69',
     billing: 'per year',
     duration: '12 months',
-    popular: false,
-    savings: 'Save 36%'
+    popular: true,
+    savings: undefined
   }
 ];
 
 export function PricingTable({ onPlanSelect, showHeader = true, compact = false }: PricingTableProps) {
   const [plans, setPlans] = useState<PricingPlan[]>(fallbackPlans);
-  const [selectedPlan, setSelectedPlan] = useState<string>('six_month');
+  const [selectedPlan, setSelectedPlan] = useState<string>('annual');
   const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
@@ -56,11 +38,11 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
         setLoading(true);
         const response = await api.getPricingPlans();
         if (response.plans && response.plans.length > 0) {
-          setPlans(response.plans);
-          // Set default to popular plan
-          const popularPlan = response.plans.find(plan => plan.popular);
-          if (popularPlan) {
-            setSelectedPlan(popularPlan.id);
+          // Filter to show only annual plan
+          const annualPlan = response.plans.filter(plan => plan.id === 'annual');
+          if (annualPlan.length > 0) {
+            setPlans(annualPlan);
+            setSelectedPlan('annual');
           }
         }
         // If API succeeds but returns empty, keep fallback plans
@@ -94,13 +76,13 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
   };
 
   const features = [
-    '300 AI-generated replies/month',
-    'Unlimited business-specific keywords',
-    '15 relevant subreddits monitoring',
-    'Unlimited reply generation',
+    '500 AI-generated replies/month',
+    'Unlimited customizable keywords',
+    '15 customizable subreddits monitoring',
+    'Unlimited reply generation with custom prompts',
     '24/7 Reddit monitoring',
     'AI-powered lead detection',
-    'Personalized response generation',
+    'Fine-tune AI tone & response style',
     '7-day money-back guarantee'
   ];
 
@@ -123,30 +105,30 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[hsl(var(--secondary))] border border-[hsl(var(--secondary))]/60 text-[hsl(var(--primary))] mb-6"
           >
             <Sparkles className="h-4 w-4 mr-2" />
-            <span>Simple, Transparent Pricing</span>
+            <span>One Simple Price</span>
           </motion.div>
-          
+
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading"
           >
-            Choose Your Plan
+            Get Started for Just <span className="text-[hsl(var(--primary))]">$69/year</span>
           </motion.h2>
-          
+
           <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg text-gray-600 max-w-2xl mx-auto"
           >
-            All plans include the same powerful features. Choose the billing cycle that works best for you.
+            Everything you need to generate high-quality leads from Reddit. No hidden fees, no monthly charges.
           </motion.p>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+      <div className="flex justify-center max-w-5xl mx-auto">
         {plans.map((plan, index) => (
           <motion.div
             key={plan.id}
@@ -233,7 +215,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
           className="text-center mt-12"
         >
           <div className="bg-gray-50 rounded-xl p-6 max-w-3xl mx-auto">
-            <h4 className="font-semibold text-gray-900 mb-4">All plans include:</h4>
+            <h4 className="font-semibold text-gray-900 mb-4">Everything you get:</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {features.map((feature, idx) => (
                 <div key={idx} className="flex items-center gap-3">

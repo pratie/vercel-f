@@ -54,8 +54,8 @@ export default function UpgradePage() {
             </Button>
             
             <div className="text-center">
-              <h1 className="text-lg font-semibold text-gray-900">Choose Your Plan</h1>
-              <p className="text-sm text-gray-600">Unlock unlimited Reddit lead generation</p>
+              <h1 className="text-lg font-semibold text-gray-900">Upgrade to Premium</h1>
+              <p className="text-sm text-gray-600">Just $69/year - Unlimited Reddit lead generation</p>
             </div>
             
             <div className="w-24" /> {/* Spacer for centering */}
@@ -75,14 +75,14 @@ export default function UpgradePage() {
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">
               Ready to Scale Your <span className="text-[hsl(var(--primary))]">Reddit Growth</span>?
             </h2>
-            
+
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
-              Join hundreds of businesses already generating qualified leads from Reddit. 
-              Choose the plan that works best for your growth goals.
+              Join hundreds of businesses generating qualified leads from Reddit for just <span className="font-bold text-[hsl(var(--primary))]">$69/year</span>.
+              Get 500 AI replies, unlimited keywords, and 24/7 monitoring.
             </p>
-            
+
             <p className="text-sm text-gray-500 mb-8">
-              After upgrading, you'll be redirected back to create your first project.
+              One-time yearly payment. Start creating projects immediately after upgrade.
             </p>
 
             {/* Benefits Preview */}
@@ -143,13 +143,13 @@ export default function UpgradePage() {
           {/* FAQ or Additional Info */}
           <div className="mt-12 text-center">
             <p className="text-gray-600 mb-4">
-              Questions about our plans? 
+              Questions or need help?
               <a href="mailto:support@sneakyguy.com" className="text-[hsl(var(--primary))] hover:underline ml-1">
                 Contact our support team
               </a>
             </p>
             <p className="text-sm text-gray-500">
-              All plans include the same features, just different billing cycles. Cancel anytime.
+              One simple price. All features included. 7-day money-back guarantee.
             </p>
           </div>
         </div>

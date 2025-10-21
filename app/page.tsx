@@ -630,6 +630,111 @@ export default function LandingPage() {
         </div>
       </div>
 
+      {/* Value Justification Section - Why $69 is Worth It */}
+      <div className="py-16 bg-gradient-to-br from-orange-50 via-white to-purple-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+              Why <span className="text-[#FF6F20]">Reddit</span> is Your Untapped Goldmine
+            </h2>
+            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+              Reddit has 850M+ monthly active users actively seeking solutions. Here's why $69 is a no-brainer investment.
+            </p>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="text-4xl font-bold text-[#FF6F20] mb-2">850M+</div>
+              <div className="text-gray-900 font-semibold mb-2">Monthly Active Users</div>
+              <div className="text-sm text-gray-600">That's more than LinkedIn + Twitter combined</div>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="text-4xl font-bold text-[#FF6F20] mb-2">91%</div>
+              <div className="text-gray-900 font-semibold mb-2">High Purchase Intent</div>
+              <div className="text-sm text-gray-600">Redditors actively research before buying</div>
+            </div>
+
+            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="text-4xl font-bold text-[#FF6F20] mb-2">130K+</div>
+              <div className="text-gray-900 font-semibold mb-2">Active Communities</div>
+              <div className="text-sm text-gray-600">Find your exact target audience anywhere</div>
+            </div>
+          </div>
+
+          {/* Value Breakdown */}
+          <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-[#FF6F20]/20">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
+              What You're Really Paying For
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900 mb-1">Save 60+ hours/month</div>
+                  <div className="text-sm text-gray-600">At $50/hour = <span className="font-bold text-[#FF6F20]">$3,000 value</span></div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900 mb-1">24/7 lead monitoring</div>
+                  <div className="text-sm text-gray-600">Never sleep, never miss opportunities = <span className="font-bold text-[#FF6F20]">Priceless</span></div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900 mb-1">AI-powered responses</div>
+                  <div className="text-sm text-gray-600">Hire a writer = $500/month, We do it for <span className="font-bold text-[#FF6F20]">$5.75/month</span></div>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-green-600" />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900 mb-1">Just 1 customer pays for this</div>
+                  <div className="text-sm text-gray-600">Average SaaS customer = <span className="font-bold text-[#FF6F20]">$200-500 LTV</span></div>
+                </div>
+              </div>
+            </div>
+
+            {/* ROI Highlight */}
+            <div className="bg-gradient-to-r from-[#FF6F20]/10 to-purple-100 rounded-xl p-6 text-center">
+              <div className="text-lg font-semibold text-gray-900 mb-2">
+                💰 Break-even with just 1 customer in Year 1
+              </div>
+              <div className="text-gray-700">
+                Most users report <span className="font-bold text-[#FF6F20]">5-10 new qualified leads per month</span>
+              </div>
+              <div className="mt-4 text-2xl font-bold text-gray-900">
+                That's a <span className="text-[#FF6F20]">4,347% ROI</span> potential 🚀
+              </div>
+            </div>
+          </div>
+
+          {/* Social Proof */}
+          <div className="mt-8 text-center">
+            <div className="inline-flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full">
+              <Users className="h-5 w-5 text-blue-600" />
+              <span className="text-blue-900 font-medium">Trusted by 500+ businesses already generating Reddit leads</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Pricing Section */}
       <div id="pricing" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
