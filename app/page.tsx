@@ -11,7 +11,6 @@ import Link from 'next/link';
 import { useRef, useState } from 'react';
 import confetti from 'canvas-confetti'; // You may need to install this package
 import SocialProof from '@/components/SocialProof';
-import { ROICalculator } from '@/components/ROICalculator';
 import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
 
@@ -429,10 +428,6 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-
-      {/* ROI Calculator */}
-      <ROICalculator />
-
 
       {/* Features Section */}
       <div id="features" className="py-20 bg-gray-50">
