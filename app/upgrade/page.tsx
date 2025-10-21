@@ -77,7 +77,7 @@ export default function UpgradePage() {
             </h2>
 
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
-              Join hundreds of businesses generating qualified leads from Reddit for just <span className="font-bold text-[hsl(var(--primary))]">$69/year</span>.
+              Join 41+ founders & solopreneurs generating qualified leads from Reddit for just <span className="font-bold text-[hsl(var(--primary))]">$69/year</span>.
               Get 500 AI replies, unlimited keywords, and 24/7 monitoring.
             </p>
 
@@ -125,8 +125,8 @@ export default function UpgradePage() {
               <h4 className="text-lg font-semibold text-gray-900 mb-4">Why Choose SneakyGuy?</h4>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">500+</div>
-                  <div className="text-sm text-gray-600">Active Users</div>
+                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">41+</div>
+                  <div className="text-sm text-gray-600">Founders & Solopreneurs</div>
                 </div>
                 <div className="text-center">
                   <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">85%</div>

@@ -110,7 +110,7 @@ export default function LandingPage() {
             </p>
 
             {/* CTA Button - Clean Orange */}
-            <div className="flex justify-center mb-20">
+            <div className="flex justify-center mb-6">
               <Button
                 ref={ctaRef}
                 className="bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white px-10 py-6 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
@@ -119,6 +119,14 @@ export default function LandingPage() {
                 Find Leads Now
                 <ArrowRight className="h-5 w-5" />
               </Button>
+            </div>
+
+            {/* Social Proof Below CTA */}
+            <div className="flex justify-center mb-20">
+              <div className="inline-flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full">
+                <Users className="h-5 w-5 text-blue-600" />
+                <span className="text-blue-900 font-medium text-sm">Trusted by 41+ founders & solopreneurs</span>
+              </div>
             </div>
 
             {/* Demo Video */}
@@ -724,7 +732,7 @@ export default function LandingPage() {
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full">
               <Users className="h-5 w-5 text-blue-600" />
-              <span className="text-blue-900 font-medium">Trusted by 500+ businesses already generating Reddit leads</span>
+              <span className="text-blue-900 font-medium">Trusted by 41+ founders & solopreneurs generating Reddit leads</span>
             </div>
           </div>
         </div>
