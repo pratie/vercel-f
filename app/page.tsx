@@ -36,7 +36,7 @@ export default function LandingPage() {
         origin: { x: (rect.left + rect.width / 2) / window.innerWidth, y: rect.top / window.innerHeight },
       });
     }
-    
+
     // Smart redirect based on user status
     if (user) {
       router.push('/upgrade'); // Logged in users go to upgrade page
@@ -47,7 +47,7 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-screen bg-white relative overflow-hidden">
-      
+
       {/* Navigation */}
       <header className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
@@ -60,9 +60,9 @@ export default function LandingPage() {
                 height={40}
                 className="mr-2"
               />
-              <span className="font-bold text-xl text-gray-900">Sneakyguy</span>
+              <span className="font-bold text-xl text-gray-900">SneakyGuy</span>
             </div>
-            
+
             <nav className="hidden md:flex space-x-10">
               <a href="#features" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
                 Features
@@ -74,7 +74,7 @@ export default function LandingPage() {
                 Pricing
               </a>
             </nav>
-            
+
             <Button
               className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
               onClick={() => user ? router.push('/upgrade') : router.push('/login')}
@@ -137,7 +137,7 @@ export default function LandingPage() {
                     src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83"
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
                     allowFullScreen
-                    title="Sneakyguy Demo"
+                    title="SneakyGuy Demo"
                   />
                 </div>
               </div>
@@ -155,11 +155,11 @@ export default function LandingPage() {
               Our platform automates the entire Reddit lead generation process in three simple steps
             </p>
           </div>
-          
+
           <div className="relative">
             {/* Connection Line */}
             <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))]/0 via-[hsl(var(--primary))] to-[hsl(var(--primary))]/0 z-0"></div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
               {/* Step 1 */}
               <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -181,7 +181,7 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Step 2 */}
               <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
@@ -206,7 +206,7 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-              
+
               {/* Step 3 */}
               <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
                 <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
@@ -234,7 +234,7 @@ export default function LandingPage() {
               </div>
             </div>
           </div>
-          
+
           <div className="mt-16 text-center">
             <Button
               onClick={() => user ? router.push('/upgrade') : router.push('/login')}
@@ -256,7 +256,7 @@ export default function LandingPage() {
           <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
           <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
         </div>
-        
+
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-20">
             <div className="inline-block px-6 py-3 bg-[hsl(var(--primary))] rounded-full text-white font-semibold text-sm mb-6 shadow-sm">
@@ -278,7 +278,7 @@ export default function LandingPage() {
                   Get Started in Under 30 Seconds
                 </h3>
                 <p className="text-lg text-slate-700 mb-6 leading-relaxed">
-                  Just enter your project name and a simple description. Our AI does the heavy lifting - 
+                  Just enter your project name and a simple description. Our AI does the heavy lifting -
                   automatically generating relevant keywords and suggesting the perfect subreddits for your business.
                 </p>
                 <div className="space-y-4">
@@ -302,11 +302,11 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="order-1 lg:order-2">
                 <div className="bg-white rounded-2xl shadow-2xl border border-[hsl(var(--primary))]/30 overflow-hidden transform hover:scale-105 transition-transform duration-300">
-                  <Image 
-                    src="/create-project-screenshot.png" 
+                  <Image
+                    src="/create-project-screenshot.png"
                     alt="Simple project creation - just name and description needed"
                     width={800}
                     height={600}
@@ -321,8 +321,8 @@ export default function LandingPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
               <div className="order-2 lg:order-1">
                 <div className="bg-white rounded-2xl shadow-xl border border-blue-200 overflow-hidden">
-                  <Image 
-                    src="/keywords-subreddits-screenshot.png" 
+                  <Image
+                    src="/keywords-subreddits-screenshot.png"
                     alt="AI-generated keywords and subreddit suggestions"
                     width={600}
                     height={400}
@@ -336,7 +336,7 @@ export default function LandingPage() {
                   AI Generates Perfect Keywords & Subreddits
                 </h3>
                 <p className="text-lg text-slate-700 mb-6 leading-relaxed">
-                  Watch our AI analyze your business description and instantly generate 15+ relevant keywords 
+                  Watch our AI analyze your business description and instantly generate 15+ relevant keywords
                   and 12+ targeted subreddits. No manual research needed - just review and confirm.
                 </p>
                 <div className="space-y-3">
@@ -363,7 +363,7 @@ export default function LandingPage() {
                   🎯 Discover High-Quality Leads Instantly
                 </h3>
                 <p className="text-xl font-medium text-slate-700 mb-8 leading-relaxed">
-                  Your dashboard shows real Reddit mentions with smart relevance scoring (35-65/100). 
+                  Your dashboard shows real Reddit mentions with smart relevance scoring (35-65/100).
                   Each lead includes context, intent analysis, and one-click AI reply generation.
                 </p>
                 <div className="space-y-3">
@@ -385,11 +385,11 @@ export default function LandingPage() {
                   </div>
                 </div>
               </div>
-              
+
               <div className="order-1 lg:order-2">
                 <div className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
-                  <Image 
-                    src="/lead-dashboard-screenshot.png" 
+                  <Image
+                    src="/lead-dashboard-screenshot.png"
                     alt="Lead dashboard showing Reddit mentions with relevance scores and AI reply buttons"
                     width={600}
                     height={400}
@@ -411,7 +411,7 @@ export default function LandingPage() {
               See how our AI generates authentic, helpful responses that naturally introduce your solution and drive real business value.
             </p>
           </div>
-          
+
           <div className="max-w-5xl mx-auto">
             <div className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
               <div className="relative">
@@ -423,7 +423,7 @@ export default function LandingPage() {
                   className="w-full"
                   priority
                 />
-                
+
                 {/* Success indicators */}
                 <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium">
                   ✨ AI Generated
@@ -475,8 +475,8 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8 sm:mb-12">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mb-4 sm:mb-6">
-              See how SNEAKYGUY helps you 
-               and convert qualified leads from Reddit discussions
+              See how SneakyGuy helps you
+              and convert qualified leads from Reddit discussions
             </h2>
           </div>
 
@@ -489,7 +489,7 @@ export default function LandingPage() {
                   <span className="text-gray-700 font-medium text-sm sm:text-base">Finding customers takes</span>
                 </div>
               </div>
-              
+
               <div className="relative mt-8">
                 <div className="flex items-start gap-4">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">1</span>
@@ -498,7 +498,7 @@ export default function LandingPage() {
                     <p className="text-gray-500 text-sm mt-1">15-30 min</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start gap-4">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">2</span>
                   <div>
@@ -506,7 +506,7 @@ export default function LandingPage() {
                     <p className="text-gray-500 text-sm mt-1">15-30 min</p>
                   </div>
                 </div>
-                
+
                 <div className="flex items-start gap-4">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">3</span>
                   <div>
@@ -530,11 +530,11 @@ export default function LandingPage() {
             <div className="relative bg-[#f0fdf4] rounded-2xl p-4 sm:p-6">
               <div className="absolute -top-4 left-4 sm:left-6 bg-white px-3 sm:px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
                 <div className="flex items-center gap-2">
-                  <span className="bg-[hsl(var(--primary))] text-white text-sm px-3 py-1 rounded-full font-medium">SNEAKYGUY</span>
+                  <span className="bg-[hsl(var(--primary))] text-white text-sm px-3 py-1 rounded-full font-medium">SneakyGuy</span>
                   <span className="text-gray-700 font-medium text-sm sm:text-base">With us, you just need</span>
                 </div>
               </div>
-              
+
               <div className="relative mt-8">
                 <div className="flex items-start gap-4">
                   <div className="flex-1">
@@ -602,14 +602,14 @@ export default function LandingPage() {
               <Star className="h-5 w-5 sm:h-6 sm:w-6 text-[hsl(var(--primary))]" />
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Priority Feature Requests</h3>
-            <p className="text-sm sm:text-base text-gray-600">Your feature requests get top priority in our development roadmap. Help shape the future of SNEAKYGUY.</p>
+            <p className="text-sm sm:text-base text-gray-600">Your feature requests get top priority in our development roadmap. Help shape the future of SneakyGuy.</p>
           </div>
           <div className="bg-white p-4 sm:p-6 rounded-xl border border-[hsl(var(--primary))]/10 hover:border-[hsl(var(--primary))]/20 transition-all duration-200">
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-[hsl(var(--accent))]/15 border border-[hsl(var(--accent))]/30 mx-auto mb-3 sm:mb-4 flex items-center justify-center">
               <Users className="h-5 w-5 sm:h-6 sm:w-6 text-[hsl(var(--primary))]" />
             </div>
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">Direct Access to Founders</h3>
-            <p className="text-sm sm:text-base text-gray-600">Get direct access to our team. Your feedback is invaluable in making SNEAKYGUY better for everyone.</p>
+            <p className="text-sm sm:text-base text-gray-600">Get direct access to our team. Your feedback is invaluable in making SneakyGuy better for everyone.</p>
           </div>
         </div>
       </div>
@@ -782,7 +782,7 @@ export default function LandingPage() {
                   height={40}
                   className="mr-2"
                 />
-                <span className="font-bold text-xl text-gray-900">Sneakyguy</span>
+                <span className="font-bold text-xl text-gray-900">SneakyGuy</span>
               </div>
               <p className="text-gray-600 mb-4 max-w-md">
                 Enterprise-grade Reddit lead generation for businesses. Automate your Reddit presence and never miss a potential lead again.
@@ -794,10 +794,10 @@ export default function LandingPage() {
                 <a href="https://www.linkedin.com/in/sneakyguyai/" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[hsl(var(--primary))]">
                   <Linkedin className="h-5 w-5" />
                 </a>
-                
+
               </div>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Product</h3>
               <ul className="space-y-2">
@@ -812,7 +812,7 @@ export default function LandingPage() {
                 </li>
               </ul>
             </div>
-            
+
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Company</h3>
               <ul className="space-y-2">
@@ -828,17 +828,17 @@ export default function LandingPage() {
               </ul>
             </div>
           </div>
-          
+
           <div className="border-t border-gray-200 mt-12 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center">
               <p className="text-gray-500 text-sm">
                 &copy; {new Date().getFullYear()} SneakyGuy. All rights reserved.
               </p>
               <div className="mt-4 md:mt-0">
-                <a 
-                  href="https://x.com/snow_stark17" 
-                  target="_blank" 
-                  rel="noopener noreferrer" 
+                <a
+                  href="https://x.com/snow_stark17"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-gray-500 hover:text-[hsl(var(--primary))] text-sm font-medium"
                 >
                   Contact Support
