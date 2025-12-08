@@ -222,18 +222,18 @@ export default function MentionsPage() {
 
   const postComment = async (mention: RedditMention) => {
     if (isPosting !== null) return; // Prevent multiple simultaneous posts
-    
+
     setIsPosting(mention.id);
     try {
       // Check if we have a generated reply for this mention
       const commentText = generatedReplies[mention.id] || mention.suggested_comment;
-      
+
       if (!commentText) {
         toast.error('No comment text available. Please generate a reply first.');
         setIsPosting(null);
         return;
       }
-      
+
       // The postComment function now handles authentication internally
       const result = await redditAuth.postComment({
         brand_id: mention.brand_id,
@@ -241,17 +241,17 @@ export default function MentionsPage() {
         post_title: mention.title,
         comment_text: commentText
       });
-      
+
       // Store the published comment URL
       setPublishedComments(prev => ({
         ...prev,
         [mention.id]: result.comment_url
       }));
-      
+
       // Show success message with link to the comment
       toast.success(
-        result.status === 'already_exists' 
-          ? 'Comment already exists on this post' 
+        result.status === 'already_exists'
+          ? 'Comment already exists on this post'
           : 'Comment posted successfully',
         {
           description: 'View your comment on Reddit',
@@ -261,27 +261,27 @@ export default function MentionsPage() {
           }
         }
       );
-      
+
       // Save to localStorage to persist between page refreshes
       const COMMENTS_STORAGE_KEY = `published-comments-${projectId}`;
       const savedComments = JSON.parse(localStorage.getItem(COMMENTS_STORAGE_KEY) || '{}');
       localStorage.setItem(
-        COMMENTS_STORAGE_KEY, 
+        COMMENTS_STORAGE_KEY,
         JSON.stringify({
           ...savedComments,
           [mention.id]: result.comment_url
         })
       );
-      
+
     } catch (error) {
       console.error('Error posting comment:', error);
-      
+
       let errorMessage = 'Failed to post comment';
-      
+
       if (error instanceof Error) {
         errorMessage = error.message;
       }
-      
+
       toast.error(errorMessage, {
         description: 'Please try again later'
       });
@@ -320,7 +320,7 @@ export default function MentionsPage() {
           month: 'long',
           day: 'numeric'
         })}"`;
-        
+
         return [
           `"${mention.title?.replace(/"/g, '""') || ''}"`,
           `"${mention.url || ''}"`,
@@ -377,7 +377,7 @@ export default function MentionsPage() {
 
   const handleGenerateReply = async (mention: RedditMention) => {
     if (generatingReplyFor !== null) return; // Prevent multiple simultaneous generations
-    
+
     setGeneratingReplyFor(mention.id);
     try {
       const reply = await api.generateReply({
@@ -421,7 +421,7 @@ export default function MentionsPage() {
     <PaymentGuard>
       <div className="container mx-auto px-4 py-6 max-w-6xl">
         <Toaster position="top-center" />
-        
+
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
           <Button
@@ -473,7 +473,7 @@ export default function MentionsPage() {
           >
             <Download className="h-4 w-4" />
             <span>Export CSV</span>
-            
+
             {/* Tooltip */}
             <div className="
               invisible group-hover:visible 
@@ -591,7 +591,7 @@ export default function MentionsPage() {
                           <h3 className="text-base sm:text-lg font-medium flex-grow order-2 sm:order-1">
                             <span
                               className="hover:text-[hsl(var(--primary))] transition-colors duration-200"
-                              dangerouslySetInnerHTML={{ 
+                              dangerouslySetInnerHTML={{
                                 __html: highlightKeywords(mention.title, mention.matching_keywords)
                               }}
                             />
@@ -600,7 +600,7 @@ export default function MentionsPage() {
                             <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-xs sm:text-sm">
                               r/{mention.subreddit}
                             </Badge>
-                            <a 
+                            <a
                               href={mention.url}
                               target="_blank"
                               rel="noopener noreferrer"
@@ -616,8 +616,8 @@ export default function MentionsPage() {
                           <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-3">
                             <span className="text-xs sm:text-sm font-medium text-gray-700">Matched:</span>
                             {mention.matching_keywords.map((keyword) => (
-                              <Badge 
-                                key={keyword} 
+                              <Badge
+                                key={keyword}
                                 className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/20 transition-colors text-xs"
                               >
                                 {keyword}
@@ -672,7 +672,7 @@ export default function MentionsPage() {
                           >
                             {generatingReplyFor === mention.id ? (
                               <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[hsl(var(--primary))]"></div>
                                 <span>AI Reply</span>
                               </>
                             ) : (
@@ -690,7 +690,7 @@ export default function MentionsPage() {
                                   : `${mention.suggested_comment.substring(0, 120)}${mention.suggested_comment.length > 120 ? '...' : ''}`
                               }
                               {mention.suggested_comment.length > 120 && (
-                                <button 
+                                <button
                                   onClick={() => toggleSuggestedComment(mention.id)}
                                   className="text-blue-500 hover:text-blue-700 ml-1 text-xs font-medium"
                                 >
@@ -708,9 +708,9 @@ export default function MentionsPage() {
                               <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
                                 <h4 className="text-sm font-medium text-gray-700">Generated Reply</h4>
                               </div>
-                              
+
                               {/* Content */}
-                              <div 
+                              <div
                                 className={`p-4 cursor-text ${editingReplyId !== mention.id ? 'hover:bg-gray-50 transition-colors' : ''}`}
                                 onClick={() => {
                                   if (editingReplyId !== mention.id) {
@@ -729,7 +729,7 @@ export default function MentionsPage() {
                                       onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
                                     />
                                     <div className="flex justify-end gap-2 pt-1">
-                                      <Button 
+                                      <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={(e) => {
@@ -741,7 +741,7 @@ export default function MentionsPage() {
                                       >
                                         Cancel
                                       </Button>
-                                      <Button 
+                                      <Button
                                         size="sm"
                                         onClick={(e) => {
                                           e.stopPropagation();
@@ -757,7 +757,7 @@ export default function MentionsPage() {
                                 ) : (
                                   <div className="group flex items-start justify-between">
                                     <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">{generatedReplies[mention.id]}</p>
-                                    <button 
+                                    <button
                                       className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-600 p-1 -mr-1 -mt-1"
                                       onClick={(e) => {
                                         e.stopPropagation();
@@ -772,7 +772,7 @@ export default function MentionsPage() {
                                   </div>
                                 )}
                               </div>
-                              
+
                               {/* Actions */}
                               <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
                                 <div className="flex items-center gap-2">
@@ -791,24 +791,24 @@ export default function MentionsPage() {
                                     className="h-8 px-3 text-xs bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 flex items-center gap-1.5"
                                     size="sm"
                                   >
-                                    <svg 
-                                      className="w-3.5 h-3.5" 
-                                      fill="none" 
-                                      stroke="currentColor" 
+                                    <svg
+                                      className="w-3.5 h-3.5"
+                                      fill="none"
+                                      stroke="currentColor"
                                       viewBox="0 0 24 24"
                                     >
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
                                     </svg>
                                     Copy & Go to Post
                                   </Button>
-                                  
+
                                   <Button
                                     onClick={() => postComment(mention)}
                                     disabled={isPosting === mention.id || !!publishedComments[mention.id]}
-                                    className={`h-8 px-3 text-xs ${isPosting === mention.id 
-                                      ? 'bg-gray-100 text-gray-500' 
-                                      : publishedComments[mention.id] 
-                                        ? 'bg-green-600 hover:bg-green-700 text-white' 
+                                    className={`h-8 px-3 text-xs ${isPosting === mention.id
+                                      ? 'bg-gray-100 text-gray-500'
+                                      : publishedComments[mention.id]
+                                        ? 'bg-green-600 hover:bg-green-700 text-white'
                                         : 'bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white'} flex-shrink-0`}
                                     size="sm"
                                   >
@@ -826,7 +826,7 @@ export default function MentionsPage() {
                                       'Publish'
                                     )}
                                   </Button>
-                                  
+
                                   <Button
                                     variant="ghost"
                                     size="sm"
@@ -839,10 +839,10 @@ export default function MentionsPage() {
                                       });
                                     }}
                                   >
-                                    <svg 
-                                      className="w-4 h-4" 
-                                      fill="none" 
-                                      stroke="currentColor" 
+                                    <svg
+                                      className="w-4 h-4"
+                                      fill="none"
+                                      stroke="currentColor"
                                       viewBox="0 0 24 24"
                                     >
                                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -862,8 +862,8 @@ export default function MentionsPage() {
 
             {!isLoading && hasMoreMentions && mentions.length > 0 && (
               <div className="mt-8 text-center">
-                <Button 
-                  onClick={handleLoadMore} 
+                <Button
+                  onClick={handleLoadMore}
                   disabled={isLoadingMore}
                   variant="outline"
                   className="bg-white hover:bg-gray-50 text-gray-700 border-gray-300 shadow-sm"
@@ -878,7 +878,7 @@ export default function MentionsPage() {
             )}
 
             {!isLoading && !isLoadingMore && !hasMoreMentions && mentions.length > 0 && (
-               <p className="mt-8 text-center text-gray-500">You've reached the end of the mentions list.</p>
+              <p className="mt-8 text-center text-gray-500">You've reached the end of the mentions list.</p>
             )}
 
           </>
@@ -894,7 +894,7 @@ export default function MentionsPage() {
               <span className="text-sm font-medium">
                 Connect your Reddit account to post comments directly
               </span>
-              <Button 
+              <Button
                 size="sm"
                 className="ml-auto bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-xs"
                 onClick={() => redditAuth.ensureRedditConnection()}
