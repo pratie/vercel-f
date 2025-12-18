@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 import { ArrowRight, Clock, Brain, MessageSquare, Users, Star, Shield, Check, Twitter, Linkedin } from 'lucide-react';
+import { IconBrandReddit } from '@tabler/icons-react';
 import { useAuth } from '@/components/AuthContext';
 import { useEffect } from 'react';
 import Image from 'next/image';
@@ -95,7 +96,11 @@ export default function LandingPage() {
           <div className="text-center">
             {/* Main Headline - Bold & Clean */}
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-black mb-8 leading-tight">
-              Find Reddit{' '}
+              Find{' '}
+              <span className="inline-flex items-center gap-2">
+                <IconBrandReddit className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#FF4500]" />
+                Reddit
+              </span>{' '}
               <span className="relative inline-block">
                 <span className="relative z-10 text-[#FF6F20]">leads</span>
                 <span className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-1 rounded-lg"></span>
