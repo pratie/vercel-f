@@ -56,14 +56,6 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
-        <script
-          defer
-          src="https://www.chatdock.io/embed.min.js"
-          id="46316941-5e6b-4222-adc4-48fc5221012c"
-          data-app-origin="https://www.chatdock.io"
-          data-margin="24"
-          data-size="md"
-        />
       </head>
       <body className={`${jakartaSans.className} font-sans antialiased`}>
         <Providers>
