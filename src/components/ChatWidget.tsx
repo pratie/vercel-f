@@ -10,7 +10,7 @@ export default function ChatWidget() {
       data-app-origin="https://www.chatdock.io"
       data-margin="24"
       data-size="md"
-      strategy="lazyOnload"
+      strategy="afterInteractive"
     />
   );
 }

@@ -15,6 +15,7 @@ import SocialProof from '@/components/SocialProof';
 import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
 import { motion } from 'framer-motion';
+import ChatWidget from '@/components/ChatWidget';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -963,6 +964,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-    </main >
+      <ChatWidget />
+    </main>
   );
 }
