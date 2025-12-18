@@ -6,6 +6,7 @@ import '@mantine/core/styles.css';
 import '@mantine/notifications/styles.css';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { Providers } from './providers';
+import ChatWidget from '@/components/ChatWidget';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -51,15 +52,24 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jakartaSans.variable} ${spaceGrotesk.variable} ${inter.variable} font-sans scroll-smooth`}>
+    <html lang="en" className={`${jakartaSans.variable} ${spaceGrotesk.variable} ${inter.variable} font-sans`}>
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <script
+          defer
+          src="https://www.chatdock.io/embed.min.js"
+          id="46316941-5e6b-4222-adc4-48fc5221012c"
+          data-app-origin="https://www.chatdock.io"
+          data-margin="24"
+          data-size="md"
+        />
       </head>
       <body className={`${jakartaSans.className} font-sans antialiased`}>
         <Providers>
           {children}
         </Providers>
+        <ChatWidget />
       </body>
     </html>
   );
