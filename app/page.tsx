@@ -14,6 +14,7 @@ import confetti from 'canvas-confetti'; // You may need to install this package
 import SocialProof from '@/components/SocialProof';
 import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
+import { motion } from 'framer-motion';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -87,15 +88,24 @@ export default function LandingPage() {
       </header>
 
 
-      {/* Hero Section - Clean & Minimalist */}
+      {/* Hero Section - Modern & Impactful */}
       <div className="relative overflow-hidden min-h-[95vh] flex items-center">
-        {/* Clean white background with subtle gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white via-gray-50/30 to-white"></div>
+        {/* Dynamic mesh gradient background */}
+        <div className="absolute inset-0 bg-white">
+          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#FF6F20]/5 blur-[120px] rounded-full animate-pulse"></div>
+          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-purple-500/5 blur-[120px] rounded-full animate-pulse" style={{ animationDelay: '2s' }}></div>
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[60%] h-[60%] bg-gradient-to-tr from-orange-50/50 via-white to-purple-50/50 blur-[80px] rounded-full"></div>
+        </div>
 
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
           <div className="text-center">
             {/* Main Headline - Bold & Clean */}
-            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold text-black mb-8 leading-tight">
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-5xl sm:text-6xl md:text-7xl font-bold text-black mb-8 leading-tight tracking-tight"
+            >
               Find{' '}
               <span className="inline-flex items-center gap-2">
                 <IconBrandReddit className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#FF4500]" />
@@ -103,28 +113,43 @@ export default function LandingPage() {
               </span>{' '}
               <span className="relative inline-block">
                 <span className="relative z-10 text-[#FF6F20]">leads</span>
-                <span className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-1 rounded-lg"></span>
+                <motion.span
+                  initial={{ width: 0 }}
+                  animate={{ width: "100%" }}
+                  transition={{ delay: 0.8, duration: 0.8, ease: "easeInOut" }}
+                  className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-1 rounded-lg"
+                ></motion.span>
               </span>
               <br />
               while you sleep.
-            </h1>
+            </motion.h1>
 
             {/* Subtitle - Simple & Clear */}
-            <p className="text-xl sm:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed font-normal">
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              className="text-xl sm:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed font-normal"
+            >
               Never miss a relevant Reddit mention again. Track keywords, and generate quality leads with AI powered relevancy scoring and response generation.
-            </p>
+            </motion.p>
 
             {/* CTA Button - Clean Orange */}
-            <div className="flex justify-center mb-6">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
+              className="flex justify-center mb-6"
+            >
               <Button
                 ref={ctaRef}
-                className="bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white px-10 py-6 rounded-lg text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 flex items-center gap-2"
+                className="bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white px-10 py-6 rounded-xl text-lg font-semibold shadow-[0_20px_50px_rgba(255,111,32,0.2)] hover:shadow-[0_20px_50px_rgba(255,111,32,0.4)] transition-all duration-300 flex items-center gap-2 hover:-translate-y-1"
                 onClick={handleGetStarted}
               >
                 Find Leads Now
                 <ArrowRight className="h-5 w-5" />
               </Button>
-            </div>
+            </motion.div>
 
             {/* Social Proof Below CTA */}
             <div className="flex justify-center mb-20">
@@ -162,81 +187,94 @@ export default function LandingPage() {
           </div>
 
           <div className="relative">
-            {/* Connection Line */}
-            <div className="hidden lg:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-[hsl(var(--primary))]/0 via-[hsl(var(--primary))] to-[hsl(var(--primary))]/0 z-0"></div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 relative z-10">
-              {/* Step 1 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                  <span className="text-primary font-bold text-xl">1</span>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+                className="bg-white/60 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-2 group"
+              >
+                <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0 group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-[#FF6F20] font-bold text-xl">1</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">Set Up Your Keywords</h3>
-                <p className="text-gray-600 mb-6 text-center lg:text-left">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center lg:text-left font-heading">Set Up Your Keywords</h3>
+                <p className="text-gray-600 mb-6 text-center lg:text-left leading-relaxed">
                   Enter your business keywords and select relevant subreddits. SneakyGuy will monitor these 24/7 for potential leads.
                 </p>
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
                   </div>
-                  <div className="bg-white rounded border border-gray-200 p-3 text-sm font-mono">
-                    <span className="text-purple-600">keywords</span>: [<span className="text-green-600">"saas tool"</span>, <span className="text-green-600">"lead generation"</span>]
+                  <div className="bg-white rounded-lg border border-gray-200/50 p-3 text-sm font-mono shadow-sm">
+                    <span className="text-purple-600 font-semibold">keywords</span>: [<span className="text-green-600">"saas tool"</span>, <span className="text-green-600">"lead generation"</span>]
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Step 2 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                  <span className="text-primary font-bold text-xl">2</span>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.1 }}
+                className="bg-white/60 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-2 group"
+              >
+                <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0 group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-[#FF6F20] font-bold text-xl">2</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">AI Identifies Opportunities</h3>
-                <p className="text-gray-600 mb-6 text-center lg:text-left">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center lg:text-left font-heading">AI Identifies Opportunities</h3>
+                <p className="text-gray-600 mb-6 text-center lg:text-left leading-relaxed">
                   Our AI analyzes Reddit posts and comments to find discussions where your product could be a solution.
                 </p>
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
                   </div>
-                  <div className="bg-white rounded border border-gray-200 p-3 text-sm">
+                  <div className="bg-white rounded-lg border border-gray-200/50 p-3 text-sm shadow-sm">
                     <div className="flex items-start gap-2">
-                      <Brain className="h-4 w-4 text-primary mt-0.5" />
+                      <Brain className="h-4 w-4 text-[#FF6F20] mt-0.5" />
                       <span className="text-gray-700">Analyzing post: "Looking for a tool to find leads on social media..."</span>
                     </div>
-                    <div className="mt-2 ml-6 text-green-600 font-medium">Match found! (92% relevance)</div>
+                    <div className="mt-2 ml-6 text-green-600 font-semibold">Match found! (92% relevance)</div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              {/* Step 3 */}
-              <div className="bg-white rounded-xl shadow-lg p-8 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                  <span className="text-primary font-bold text-xl">3</span>
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className="bg-white/60 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 transition-all duration-300 hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] hover:-translate-y-2 group"
+              >
+                <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0 group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-[#FF6F20] font-bold text-xl">3</span>
                 </div>
-                <h3 className="text-xl font-semibold text-gray-900 mb-4 text-center lg:text-left font-heading">Generate & Post Responses</h3>
-                <p className="text-gray-600 mb-6 text-center lg:text-left">
+                <h3 className="text-xl font-bold text-gray-900 mb-4 text-center lg:text-left font-heading">Generate & Post Responses</h3>
+                <p className="text-gray-600 mb-6 text-center lg:text-left leading-relaxed">
                   SneakyGuy creates personalized responses that subtly promote your product while providing genuine value.
                 </p>
-                <div className="bg-gray-50 rounded-lg p-4">
+                <div className="bg-gray-50/50 rounded-xl p-4 border border-gray-100">
                   <div className="flex items-center space-x-2 mb-3">
-                    <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                    <div className="w-3 h-3 rounded-full bg-green-500"></div>
+                    <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
+                    <div className="w-3 h-3 rounded-full bg-green-400"></div>
                   </div>
-                  <div className="bg-white rounded border border-gray-200 p-3 text-sm">
+                  <div className="bg-white rounded-lg border border-gray-200/50 p-3 text-sm shadow-sm">
                     <div className="flex items-start">
-                      <div className="w-5 h-5 rounded-full bg-gray-200 flex-shrink-0 mr-2"></div>
-                      <div className="text-gray-700">
-                        "I've been using SneakyGuy for this exact purpose and it's been a game-changer for finding leads..."
+                      <div className="w-5 h-5 rounded-full bg-gray-200 flex-shrink-0 mr-2 border border-gray-300/50"></div>
+                      <div className="text-gray-700 italic">
+                        "I've been using SneakyGuy for this purpose and it's been a game-changer..."
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </div>
 
@@ -263,53 +301,71 @@ export default function LandingPage() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20">
-            <div className="inline-block px-6 py-3 bg-[hsl(var(--primary))] rounded-full text-white font-semibold text-sm mb-6 shadow-sm">
-              ⚡ POWERFUL FEATURES
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-20"
+          >
+            <div className="inline-block px-6 py-2 bg-[#FF6F20]/10 border border-[#FF6F20]/20 rounded-full text-[#FF6F20] font-bold text-xs mb-6 shadow-sm tracking-widest uppercase">
+              ⚡ Powerful Features
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-4 leading-tight">
-              See the <span className="text-[hsl(var(--primary))]">Magic</span> in Action
+            <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-6 leading-tight">
+              See the <span className="text-[#FF6F20]">Magic</span> in Action
             </h2>
-            <p className="text-lg sm:text-xl text-slate-700 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
               Watch SneakyGuy transform Reddit into your personal lead generation powerhouse
             </p>
-          </div>
+          </motion.div>
 
           <div className="space-y-20">
             {/* Feature 1: Simple Setup - Project Creation */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1">
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+              <motion.div
+                initial={{ opacity: 0, x: -30 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="order-2 lg:order-1"
+              >
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6">
                   Get Started in Under 30 Seconds
                 </h3>
-                <p className="text-lg text-slate-700 mb-6 leading-relaxed">
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed">
                   Just enter your project name and a simple description. Our AI does the heavy lifting -
                   automatically generating relevant keywords and suggesting the perfect subreddits for your business.
                 </p>
                 <div className="space-y-4">
-                  <div className="flex items-center gap-4 p-4 bg-green-50 rounded-lg border-l-4 border-green-500 transition-all duration-200">
-                    <div className="bg-emerald-500 rounded-full p-1">
+                  <div className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="bg-emerald-500 rounded-full p-1.5 shadow-lg shadow-emerald-500/20">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <span className="text-slate-800 font-semibold">✨ 2-field setup: Name + Description</span>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500 transition-all duration-200">
-                    <div className="bg-blue-500 rounded-full p-1">
+                  <div className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="bg-blue-500 rounded-full p-1.5 shadow-lg shadow-blue-500/20">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <span className="text-slate-800 font-semibold">🤖 AI generates keywords automatically</span>
                   </div>
-                  <div className="flex items-center gap-4 p-4 bg-[hsl(var(--accent))]/15 rounded-lg border-l-4 border-[hsl(var(--accent))] transition-all duration-200">
-                    <div className="bg-purple-500 rounded-full p-1">
+                  <div className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                    <div className="bg-purple-500 rounded-full p-1.5 shadow-lg shadow-purple-500/20">
                       <Check className="h-4 w-4 text-white" />
                     </div>
                     <span className="text-slate-800 font-semibold">🎯 Curated subreddit recommendations</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="order-1 lg:order-2">
-                <div className="bg-white rounded-2xl shadow-2xl border border-[hsl(var(--primary))]/30 overflow-hidden transform hover:scale-105 transition-transform duration-300">
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6 }}
+                className="order-1 lg:order-2"
+              >
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
                   <Image
                     src="/create-project-screenshot.png"
                     alt="Simple project creation - just name and description needed"
@@ -319,13 +375,18 @@ export default function LandingPage() {
                     priority
                   />
                 </div>
-              </div>
+              </motion.div>
             </div>
 
-            {/* Feature 2: AI-Generated Keywords & Subreddits */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+            >
               <div className="order-2 lg:order-1">
-                <div className="bg-white rounded-2xl shadow-xl border border-blue-200 overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-blue-100 overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
                   <Image
                     src="/keywords-subreddits-screenshot.png"
                     alt="AI-generated keywords and subreddit suggestions"
@@ -337,73 +398,83 @@ export default function LandingPage() {
               </div>
 
               <div className="order-1 lg:order-2">
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">
+                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-6 font-heading">
                   AI Generates Perfect Keywords & Subreddits
                 </h3>
-                <p className="text-lg text-slate-700 mb-6 leading-relaxed">
+                <p className="text-lg text-slate-600 mb-8 leading-relaxed">
                   Watch our AI analyze your business description and instantly generate 15+ relevant keywords
                   and 12+ targeted subreddits. No manual research needed - just review and confirm.
                 </p>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                     <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">15+ AI-generated keywords</span>
+                    <span className="text-slate-800 font-semibold">15+ AI-generated keywords</span>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-4 p-4 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
                     <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">12+ targeted subreddits</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">One-click regeneration</span>
+                    <span className="text-slate-800 font-semibold">12+ targeted subreddits</span>
                   </div>
                 </div>
               </div>
-            </div>
-
-            {/* Feature 3: Lead Feed Dashboard */}
-            <div className="group grid grid-cols-1 lg:grid-cols-2 gap-12 items-center hover:scale-[1.02] transition-all duration-500">
-              <div className="order-2 lg:order-1 space-y-6">
-                <h3 className="text-3xl sm:text-4xl font-black text-slate-900 mb-6 group-hover:text-emerald-600 transition-colors duration-300">
-                  🎯 Discover High-Quality Leads Instantly
-                </h3>
-                <p className="text-xl font-medium text-slate-700 mb-8 leading-relaxed">
-                  Your dashboard shows real Reddit mentions with smart relevance scoring (35-65/100).
-                  Each lead includes context, intent analysis, and one-click AI reply generation.
-                </p>
-                <div className="space-y-3">
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">Smart relevance scoring (35-65/100)</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">Intent classification (solution_seeking)</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">One-click "AI Reply" button</span>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <Check className="h-5 w-5 text-emerald-500 flex-shrink-0" />
-                    <span className="text-slate-700">Export to CSV for outreach</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="order-1 lg:order-2">
-                <div className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
-                  <Image
-                    src="/lead-dashboard-screenshot.png"
-                    alt="Lead dashboard showing Reddit mentions with relevance scores and AI reply buttons"
-                    width={600}
-                    height={400}
-                    className="w-full h-auto"
-                  />
-                </div>
-              </div>
-            </div>
+            </motion.div>
           </div>
+
+          {/* Feature 3: Lead Feed Dashboard */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center"
+          >
+            <div className="order-2 lg:order-1 space-y-6">
+              <h3 className="text-3xl sm:text-4xl font-bold text-slate-900 mb-6 leading-tight font-heading">
+                🎯 Discover High-Quality Leads Instantly
+              </h3>
+              <p className="text-lg text-slate-600 mb-8 leading-relaxed">
+                Your dashboard shows real Reddit mentions with smart relevance scoring.
+                Each lead includes context, intent analysis, and one-click AI reply generation.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-3 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="bg-emerald-100 rounded-full p-1">
+                    <Check className="h-3 w-3 text-emerald-600" />
+                  </div>
+                  <span className="text-slate-800 text-sm font-semibold">Smart scoring</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="bg-blue-100 rounded-full p-1">
+                    <Check className="h-3 w-3 text-blue-600" />
+                  </div>
+                  <span className="text-slate-800 text-sm font-semibold">Intent analysis</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="bg-orange-100 rounded-full p-1">
+                    <Check className="h-3 w-3 text-orange-600" />
+                  </div>
+                  <span className="text-slate-800 text-sm font-semibold">One-click AI Reply</span>
+                </div>
+                <div className="flex items-center gap-3 p-3 bg-white/60 backdrop-blur-md border border-white/20 rounded-xl shadow-sm hover:shadow-md transition-all duration-300">
+                  <div className="bg-purple-100 rounded-full p-1">
+                    <Check className="h-3 w-3 text-purple-600" />
+                  </div>
+                  <span className="text-slate-800 text-sm font-semibold">CSV Export</span>
+                </div>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2">
+              <div className="bg-white rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden transform hover:scale-[1.02] transition-transform duration-500">
+                <Image
+                  src="/lead-dashboard-screenshot.png"
+                  alt="Lead dashboard showing Reddit mentions with relevance scores and AI reply buttons"
+                  width={600}
+                  height={400}
+                  className="w-full h-auto"
+                />
+              </div>
+            </div>
+          </motion.div>
         </div>
       </div>
 
@@ -417,28 +488,34 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
-            <div className="bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="max-w-5xl mx-auto"
+          >
+            <div className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white/20 overflow-hidden group">
               <div className="relative">
                 <Image
                   src="/reddit-example.png"
                   alt="Real AI-generated Reddit response example"
                   width={1200}
                   height={600}
-                  className="w-full"
+                  className="w-full transition-transform duration-700 group-hover:scale-[1.01]"
                   priority
                 />
 
                 {/* Success indicators */}
-                <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium">
+                <div className="absolute top-6 right-6 bg-[#FF6F20] text-white px-4 py-2 rounded-xl shadow-[0_10px_30px_rgba(255,111,32,0.3)] text-sm font-bold tracking-tight">
                   ✨ AI Generated
                 </div>
-                <div className="absolute bottom-4 left-4 bg-blue-500 text-white px-3 py-2 rounded-lg shadow-lg text-sm font-medium">
+                <div className="absolute bottom-6 left-6 bg-blue-600 text-white px-4 py-2 rounded-xl shadow-[0_10px_30px_rgba(37,99,235,0.3)] text-sm font-bold tracking-tight">
                   🎯 Authentic & Helpful
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
@@ -641,97 +718,125 @@ export default function LandingPage() {
       {/* Value Justification Section - Why $69 is Worth It */}
       <div className="py-16 bg-gradient-to-br from-orange-50 via-white to-purple-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Why <span className="text-[#FF6F20]">Reddit</span> is Your Untapped Goldmine
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              Why <span className="text-[#FF4500]">Reddit</span> is Your Growth Engine
             </h2>
-            <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-              Reddit has 850M+ monthly active users actively seeking solutions. Here's why $69 is a no-brainer investment.
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+              Reddit has 850M+ monthly active users actively seeking solutions.
+              SneakyGuy is your unfair advantage to reach them first.
             </p>
-          </div>
+          </motion.div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="text-4xl font-bold text-[#FF6F20] mb-2">850M+</div>
-              <div className="text-gray-900 font-semibold mb-2">Monthly Active Users</div>
-              <div className="text-sm text-gray-600">That's more than LinkedIn + Twitter combined</div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="text-5xl font-black text-[#FF4500] mb-3">850M+</div>
+              <div className="text-gray-900 font-bold text-lg mb-2">Monthly Active Users</div>
+              <div className="text-gray-600 leading-relaxed">More active discussions than LinkedIn + X combined.</div>
+            </motion.div>
 
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="text-4xl font-bold text-[#FF6F20] mb-2">91%</div>
-              <div className="text-gray-900 font-semibold mb-2">High Purchase Intent</div>
-              <div className="text-sm text-gray-600">Redditors actively research before buying</div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="text-5xl font-black text-[#FF4500] mb-3">91%</div>
+              <div className="text-gray-900 font-bold text-lg mb-2">High Purchase Intent</div>
+              <div className="text-gray-600 leading-relaxed">Redditors research actively before making buying decisions.</div>
+            </motion.div>
 
-            <div className="bg-white rounded-xl p-6 shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
-              <div className="text-4xl font-bold text-[#FF6F20] mb-2">130K+</div>
-              <div className="text-gray-900 font-semibold mb-2">Active Communities</div>
-              <div className="text-sm text-gray-600">Find your exact target audience anywhere</div>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 hover:shadow-2xl transition-all duration-300"
+            >
+              <div className="text-5xl font-black text-[#FF4500] mb-3">130K+</div>
+              <div className="text-gray-900 font-bold text-lg mb-2">Active Communities</div>
+              <div className="text-gray-600 leading-relaxed">Find your exact target audience in niche subreddits.</div>
+            </motion.div>
           </div>
 
           {/* Value Breakdown */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 border-2 border-[#FF6F20]/20">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6 text-center">
-              What You're Really Paying For
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white/60 backdrop-blur-xl rounded-3xl shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] border border-white/20 p-8 sm:p-12 mb-12"
+          >
+            <h3 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-10 text-center font-heading">
+              The math checks out.
             </h3>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <Check className="h-6 w-6 text-green-600" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mb-12">
+              <div className="flex items-start gap-5">
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-emerald-600" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">Save 60+ hours/month</div>
-                  <div className="text-sm text-gray-600">At $50/hour = <span className="font-bold text-[#FF6F20]">$3,000 value</span></div>
+                  <div className="font-bold text-gray-900 text-lg mb-1">Save 60+ hours/month</div>
+                  <div className="text-gray-600 leading-relaxed">At $50/hour = <span className="font-bold text-[#FF6F20]">$3,000 value</span> monthly.</div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <Check className="h-6 w-6 text-green-600" />
+              <div className="flex items-start gap-5">
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-emerald-600" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">24/7 lead monitoring</div>
-                  <div className="text-sm text-gray-600">Never sleep, never miss opportunities = <span className="font-bold text-[#FF6F20]">Priceless</span></div>
+                  <div className="font-bold text-gray-900 text-lg mb-1">24/7 Lead Monitoring</div>
+                  <div className="text-gray-600 leading-relaxed">Never sleep, never miss opportunities. We track leads <span className="font-bold text-[#FF6F20]">while you dream</span>.</div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <Check className="h-6 w-6 text-green-600" />
+              <div className="flex items-start gap-5">
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-emerald-600" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">AI-powered responses</div>
-                  <div className="text-sm text-gray-600">Hire a writer = $500/month, We do it for <span className="font-bold text-[#FF6F20]">$5.75/month</span></div>
+                  <div className="font-bold text-gray-900 text-lg mb-1">AI-Powered Responses</div>
+                  <div className="text-gray-600 leading-relaxed">Engage authentically with AI-crafted drafts. Better than a dedicated social manager.</div>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                  <Check className="h-6 w-6 text-green-600" />
+              <div className="flex items-start gap-5">
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
+                  <Check className="h-6 w-6 text-emerald-600" />
                 </div>
                 <div>
-                  <div className="font-semibold text-gray-900 mb-1">Just 1 customer pays for this</div>
-                  <div className="text-sm text-gray-600">Average SaaS customer = <span className="font-bold text-[#FF6F20]">$200-500 LTV</span></div>
+                  <div className="font-bold text-gray-900 text-lg mb-1">ROI with 1 Customer</div>
+                  <div className="text-gray-600 leading-relaxed">Just one converted Reddit lead pays for <span className="font-bold text-[#FF6F20]">your entire year</span>.</div>
                 </div>
               </div>
             </div>
 
             {/* ROI Highlight */}
-            <div className="bg-gradient-to-r from-[#FF6F20]/10 to-purple-100 rounded-xl p-6 text-center">
-              <div className="text-lg font-semibold text-gray-900 mb-2">
-                💰 Break-even with just 1 customer in Year 1
+            <div className="bg-gradient-to-r from-[#FF6F20]/5 via-white to-purple-500/5 rounded-2xl p-8 text-center border border-gray-100 shadow-sm">
+              <div className="text-xl font-bold text-gray-900 mb-2">
+                🚀 4,347% Potential ROI
               </div>
-              <div className="text-gray-700">
-                Most users report <span className="font-bold text-[#FF6F20]">5-10 new qualified leads per month</span>
-              </div>
-              <div className="mt-4 text-2xl font-bold text-gray-900">
-                That's a <span className="text-[#FF6F20]">4,347% ROI</span> potential 🚀
+              <div className="text-gray-600 font-medium">
+                Join founders generating <span className="text-[#FF6F20] font-bold">5-10 new qualified leads</span> every month.
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Social Proof */}
           <div className="mt-8 text-center">
@@ -746,11 +851,13 @@ export default function LandingPage() {
       {/* Pricing Section */}
       <div id="pricing" className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* One-Time Payment Notice */}
+          {/* Risk-Free Notice */}
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-6 py-3 bg-green-50 border border-green-200 rounded-full">
-              <Check className="h-5 w-5 text-green-600" />
-              <span className="text-green-800 font-semibold">One-time payment. No recurring charges.</span>
+            <div className="inline-flex items-center gap-2 px-6 py-3 bg-white/60 backdrop-blur-md border border-gray-100 rounded-full shadow-sm">
+              <div className="bg-emerald-500 rounded-full p-1">
+                <Check className="h-3 w-3 text-white" />
+              </div>
+              <span className="text-gray-800 font-bold">7-Day Money-Back Guarantee. Risk Free.</span>
             </div>
           </div>
 
@@ -775,8 +882,11 @@ export default function LandingPage() {
       </div>
 
       {/* Footer */}
-      <footer className="bg-[hsl(var(--secondary))] border-t border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
+      <footer className="relative bg-gray-50/50 border-t border-gray-200 pt-24 pb-12 overflow-hidden">
+        {/* Subtle background decoration */}
+        <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-orange-500/5 blur-[120px] rounded-full -translate-x-1/2 translate-y-1/2"></div>
+
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
               <div className="flex items-center mb-4">
@@ -853,6 +963,6 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
-    </main>
+    </main >
   );
 }

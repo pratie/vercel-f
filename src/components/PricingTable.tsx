@@ -112,9 +112,9 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading"
+            className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 font-heading"
           >
-            Get Started for Just <span className="text-[hsl(var(--primary))]">$69/year</span>
+            Get Started for Just <span className="text-[#FF6F20]">$69/year</span>
           </motion.h2>
 
           <motion.p
@@ -135,30 +135,27 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
-            className={`relative bg-white rounded-xl border-2 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 ${
-              plan.popular 
-                ? 'border-[hsl(var(--primary))] shadow-lg ring-2 ring-[hsl(var(--primary))]/20' 
-                : 'border-gray-200 hover:border-[hsl(var(--primary))]/50'
-            } ${compact ? 'p-6' : 'p-8'}`}
+            className={`relative bg-white/70 backdrop-blur-xl rounded-3xl border transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${plan.popular
+                ? 'border-[#FF6F20] shadow-[0_32px_64px_-16px_rgba(255,111,32,0.15)] ring-4 ring-[#FF6F20]/5'
+                : 'border-white/20 shadow-xl'
+              } ${compact ? 'p-6' : 'p-10'}`}
           >
-            {plan.popular && (
-              <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                <div className="bg-[hsl(var(--primary))] text-white px-4 py-2 rounded-full text-sm font-semibold shadow-lg">
-                  🔥 Most Popular
-                </div>
+            <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
+              <div className="bg-[#FF6F20] text-white px-6 py-2 rounded-full text-sm font-bold shadow-[0_10px_20px_rgba(255,111,32,0.3)] tracking-tight">
+                🔥 Best Value Offer
               </div>
-            )}
+            </div>
 
             <div className="text-center mb-6">
               <h3 className="text-xl font-bold text-gray-900 mb-2">{plan.name}</h3>
-              <div className="mb-4">
-                <span className="text-4xl font-bold text-gray-900">{plan.price}</span>
-                <span className="text-gray-600 ml-2">{plan.billing}</span>
+              <div className="mb-6">
+                <span className="text-6xl font-black text-gray-900 tracking-tight">{plan.price}</span>
+                <span className="text-gray-500 text-lg ml-2">{plan.billing}</span>
               </div>
 
               {/* Show monthly breakdown */}
-              <div className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-700 mb-4">
-                Just $5.75/month
+              <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-green-50 text-green-700 border border-green-100 mb-6">
+                ✨ Just $5.75/month
               </div>
 
               <p className="text-sm text-gray-600">{plan.duration} access</p>
@@ -167,38 +164,37 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             <Button
               onClick={() => handlePlanSelect(plan.id)}
               disabled={checkoutLoading === plan.id}
-              className={`w-full mb-6 transition-all duration-200 ${
-                plan.popular
-                  ? 'bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white'
-                  : 'bg-gray-100 hover:bg-gray-200 text-gray-900 hover:bg-[hsl(var(--primary))] hover:text-white'
-              }`}
+              className={`w-full py-7 rounded-2xl text-lg font-bold transition-all duration-300 ${plan.popular
+                  ? 'bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white shadow-[0_20px_40px_rgba(255,111,32,0.25)] hover:shadow-[0_20px_40px_rgba(255,111,32,0.4)]'
+                  : 'bg-gray-900 hover:bg-gray-800 text-white shadow-lg'
+                }`}
             >
               {checkoutLoading === plan.id ? (
                 <div className="flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2"></div>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-current mr-2"></div>
                   Processing...
                 </div>
               ) : (
                 <>
-                  Get Started
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  Start 7-Day Free Trial
+                  <ArrowRight className="ml-2 h-5 w-5" />
                 </>
               )}
             </Button>
 
             {!compact && (
-              <div className="space-y-3">
-                <h4 className="font-semibold text-gray-900 text-sm">What's included:</h4>
-                {features.slice(0, 4).map((feature, idx) => (
+              <div className="space-y-4 pt-4">
+                <h4 className="font-bold text-gray-900 text-sm tracking-wider uppercase">What's included:</h4>
+                {features.slice(0, 5).map((feature, idx) => (
                   <div key={idx} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full bg-[hsl(var(--secondary))] flex items-center justify-center mt-0.5">
-                      <Check className="w-3 h-3 text-[hsl(var(--primary))]" />
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-[#FF6F20]/10 flex items-center justify-center mt-0.5">
+                      <Check className="w-3.5 h-3.5 text-[#FF6F20]" />
                     </div>
-                    <span className="text-sm text-gray-600">{feature}</span>
+                    <span className="text-gray-600 font-medium">{feature}</span>
                   </div>
                 ))}
-                <div className="pt-2">
-                  <span className="text-xs text-gray-500">+ {features.length - 4} more features</span>
+                <div className="pt-2 text-center">
+                  <span className="text-sm font-semibold text-[#FF6F20] cursor-pointer hover:underline underline-offset-4">See all features below</span>
                 </div>
               </div>
             )}
