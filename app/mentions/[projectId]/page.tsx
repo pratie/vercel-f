@@ -13,6 +13,8 @@ import { toast, Toaster } from 'sonner';
 import { checkRefreshRateLimit, formatTimeRemaining } from '@/lib/rateLimit';
 import { useRedditAuthStore } from '@/lib/redditAuth';
 import { PaymentGuard } from '@/components/PaymentGuard';
+import { MentionsAnalytics } from '@/components/MentionsAnalytics';
+import { Sparkles, PieChart, ChevronDown, ChevronUp } from 'lucide-react';
 
 interface RawMention {
   id: number;
@@ -101,6 +103,7 @@ export default function MentionsPage() {
   const [selectedSubreddit, setSelectedSubreddit] = useState('all');
   const [selectedIntent, setSelectedIntent] = useState('all');
   const [sortBy, setSortBy] = useState<'new' | 'comments' | 'relevance'>('new');
+  const [showAnalytics, setShowAnalytics] = useState(true);
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
@@ -455,6 +458,16 @@ export default function MentionsPage() {
               <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
                 {mentions.length} Mentions
               </Badge>
+              <div className="h-4 w-px bg-gray-200" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setShowAnalytics(!showAnalytics)}
+                className={`flex items-center gap-1.5 h-8 px-2 rounded-md transition-all ${showAnalytics ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:text-gray-700'}`}
+              >
+                {showAnalytics ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                <span className="text-xs font-semibold uppercase tracking-wider">Insights</span>
+              </Button>
             </div>
           )}
 
@@ -492,6 +505,14 @@ export default function MentionsPage() {
             </div>
           </Button>
         </div>
+
+        {/* Analytics Section */}
+        {!isLoading && project && showAnalytics && (
+          <MentionsAnalytics
+            mentions={mentions}
+            keywords={project.keywords || []}
+          />
+        )}
 
         {/* Controls */}
         {!isLoading && mentions.length > 0 && (
