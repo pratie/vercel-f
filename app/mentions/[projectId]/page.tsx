@@ -104,6 +104,8 @@ export default function MentionsPage() {
   const [selectedIntent, setSelectedIntent] = useState('all');
   const [sortBy, setSortBy] = useState<'new' | 'comments' | 'relevance'>('new');
   const [showAnalytics, setShowAnalytics] = useState(true);
+  const [allMentions, setAllMentions] = useState<RedditMention[]>([]); // New state for ALL mentions
+  const [visibleCount, setVisibleCount] = useState(MENTIONS_PER_PAGE);
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
@@ -137,12 +139,12 @@ export default function MentionsPage() {
     }
   }, [projectId]);
 
-  // Derived filter options from current mentions
-  const availableSubreddits = Array.from(new Set(mentions.map(m => m.subreddit))).sort();
-  const availableIntents = Array.from(new Set(mentions.map(m => m.intent).filter(Boolean))) as string[];
+  // Derived filter options from all mentions
+  const availableSubreddits = Array.from(new Set(allMentions.map(m => m.subreddit))).sort();
+  const availableIntents = Array.from(new Set(allMentions.map(m => m.intent).filter(Boolean))) as string[];
 
-  // Apply search, filter, sort
-  const displayMentions = mentions
+  // Apply search, filter, sort to ALL mentions
+  const filteredAll = allMentions
     .filter(m => {
       const q = searchQuery.trim().toLowerCase();
       const matchesQuery = q
@@ -155,9 +157,12 @@ export default function MentionsPage() {
     .sort((a, b) => {
       if (sortBy === 'new') return b.created_utc - a.created_utc;
       if (sortBy === 'comments') return b.num_comments - a.num_comments;
-      // relevance default
       return b.relevance_score - a.relevance_score;
     });
+
+  // Display only a slice for the list
+  const displayMentions = filteredAll.slice(0, visibleCount);
+  const hasMoreLocal = visibleCount < filteredAll.length;
 
   useEffect(() => {
     if (!user) {
@@ -175,20 +180,22 @@ export default function MentionsPage() {
       api.getProject(projectId)
         .then(projectData => {
           setProject(projectData);
-          return api.getMentions(projectId, 0, MENTIONS_PER_PAGE);
+          // Fetch up to 5000 mentions at once for analytics
+          return api.getMentions(projectId, 0, 5000);
         })
-        .then(newMentionsRaw => {
-          const transformed = newMentionsRaw
+        .then(allMentionsRaw => {
+          const transformed = allMentionsRaw
             .map(transformRawMention)
-            .sort((a, b) => b.created_utc - a.created_utc); // Sort initial batch
-          setMentions(transformed);
-          setCurrentSkip(transformed.length);
-          setHasMoreMentions(transformed.length === MENTIONS_PER_PAGE);
+            .sort((a, b) => b.created_utc - a.created_utc);
+
+          setAllMentions(transformed);
+          setMentions(transformed); // Keep for compatibility if needed elsewhere
+          setVisibleCount(MENTIONS_PER_PAGE);
+          setHasMoreMentions(false); // We fetched everything, no need for server hasMore
         })
         .catch(error => {
-          console.error('Error fetching initial project data or mentions:', error);
-          toast.error('Failed to load project mentions. Please try again.');
-          // Consider setting hasMoreMentions to false or other error state handling
+          console.error('Error fetching project data or mentions:', error);
+          toast.error('Failed to load project mentions.');
         })
         .finally(() => {
           setIsLoading(false);
@@ -200,27 +207,8 @@ export default function MentionsPage() {
     }
   }, [projectId, user, router]);
 
-  const handleLoadMore = async () => {
-    if (!projectId || isLoadingMore || !hasMoreMentions || isLoading) return;
-
-    setIsLoadingMore(true);
-    try {
-      const newMentionsRaw = await api.getMentions(projectId, currentSkip, MENTIONS_PER_PAGE);
-      const transformedNewMentions = newMentionsRaw.map(transformRawMention);
-
-      setMentions(prevMentions => {
-        const combined = [...prevMentions, ...transformedNewMentions];
-        return combined.sort((a, b) => b.created_utc - a.created_utc); // Sort combined list
-      });
-      setCurrentSkip(prevSkip => prevSkip + transformedNewMentions.length);
-      setHasMoreMentions(transformedNewMentions.length === MENTIONS_PER_PAGE);
-    } catch (error) {
-      console.error('Error fetching more mentions:', error);
-      toast.error('Failed to fetch more mentions.');
-      // Potentially set hasMoreMentions to false here too
-    } finally {
-      setIsLoadingMore(false);
-    }
+  const handleLoadMore = () => {
+    setVisibleCount(prev => prev + MENTIONS_PER_PAGE);
   };
 
   const postComment = async (mention: RedditMention) => {
@@ -456,7 +444,7 @@ export default function MentionsPage() {
               <h2 className="text-lg font-semibold text-gray-900">{project.name}</h2>
               <div className="h-4 w-px bg-gray-200" />
               <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
-                {mentions.length} Mentions
+                {allMentions.length} Leads Found
               </Badge>
               <div className="h-4 w-px bg-gray-200" />
               <Button
@@ -509,13 +497,13 @@ export default function MentionsPage() {
         {/* Analytics Section */}
         {!isLoading && project && showAnalytics && (
           <MentionsAnalytics
-            mentions={mentions}
+            mentions={allMentions}
             keywords={project.keywords || []}
           />
         )}
 
         {/* Controls */}
-        {!isLoading && mentions.length > 0 && (
+        {!isLoading && allMentions.length > 0 && (
           <div className="mb-6 grid grid-cols-1 md:grid-cols-12 gap-3">
             {/* Search */}
             <div className="md:col-span-5 min-w-0">
@@ -573,7 +561,7 @@ export default function MentionsPage() {
             </div>
             <div className="md:col-span-12 flex items-center justify-between text-xs text-gray-500">
               <div>
-                Showing <span className="font-medium text-gray-700">{displayMentions.length}</span> of <span className="font-medium text-gray-700">{mentions.length}</span> mentions
+                Showing <span className="font-medium text-gray-700">{displayMentions.length}</span> of <span className="font-medium text-gray-700">{filteredAll.length}</span> matching leads
               </div>
               {(searchQuery || selectedSubreddit !== 'all' || selectedIntent !== 'all' || sortBy !== 'new') && (
                 <button
@@ -592,9 +580,9 @@ export default function MentionsPage() {
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
           </div>
-        ) : mentions.length === 0 ? (
+        ) : allMentions.length === 0 ? (
           <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
-            No mentions found.
+            No leads found yet. Click refresh to scan Reddit.
           </div>
         ) : displayMentions.length === 0 ? (
           <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
@@ -881,27 +869,19 @@ export default function MentionsPage() {
               ))}
             </div>
 
-            {!isLoading && hasMoreMentions && mentions.length > 0 && (
-              <div className="mt-8 text-center">
+            {hasMoreLocal && (
+              <div className="mt-8 flex justify-center pb-12">
                 <Button
                   onClick={handleLoadMore}
                   disabled={isLoadingMore}
                   variant="outline"
-                  className="bg-white hover:bg-gray-50 text-gray-700 border-gray-300 shadow-sm"
+                  className="bg-white hover:bg-gray-50 text-[hsl(var(--primary))] border-[hsl(var(--primary))]/20 px-8 py-6 rounded-xl hover:shadow-md transition-all duration-200"
                 >
-                  {isLoadingMore ? (
-                    <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Loading...</>
-                  ) : (
-                    'Load More Mentions'
-                  )}
+                  <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingMore ? 'animate-spin' : ''}`} />
+                  {isLoadingMore ? 'Loading...' : `Show 25 More Leads (of ${filteredAll.length - displayMentions.length} remaining)`}
                 </Button>
               </div>
             )}
-
-            {!isLoading && !isLoadingMore && !hasMoreMentions && mentions.length > 0 && (
-              <p className="mt-8 text-center text-gray-500">You've reached the end of the mentions list.</p>
-            )}
-
           </>
         )}
         {!redditAuth.isAuthenticated && (
