@@ -206,41 +206,57 @@ export const MentionsAnalytics = ({ mentions, keywords }: MentionsAnalyticsProps
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Temporal Distribution</span>
                 </CardHeader>
                 <CardContent className="pt-8 pb-4 px-6">
-                    <div className="flex items-end justify-between h-32 gap-2">
+                    <div className="flex items-end justify-between h-32 gap-3 sm:gap-4">
                         {(() => {
+                            // Helper to get local YYYY-MM-DD
+                            const getLocalDateKey = (d: Date) => {
+                                const year = d.getFullYear();
+                                const month = String(d.getMonth() + 1).padStart(2, '0');
+                                const day = String(d.getDate()).padStart(2, '0');
+                                return `${year}-${month}-${day}`;
+                            };
+
                             const now = new Date();
                             const days = Array.from({ length: 7 }, (_, i) => {
-                                const date = new Date(now);
-                                date.setDate(now.getDate() - (6 - i));
-                                return date.toISOString().split('T')[0];
+                                const d = new Date(now);
+                                d.setDate(now.getDate() - (6 - i));
+                                return {
+                                    key: getLocalDateKey(d),
+                                    label: d.toLocaleDateString('en-US', { weekday: 'short' })
+                                };
                             });
 
                             const dayCounts = mentions.reduce((acc, m) => {
-                                const date = new Date(m.created_utc * 1000).toISOString().split('T')[0];
-                                acc[date] = (acc[date] || 0) + 1;
+                                if (!m.created_utc) return acc;
+                                const date = new Date(Number(m.created_utc) * 1000);
+                                const key = getLocalDateKey(date);
+                                acc[key] = (acc[key] || 0) + 1;
                                 return acc;
                             }, {} as Record<string, number>);
 
-                            const maxCount = Math.max(...days.map(d => dayCounts[d] || 0), 1);
+                            const maxCount = Math.max(...days.map(d => dayCounts[d.key] || 0), 1);
 
                             return days.map(day => {
-                                const count = dayCounts[day] || 0;
+                                const count = dayCounts[day.key] || 0;
                                 const height = (count / maxCount) * 100;
-                                const dateLabel = new Date(day).toLocaleDateString('en-US', { weekday: 'short' });
 
                                 return (
-                                    <div key={day} className="flex-1 flex flex-col items-center gap-2 group">
-                                        <div className="relative w-full flex items-end justify-center h-full">
+                                    <div key={day.key} className="flex-1 flex flex-col items-center gap-2 group h-full">
+                                        <div className="relative w-full flex items-end justify-center flex-1">
                                             {/* Tooltip */}
-                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap">
+                                            <div className="absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-10 whitespace-nowrap shadow-xl">
                                                 {count} leads
                                             </div>
+                                            {/* Bar */}
                                             <div
-                                                className="w-full max-w-[40px] bg-gradient-to-t from-blue-600 to-blue-400 rounded-t-sm transition-all duration-1000 ease-out hover:from-orange-500 hover:to-orange-400"
-                                                style={{ height: `${height}%` }}
+                                                className={`w-full max-w-[32px] rounded-t-lg transition-all duration-700 ease-out group-hover:scale-x-110 ${count > 0
+                                                    ? 'bg-gradient-to-t from-orange-600/90 to-orange-400 shadow-[0_0_15px_rgba(255,111,32,0.1)] group-hover:from-orange-500 group-hover:to-orange-300'
+                                                    : 'bg-gray-100'
+                                                    }`}
+                                                style={{ height: count > 0 ? `${Math.max(height, 5)}%` : '4px' }}
                                             />
                                         </div>
-                                        <span className="text-[10px] font-medium text-gray-400 group-hover:text-gray-900 transition-colors">{dateLabel}</span>
+                                        <span className="text-[10px] font-bold text-gray-400 group-hover:text-gray-900 transition-colors tracking-tight">{day.label}</span>
                                     </div>
                                 );
                             });
