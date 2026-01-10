@@ -716,7 +716,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Value Justification Section - Why $69 is Worth It */}
+      {/* Value Justification Section - Why $19 is Worth It */}
       <div className="py-16 bg-gradient-to-br from-orange-50 via-white to-purple-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
@@ -823,7 +823,7 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <div className="font-bold text-gray-900 text-lg mb-1">ROI with 1 Customer</div>
-                  <div className="text-gray-600 leading-relaxed">Just one converted Reddit lead pays for <span className="font-bold text-[#FF6F20]">your entire year</span>.</div>
+                  <div className="text-gray-600 leading-relaxed">Just one converted Reddit lead pays for <span className="font-bold text-[#FF6F20]">your entire month</span>.</div>
                 </div>
               </div>
             </div>
@@ -831,7 +831,7 @@ export default function LandingPage() {
             {/* ROI Highlight */}
             <div className="bg-gradient-to-r from-[#FF6F20]/5 via-white to-purple-500/5 rounded-2xl p-8 text-center border border-gray-100 shadow-sm">
               <div className="text-xl font-bold text-gray-900 mb-2">
-                🚀 4,347% Potential ROI
+                🚀 15,789% Potential ROI
               </div>
               <div className="text-gray-600 font-medium">
                 Join founders generating <span className="text-[#FF6F20] font-bold">5-10 new qualified leads</span> every month.

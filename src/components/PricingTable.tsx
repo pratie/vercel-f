@@ -13,14 +13,14 @@ interface PricingTableProps {
   compact?: boolean;
 }
 
-// Fallback pricing plans in case API fails - Only showing Annual plan
+// Fallback pricing plans in case API fails - Only showing One-Month plan
 const fallbackPlans: PricingPlan[] = [
   {
-    id: 'annual',
-    name: 'Annual',
-    price: '$69',
-    billing: 'per year',
-    duration: '12 months',
+    id: 'monthly',
+    name: 'One-Month Access',
+    price: '$19',
+    billing: 'one-time',
+    duration: '1 month',
     popular: true,
     savings: undefined
   }
@@ -28,7 +28,7 @@ const fallbackPlans: PricingPlan[] = [
 
 export function PricingTable({ onPlanSelect, showHeader = true, compact = false }: PricingTableProps) {
   const [plans, setPlans] = useState<PricingPlan[]>(fallbackPlans);
-  const [selectedPlan, setSelectedPlan] = useState<string>('annual');
+  const [selectedPlan, setSelectedPlan] = useState<string>('monthly');
   const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
@@ -38,11 +38,11 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
         setLoading(true);
         const response = await api.getPricingPlans();
         if (response.plans && response.plans.length > 0) {
-          // Filter to show only annual plan
-          const annualPlan = response.plans.filter(plan => plan.id === 'annual');
-          if (annualPlan.length > 0) {
-            setPlans(annualPlan);
-            setSelectedPlan('annual');
+          // Filter to show only monthly plan
+          const monthlyPlan = response.plans.filter(plan => plan.id === 'monthly');
+          if (monthlyPlan.length > 0) {
+            setPlans(monthlyPlan);
+            setSelectedPlan('monthly');
           }
         }
         // If API succeeds but returns empty, keep fallback plans
@@ -114,7 +114,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             transition={{ duration: 0.6, delay: 0.1 }}
             className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4 font-heading"
           >
-            Get Started for Just <span className="text-[#FF6F20]">$69/year</span>
+            Get Started for Just <span className="text-[#FF6F20]">$19</span>
           </motion.h2>
 
           <motion.p
@@ -123,7 +123,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-lg text-gray-600 max-w-2xl mx-auto"
           >
-            Everything you need to generate high-quality leads from Reddit. No hidden fees, no monthly charges.
+            Everything you need to generate high-quality leads from Reddit. Pay only for what you need, when you need it.
           </motion.p>
         </div>
       )}
@@ -136,8 +136,8 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className={`relative bg-white/70 backdrop-blur-xl rounded-3xl border transition-all duration-300 hover:shadow-2xl hover:-translate-y-2 ${plan.popular
-                ? 'border-[#FF6F20] shadow-[0_32px_64px_-16px_rgba(255,111,32,0.15)] ring-4 ring-[#FF6F20]/5'
-                : 'border-white/20 shadow-xl'
+              ? 'border-[#FF6F20] shadow-[0_32px_64px_-16px_rgba(255,111,32,0.15)] ring-4 ring-[#FF6F20]/5'
+              : 'border-white/20 shadow-xl'
               } ${compact ? 'p-6' : 'p-10'}`}
           >
             <div className="absolute -top-5 left-1/2 transform -translate-x-1/2">
@@ -153,20 +153,17 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
                 <span className="text-gray-500 text-lg ml-2">{plan.billing}</span>
               </div>
 
-              {/* Show monthly breakdown */}
-              <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-bold bg-green-50 text-green-700 border border-green-100 mb-6">
-                ✨ Just $5.75/month
-              </div>
+              {/* Show monthly breakdown removed for one-time monthly price */}
 
-              <p className="text-sm text-gray-600">{plan.duration} access</p>
+              <p className="text-sm text-gray-600">Full {plan.duration} access</p>
             </div>
 
             <Button
               onClick={() => handlePlanSelect(plan.id)}
               disabled={checkoutLoading === plan.id}
               className={`w-full py-7 rounded-2xl text-lg font-bold transition-all duration-300 ${plan.popular
-                  ? 'bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white shadow-[0_20px_40px_rgba(255,111,32,0.25)] hover:shadow-[0_20px_40px_rgba(255,111,32,0.4)]'
-                  : 'bg-gray-900 hover:bg-gray-800 text-white shadow-lg'
+                ? 'bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white shadow-[0_20px_40px_rgba(255,111,32,0.25)] hover:shadow-[0_20px_40px_rgba(255,111,32,0.4)]'
+                : 'bg-gray-900 hover:bg-gray-800 text-white shadow-lg'
                 }`}
             >
               {checkoutLoading === plan.id ? (

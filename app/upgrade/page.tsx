@@ -52,12 +52,12 @@ export default function UpgradePage() {
               <ArrowLeft className="h-4 w-4" />
               Back to Projects
             </Button>
-            
+
             <div className="text-center">
               <h1 className="text-lg font-semibold text-gray-900">Upgrade to Premium</h1>
-              <p className="text-sm text-gray-600">Just $69/year - Unlimited Reddit lead generation</p>
+              <p className="text-sm text-gray-600">Just $19 - One month of unlimited Reddit lead generation</p>
             </div>
-            
+
             <div className="w-24" /> {/* Spacer for centering */}
           </div>
         </div>
@@ -71,18 +71,18 @@ export default function UpgradePage() {
             <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 mb-6">
               <span>🚀 Unlock Premium Features</span>
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">
               Ready to Scale Your <span className="text-[hsl(var(--primary))]">Reddit Growth</span>?
             </h2>
 
             <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
-              Join 41 founders & solopreneurs generating qualified leads from Reddit for just <span className="font-bold text-[hsl(var(--primary))]">$69/year</span>.
+              Join 41 founders & solopreneurs generating qualified leads from Reddit for just <span className="font-bold text-[hsl(var(--primary))]">$19</span>.
               Get 500 AI replies, unlimited keywords, and 24/7 monitoring.
             </p>
 
             <p className="text-sm text-gray-500 mb-8">
-              One-time yearly payment. Start creating projects immediately after upgrade.
+              One-time payment for 30 days. No recurring subscription.
             </p>
 
             {/* Benefits Preview */}
@@ -94,7 +94,7 @@ export default function UpgradePage() {
                 <h3 className="font-semibold text-gray-900 mb-2">AI-Powered Targeting</h3>
                 <p className="text-sm text-gray-600">Automatically find high-intent prospects discussing your solutions</p>
               </div>
-              
+
               <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
                 <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">💬</span>
@@ -102,7 +102,7 @@ export default function UpgradePage() {
                 <h3 className="font-semibold text-gray-900 mb-2">Smart Responses</h3>
                 <p className="text-sm text-gray-600">Generate authentic, helpful replies that build trust and drive traffic</p>
               </div>
-              
+
               <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
                 <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
                   <span className="text-2xl">⚡</span>
@@ -114,7 +114,7 @@ export default function UpgradePage() {
           </div>
 
           {/* Pricing Table */}
-          <PricingTable 
+          <PricingTable
             onPlanSelect={handlePlanSelect}
             showHeader={false}
           />
