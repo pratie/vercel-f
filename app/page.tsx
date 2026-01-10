@@ -105,24 +105,22 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black mb-8 leading-tight tracking-tight"
+              className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black mb-8 leading-[1.1] tracking-tight"
             >
-              The{' '}
-              <span className="inline-flex items-center gap-2">
-                <IconBrandReddit className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#FF4500]" />
-                Reddit
-              </span>{' '}
-              <span className="relative inline-block">
-                <span className="relative z-10 text-[#FF6F20]">Lead Machine</span>
+              <span className="inline-flex items-center gap-3">
+                <IconBrandReddit className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-[#FF4500] mb-1" />
+                Reddit leads
+              </span>
+              <br />
+              <span className="relative inline-block mt-2">
+                <span className="relative z-10 text-[#FF6F20] px-4">on autopilot.</span>
                 <motion.span
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
                   transition={{ delay: 0.8, duration: 0.8, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-1 rounded-lg"
+                  className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-2 rounded-xl border-l-4 border-[#FF6F20]/20"
                 ></motion.span>
               </span>
-              <br />
-              while you sleep.
             </motion.h1>
 
             {/* Subtitle - Simple & Clear */}
@@ -147,7 +145,7 @@ export default function LandingPage() {
                 className="bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white px-10 py-6 rounded-xl text-lg font-semibold shadow-[0_20px_50px_rgba(255,111,32,0.2)] hover:shadow-[0_20px_50px_rgba(255,111,32,0.4)] transition-all duration-300 flex items-center gap-2 hover:-translate-y-1"
                 onClick={handleGetStarted}
               >
-                Find Leads Now
+                Get Leads Now
                 <ArrowRight className="h-5 w-5" />
               </Button>
             </motion.div>
@@ -507,13 +505,6 @@ export default function LandingPage() {
                   priority
                 />
 
-                {/* Success indicators */}
-                <div className="absolute top-6 right-6 bg-[#FF6F20] text-white px-4 py-2 rounded-xl shadow-[0_10px_30px_rgba(255,111,32,0.3)] text-sm font-bold tracking-tight">
-                  ✨ AI Generated
-                </div>
-                <div className="absolute bottom-6 left-6 bg-blue-600 text-white px-4 py-2 rounded-xl shadow-[0_10px_30px_rgba(37,99,235,0.3)] text-sm font-bold tracking-tight">
-                  🎯 Authentic & Helpful
-                </div>
               </div>
             </div>
           </motion.div>
@@ -710,7 +701,7 @@ export default function LandingPage() {
             onClick={() => user ? router.push('/upgrade') : router.push('/login')}
             className="bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white px-4 sm:px-6 md:px-8 py-2.5 sm:py-3 md:py-4 rounded-full text-sm sm:text-base md:text-lg font-semibold w-full sm:w-auto"
           >
-            Find Leads
+            Get Leads
             <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
           </Button>
         </div>
