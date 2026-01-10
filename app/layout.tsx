@@ -36,10 +36,33 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'Sneakyguy | Reddit Tracking & Lead Generation',
-  description: 'Track Reddit keyword mentions and generate leads with AI-powered relevancy scoring',
+  title: 'SneakyGuy | 24/7 Reddit Lead Machine',
+  description: 'Never miss a relevant Reddit mention again. Track keywords and generate quality leads with AI-powered automation.',
   icons: {
     icon: '/favicon.ico',
+  },
+  openGraph: {
+    title: 'SneakyGuy | 24/7 Reddit Lead Machine',
+    description: 'Track keywords and generate quality leads on Reddit automatically.',
+    url: 'https://sneakyguy.io',
+    siteName: 'SneakyGuy',
+    images: [
+      {
+        url: '/images/hero_image_for_landingpage.png',
+        width: 1200,
+        height: 630,
+        alt: 'SneakyGuy Reddit Lead Machine',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'SneakyGuy | 24/7 Reddit Lead Machine',
+    description: 'Get Reddit leads on autopilot while you sleep.',
+    images: ['/images/hero_image_for_landingpage.png'],
+    creator: '@snow_stark17',
   },
   verification: {
     google: 'f_tSBk9IVfHsqWhQ4MXGWYuBFys3IYsWQSxo9iwpb-g',
