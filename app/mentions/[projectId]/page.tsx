@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Clock, Download, CheckCircle, RefreshCw, Loader2, Search, SlidersHorizontal } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Download, CheckCircle, RefreshCw, Loader2, Search, Zap, Sparkles, Check, TrendingUp, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -14,7 +14,7 @@ import { checkRefreshRateLimit, formatTimeRemaining } from '@/lib/rateLimit';
 import { useRedditAuthStore } from '@/lib/redditAuth';
 import { PaymentGuard } from '@/components/PaymentGuard';
 import { MentionsAnalytics } from '@/components/MentionsAnalytics';
-import { Sparkles, PieChart, ChevronDown, ChevronUp } from 'lucide-react';
+
 
 interface RawMention {
   id: number;
@@ -58,6 +58,10 @@ interface Project {
   description: string;
   keywords: string[];
   subreddits: string[];
+  analysis_status?: 'idle' | 'scanning' | 'completed' | 'failed';
+  analysis_progress?: number;
+  analysis_status_message?: string;
+  last_analyzed?: string;
 }
 
 const MENTIONS_PER_PAGE = 25;
@@ -106,6 +110,9 @@ export default function MentionsPage() {
   const [showAnalytics, setShowAnalytics] = useState(true);
   const [allMentions, setAllMentions] = useState<RedditMention[]>([]); // New state for ALL mentions
   const [visibleCount, setVisibleCount] = useState(MENTIONS_PER_PAGE);
+  const [analysisStatus, setAnalysisStatus] = useState<'idle' | 'scanning' | 'completed' | 'failed'>('idle');
+  const [analysisProgress, setAnalysisProgress] = useState(0);
+  const [analysisMessage, setAnalysisMessage] = useState('');
   const { user } = useAuth();
   const router = useRouter();
   const params = useParams();
@@ -180,18 +187,46 @@ export default function MentionsPage() {
       api.getProject(projectId)
         .then(projectData => {
           setProject(projectData);
+          setAnalysisStatus(projectData.analysis_status || 'idle');
+          setAnalysisProgress(projectData.analysis_progress || 0);
+          setAnalysisMessage(projectData.analysis_status_message || '');
+
           // Fetch up to 5000 mentions at once for analytics
-          return api.getMentions(projectId, 0, 5000);
+          return api.getMentions(projectId, 0, 5000).then(allMentionsRaw => ({
+            projectData,
+            allMentionsRaw
+          }));
         })
-        .then(allMentionsRaw => {
+        .then(({ projectData, allMentionsRaw }) => {
           const transformed = allMentionsRaw
             .map(transformRawMention)
             .sort((a, b) => b.created_utc - a.created_utc);
 
           setAllMentions(transformed);
-          setMentions(transformed); // Keep for compatibility if needed elsewhere
+          setMentions(transformed);
           setVisibleCount(MENTIONS_PER_PAGE);
-          setHasMoreMentions(false); // We fetched everything, no need for server hasMore
+          setHasMoreMentions(false);
+
+          // Auto-trigger scan if the project is empty and idle (e.g., brand new project)
+          if (transformed.length === 0 && projectData.analysis_status === 'idle') {
+            console.log('Project is empty and idle, triggering auto-scan...');
+            api.analyzeReddit({
+              brand_id: projectId,
+              keywords: projectData.keywords || [],
+              subreddits: projectData.subreddits || [],
+              time_period: 'month',
+              limit: 1000
+            }).then(resp => {
+              if (resp.status === 'started') {
+                setAnalysisStatus('scanning');
+                setAnalysisProgress(0);
+                setAnalysisMessage('Starting initial scan...');
+                toast.info('Initial scan started!');
+              }
+            }).catch(err => {
+              console.warn('Auto-scan trigger failed:', err);
+            });
+          }
         })
         .catch(error => {
           console.error('Error fetching project data or mentions:', error);
@@ -200,12 +235,76 @@ export default function MentionsPage() {
         .finally(() => {
           setIsLoading(false);
         });
-    } else if (projectId) { // projectId exists but is invalid
+    } else if (projectId) {
       toast.error('Invalid project ID');
       router.push('/projects');
-      setIsLoading(false); // Ensure loading is stopped
+      setIsLoading(false);
     }
   }, [projectId, user, router]);
+
+  // Polling for analysis status
+  useEffect(() => {
+    let pollInterval: NodeJS.Timeout;
+
+    if (analysisStatus === 'scanning' && projectId) {
+      pollInterval = setInterval(async () => {
+        try {
+          const updatedProject = await api.getProject(projectId);
+          setAnalysisStatus(updatedProject.analysis_status || 'idle');
+          setAnalysisProgress(updatedProject.analysis_progress || 0);
+          setAnalysisMessage(updatedProject.analysis_status_message || '');
+
+          if (updatedProject.analysis_status === 'completed' || updatedProject.analysis_status === 'failed') {
+            // Refresh mentions if finished
+            const allMentionsRaw = await api.getMentions(projectId, 0, 5000);
+            const transformed = allMentionsRaw
+              .map(transformRawMention)
+              .sort((a, b) => b.created_utc - a.created_utc);
+            setAllMentions(transformed);
+            if (updatedProject.analysis_status === 'completed') {
+              toast.success('Scan complete! New leads found.');
+            }
+          }
+        } catch (error) {
+          console.error('Error polling project status:', error);
+        }
+      }, 3000); // Poll every 3 seconds
+    }
+
+    return () => {
+      if (pollInterval) clearInterval(pollInterval);
+    };
+  }, [analysisStatus, projectId]);
+
+  const handleRefresh = async () => {
+    if (!projectId) return;
+
+    try {
+      const response = await api.analyzeReddit({
+        brand_id: projectId,
+        keywords: project?.keywords || [],
+        subreddits: project?.subreddits || [],
+        time_period: 'month',
+        limit: 1000
+      });
+
+      if (response.status === 'started') {
+        setAnalysisStatus('scanning');
+        setAnalysisProgress(0);
+        setAnalysisMessage('Starting scan...');
+        toast.info('Scan started in background');
+      } else if (response.status === 'already_running') {
+        toast.warning('A scan is already in progress');
+      } else if (response.status === 'cooldown') {
+        toast.error(response.message || 'Scan is on cooldown');
+        setAnalysisStatus('idle');
+      }
+    } catch (error) {
+      console.error('Error starting refresh:', error);
+      toast.error('Failed to start scan');
+      setAnalysisStatus('idle');
+    }
+  };
 
   const handleLoadMore = () => {
     setVisibleCount(prev => prev + MENTIONS_PER_PAGE);
@@ -358,7 +457,18 @@ export default function MentionsPage() {
   };
 
   const highlightKeywords = (text: string, keywords: string[]) => {
-    return text;
+    if (!keywords || keywords.length === 0) return text;
+
+    let highlightedText = text;
+    // Sort keywords by length descending to avoid partial matches on shorter keywords
+    const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length);
+
+    sortedKeywords.forEach(keyword => {
+      const regex = new RegExp(`(${keyword})`, 'gi');
+      highlightedText = highlightedText.replace(regex, '<mark class="bg-orange-100 text-orange-900 font-bold px-1 rounded-sm">$1</mark>');
+    });
+
+    return highlightedText;
   };
 
   const [generatingReplyFor, setGeneratingReplyFor] = useState<number | null>(null);
@@ -367,7 +477,7 @@ export default function MentionsPage() {
   const [editedReplies, setEditedReplies] = useState<Record<number, string>>({});
 
   const handleGenerateReply = async (mention: RedditMention) => {
-    if (generatingReplyFor !== null) return; // Prevent multiple simultaneous generations
+    if (generatingReplyFor !== null) return;
 
     setGeneratingReplyFor(mention.id);
     try {
@@ -376,18 +486,15 @@ export default function MentionsPage() {
         content: mention.content,
         brand_id: mention.brand_id
       });
-      // Store the generated reply
       setGeneratedReplies(prev => ({
         ...prev,
         [mention.id]: reply
       }));
-      // Store in edited replies and open editor
       setEditedReplies(prev => ({
         ...prev,
         [mention.id]: reply
       }));
       setEditingReplyId(mention.id);
-      // Show success; users can use "Copy & Go to Post" when ready
       toast.success('Reply generated! Editor is open for modifications.');
     } catch (error) {
       console.error('Error generating reply:', error);
@@ -440,21 +547,37 @@ export default function MentionsPage() {
           </Button>
 
           {project && (
-            <div className="flex items-center gap-3 bg-white/70 backdrop-blur-sm border border-gray-200 rounded-lg p-3">
-              <h2 className="text-lg font-semibold text-gray-900">{project.name}</h2>
+            <div className="flex items-center gap-2 sm:gap-3 bg-white/80 backdrop-blur-md border border-gray-200 rounded-xl p-2 sm:p-2.5 shadow-sm">
+              <div className="px-3 py-1 bg-gray-50 rounded-lg">
+                <h2 className="text-sm sm:text-base font-bold text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">{project.name}</h2>
+              </div>
+              <div className="h-4 w-px bg-gray-200 hidden sm:block" />
+              <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100/50">
+                <TrendingUp className="h-3.5 w-3.5" />
+                <span className="text-xs font-bold">{allMentions.length} Leads</span>
+              </div>
               <div className="h-4 w-px bg-gray-200" />
-              <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-sm">
-                {allMentions.length} Leads Found
-              </Badge>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleRefresh}
+                disabled={analysisStatus === 'scanning'}
+                className="flex items-center gap-1.5 h-8 px-2.5 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-all group"
+              >
+                <RefreshCw className={`h-3.5 w-3.5 ${analysisStatus === 'scanning' ? 'animate-spin text-orange-600' : 'text-gray-400 group-hover:text-orange-600'}`} />
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">
+                  {analysisStatus === 'scanning' ? 'Scanning...' : 'Refresh'}
+                </span>
+              </Button>
               <div className="h-4 w-px bg-gray-200" />
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className={`flex items-center gap-1.5 h-8 px-2 rounded-md transition-all ${showAnalytics ? 'bg-orange-50 text-orange-600' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-lg transition-all ${showAnalytics ? 'bg-orange-50 text-orange-600' : 'text-gray-400 hover:text-gray-900'}`}
               >
-                {showAnalytics ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
-                <span className="text-xs font-semibold uppercase tracking-wider">Insights</span>
+                {showAnalytics ? <Check className="h-3.5 w-3.5" /> : <ExternalLink className="h-3.5 w-3.5" />}
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest font-heading">Insights</span>
               </Button>
             </div>
           )}
@@ -494,6 +617,41 @@ export default function MentionsPage() {
           </Button>
         </div>
 
+        {/* Global Scanning Status */}
+        {analysisStatus === 'scanning' && (
+          <div className="mb-8 p-5 bg-gradient-to-br from-white to-orange-50/30 backdrop-blur-xl border border-orange-100 rounded-2xl shadow-sm animate-in fade-in slide-in-from-top-4 duration-500 relative overflow-hidden">
+            <div className="absolute top-0 right-0 p-4 opacity-10">
+              <RefreshCw className="h-24 w-24 text-orange-600 animate-spin-slow" />
+            </div>
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-4">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-orange-400 rounded-lg blur-md opacity-20 animate-pulse"></div>
+                    <div className="p-2.5 bg-orange-100 rounded-lg relative">
+                      <RefreshCw className="h-5 w-5 text-orange-600 animate-spin" />
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-gray-900 tracking-tight">AI Engine is scanning Reddit...</p>
+                    <p className="text-xs text-gray-500 font-medium">{analysisMessage || 'Hunting for qualified leads based on your keywords'}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-lg font-black text-orange-600 tracking-tighter">{analysisProgress}%</span>
+                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Complete</p>
+                </div>
+              </div>
+              <div className="h-2.5 w-full bg-gray-100/50 rounded-full overflow-hidden border border-gray-100/50">
+                <div
+                  className="h-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-500 transition-all duration-700 ease-out shadow-[0_0_10px_rgba(234,88,12,0.3)]"
+                  style={{ width: `${analysisProgress}%` }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Analytics Section */}
         {!isLoading && project && showAnalytics && (
           <MentionsAnalytics
@@ -521,7 +679,7 @@ export default function MentionsPage() {
             {/* Subreddit */}
             <div className="md:col-span-3 min-w-0">
               <div className="flex items-center gap-2">
-                <SlidersHorizontal className="h-4 w-4 text-[hsl(var(--primary))] opacity-70" />
+                <Zap className="h-4 w-4 text-[hsl(var(--primary))] opacity-70" />
                 <select
                   value={selectedSubreddit}
                   onChange={(e) => setSelectedSubreddit(e.target.value)}
@@ -592,8 +750,23 @@ export default function MentionsPage() {
           <>
             <div id="mentions-list" className="space-y-6">
               {displayMentions.map((mention, index) => (
-                <Card key={mention.id} className="w-full bg-white border border-gray-100 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden">
-                  <CardContent className="p-3 sm:p-4">
+                <div
+                  key={mention.id}
+                  className={`
+                    relative bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden
+                    ${mention.relevance_score > 90
+                      ? 'border-orange-100/50 ring-1 ring-orange-100/30 bg-gradient-to-br from-white via-white to-orange-50/10'
+                      : 'border-gray-100'}
+                    ${viewedPosts.has(mention.id) ? 'opacity-90 grayscale-[0.2]' : 'opacity-100'}
+                  `}
+                >
+                  {mention.relevance_score > 90 && (
+                    <div className="absolute top-0 left-0 px-3 py-1 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-br-xl shadow-lg z-10 flex items-center gap-1">
+                      <Zap className="h-3 w-3 fill-white" />
+                      High Intent
+                    </div>
+                  )}
+                  <div className="p-4 sm:p-6">
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex flex-col space-y-2">
                         <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
@@ -621,29 +794,32 @@ export default function MentionsPage() {
                             </a>
                           </div>
                         </div>
-                        {mention.matching_keywords?.length > 0 && (
-                          <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-3">
-                            <span className="text-xs sm:text-sm font-medium text-gray-700">Matched:</span>
-                            {mention.matching_keywords.map((keyword) => (
-                              <Badge
-                                key={keyword}
-                                className="bg-[hsl(var(--primary))]/10 text-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/20 transition-colors text-xs"
-                              >
-                                {keyword}
-                              </Badge>
-                            ))}
-                          </div>
-                        )}
-                        {mention.intent && (
-                          <div className="flex flex-wrap gap-1.5 sm:gap-2 items-center order-4 mt-1.5 sm:mt-2">
-                            <span className="text-xs sm:text-sm font-medium text-gray-700">Post Intent:</span>
-                            <Badge
-                              className="bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors text-xs"
-                            >
-                              {mention.intent}
-                            </Badge>
-                          </div>
-                        )}
+                        <div className="flex flex-wrap gap-2 items-center order-3 mt-1 opacity-80">
+                          {mention.matching_keywords?.length > 0 && (
+                            <div className="flex flex-wrap gap-1.5 items-center">
+                              <Target className="h-3 w-3 text-gray-400" />
+                              <div className="flex flex-wrap gap-1.5">
+                                {mention.matching_keywords.map((keyword) => (
+                                  <span
+                                    key={keyword}
+                                    className="text-[10px] font-bold text-gray-500 uppercase tracking-wider"
+                                  >
+                                    #{keyword}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          {mention.intent && (
+                            <>
+                              <div className="h-3 w-px bg-gray-200 mx-1" />
+                              <div className="flex items-center gap-1.5">
+                                <Zap className="h-3 w-3 text-blue-500" />
+                                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{mention.intent}</span>
+                              </div>
+                            </>
+                          )}
+                        </div>
                       </div>
 
                       <div className="flex flex-col space-y-3">
@@ -664,28 +840,40 @@ export default function MentionsPage() {
                               </div>
                             )}
                             {typeof mention.relevance_score === 'number' && (
-                              <div className="flex items-center gap-1.5">
-                                <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                                Relevance Score:
-                                <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${getRelevanceColor(mention.relevance_score)}`}>
-                                  {mention.relevance_score}/100
-                                </span>
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-400 font-medium">Relevance:</span>
+                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white border border-gray-100 shadow-sm">
+                                  <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${mention.relevance_score > 80 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : mention.relevance_score > 60 ? 'bg-orange-500' : 'bg-gray-400'}`}></div>
+                                  <span className={`text-xs font-black tracking-tight ${getRelevanceColor(mention.relevance_score)}`}>
+                                    {mention.relevance_score}% Match
+                                  </span>
+                                </div>
                               </div>
                             )}
                           </div>
                           <Button
                             onClick={() => handleGenerateReply(mention)}
                             disabled={generatingReplyFor === mention.id}
-                            className="flex items-center gap-2 bg-white hover:bg-gray-50 text-[hsl(var(--primary))] border border-[hsl(var(--primary))]/20 shadow-sm h-8 px-4 transition-all duration-200 w-full sm:w-auto mt-2 sm:mt-0 hover:shadow-sm font-medium"
+                            className={`
+                              relative group flex items-center gap-2 
+                              bg-white hover:bg-white text-[hsl(var(--primary))] 
+                              border border-[hsl(var(--primary))]/20 shadow-sm 
+                              h-9 px-5 transition-all duration-300 w-full sm:w-auto mt-2 sm:mt-0 
+                              hover:shadow-md hover:border-[hsl(var(--primary))]/40 font-bold overflow-hidden
+                            `}
                             size="sm"
                           >
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(var(--primary))]/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                             {generatingReplyFor === mention.id ? (
                               <>
-                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-[hsl(var(--primary))]"></div>
-                                <span>AI Reply</span>
+                                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                                <span>Generating...</span>
                               </>
                             ) : (
-                              <span>AI Reply</span>
+                              <>
+                                <Sparkles className="h-3.5 w-3.5 text-orange-400 group-hover:scale-110 transition-transform" />
+                                <span>AI Reply</span>
+                              </>
                             )}
                           </Button>
                         </div>
@@ -864,8 +1052,8 @@ export default function MentionsPage() {
                         )}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               ))}
             </div>
 
