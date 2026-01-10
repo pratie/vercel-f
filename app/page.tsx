@@ -7,7 +7,7 @@ import { IconBrandReddit } from '@tabler/icons-react';
 import { useAuth } from '@/components/AuthContext';
 import { useEffect } from 'react';
 import Image from 'next/image';
-import { FreeAccessMessage } from './components/FreeAccessMessage';
+import { FreeAccessMessage as IndieHackerMessage } from './components/FreeAccessMessage';
 import Link from 'next/link';
 import { useRef, useState } from 'react';
 import confetti from 'canvas-confetti'; // You may need to install this package
@@ -105,15 +105,15 @@ export default function LandingPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-5xl sm:text-6xl md:text-7xl font-bold text-black mb-8 leading-tight tracking-tight"
+              className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black mb-8 leading-tight tracking-tight"
             >
-              Find{' '}
+              The{' '}
               <span className="inline-flex items-center gap-2">
                 <IconBrandReddit className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#FF4500]" />
                 Reddit
               </span>{' '}
               <span className="relative inline-block">
-                <span className="relative z-10 text-[#FF6F20]">leads</span>
+                <span className="relative z-10 text-[#FF6F20]">Lead Machine</span>
                 <motion.span
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
@@ -156,7 +156,7 @@ export default function LandingPage() {
             <div className="flex justify-center mb-20">
               <div className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-900 to-gray-800 px-6 py-3 rounded-full shadow-lg">
                 <Users className="h-5 w-5 text-[#FFD700]" />
-                <span className="text-white font-semibold text-sm">Trusted by <span className="text-[#FFD700]">41</span> founders & solopreneurs</span>
+                <span className="text-white font-semibold text-sm">Trusted by <span className="text-[#FFD700]">60+</span> founders & solopreneurs</span>
               </div>
             </div>
 
@@ -546,10 +546,10 @@ export default function LandingPage() {
       </div>
 
       {/* Time Savings Message */}
-      <div className="text-center mt-12">
-        <div className="inline-flex items-center gap-2 bg-gray-800 text-white px-6 py-3 rounded-full text-base">
-          <span className="font-medium">You save 30-60 hours monthly</span>
-          <span className="text-gray-200">for each project!</span>
+      <div className="text-center mt-12 mb-20">
+        <div className="inline-flex items-center gap-2 bg-gray-900 text-white px-8 py-4 rounded-full text-lg shadow-xl shadow-gray-200">
+          <span className="font-bold text-[#FF6F20]">You save 30-60 hours monthly</span>
+          <span className="text-gray-300">for each project!</span>
         </div>
       </div>
 
@@ -843,7 +843,7 @@ export default function LandingPage() {
           <div className="mt-8 text-center">
             <div className="inline-flex items-center gap-2 bg-blue-50 px-6 py-3 rounded-full">
               <Users className="h-5 w-5 text-blue-600" />
-              <span className="text-blue-900 font-medium">Trusted by 41 founders & solopreneurs generating Reddit leads</span>
+              <span className="text-blue-900 font-medium">Trusted by 60+ founders & solopreneurs generating Reddit leads</span>
             </div>
           </div>
         </div>
@@ -877,9 +877,9 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Quirky Free Access Message */}
-      <div className="mt-12 bg-[hsl(var(--secondary))] rounded-2xl p-8 max-w-2xl mx-auto">
-        <FreeAccessMessage />
+      {/* Indie Hacker Message */}
+      <div className="mt-12 mb-20">
+        <IndieHackerMessage />
       </div>
 
       {/* Footer */}
