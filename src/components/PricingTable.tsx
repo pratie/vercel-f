@@ -173,7 +173,7 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
                 </div>
               ) : (
                 <>
-                  Start 7-Day Free Trial
+                  Get Instant Access
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </>
               )}
