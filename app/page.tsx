@@ -107,13 +107,14 @@ export default function LandingPage() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black mb-8 leading-[1.1] tracking-tight"
             >
-              <span className="inline-flex items-center gap-3">
-                <IconBrandReddit className="h-12 w-12 sm:h-14 sm:w-14 md:h-16 md:w-16 text-[#FF4500] mb-1" />
-                Reddit leads
+              Your 24/7{' '}
+              <span className="inline-flex items-center gap-2">
+                <IconBrandReddit className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#FF4500]" />
+                Reddit
               </span>
               <br />
               <span className="relative inline-block mt-2">
-                <span className="relative z-10 text-[#FF6F20] px-4">on autopilot.</span>
+                <span className="relative z-10 text-[#FF6F20] px-4">Lead Machine.</span>
                 <motion.span
                   initial={{ width: 0 }}
                   animate={{ width: "100%" }}
