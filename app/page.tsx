@@ -779,61 +779,20 @@ export default function LandingPage() {
       </div>
 
       {/* Value Justification Section - Why $19 is Worth It */}
-      <div className="py-16 bg-gradient-to-br from-orange-50 via-white to-purple-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight">
-              Why <span className="text-[#FF4500]">Reddit</span> is Your Growth Engine
+      <div className="py-24 bg-gradient-to-br from-orange-50 via-white to-purple-50 overflow-hidden relative">
+        {/* Decorative elements */}
+        <div className="absolute top-0 left-0 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-purple-500/5 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2"></div>
+
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 leading-tight font-heading">
+              The <span className="text-[#FF6F20]">$19</span> Value Proposition
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-              Reddit has 850M+ monthly active users actively seeking solutions.
-              SneakyGuy is your unfair advantage to reach them first.
+              One single Reddit lead can pay for this tool 100x over.
+              Stop guessing and start getting results.
             </p>
-          </motion.div>
-
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="text-5xl font-black text-[#FF4500] mb-3">850M+</div>
-              <div className="text-gray-900 font-bold text-lg mb-2">Monthly Active Users</div>
-              <div className="text-gray-600 leading-relaxed">More active discussions than LinkedIn + X combined.</div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="text-5xl font-black text-[#FF4500] mb-3">91%</div>
-              <div className="text-gray-900 font-bold text-lg mb-2">High Purchase Intent</div>
-              <div className="text-gray-600 leading-relaxed">Redditors research actively before making buying decisions.</div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white/60 backdrop-blur-xl rounded-2xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-white/20 hover:shadow-2xl transition-all duration-300"
-            >
-              <div className="text-5xl font-black text-[#FF4500] mb-3">130K+</div>
-              <div className="text-gray-900 font-bold text-lg mb-2">Active Communities</div>
-              <div className="text-gray-600 leading-relaxed">Find your exact target audience in niche subreddits.</div>
-            </motion.div>
           </div>
 
           {/* Value Breakdown */}
