@@ -8,6 +8,8 @@ import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { Providers } from './providers';
 import ChatWidget from '@/components/ChatWidget';
 
+import Script from 'next/script';
+
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
@@ -79,6 +81,12 @@ export default function RootLayout({
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
+        <Script
+          src="https://datafa.st/js/script.js"
+          data-website-id="dfid_xv0o11kqaxaOnDzSQvDSn"
+          data-domain="www.sneakyguy.com"
+          strategy="afterInteractive"
+        />
       </head>
       <body className={`${jakartaSans.className} font-sans antialiased`}>
         <Providers>
