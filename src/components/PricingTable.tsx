@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ArrowRight, Sparkles } from 'lucide-react';
+import { Check, ArrowRight, Sparkles, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { api, PricingPlan } from '@/lib/api';
 import { toast } from 'sonner';
@@ -187,6 +187,19 @@ export function PricingTable({ onPlanSelect, showHeader = true, compact = false 
                 </>
               )}
             </Button>
+
+            {/* Trust Badges */}
+            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center gap-4 text-[10px] text-gray-400 font-medium uppercase tracking-widest">
+              <div className="flex items-center gap-1.5">
+                <Shield className="h-3.5 w-3.5 text-emerald-500" />
+                <span>Secure Checkout</span>
+              </div>
+              <div className="hidden sm:block w-px h-3 bg-gray-200"></div>
+              <div className="flex items-center gap-1.5">
+                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                <span>Money Back Guarantee</span>
+              </div>
+            </div>
 
             {!compact && (
               <div className="space-y-4 pt-4">

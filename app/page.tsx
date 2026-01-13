@@ -14,8 +14,9 @@ import confetti from 'canvas-confetti'; // You may need to install this package
 import SocialProof from '@/components/SocialProof';
 import { PricingTable } from '@/components/PricingTable';
 import { usePathname } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
+import { FAQ } from './components/FAQ';
 
 export default function LandingPage() {
   const router = useRouter();
@@ -578,90 +579,126 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* Value Proposition Section */}
-      <div className="py-8 sm:py-12 md:py-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-8 sm:mb-12">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-800 mb-4 sm:mb-6">
-              See how SneakyGuy helps you
-              and convert qualified leads from Reddit discussions
+      {/* Value Proposition Section - Interactive Comparison */}
+      <div className="py-24 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-gray-900 mb-6 font-heading">
+              Stop Wasting <span className="text-red-500">Hours</span> on Manual Outreach
             </h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              SneakyGuy automates the boring stuff so you can focus on building your product.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-            {/* Manual Process Card */}
-            <div className="relative bg-[#fff4f2] rounded-2xl p-4 sm:p-6">
-              <div className="absolute -top-4 left-4 sm:left-6 bg-white px-3 sm:px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="bg-gray-800 text-white text-xs px-2 py-0.5 rounded-full">manually</span>
-                  <span className="text-gray-700 font-medium text-sm sm:text-base">Finding customers takes</span>
-                </div>
-              </div>
-
-              <div className="relative mt-8">
-                <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">1</span>
-                  <div>
-                    <p className="text-gray-700">Monitor social networks for relevant discussions about your product</p>
-                    <p className="text-gray-500 text-sm mt-1">15-30 min</p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* The Old Way */}
+            <div className="lg:col-span-12 overflow-hidden bg-gray-50 rounded-3xl border border-gray-100 shadow-sm">
+              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <Clock className="h-4 w-4 text-red-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">Manual Search</h3>
                   </div>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                    Scouring subreddits every hour, refreshing pages, and keeping Google Sheets updated.
+                  </p>
+                  <div className="text-red-500 font-bold text-lg">2-3 Hours Daily</div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">2</span>
-                  <div>
-                    <p className="text-gray-700">Review each mention to assess promotion opportunities</p>
-                    <p className="text-gray-500 text-sm mt-1">15-30 min</p>
+                <div className="p-8">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <Brain className="h-4 w-4 text-red-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">Filtering Noise</h3>
                   </div>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                    Clicking on 100+ posts to find the 5 that actually matter. Ignoring spam manually.
+                  </p>
+                  <div className="text-red-500 font-bold text-lg">Mental Burnout</div>
                 </div>
 
-                <div className="flex items-start gap-4">
-                  <span className="flex-shrink-0 w-6 h-6 rounded-full bg-[hsl(var(--accent))] flex items-center justify-center text-[hsl(var(--accent-foreground))] font-medium">3</span>
-                  <div>
-                    <p className="text-gray-700">Craft personalized responses for each opportunity</p>
-                    <p className="text-gray-500 text-sm mt-1">30-60 min</p>
+                <div className="p-8 bg-red-50/50">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
+                      <MessageSquare className="h-4 w-4 text-red-500" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900">Response Crafting</h3>
                   </div>
-                </div>
-
-                <div className="mt-8 pt-6 border-t border-[hsl(var(--primary))]/10">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-medium">Total:</span>
-                    <span className="text-primary font-medium">1-2 hours per day</span>
-                    <span className="text-gray-500">→</span>
-                    <span className="text-gray-700">per project</span>
-                  </div>
+                  <p className="text-gray-500 text-sm leading-relaxed mb-4">
+                    Struggling to write authentic, non-salesy comments for every single post you find.
+                  </p>
+                  <div className="text-red-500 font-bold text-lg">Inconsistent Results</div>
                 </div>
               </div>
             </div>
 
-            {/* SneakGuy Process Card */}
-            <div className="relative bg-[#f0fdf4] rounded-2xl p-4 sm:p-6">
-              <div className="absolute -top-4 left-4 sm:left-6 bg-white px-3 sm:px-4 py-1.5 rounded-full border border-gray-200 shadow-sm">
-                <div className="flex items-center gap-2">
-                  <span className="bg-[hsl(var(--primary))] text-white text-sm px-3 py-1 rounded-full font-medium">SneakyGuy</span>
-                  <span className="text-gray-700 font-medium text-sm sm:text-base">With us, you just need</span>
-                </div>
-              </div>
-
-              <div className="relative mt-8">
-                <div className="flex items-start gap-4">
-                  <div className="flex-1">
-                    <p className="text-gray-700">Create a project and add keywords</p>
-                    <p className="text-sm text-gray-600 mt-1">AI suggests relevant keywords for your product</p>
-                  </div>
-                  <div className="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center">
-                    <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-                    </svg>
+            {/* The SneakyGuy Way - Featured Ribbon */}
+            <div className="lg:col-span-12 relative">
+              <div className="absolute inset-0 bg-gradient-to-r from-[hsl(var(--primary))] to-orange-400 rounded-3xl blur-xl opacity-20 animate-pulse"></div>
+              <div className="relative bg-gray-900 rounded-3xl p-8 md:p-12 border border-blue-500/30 overflow-hidden shadow-2xl">
+                <div className="absolute top-0 right-0 p-4">
+                  <div className="bg-blue-500/20 text-blue-400 border border-blue-500/30 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-widest">
+                    Best Solution
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-green-200">
-                  <div className="flex items-baseline gap-2">
-                    <span className="font-medium">Total:</span>
-                    <span className="text-green-600 font-medium">2 minutes one time</span>
-                    <span className="text-gray-500">→</span>
-                    <span className="text-gray-700">per project</span>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                  <div>
+                    <h3 className="text-3xl font-bold text-white mb-6">
+                      The <span className="text-[#FF6F20]">SneakyGuy</span> Advantage
+                    </h3>
+                    <div className="space-y-6">
+                      <div className="flex items-start gap-4">
+                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center mt-1 flex-shrink-0">
+                          <Check className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-semibold">24/7 Autopilot Monitoring</p>
+                          <p className="text-gray-400 text-sm">We scrawl Reddit while you sleep. Mentions appear in real-time.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center mt-1 flex-shrink-0">
+                          <Check className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-semibold">AI Intent Detection</p>
+                          <p className="text-gray-400 text-sm">Our AI filters out the fluff and only shows you people ready to buy.</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-4">
+                        <div className="w-6 h-6 rounded-full bg-blue-500 flex items-center justify-center mt-1 flex-shrink-0">
+                          <Check className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <p className="text-white font-semibold">Instant AI Drafts</p>
+                          <p className="text-gray-400 text-sm">One click generates a high-quality, relevant reply for you.</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 text-center">
+                    <div className="text-5xl font-black text-[#FF6F20] mb-2 tracking-tighter">98%</div>
+                    <p className="text-gray-300 text-lg mb-8 uppercase tracking-widest font-bold">Time Saved</p>
+                    <div className="h-2 bg-gray-800 rounded-full mb-8">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        whileInView={{ width: '98%' }}
+                        transition={{ duration: 1.5, ease: "easeOut" }}
+                        className="h-full bg-gradient-to-r from-[#FF6F20] to-orange-400 rounded-full"
+                      ></motion.div>
+                    </div>
+                    <Button
+                      onClick={handleGetStarted}
+                      className="w-full bg-white text-gray-900 hover:bg-gray-100 py-6 rounded-xl font-bold text-lg"
+                    >
+                      Stop the Manual Scrawl
+                    </Button>
                   </div>
                 </div>
               </div>
@@ -902,6 +939,8 @@ export default function LandingPage() {
         </div>
       </div>
 
+      <FAQ />
+
       {/* Indie Hacker Message */}
       <div className="mt-12 mb-20">
         <IndieHackerMessage />
@@ -989,6 +1028,53 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      <StickyCTA />
     </main>
+  );
+}
+
+// Sticky CTA for Mobile
+function StickyCTA() {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      // Show after scrolling 800px
+      if (window.scrollY > 800) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.div
+          initial={{ y: 100 }}
+          animate={{ y: 0 }}
+          exit={{ y: 100 }}
+          className="fixed bottom-0 left-0 right-0 p-4 z-50 md:hidden"
+        >
+          <div className="bg-white/80 backdrop-blur-xl border border-gray-200 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] rounded-2xl p-4 flex items-center justify-between gap-4">
+            <div>
+              <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Start Today</div>
+              <div className="font-bold text-gray-900">$19 <span className="text-gray-400 font-normal">/ month</span></div>
+            </div>
+            <Link
+              href="/signup"
+              className="bg-[#FF6F20] text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 active:scale-95 transition-transform"
+            >
+              Get Started
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
 }
