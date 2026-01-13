@@ -1,6 +1,31 @@
 import { API_BASE_URL } from '@/config';
 
-const api = {
+export interface PricingPlan {
+  id: string;
+  name: string;
+  price: string;
+  billing: string;
+  duration: string;
+  savings?: string;
+  popular: boolean;
+  description?: string;
+}
+
+export interface ApiType {
+  getPaymentStatus: () => Promise<any>;
+  createCheckoutSession: (plan: string, datafastVisitorId?: string) => Promise<any>;
+  updatePaymentStatus: (data?: { paymentId?: string | null }) => Promise<any>;
+  postRedditComment: (data: {
+    post_title: string;
+    post_content: string;
+    brand_id: number;
+    post_url: string;
+    comment_text: string;
+  }) => Promise<any>;
+  getPricingPlans: () => Promise<{ plans: PricingPlan[] }>;
+}
+
+const api: ApiType = {
   // Get payment status
   async getPaymentStatus() {
     const response = await fetch(`${API_BASE_URL}/payment/status`, {
@@ -16,15 +41,33 @@ const api = {
     return response.json();
   },
 
+  // Get pricing plans
+  async getPricingPlans() {
+    const response = await fetch(`${API_BASE_URL}/payment/plans`, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch pricing plans');
+    }
+
+    return response.json();
+  },
+
   // Create checkout session
-  async createCheckoutSession(plan: string) {
+  async createCheckoutSession(plan: string, datafastVisitorId?: string) {
     const response = await fetch(`${API_BASE_URL}/payment/create-checkout-session`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ plan })
+      body: JSON.stringify({
+        plan,
+        datafast_visitor_id: datafastVisitorId
+      })
     });
 
     if (!response.ok) {
@@ -62,12 +105,6 @@ const api = {
     comment_text: string;
   }) {
     console.log('Making request to:', `${API_BASE_URL}/api/reddit/comment/`);
-    console.log('Request headers:', {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('token')}`
-    });
-    console.log('Request body:', data);
-
     const response = await fetch(`${API_BASE_URL}/api/reddit/comment/`, {
       method: 'POST',
       headers: {
@@ -78,7 +115,6 @@ const api = {
     });
 
     if (!response.ok) {
-      // Log the error response
       const errorText = await response.text();
       console.error('Error response:', {
         status: response.status,
@@ -88,9 +124,7 @@ const api = {
       throw new Error(`Failed to post comment to Reddit: ${response.status} ${response.statusText}`);
     }
 
-    const result = await response.json();
-    console.log('Success response:', result);
-    return result;
+    return response.json();
   }
 };
 

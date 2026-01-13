@@ -22,7 +22,16 @@ export default function UpgradePage() {
 
   const handlePlanSelect = async (planId: string) => {
     try {
-      const response = await api.createCheckoutSession(planId);
+      // Get DataFast visitor ID from cookie
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop()?.split(';').shift();
+      };
+
+      const datafastVisitorId = getCookie('datafast_visitor_id');
+
+      const response = await api.createCheckoutSession(planId, datafastVisitorId);
       window.location.href = response.checkout_url;
     } catch (error) {
       console.error('Failed to create checkout session:', error);
