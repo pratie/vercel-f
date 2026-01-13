@@ -159,19 +159,30 @@ export default function LandingPage() {
               </div>
             </div>
 
-            {/* Demo Video */}
-            <div className="relative mx-auto max-w-4xl">
-              <div className="relative rounded-2xl shadow-2xl overflow-hidden bg-white border border-gray-200/50 p-2">
-                <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
-                  <iframe
-                    src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83"
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
-                    allowFullScreen
-                    title="SneakyGuy Demo"
-                  />
+            {/* Dashboard Preview */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+              className="relative mx-auto max-w-5xl mt-12"
+            >
+              <div className="relative rounded-2xl shadow-[0_32px_80px_rgba(0,0,0,0.1)] overflow-hidden bg-white border border-gray-200/50 p-1.5 group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <Image
+                  src="/new Dashboard with analytics.png"
+                  alt="SneakyGuy Advanced Analytics Dashboard"
+                  width={1200}
+                  height={675}
+                  className="w-full h-auto rounded-xl transition-transform duration-700 group-hover:scale-[1.01]"
+                  priority
+                />
+
+                {/* Floating Badge */}
+                <div className="absolute -top-4 -right-4 bg-gray-900 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-xl animate-bounce hidden sm:block">
+                  NEW: Advanced Insights ✨
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
@@ -291,6 +302,28 @@ export default function LandingPage() {
       </div>
 
       <SocialProof />
+
+      {/* Demo Video Section */}
+      <div className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 font-heading">See SneakyGuy In Action</h2>
+            <p className="mt-4 text-lg text-gray-600">Watch how easy it is to set up and start generating leads.</p>
+          </div>
+          <div className="relative mx-auto max-w-4xl">
+            <div className="relative rounded-2xl shadow-xl overflow-hidden bg-white border border-gray-100 p-2">
+              <div style={{ position: 'relative', paddingBottom: '56.25%', height: 0 }}>
+                <iframe
+                  src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83"
+                  style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', borderRadius: '12px', border: 'none' }}
+                  allowFullScreen
+                  title="SneakyGuy Demo"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Features Section - Professional */}
       <div id="features" className="py-24 relative overflow-hidden">
