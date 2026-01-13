@@ -655,12 +655,15 @@ export const api = {
         return response.json();
     },
 
-    async createCheckoutSession(plan: string): Promise<{ checkout_url: string; plan: string; price: string }> {
+    async createCheckoutSession(plan: string, datafastVisitorId?: string): Promise<{ checkout_url: string; plan: string; price: string }> {
         try {
             const baseUrl = getApiBaseUrl();
             const response = await fetchWithAuth(`${baseUrl}/payment/create-checkout-session`, {
                 method: 'POST',
-                body: JSON.stringify({ plan })
+                body: JSON.stringify({
+                    plan,
+                    datafast_visitor_id: datafastVisitorId
+                })
             });
             if (!response.ok) {
                 const errorData = await response.json();
