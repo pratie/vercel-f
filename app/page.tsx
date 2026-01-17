@@ -187,8 +187,82 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+      {/* AI Fact Sources Section */}
+      <section className="py-24 bg-gray-50/50 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-block px-4 py-1.5 bg-[#FF6F20]/10 border border-[#FF6F20]/20 rounded-full text-[#FF6F20] font-bold text-xs mb-6 shadow-sm tracking-widest uppercase">
+                📊 Market Intelligence
+              </div>
+              <h2 className="text-4xl sm:text-5xl font-bold text-slate-900 mb-8 leading-tight">
+                Why Reddit? It's where <span className="text-[#FF6F20]">AI</span> gets its facts.
+              </h2>
+              <p className="text-xl text-slate-600 mb-10 leading-relaxed font-normal">
+                According to recent Semrush analysis, <b>Reddit is the #1 source</b> where AI bots get their facts and citations.
+                <br /><br />
+                By monitoring Reddit with SneakyGuy, you're not just finding leads—you're being present where the world's knowledge is being built.
+              </p>
 
-      {/* How It Works Section */}
+              <div className="space-y-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mt-1 flex-shrink-0">
+                    <Check className="h-3.5 w-3.5 text-emerald-600" />
+                  </div>
+                  <div>
+                    <p className="text-slate-900 font-semibold mb-1">High Intent Data</p>
+                    <p className="text-slate-600 text-sm">Reddit users provide the most authentic and verified information on the web.</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4">
+                  <div className="w-6 h-6 rounded-full bg-[#FF6F20]/10 border border-[#FF6F20]/20 flex items-center justify-center mt-1 flex-shrink-0">
+                    <Check className="h-3.5 w-3.5 text-[#FF6F20]" />
+                  </div>
+                  <div>
+                    <p className="text-slate-900 font-semibold mb-1">First-Mover Advantage</p>
+                    <p className="text-slate-600 text-sm">Be the first to respond when prospects ask the questions that AI uses for its answers.</p>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="relative max-w-sm lg:max-w-md mx-auto"
+            >
+              {/* Decorative elements behind the image */}
+              <div className="absolute inset-0 bg-gradient-to-tr from-orange-400/20 to-purple-400/20 blur-[80px] rounded-full scale-110"></div>
+
+              <div className="relative bg-white rounded-3xl shadow-[0_32px_80px_rgba(0,0,0,0.1)] border border-gray-100 overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-tr from-orange-500/5 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                <Image
+                  src="/ai-fact-sources.jpeg"
+                  alt="Where AI gets its facts: Reddit at 40.11%"
+                  width={600}
+                  height={900}
+                  className="w-full h-auto transition-transform duration-700 group-hover:scale-[1.02]"
+                  priority
+                />
+              </div>
+
+              {/* Stats Badge */}
+              <div className="absolute -bottom-2 -right-2 bg-gray-900 text-white p-3 rounded-lg shadow-xl border border-gray-800 hidden sm:block">
+                <div className="text-xl font-bold text-[#FF6F20] mb-0.5">40.11%</div>
+                <div className="text-[8px] font-medium text-gray-400 uppercase tracking-widest">Reddit Dominance</div>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
       <div id="how-it-works" className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
