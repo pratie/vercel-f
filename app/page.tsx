@@ -53,7 +53,7 @@ export default function LandingPage() {
     <main className="min-h-screen bg-white relative overflow-hidden">
 
       {/* Navigation */}
-      <header className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-100">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex justify-between items-center h-20">
             <div className="flex items-center">
@@ -77,6 +77,9 @@ export default function LandingPage() {
               <a href="#pricing" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
                 Pricing
               </a>
+              <Link href="/blog" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                Blog
+              </Link>
             </nav>
 
             <Button
@@ -91,7 +94,7 @@ export default function LandingPage() {
 
 
       {/* Hero Section - Modern & Impactful */}
-      <div className="relative overflow-hidden min-h-[95vh] flex items-center">
+      <div className="relative overflow-hidden min-h-[95vh] flex items-center pt-20">
         {/* Dynamic mesh gradient background */}
         <div className="absolute inset-0 bg-white">
           <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#FF6F20]/5 blur-[120px] rounded-full animate-pulse"></div>
@@ -102,46 +105,27 @@ export default function LandingPage() {
         <div className="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 z-20">
           <div className="text-center">
             {/* Main Headline - Bold & Clean */}
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black mb-8 leading-[1.1] tracking-tight"
-            >
-              Your 24/7{' '}
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-black mb-8 leading-[1.1] tracking-tight">
+              Find{' '}
               <span className="inline-flex items-center gap-2">
                 <IconBrandReddit className="h-10 w-10 sm:h-12 sm:w-12 md:h-16 md:w-16 text-[#FF4500]" />
                 Reddit
               </span>
+              {' '}leads
               <br />
               <span className="relative inline-block mt-2">
-                <span className="relative z-10 text-[#FF6F20] px-4">Lead Machine.</span>
-                <motion.span
-                  initial={{ width: 0 }}
-                  animate={{ width: "100%" }}
-                  transition={{ delay: 0.8, duration: 0.8, ease: "easeInOut" }}
-                  className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-2 rounded-xl border-l-4 border-[#FF6F20]/20"
-                ></motion.span>
+                <span className="relative z-10 text-[#FF6F20] px-4">while you sleep.</span>
+                <span className="absolute inset-0 bg-[#FF6F20]/10 -skew-y-2 rounded-xl border-l-4 border-[#FF6F20]/20"></span>
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Subtitle - Simple & Clear */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
-              className="text-xl sm:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed font-normal"
-            >
+            <p className="text-xl sm:text-2xl text-gray-600 mb-16 max-w-4xl mx-auto leading-relaxed font-normal">
               Never miss a relevant Reddit mention again. Track keywords, and generate quality leads with AI powered relevancy scoring and response generation.
-            </motion.p>
+            </p>
 
             {/* CTA Button - Clean Orange */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4, ease: "easeOut" }}
-              className="flex justify-center mb-6"
-            >
+            <div className="flex justify-center mb-6">
               <Button
                 ref={ctaRef}
                 className="bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white px-10 py-6 rounded-xl text-lg font-semibold shadow-[0_20px_50px_rgba(255,111,32,0.2)] hover:shadow-[0_20px_50px_rgba(255,111,32,0.4)] transition-all duration-300 flex items-center gap-2 hover:-translate-y-1"
@@ -150,7 +134,7 @@ export default function LandingPage() {
                 Get Leads Now
                 <ArrowRight className="h-5 w-5" />
               </Button>
-            </motion.div>
+            </div>
 
             {/* Social Proof Below CTA */}
             <div className="flex justify-center mb-20">

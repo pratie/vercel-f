@@ -8,17 +8,18 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Skip middleware for public assets and static files
-  if (pathname.startsWith('/api') || 
-      pathname.startsWith('/_next') || 
-      pathname.startsWith('/static') ||
-      pathname.endsWith('.png') ||
-      pathname.endsWith('.jpg') ||
-      pathname.endsWith('.jpeg') ||
-      pathname.endsWith('.gif') ||
-      pathname.endsWith('.svg') ||
-      pathname.endsWith('.ico') ||
-      pathname === '/favicon.ico' ||
-      publicRoutes.includes(pathname)) {
+  if (pathname.startsWith('/api') ||
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/static') ||
+    pathname.endsWith('.png') ||
+    pathname.endsWith('.jpg') ||
+    pathname.endsWith('.jpeg') ||
+    pathname.endsWith('.gif') ||
+    pathname.endsWith('.svg') ||
+    pathname.endsWith('.ico') ||
+    pathname === '/favicon.ico' ||
+    pathname.startsWith('/blog') ||
+    publicRoutes.includes(pathname)) {
     return NextResponse.next()
   }
 

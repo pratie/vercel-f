@@ -9,8 +9,8 @@ export function Navbar() {
   const { user, logout } = useAuth();
   const pathname = usePathname();
 
-  // Only show navbar on landing page
-  if (pathname !== '/') return null;
+  // Only show navbar on non-landing pages
+  if (pathname === '/') return null;
 
   return (
     <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
@@ -34,6 +34,9 @@ export function Navbar() {
               </>
             ) : (
               <>
+                <Link href="/blog">
+                  <Button variant="ghost">Blog</Button>
+                </Link>
                 <Link href="/login">
                   <Button variant="ghost">Login</Button>
                 </Link>

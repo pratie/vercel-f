@@ -1,4 +1,3 @@
-// src/app/layout.tsx
 import type { Metadata } from 'next';
 import { Inter, Poppins, Space_Grotesk, Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';

@@ -48,8 +48,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (!isInitialized) return;
 
-    const isPublicRoute = PUBLIC_ROUTES.includes(pathname);
-    
+    const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog');
+
     if (!user?.token && !isPublicRoute) {
       console.log('No token, redirecting to home...');
       router.push('/');
