@@ -342,7 +342,7 @@ export default function LandingPage() {
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-6">Ditch the spreadsheets.</h2>
+            <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-white mb-6">Ditch the spreadsheets.</h2>
             <p className="text-xl text-slate-400 max-w-2xl mx-auto">Stop wasting hours manually hunting for leads on Reddit.</p>
           </div>
 
@@ -418,6 +418,21 @@ export default function LandingPage() {
                   <div>
                     <h4 className="font-semibold text-white text-lg">Instant Authentic Replies</h4>
                     <p className="text-orange-100 mt-1">Context-aware AI drafts perfect, non-spammy responses.</p>
+                  </div>
+                </li>
+                <li className="flex gap-4">
+                  <div className="mt-1 flex-shrink-0 text-orange-200"><Check size={20} strokeWidth={3} /></div>
+                  <div>
+                    <h4 className="font-semibold text-white text-lg">Fully Autonomous Posting</h4>
+                    <p className="text-orange-100 mt-1">Connect your Reddit account and let Sneakyguy auto-reply on predefined intervals. Build karma naturally.</p>
+                  </div>
+                </li>
+                <li className="flex gap-4">
+                  <div className="mt-1 flex-shrink-0 text-orange-200"><Check size={20} strokeWidth={3} /></div>
+                  <div>
+                    <h4 className="font-semibold text-white text-lg">X (Twitter) Integration</h4>
+                    <p className="inline-block bg-orange-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full mb-1">COMING SOON</p>
+                    <p className="text-orange-100 mt-1">We are expanding! Soon you will be able to monitor and engage with high intent leads on X.</p>
                   </div>
                 </li>
               </ul>
