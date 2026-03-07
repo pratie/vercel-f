@@ -312,6 +312,29 @@ export const api = {
         }
     },
 
+    // URL Analysis (Firecrawl)
+    async analyzeUrl(url: string): Promise<{ name: string; description: string; keywords: string[]; subreddits: string[] }> {
+        try {
+            const baseUrl = getApiBaseUrl();
+            const response = await fetchWithTimeout(`${baseUrl}/analyze/url`, {
+                method: 'POST',
+                headers: getHeaders(),
+                body: JSON.stringify({ url }),
+            });
+
+            if (!response.ok) {
+                await handleApiError(response, 'Failed to analyze URL');
+            }
+
+            return response.json();
+        } catch (error) {
+            if (error instanceof Error) {
+                throw error;
+            }
+            throw new Error('Network error while analyzing URL');
+        }
+    },
+
     // Initial Analysis
     async analyzeInitial(data: { name: string; description: string }): Promise<{ keywords: string[]; subreddits: string[] }> {
         try {

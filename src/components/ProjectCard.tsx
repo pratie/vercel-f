@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardFooter, CardTitle, CardDescription }
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Trash2, Loader2, Edit, MessageSquare, ChevronDown, ChevronUp } from "lucide-react";
+import { MoreVertical, Trash2, Loader2, Edit, MessageSquare, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -39,9 +39,6 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
     setLoading(true);
     try {
-      // Try to trigger a scan in the background to ensure data is fresh.
-      // We don't wait for this to finish before navigating, as the Mentions page
-      // handles its own polling and status display.
       api.analyzeReddit({
         brand_id: project.id,
         keywords: project.keywords,
@@ -52,7 +49,6 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         console.warn('Background scan trigger status:', err);
       });
 
-      // Always navigate to the full dashboard immediately
       router.push(`/mentions/${project.id}`);
     } catch (error) {
       logError(error, 'ProjectCard.handleViewMentions');
@@ -63,9 +59,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(`Are you sure you want to delete ${project.name}?`)) {
-      return;
-    }
+    if (!window.confirm(`Are you sure you want to delete ${project.name}?`)) return;
     onDelete?.(project.id);
   };
 
@@ -91,144 +85,143 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
   return (
     <div className="w-full group">
-      <Card className="w-full border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl overflow-hidden bg-white/80 backdrop-blur-sm">
-        <CardHeader className="pb-2">
+      <div className="w-full bg-white border border-gray-100 rounded-xl hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/50 transition-all duration-300 overflow-hidden">
+        {/* Header */}
+        <div className="p-5 pb-3">
           <div className="flex justify-between items-start">
-            <div className="flex flex-col gap-1">
-              <CardTitle className="text-xl font-bold tracking-tight text-gray-900 group-hover:text-[hsl(var(--primary))] transition-colors">
+            <div className="flex flex-col gap-1.5 min-w-0">
+              <h3 className="text-base font-semibold text-gray-900 tracking-tight truncate">
                 {project.name}
-              </CardTitle>
+              </h3>
               {project.analysis_status === 'scanning' ? (
-                <div className="flex items-center gap-2 px-2 py-1 bg-orange-50 rounded-full border border-orange-100 w-fit">
-                  <div className="relative flex h-2 w-2">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500"></span>
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-orange-600">
+                <div className="flex items-center gap-1.5 text-orange-600">
+                  <span className="relative flex h-1.5 w-1.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
+                  </span>
+                  <span className="text-[10px] font-semibold uppercase tracking-wider">
                     Scanning {project.analysis_progress}%
                   </span>
                 </div>
               ) : project.last_analyzed ? (
-                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  Last active: {new Date(project.last_analyzed).toLocaleDateString()}
+                <span className="text-[11px] text-gray-400">
+                  Updated {new Date(project.last_analyzed).toLocaleDateString()}
                 </span>
               ) : null}
             </div>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-gray-100">
-                  <MoreVertical className="h-5 w-5 text-gray-600" />
+                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 -mr-1">
+                  <MoreVertical className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-48 p-1.5">
+              <DropdownMenuContent align="end" className="w-40 p-1">
                 <DropdownMenuItem
                   onClick={() => setIsEditOpen(true)}
-                  className="flex items-center p-2 cursor-pointer rounded-md hover:bg-[hsl(var(--secondary))] focus:bg-[hsl(var(--secondary))] text-gray-700"
+                  className="flex items-center gap-2 px-2.5 py-1.5 cursor-pointer rounded-md text-[13px] text-gray-600 hover:text-gray-900"
                 >
-                  <Edit className="mr-2 h-4 w-4 text-[hsl(var(--primary))]" />
-                  Edit Project
+                  <Edit className="h-3.5 w-3.5" />
+                  Edit
                 </DropdownMenuItem>
                 <DropdownMenuItem
                   onClick={handleDelete}
-                  className="flex items-center p-2 cursor-pointer rounded-md hover:bg-red-50 focus:bg-red-50 text-red-600"
+                  className="flex items-center gap-2 px-2.5 py-1.5 cursor-pointer rounded-md text-[13px] text-red-600 hover:text-red-700 hover:bg-red-50"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Delete Project
+                  <Trash2 className="h-3.5 w-3.5" />
+                  Delete
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
-          <CardDescription className="line-clamp-2 mt-1">{project.description}</CardDescription>
-        </CardHeader>
+          {project.description && (
+            <p className="text-xs text-gray-400 mt-1.5 line-clamp-2 leading-relaxed">{project.description}</p>
+          )}
+        </div>
 
-        <CardContent className="pb-4">
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <Label className="text-[11px] font-black uppercase tracking-widest text-gray-400">Keywords</Label>
-                {project.keywords.length > 5 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 px-1.5 text-gray-400 hover:text-gray-600"
-                    onClick={() => setShowAllKeywords(!showAllKeywords)}
-                  >
-                    {showAllKeywords ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                  </Button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-1.5 transition-all duration-300">
-                {(showAllKeywords ? project.keywords : project.keywords.slice(0, 5)).map((keyword, index) => (
-                  <div
-                    key={index}
-                    className="px-2 py-1 rounded-md bg-gray-50 text-gray-600 border border-gray-100 font-bold uppercase tracking-widest text-[9px]"
-                  >
-                    #{keyword}
-                  </div>
-                ))}
-                {!showAllKeywords && project.keywords.length > 5 && (
-                  <div className="text-[9px] font-bold text-gray-400 mt-1">+{project.keywords.length - 5} more</div>
-                )}
-              </div>
+        {/* Tags */}
+        <div className="px-5 pb-4 space-y-3">
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Keywords</span>
+              {project.keywords.length > 5 && (
+                <button
+                  onClick={() => setShowAllKeywords(!showAllKeywords)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  {showAllKeywords ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                </button>
+              )}
             </div>
-
-            <div>
-              <div className="flex justify-between items-center mb-1.5">
-                <Label className="text-[11px] font-black uppercase tracking-widest text-gray-400">Target Subreddits</Label>
-                {project.subreddits.length > 5 && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="h-6 px-1.5 text-gray-400 hover:text-gray-600"
-                    onClick={() => setShowAllSubreddits(!showAllSubreddits)}
-                  >
-                    {showAllSubreddits ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                  </Button>
-                )}
-              </div>
-              <div className="flex flex-wrap gap-1.5 transition-all duration-300">
-                {(showAllSubreddits ? project.subreddits : project.subreddits.slice(0, 5)).map((subreddit, index) => (
-                  <div
-                    key={index}
-                    className="px-2 py-1 rounded-md bg-blue-50/50 text-blue-600 border border-blue-100/50 font-bold uppercase tracking-widest text-[9px]"
-                  >
-                    r/{subreddit}
-                  </div>
-                ))}
-                {!showAllSubreddits && project.subreddits.length > 5 && (
-                  <div className="text-[9px] font-bold text-gray-400 mt-1">+{project.subreddits.length - 5} more</div>
-                )}
-              </div>
+            <div className="flex flex-wrap gap-1">
+              {(showAllKeywords ? project.keywords : project.keywords.slice(0, 5)).map((keyword, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-0.5 rounded-md bg-gray-50 text-gray-500 border border-gray-100 text-[10px] font-medium"
+                >
+                  {keyword}
+                </span>
+              ))}
+              {!showAllKeywords && project.keywords.length > 5 && (
+                <span className="text-[10px] text-gray-400 self-center">+{project.keywords.length - 5}</span>
+              )}
             </div>
           </div>
-        </CardContent>
 
-        <CardFooter className="pt-0 pb-6 flex flex-col w-full">
+          <div>
+            <div className="flex justify-between items-center mb-1.5">
+              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Subreddits</span>
+              {project.subreddits.length > 5 && (
+                <button
+                  onClick={() => setShowAllSubreddits(!showAllSubreddits)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  {showAllSubreddits ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                </button>
+              )}
+            </div>
+            <div className="flex flex-wrap gap-1">
+              {(showAllSubreddits ? project.subreddits : project.subreddits.slice(0, 5)).map((subreddit, index) => (
+                <span
+                  key={index}
+                  className="px-2 py-0.5 rounded-md bg-blue-50/60 text-blue-600 border border-blue-100/50 text-[10px] font-medium"
+                >
+                  r/{subreddit}
+                </span>
+              ))}
+              {!showAllSubreddits && project.subreddits.length > 5 && (
+                <span className="text-[10px] text-gray-400 self-center">+{project.subreddits.length - 5}</span>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Action */}
+        <div className="px-5 pb-5">
           <Button
             onClick={handleViewMentions}
-            className="w-full h-12 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] hover:shadow-lg hover:-translate-y-0.5 text-white font-bold transition-all duration-300 rounded-xl"
+            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-lg transition-all shadow-sm hover:shadow-md group"
             disabled={loading}
           >
             {loading ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Processing...
+                <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                Loading...
               </>
             ) : (
               <>
-                <MessageSquare className="mr-2 h-4 w-4" />
-                Enter Dashboard
+                Open Dashboard
+                <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
               </>
             )}
           </Button>
 
           {loading && (
-            <div className="mt-4 w-full">
+            <div className="mt-3">
               <RedditAnalysisLoading />
             </div>
           )}
-        </CardFooter>
-      </Card>
+        </div>
+      </div>
 
       <EditProjectDialog
         open={isEditOpen}

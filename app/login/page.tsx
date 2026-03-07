@@ -7,6 +7,8 @@ import Script from 'next/script';
 import { toast } from 'sonner';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
+import { ArrowLeft, Mail } from 'lucide-react';
+import Link from 'next/link';
 
 declare global {
   interface Window {
@@ -22,18 +24,6 @@ declare global {
   }
 }
 
-const floatingAnimation = {
-  initial: { y: 0 },
-  animate: {
-    y: [-5, 5, -5],
-    transition: {
-      duration: 6,
-      repeat: Infinity,
-      ease: "easeInOut"
-    }
-  }
-};
-
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,12 +38,8 @@ export default function LoginPage() {
 
   const handleCredentialResponse = useCallback(async (response: any) => {
     try {
-      if (!response.credential) {
-        throw new Error('No credential received from Google');
-      }
-
+      if (!response.credential) throw new Error('No credential received from Google');
       await googleLogin(response.credential);
-      // Navigation will be handled by AuthContext
     } catch (error: any) {
       console.error('Login error:', error);
       toast.error(error.message || 'Failed to log in');
@@ -62,7 +48,6 @@ export default function LoginPage() {
 
   const initializeGoogleSignIn = useCallback(() => {
     if (!window.google || isGoogleInitialized.current || !googleButtonRef.current) return;
-
     try {
       window.google.accounts.id.initialize({
         client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
@@ -70,7 +55,6 @@ export default function LoginPage() {
         auto_select: false,
         cancel_on_tap_outside: true,
       });
-
       window.google.accounts.id.renderButton(googleButtonRef.current, {
         type: 'standard',
         theme: 'outline',
@@ -78,9 +62,8 @@ export default function LoginPage() {
         text: 'continue_with',
         shape: 'rectangular',
         logo_alignment: 'left',
-        width: 280
+        width: 320
       });
-
       isGoogleInitialized.current = true;
       setShowFallbackGoogle(false);
     } catch (error) {
@@ -91,35 +74,25 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      router.push('/projects');
+      const redirectTo = searchParams.get('redirect') || '/projects';
+      router.push(redirectTo);
       return;
     }
-
-    // Check if we're coming from a magic link redirect
     const from = searchParams.get('from');
     const token = searchParams.get('token');
-    const magicToken = searchParams.get('magic_token'); // Check for magic_token parameter
-    
+    const magicToken = searchParams.get('magic_token');
     if (magicToken) {
-      // We have a magic token directly in the URL (from email link)
       setIsCheckingToken(true);
-      // Store the token temporarily
       sessionStorage.setItem('magic_token', magicToken);
-      // Redirect to verify-email with the token
       router.push(`/verify-email?token=${encodeURIComponent(magicToken)}`);
     } else if (from === '/verify-email' && token) {
-      // Redirect to the verify-email page with the token
       router.push(`/verify-email?token=${encodeURIComponent(token)}`);
     } else if (from === '/verify-email') {
-      // This is likely from a magic link email where the token wasn't properly included
-      // Let's check the URL for any parameters that might contain the token
       const urlParams = new URLSearchParams(window.location.search);
       const possibleToken = urlParams.get('token') || urlParams.get('magic_token') || urlParams.get('t');
-      
       if (possibleToken) {
         router.push(`/verify-email?token=${encodeURIComponent(possibleToken)}`);
       } else {
-        // Check if token is in localStorage as a last resort
         const storedToken = sessionStorage.getItem('magic_token') || localStorage.getItem('magic_token');
         if (storedToken) {
           router.push(`/verify-email?token=${encodeURIComponent(storedToken)}`);
@@ -137,11 +110,9 @@ export default function LoginPage() {
       if (window.google && !isGoogleInitialized.current) {
         initializeGoogleSignIn();
       } else if (!window.google) {
-        // Show fallback if Google API isn't available
         setShowFallbackGoogle(true);
       }
-    }, 2000); // Give more time for Google API to load
-
+    }, 2000);
     return () => clearTimeout(timer);
   }, [initializeGoogleSignIn]);
 
@@ -159,98 +130,83 @@ export default function LoginPage() {
   const toggleMagicLinkForm = () => {
     setShowMagicLinkForm(!showMagicLinkForm);
     setMagicLinkSent(false);
-    
-    // Reset Google initialization when returning to main form
     if (showMagicLinkForm) {
       isGoogleInitialized.current = false;
       setTimeout(() => {
-        if (window.google && !isGoogleInitialized.current) {
-          initializeGoogleSignIn();
-        }
+        if (window.google && !isGoogleInitialized.current) initializeGoogleSignIn();
       }, 100);
     }
   };
 
   return (
-    <div className="fixed inset-0 bg-gradient-to-b from-white to-[hsl(var(--secondary))] flex flex-col items-center justify-center p-4 overflow-hidden">
-      {/* Animated Background Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-        <div className="absolute -right-20 top-20 w-96 h-96 bg-[hsl(var(--primary))]/10 rounded-full blur-3xl transform-gpu" />
-        <div className="absolute -left-20 bottom-20 w-96 h-96 bg-[hsl(var(--primary))]/10 rounded-full blur-3xl transform-gpu" />
+    <div className="min-h-screen bg-white flex flex-col items-center justify-center px-4 relative">
+      {/* Subtle background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-orange-50/50 rounded-full blur-[100px]" />
       </div>
 
-      {/* Main Content */}
-      <div className="relative z-10 w-full max-w-md">
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, ease: "easeOut" }}
-          className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl border border-[hsl(var(--primary))]/10 transform-gpu"
-        >
-          {/* Floating Reddit Snoo */}
-          <motion.div
-            variants={floatingAnimation}
-            initial="initial"
-            animate="animate"
-            className="flex justify-center mb-6 select-none"
-          >
-            <Image
-              src="/reddit-snoo.jpg"
-              alt="Reddit Snoo"
-              width={80}
-              height={80}
-              className="drop-shadow-lg transform-gpu"
-              priority
-            />
-          </motion.div>
+      {/* Back link */}
+      <Link
+        href="/"
+        className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors"
+      >
+        <ArrowLeft className="h-3.5 w-3.5" />
+        Back
+      </Link>
 
-          <h1 className="text-2xl sm:text-3xl font-bold text-center mb-2 bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] bg-clip-text text-transparent">
-            Welcome to SneakyGuy
-          </h1>
-          <p className="text-gray-600 text-center mb-6">
-            Sign in to manage your Reddit tracking projects
-          </p>
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-sm"
+      >
+        {/* Logo */}
+        <div className="flex justify-center mb-8">
+          <Link href="/" className="flex items-center gap-2">
+            <Image src="/logo.png" alt="SneakyGuy" width={32} height={32} />
+            <span className="font-bold text-lg text-gray-900">SneakyGuy</span>
+          </Link>
+        </div>
+
+        {/* Card */}
+        <div className="bg-white rounded-2xl border border-gray-200 shadow-xl shadow-gray-100/50 p-8">
+          <h1 className="text-xl font-bold text-gray-900 text-center mb-1">Welcome back</h1>
+          <p className="text-sm text-gray-500 text-center mb-7">Sign in to your account to continue</p>
 
           {showMagicLinkForm ? (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-              className="mb-6"
-            >
+            <div>
               {magicLinkSent ? (
-                <div className="text-center p-4 bg-green-50 rounded-lg border border-green-100 mb-4">
-                  <p className="text-green-800 font-medium mb-2">Magic link sent!</p>
-                  <p className="text-green-700 text-sm">Check your email inbox for the login link.</p>
+                <div className="text-center py-4 px-3 bg-green-50 rounded-xl border border-green-100">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-3">
+                    <Mail className="h-5 w-5 text-green-600" />
+                  </div>
+                  <p className="text-sm font-semibold text-green-800 mb-1">Check your inbox</p>
+                  <p className="text-xs text-green-600">We sent a login link to your email.</p>
                 </div>
               ) : (
-                <form onSubmit={handleMagicLinkRequest} className="space-y-4">
+                <form onSubmit={handleMagicLinkRequest} className="space-y-3">
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
-                      Email Address
+                    <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1.5">
+                      Email address
                     </label>
                     <input
                       type="email"
                       id="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email"
+                      placeholder="you@company.com"
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-[hsl(var(--primary))] focus:border-[hsl(var(--primary))] outline-none transition"
+                      className="w-full px-3.5 py-2.5 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 outline-none transition bg-gray-50/50"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isRequestingMagicLink}
-                    className="w-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] text-white py-2 px-4 rounded-md hover:opacity-90 transition flex items-center justify-center"
+                    className="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
                   >
                     {isRequestingMagicLink ? (
                       <>
-                        <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
+                        <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent" />
                         Sending...
                       </>
                     ) : (
@@ -259,55 +215,58 @@ export default function LoginPage() {
                   </button>
                 </form>
               )}
-              <button 
+              <button
                 onClick={toggleMagicLinkForm}
-                className="w-full mt-4 text-sm text-gray-600 hover:text-[hsl(var(--primary))] transition text-center"
+                className="w-full mt-4 text-xs text-gray-400 hover:text-gray-700 transition text-center font-medium"
               >
-                Back to login options
+                Back to sign in options
               </button>
-            </motion.div>
+            </div>
           ) : (
             <>
-              {/* Google Sign-in Button */}
+              {/* Google Sign-in */}
               <div className="mb-4">
                 {!showFallbackGoogle ? (
-                  <div ref={googleButtonRef} className="flex justify-center transform-gpu" />
+                  <div ref={googleButtonRef} className="flex justify-center" />
                 ) : (
-                  <div className="flex justify-center">
-                    <button className="w-full max-w-xs bg-white border-2 border-gray-200 rounded-lg px-6 py-3 text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 flex items-center justify-center gap-2 shadow-sm">
-                      <svg className="w-5 h-5" viewBox="0 0 24 24">
-                        <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-                        <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-                        <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-                        <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-                      </svg>
-                      Continue with Google
-                    </button>
-                  </div>
+                  <button className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-700 font-medium hover:bg-gray-50 hover:border-gray-300 transition-all flex items-center justify-center gap-2.5 shadow-sm">
+                    <svg className="w-4 h-4" viewBox="0 0 24 24">
+                      <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                      <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                      <path fill="#fbbc05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                      <path fill="#ea4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                    </svg>
+                    Continue with Google
+                  </button>
                 )}
               </div>
-              
+
               {/* Divider */}
-              <div className="flex items-center my-6">
-                <div className="flex-1 border-t border-gray-200"></div>
-                <span className="px-4 text-sm text-gray-500 bg-white">or</span>
-                <div className="flex-1 border-t border-gray-200"></div>
+              <div className="flex items-center gap-3 my-5">
+                <div className="flex-1 h-px bg-gray-100" />
+                <span className="text-[11px] text-gray-400 font-medium uppercase tracking-wider">or</span>
+                <div className="flex-1 h-px bg-gray-100" />
               </div>
-              
-              {/* Magic Link Button */}
-              <button 
+
+              {/* Magic Link */}
+              <button
                 onClick={toggleMagicLinkForm}
-                className="w-full bg-gradient-to-r from-[hsl(var(--primary))] to-[hsl(var(--accent))] text-white py-3 px-6 rounded-lg font-medium hover:from-[hsl(var(--primary))] hover:to-[hsl(var(--primary))] transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2"
+                className="w-full bg-gray-900 hover:bg-gray-800 text-white text-sm font-semibold py-2.5 px-4 rounded-xl transition-all flex items-center justify-center gap-2 shadow-sm hover:shadow-md"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                </svg>
+                <Mail className="h-4 w-4" />
                 Sign in with Magic Link
               </button>
             </>
           )}
-        </motion.div>
-      </div>
+        </div>
+
+        <p className="text-[11px] text-gray-400 text-center mt-5">
+          By signing in, you agree to our{' '}
+          <Link href="/terms" className="text-gray-600 hover:text-gray-900 transition-colors">Terms</Link>
+          {' '}&{' '}
+          <Link href="/privacy" className="text-gray-600 hover:text-gray-900 transition-colors">Privacy Policy</Link>
+        </p>
+      </motion.div>
 
       <Script
         src="https://accounts.google.com/gsi/client"

@@ -21,19 +21,14 @@ export default function AuthenticatedLayout({
     }
   }, [user, router]);
 
-  // Check if the current page is the projects page
   const isProjectsPage = pathname === '/projects';
 
   return (
-    <div className="flex min-h-screen w-full bg-gray-50">
+    <div className="flex min-h-screen w-full bg-[#fafafa]">
       <Sidebar />
       <div className="flex-1 overflow-auto">
-        <main className="min-h-full p-6 max-w-7xl mx-auto w-full">
-          {isProjectsPage ? (
-            children
-          ) : (
-            <PaymentGuard>{children}</PaymentGuard>
-          )}
+        <main className="min-h-full p-4 md:p-6 max-w-7xl mx-auto w-full">
+          {isProjectsPage ? children : <PaymentGuard>{children}</PaymentGuard>}
         </main>
       </div>
     </div>

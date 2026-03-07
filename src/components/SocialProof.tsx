@@ -1,137 +1,121 @@
+'use client';
+
 import React from 'react';
-import { ArrowRight, Twitter } from 'lucide-react';
+import { ArrowRight, Twitter, Star, Quote } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
+
+const testimonials = [
+  {
+    name: 'Andrem Flores',
+    handle: '@andremflores',
+    avatar: '/images/testimonials/andremflores.jpg',
+    quote: 'I love the app, I see a lot of potential with it tbh',
+    link: 'https://x.com/andremflores',
+  },
+  {
+    name: 'GovBidMike',
+    handle: '@GovBidMike',
+    avatar: '/images/testimonials/govbidmike.jpg',
+    quote: 'Find all the subreddits automatically and relevant reddit posts is very helpful. Saves a ton of time. The tool has a lot of potential.',
+    link: 'https://x.com/GovBidMike',
+  },
+  {
+    name: 'Eris Margeta',
+    handle: '@eris_margeta',
+    avatar: '/images/testimonials/eris_margeta.jpg',
+    quote: 'I am so thankful for this. You have a killer tool',
+    link: 'https://x.com/eris_margeta',
+  },
+];
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+};
 
 const SocialProof: React.FC = () => (
-  <div className="bg-white py-16">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className="text-center mb-12">
-        <h2 className="text-[28px] font-bold text-gray-900">What People Are Saying</h2>
-        <p className="text-[15px] text-gray-600 mt-2">Real feedback from our users</p>
+  <section className="py-20 md:py-28 bg-white">
+    <div className="max-w-5xl mx-auto px-6">
+      <div className="text-center mb-14">
+        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
+          <p className="text-[12px] font-semibold text-orange-600 uppercase tracking-[0.15em] mb-3">Testimonials</p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-gray-950 mb-4">Loved by founders</h2>
+          <p className="text-base text-gray-500">Real feedback from real users building real businesses.</p>
+        </motion.div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto mb-16">
-        {/* Twitter Card 1 */}
-        <div className="bg-gray-50 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center min-w-0">
-              <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src="/images/testimonials/andremflores.jpg"
-                  alt=""
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
+      <div className="grid md:grid-cols-3 gap-4">
+        {testimonials.map((t, i) => (
+          <motion.div
+            key={i}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: "-40px" }}
+            variants={fadeUp}
+            transition={{ delay: i * 0.08 }}
+            className="group premium-card p-6 flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex gap-0.5 mb-4">
+                {[1,2,3,4,5].map(s => (
+                  <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
+                ))}
               </div>
-              <div className="ml-3 truncate">
-                <h3 className="text-[15px] font-semibold text-gray-900 leading-none mb-1">Andrem Flores</h3>
-                <p className="text-[13px] text-gray-500 leading-none">@andremflores</p>
-              </div>
+              <p className="text-sm text-gray-700 leading-relaxed mb-6">
+                &ldquo;{t.quote}&rdquo;
+              </p>
             </div>
-            <Twitter className="h-4 w-4 text-[#1DA1F2] flex-shrink-0 ml-4" />
-          </div>
-          <p className="text-[15px] leading-relaxed text-gray-900 mb-4">
-            I love the app, I see a lot of potential with it tbh
-          </p>
-          <div className="flex items-center text-[13px] text-gray-500">
-            <Link href="https://x.com/andremflores" target="_blank" className="hover:text-[#1DA1F2] transition-colors flex items-center gap-1">
-              <ArrowRight className="h-3.5 w-3.5" />
-              View on X
-            </Link>
-          </div>
-        </div>
 
-        {/* Twitter Card 2 */}
-        <div className="bg-gray-50 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center min-w-0">
-              <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src="/images/testimonials/govbidmike.jpg"
-                  alt=""
-                  width={40}    
-                  height={40}
-                  className="object-cover"
-                />
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-gray-100">
+                  <Image src={t.avatar} alt={t.name} width={32} height={32} className="object-cover" />
+                </div>
+                <div>
+                  <p className="text-xs font-semibold text-gray-900">{t.name}</p>
+                  <p className="text-[11px] text-gray-400">{t.handle}</p>
+                </div>
               </div>
-              <div className="ml-3 truncate">
-                <h3 className="text-[15px] font-semibold text-gray-900 leading-none mb-1">GovBidMike</h3>
-                <p className="text-[13px] text-gray-500 leading-none">@GovBidMike</p>
-              </div>
+              <Link
+                href={t.link}
+                target="_blank"
+                className="w-7 h-7 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-300 hover:text-[#1DA1F2] hover:border-blue-100 hover:bg-blue-50 transition-all"
+              >
+                <Twitter size={12} />
+              </Link>
             </div>
-            <Twitter className="h-4 w-4 text-[#1DA1F2] flex-shrink-0 ml-4" />
-          </div>
-          <p className="text-[15px] leading-relaxed text-gray-900 mb-4">
-            Find all the subreddits automatically and relevant reddit posts is very helpful. Saves a ton of time. The auto generated responses aren't exactly what I'd like, but they're a good starting point. I'll play with it a bit. The tool has a lot of potential
-          </p>
-          <div className="flex items-center text-[13px] text-gray-500">
-            <Link href="https://x.com/GovBidMike" target="_blank" className="hover:text-[#1DA1F2] transition-colors flex items-center gap-1">
-              <ArrowRight className="h-3.5 w-3.5" />
-              View on X
-            </Link>
-          </div>
-        </div>
-
-        {/* Twitter Card 3 */}
-        <div className="bg-gray-50 rounded-xl p-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center min-w-0">
-              <div className="w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
-                <Image
-                  src="/images/testimonials/eris_margeta.jpg"
-                  alt="Eris Margeta"
-                  width={40}
-                  height={40}
-                  className="object-cover"
-                />
-              </div>
-              <div className="ml-3 truncate">
-                <h3 className="text-[15px] font-semibold text-gray-900 leading-none mb-1">Eris Margeta</h3>
-                <p className="text-[13px] text-gray-500 leading-none">@eris_margeta</p>
-              </div>
-            </div>
-            <Twitter className="h-4 w-4 text-[#1DA1F2] flex-shrink-0 ml-4" />
-          </div>
-          <p className="text-[15px] leading-relaxed text-gray-900 mb-4">
-            I am so thankful for this. You have a killer tool
-          </p>
-          <div className="flex items-center text-[13px] text-gray-500">
-            <Link href="https://x.com/eris_margeta" target="_blank" className="hover:text-[#1DA1F2] transition-colors flex items-center gap-1">
-              <ArrowRight className="h-3.5 w-3.5" />
-              View on X
-            </Link>
-          </div>
-        </div>
+          </motion.div>
+        ))}
       </div>
 
-      {/* User Group Display */}
-      <div className="text-center">
-        <div className="flex flex-col items-center">
-          <div className="flex items-center justify-center -space-x-2 mb-4">
-            <div className="w-12 h-12 rounded-full border-2 border-white bg-[hsl(var(--primary))] flex items-center justify-center">
-              <span className="text-sm font-medium text-white">JD</span>
-            </div>
-            <div className="w-12 h-12 rounded-full border-2 border-white bg-blue-500 flex items-center justify-center">
-              <span className="text-sm font-medium text-white">TK</span>
-            </div>
-            <div className="w-12 h-12 rounded-full border-2 border-white bg-purple-500 flex items-center justify-center">
-              <span className="text-sm font-medium text-white">AM</span>
-            </div>
-            <div className="w-12 h-12 rounded-full border-2 border-white bg-green-500 flex items-center justify-center">
-              <span className="text-sm font-medium text-white">RJ</span>
-            </div>
-            <div className="w-12 h-12 rounded-full border-2 border-white bg-yellow-500 flex items-center justify-center">
-              <span className="text-sm font-medium text-white">+</span>
+      {/* Trust counter */}
+      <motion.div
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true }}
+        variants={fadeUp}
+        className="mt-12 text-center"
+      >
+        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-gray-50 border border-gray-100">
+          <div className="flex -space-x-1.5">
+            {['bg-orange-500', 'bg-blue-500', 'bg-purple-500', 'bg-green-500'].map((bg, i) => (
+              <div key={i} className={`w-6 h-6 rounded-full border-2 border-white ${bg} flex items-center justify-center`}>
+                <span className="text-[8px] font-bold text-white">{['JD', 'TK', 'AM', 'RJ'][i]}</span>
+              </div>
+            ))}
+            <div className="w-6 h-6 rounded-full border-2 border-white bg-gray-200 flex items-center justify-center">
+              <span className="text-[8px] font-bold text-gray-500">+</span>
             </div>
           </div>
-          <p className="text-lg font-medium text-gray-900">Join 50+ happy customers</p>
-          <p className="text-[15px] text-gray-500 mt-1">From startups to enterprises, teams love SneakyGuy</p>
+          <span className="text-xs text-gray-600 font-medium">
+            Join <span className="font-bold text-gray-900">100+</span> happy customers
+          </span>
         </div>
-      </div>
+      </motion.div>
     </div>
-  </div>
+  </section>
 );
 
 export default SocialProof;

@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Download, CheckCircle, RefreshCw, Loader2, Search, Zap, Sparkles, Check, TrendingUp, ExternalLink, ChevronDown, ChevronUp } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Download, CheckCircle, RefreshCw, Loader2, Search, Zap, Sparkles, Check, TrendingUp, ExternalLink, ChevronDown, ChevronUp, Copy, X, Edit3 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -93,8 +93,8 @@ const transformRawMention = (mention: RawMention): RedditMention => ({
 export default function MentionsPage() {
   const [mentions, setMentions] = useState<RedditMention[]>([]);
   const [project, setProject] = useState<Project | null>(null);
-  const [isLoading, setIsLoading] = useState(true); // For initial project and first page load
-  const [isLoadingMore, setIsLoadingMore] = useState(false); // For 'Load More' button
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [currentSkip, setCurrentSkip] = useState(0);
   const [hasMoreMentions, setHasMoreMentions] = useState(true);
   const [nextRefreshTime, setNextRefreshTime] = useState<number | null>(null);
@@ -102,13 +102,12 @@ export default function MentionsPage() {
   const [isPosting, setIsPosting] = useState<number | null>(null);
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
   const [expandedSuggestedComments, setExpandedSuggestedComments] = useState<Record<number, boolean>>({});
-  // UI controls
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSubreddit, setSelectedSubreddit] = useState('all');
   const [selectedIntent, setSelectedIntent] = useState('all');
   const [sortBy, setSortBy] = useState<'new' | 'comments' | 'relevance'>('new');
   const [showAnalytics, setShowAnalytics] = useState(true);
-  const [allMentions, setAllMentions] = useState<RedditMention[]>([]); // New state for ALL mentions
+  const [allMentions, setAllMentions] = useState<RedditMention[]>([]);
   const [visibleCount, setVisibleCount] = useState(MENTIONS_PER_PAGE);
   const [analysisStatus, setAnalysisStatus] = useState<'idle' | 'scanning' | 'completed' | 'failed'>('idle');
   const [analysisProgress, setAnalysisProgress] = useState(0);
@@ -120,10 +119,7 @@ export default function MentionsPage() {
   const redditAuth = useRedditAuthStore();
 
   const toggleSuggestedComment = (mentionId: number) => {
-    setExpandedSuggestedComments(prev => ({
-      ...prev,
-      [mentionId]: !prev[mentionId]
-    }));
+    setExpandedSuggestedComments(prev => ({ ...prev, [mentionId]: !prev[mentionId] }));
   };
 
   const VIEWED_POSTS_STORAGE_KEY_PREFIX = 'viewedPosts_';
@@ -146,17 +142,13 @@ export default function MentionsPage() {
     }
   }, [projectId]);
 
-  // Derived filter options from all mentions
   const availableSubreddits = Array.from(new Set(allMentions.map(m => m.subreddit))).sort();
   const availableIntents = Array.from(new Set(allMentions.map(m => m.intent).filter(Boolean))) as string[];
 
-  // Apply search, filter, sort to ALL mentions
   const filteredAll = allMentions
     .filter(m => {
       const q = searchQuery.trim().toLowerCase();
-      const matchesQuery = q
-        ? m.title.toLowerCase().includes(q) || m.content.toLowerCase().includes(q)
-        : true;
+      const matchesQuery = q ? m.title.toLowerCase().includes(q) || m.content.toLowerCase().includes(q) : true;
       const matchesSubreddit = selectedSubreddit === 'all' || m.subreddit === selectedSubreddit;
       const matchesIntent = selectedIntent === 'all' || (m.intent || '') === selectedIntent;
       return matchesQuery && matchesSubreddit && matchesIntent;
@@ -167,15 +159,11 @@ export default function MentionsPage() {
       return b.relevance_score - a.relevance_score;
     });
 
-  // Display only a slice for the list
   const displayMentions = filteredAll.slice(0, visibleCount);
   const hasMoreLocal = visibleCount < filteredAll.length;
 
   useEffect(() => {
-    if (!user) {
-      router.push('/login');
-      return;
-    }
+    if (!user) { router.push('/login'); return; }
 
     if (projectId && typeof projectId === 'string' && !isNaN(parseInt(projectId, 10))) {
       setIsLoading(true);
@@ -190,26 +178,16 @@ export default function MentionsPage() {
           setAnalysisStatus(projectData.analysis_status || 'idle');
           setAnalysisProgress(projectData.analysis_progress || 0);
           setAnalysisMessage(projectData.analysis_status_message || '');
-
-          // Fetch up to 5000 mentions at once for analytics
-          return api.getMentions(projectId, 0, 5000).then(allMentionsRaw => ({
-            projectData,
-            allMentionsRaw
-          }));
+          return api.getMentions(projectId, 0, 5000).then(allMentionsRaw => ({ projectData, allMentionsRaw }));
         })
         .then(({ projectData, allMentionsRaw }) => {
-          const transformed = allMentionsRaw
-            .map(transformRawMention)
-            .sort((a, b) => b.created_utc - a.created_utc);
-
+          const transformed = allMentionsRaw.map(transformRawMention).sort((a, b) => b.created_utc - a.created_utc);
           setAllMentions(transformed);
           setMentions(transformed);
           setVisibleCount(MENTIONS_PER_PAGE);
           setHasMoreMentions(false);
 
-          // Auto-trigger scan if the project is empty and idle (e.g., brand new project)
           if (transformed.length === 0 && projectData.analysis_status === 'idle') {
-            console.log('Project is empty and idle, triggering auto-scan...');
             api.analyzeReddit({
               brand_id: projectId,
               keywords: projectData.keywords || [],
@@ -223,18 +201,14 @@ export default function MentionsPage() {
                 setAnalysisMessage('Starting initial scan...');
                 toast.info('Initial scan started!');
               }
-            }).catch(err => {
-              console.warn('Auto-scan trigger failed:', err);
-            });
+            }).catch(err => console.warn('Auto-scan trigger failed:', err));
           }
         })
         .catch(error => {
           console.error('Error fetching project data or mentions:', error);
           toast.error('Failed to load project mentions.');
         })
-        .finally(() => {
-          setIsLoading(false);
-        });
+        .finally(() => setIsLoading(false));
     } else if (projectId) {
       toast.error('Invalid project ID');
       router.push('/projects');
@@ -242,10 +216,8 @@ export default function MentionsPage() {
     }
   }, [projectId, user, router]);
 
-  // Polling for analysis status
   useEffect(() => {
     let pollInterval: NodeJS.Timeout;
-
     if (analysisStatus === 'scanning' && projectId) {
       pollInterval = setInterval(async () => {
         try {
@@ -255,11 +227,8 @@ export default function MentionsPage() {
           setAnalysisMessage(updatedProject.analysis_status_message || '');
 
           if (updatedProject.analysis_status === 'completed' || updatedProject.analysis_status === 'failed') {
-            // Refresh mentions if finished
             const allMentionsRaw = await api.getMentions(projectId, 0, 5000);
-            const transformed = allMentionsRaw
-              .map(transformRawMention)
-              .sort((a, b) => b.created_utc - a.created_utc);
+            const transformed = allMentionsRaw.map(transformRawMention).sort((a, b) => b.created_utc - a.created_utc);
             setAllMentions(transformed);
             if (updatedProject.analysis_status === 'completed') {
               toast.success('Scan complete! New leads found.');
@@ -268,17 +237,13 @@ export default function MentionsPage() {
         } catch (error) {
           console.error('Error polling project status:', error);
         }
-      }, 3000); // Poll every 3 seconds
+      }, 3000);
     }
-
-    return () => {
-      if (pollInterval) clearInterval(pollInterval);
-    };
+    return () => { if (pollInterval) clearInterval(pollInterval); };
   }, [analysisStatus, projectId]);
 
   const handleRefresh = async () => {
     if (!projectId) return;
-
     try {
       const response = await api.analyzeReddit({
         brand_id: projectId,
@@ -287,7 +252,6 @@ export default function MentionsPage() {
         time_period: 'month',
         limit: 1000
       });
-
       if (response.status === 'started') {
         setAnalysisStatus('scanning');
         setAnalysisProgress(0);
@@ -306,82 +270,41 @@ export default function MentionsPage() {
     }
   };
 
-  const handleLoadMore = () => {
-    setVisibleCount(prev => prev + MENTIONS_PER_PAGE);
-  };
+  const handleLoadMore = () => setVisibleCount(prev => prev + MENTIONS_PER_PAGE);
 
   const postComment = async (mention: RedditMention) => {
-    if (isPosting !== null) return; // Prevent multiple simultaneous posts
-
+    if (isPosting !== null) return;
     setIsPosting(mention.id);
     try {
-      // Check if we have a generated reply for this mention
       const commentText = generatedReplies[mention.id] || mention.suggested_comment;
-
       if (!commentText) {
         toast.error('No comment text available. Please generate a reply first.');
         setIsPosting(null);
         return;
       }
-
-      // The postComment function now handles authentication internally
       const result = await redditAuth.postComment({
         brand_id: mention.brand_id,
         post_url: mention.url,
         post_title: mention.title,
         comment_text: commentText
       });
-
-      // Store the published comment URL
-      setPublishedComments(prev => ({
-        ...prev,
-        [mention.id]: result.comment_url
-      }));
-
-      // Show success message with link to the comment
+      setPublishedComments(prev => ({ ...prev, [mention.id]: result.comment_url }));
       toast.success(
-        result.status === 'already_exists'
-          ? 'Comment already exists on this post'
-          : 'Comment posted successfully',
-        {
-          description: 'View your comment on Reddit',
-          action: {
-            label: 'View',
-            onClick: () => window.open(result.comment_url, '_blank')
-          }
-        }
+        result.status === 'already_exists' ? 'Comment already exists on this post' : 'Comment posted successfully',
+        { description: 'View your comment on Reddit', action: { label: 'View', onClick: () => window.open(result.comment_url, '_blank') } }
       );
-
-      // Save to localStorage to persist between page refreshes
       const COMMENTS_STORAGE_KEY = `published-comments-${projectId}`;
       const savedComments = JSON.parse(localStorage.getItem(COMMENTS_STORAGE_KEY) || '{}');
-      localStorage.setItem(
-        COMMENTS_STORAGE_KEY,
-        JSON.stringify({
-          ...savedComments,
-          [mention.id]: result.comment_url
-        })
-      );
-
+      localStorage.setItem(COMMENTS_STORAGE_KEY, JSON.stringify({ ...savedComments, [mention.id]: result.comment_url }));
     } catch (error) {
       console.error('Error posting comment:', error);
-
-      let errorMessage = 'Failed to post comment';
-
-      if (error instanceof Error) {
-        errorMessage = error.message;
-      }
-
-      toast.error(errorMessage, {
-        description: 'Please try again later'
-      });
+      toast.error(error instanceof Error ? error.message : 'Failed to post comment', { description: 'Please try again later' });
     } finally {
       setIsPosting(null);
     }
   };
 
   useEffect(() => {
-    // Load published comments from localStorage
     if (projectId) {
       const COMMENTS_STORAGE_KEY = `published-comments-${projectId}`;
       const savedComments = JSON.parse(localStorage.getItem(COMMENTS_STORAGE_KEY) || '{}');
@@ -391,26 +314,9 @@ export default function MentionsPage() {
 
   const exportToCSV = () => {
     try {
-      // Define CSV headers
-      const headers = [
-        'Title',
-        'URL',
-        'Subreddit',
-        'Created At',
-        'Score',
-        'Comments',
-        'Matching Keywords'
-      ].join(',');
-
-      // Convert mentions to CSV rows
+      const headers = ['Title', 'URL', 'Subreddit', 'Created At', 'Score', 'Comments', 'Matching Keywords'].join(',');
       const rows = mentions.map(mention => {
-        // Format date with quotes to keep it in one column
-        const formattedDate = `"${new Date(mention.created_utc * 1000).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        })}"`;
-
+        const formattedDate = `"${new Date(mention.created_utc * 1000).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}"`;
         return [
           `"${mention.title?.replace(/"/g, '""') || ''}"`,
           `"${mention.url || ''}"`,
@@ -418,14 +324,10 @@ export default function MentionsPage() {
           formattedDate,
           mention.score,
           mention.num_comments,
-          `"${Array.isArray(mention.matching_keywords) ? mention.matching_keywords.join('; ') : ''}"` // Use semicolons instead of commas
+          `"${Array.isArray(mention.matching_keywords) ? mention.matching_keywords.join('; ') : ''}"`
         ].join(',');
       });
-
-      // Combine headers and rows
       const csvContent = [headers, ...rows].join('\n');
-
-      // Create blob and download
       const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
       const link = document.createElement('a');
       const url = URL.createObjectURL(blob);
@@ -441,33 +343,20 @@ export default function MentionsPage() {
     }
   };
 
-  const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
-  };
-
-  const getRelevanceColor = (score: number) => {
-    if (score >= 80) return 'bg-[hsl(var(--primary))] text-white';
-    if (score >= 60) return 'bg-[hsl(var(--secondary))] text-[hsl(var(--primary))]';
-    if (score >= 40) return 'bg-slate-400 text-white';
-    return 'bg-slate-600 text-white';
+  const getRelevanceBadge = (score: number) => {
+    if (score >= 80) return { bg: 'bg-green-50 text-green-700 border-green-100', dot: 'bg-green-500' };
+    if (score >= 60) return { bg: 'bg-amber-50 text-amber-700 border-amber-100', dot: 'bg-amber-500' };
+    return { bg: 'bg-gray-50 text-gray-600 border-gray-100', dot: 'bg-gray-400' };
   };
 
   const highlightKeywords = (text: string, keywords: string[]) => {
     if (!keywords || keywords.length === 0) return text;
-
     let highlightedText = text;
-    // Sort keywords by length descending to avoid partial matches on shorter keywords
     const sortedKeywords = [...keywords].sort((a, b) => b.length - a.length);
-
     sortedKeywords.forEach(keyword => {
       const regex = new RegExp(`(${keyword})`, 'gi');
-      highlightedText = highlightedText.replace(regex, '<mark class="bg-orange-100 text-orange-900 font-bold px-1 rounded-sm">$1</mark>');
+      highlightedText = highlightedText.replace(regex, '<mark class="bg-orange-100 text-orange-800 px-0.5 rounded">$1</mark>');
     });
-
     return highlightedText;
   };
 
@@ -478,27 +367,16 @@ export default function MentionsPage() {
 
   const handleGenerateReply = async (mention: RedditMention) => {
     if (generatingReplyFor !== null) return;
-
     setGeneratingReplyFor(mention.id);
     try {
-      const reply = await api.generateReply({
-        title: mention.title,
-        content: mention.content,
-        brand_id: mention.brand_id
-      });
-      setGeneratedReplies(prev => ({
-        ...prev,
-        [mention.id]: reply
-      }));
-      setEditedReplies(prev => ({
-        ...prev,
-        [mention.id]: reply
-      }));
+      const reply = await api.generateReply({ title: mention.title, content: mention.content, brand_id: mention.brand_id });
+      setGeneratedReplies(prev => ({ ...prev, [mention.id]: reply }));
+      setEditedReplies(prev => ({ ...prev, [mention.id]: reply }));
       setEditingReplyId(mention.id);
-      toast.success('Reply generated! Editor is open for modifications.');
+      toast.success('Reply generated!');
     } catch (error) {
       console.error('Error generating reply:', error);
-      toast.error('Failed to generate reply. Please try again.');
+      toast.error('Failed to generate reply.');
     } finally {
       setGeneratingReplyFor(null);
     }
@@ -515,217 +393,160 @@ export default function MentionsPage() {
     });
   };
 
+  const hasActiveFilters = searchQuery || selectedSubreddit !== 'all' || selectedIntent !== 'all' || sortBy !== 'new';
+
   return (
     <PaymentGuard>
-      <div className="container mx-auto px-4 py-6 max-w-6xl">
+      <div className="max-w-5xl mx-auto px-4 py-4">
         <Toaster position="top-center" />
 
-        {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">
-          <Button
-            onClick={() => router.push('/projects')}
-            className="
-              group relative flex items-center gap-2
-              bg-white/80 hover:bg-white
-              text-gray-700 hover:text-gray-900
-              border border-gray-200
-              shadow-sm hover:shadow-md
-              transition-all duration-200
-              px-4 py-2 rounded-lg
-              hover:-translate-x-0.5
-              w-auto
-            "
-            variant="ghost"
-          >
-            <div className="
-               absolute left-0 top-0 bottom-0 w-1
-              bg-gradient-to-b from-[hsl(var(--primary))] to-[hsl(var(--accent))]
-              rounded-l-lg
-            "/>
-            <ArrowLeft className="h-4 w-4 transition-transform group-hover:-translate-x-1" />
-            <span className="font-medium">Back to Projects</span>
-          </Button>
+        {/* Top Bar */}
+        <div className="flex flex-col gap-4 mb-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => router.push('/projects')}
+                className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors group"
+              >
+                <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+                Projects
+              </button>
+              {project && (
+                <>
+                  <span className="text-gray-200">/</span>
+                  <h1 className="text-sm font-semibold text-gray-900 truncate max-w-[200px]">{project.name}</h1>
+                </>
+              )}
+            </div>
 
-          {project && (
-            <div className="flex items-center gap-2 sm:gap-3 bg-white/80 backdrop-blur-md border border-gray-200 rounded-xl p-2 sm:p-2.5 shadow-sm">
-              <div className="px-3 py-1 bg-gray-50 rounded-lg">
-                <h2 className="text-sm sm:text-base font-bold text-gray-900 truncate max-w-[120px] sm:max-w-[200px]">{project.name}</h2>
-              </div>
-              <div className="h-4 w-px bg-gray-200 hidden sm:block" />
-              <div className="hidden sm:flex items-center gap-1.5 px-2 py-1 bg-emerald-50 text-emerald-700 rounded-lg border border-emerald-100/50">
-                <TrendingUp className="h-3.5 w-3.5" />
-                <span className="text-xs font-bold">{allMentions.length} Leads</span>
-              </div>
-              <div className="h-4 w-px bg-gray-200" />
-              <Button
-                variant="ghost"
-                size="sm"
+            <div className="flex items-center gap-2">
+              {project && (
+                <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-md border border-green-100 text-[11px] font-semibold">
+                  <TrendingUp className="h-3 w-3" />
+                  {allMentions.length} leads
+                </span>
+              )}
+
+              <button
                 onClick={handleRefresh}
                 disabled={analysisStatus === 'scanning'}
-                className="flex items-center gap-1.5 h-8 px-2.5 rounded-lg hover:bg-orange-50 hover:text-orange-600 transition-all group"
+                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50"
               >
-                <RefreshCw className={`h-3.5 w-3.5 ${analysisStatus === 'scanning' ? 'animate-spin text-orange-600' : 'text-gray-400 group-hover:text-orange-600'}`} />
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest">
-                  {analysisStatus === 'scanning' ? 'Scanning...' : 'Refresh'}
-                </span>
-              </Button>
-              <div className="h-4 w-px bg-gray-200" />
-              <Button
-                variant="ghost"
-                size="sm"
+                <RefreshCw className={`h-3 w-3 ${analysisStatus === 'scanning' ? 'animate-spin text-orange-500' : ''}`} />
+                {analysisStatus === 'scanning' ? 'Scanning...' : 'Refresh'}
+              </button>
+
+              <button
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className={`flex items-center gap-1.5 h-8 px-2.5 rounded-lg transition-all ${showAnalytics ? 'bg-orange-50 text-orange-600' : 'text-gray-400 hover:text-gray-900'}`}
+                className={`flex items-center gap-1.5 px-3 h-8 rounded-lg border text-xs font-medium transition-all ${showAnalytics ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
               >
-                {showAnalytics ? <Check className="h-3.5 w-3.5" /> : <ExternalLink className="h-3.5 w-3.5" />}
-                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest font-heading">Insights</span>
-              </Button>
-            </div>
-          )}
+                Insights
+              </button>
 
-          <Button
-            onClick={exportToCSV}
-            className="
-              relative group flex items-center gap-2
-              bg-gradient-to-r from-emerald-500 to-teal-500 
-              hover:from-emerald-600 hover:to-teal-600
-              text-white shadow-sm
-              transition-all duration-300 ease-in-out
-              hover:shadow-md hover:-translate-y-0.5
-              h-9 px-4 rounded-md
-            "
-            size="sm"
-          >
-            <Download className="h-4 w-4" />
-            <span>Export CSV</span>
-
-            {/* Tooltip */}
-            <div className="
-              invisible group-hover:visible 
-              absolute -top-10 left-1/2 transform -translate-x-1/2 
-              bg-gray-800 text-white text-xs px-3 py-1.5 rounded-md
-              whitespace-nowrap z-50
-              opacity-0 group-hover:opacity-100
-              transition-all duration-200
-              shadow-lg
-            ">
-              <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 
-                border-t-4 border-l-4 border-r-4 
-                border-transparent border-t-gray-800
-              "></div>
-              Download all mentions as CSV
+              <button
+                onClick={exportToCSV}
+                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+              >
+                <Download className="h-3 w-3" />
+                <span className="hidden sm:inline">Export</span>
+              </button>
             </div>
-          </Button>
+          </div>
         </div>
 
-        {/* Global Scanning Status */}
+        {/* Scanning Status */}
         {analysisStatus === 'scanning' && (
-          <div className="mb-8 p-5 bg-gradient-to-br from-white to-orange-50/30 backdrop-blur-xl border border-orange-100 rounded-2xl shadow-sm animate-in fade-in slide-in-from-top-4 duration-500 relative overflow-hidden">
-            <div className="absolute top-0 right-0 p-4 opacity-10">
-              <RefreshCw className="h-24 w-24 text-orange-600 animate-spin-slow" />
+          <div className="mb-6 p-4 bg-white border border-orange-100 rounded-xl">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-orange-50 rounded-lg">
+                  <RefreshCw className="h-4 w-4 text-orange-600 animate-spin" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-gray-900">Scanning Reddit...</p>
+                  <p className="text-xs text-gray-500">{analysisMessage || 'Finding leads based on your keywords'}</p>
+                </div>
+              </div>
+              <span className="text-sm font-bold text-orange-600">{analysisProgress}%</span>
             </div>
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-4">
-                  <div className="relative">
-                    <div className="absolute inset-0 bg-orange-400 rounded-lg blur-md opacity-20 animate-pulse"></div>
-                    <div className="p-2.5 bg-orange-100 rounded-lg relative">
-                      <RefreshCw className="h-5 w-5 text-orange-600 animate-spin" />
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm font-bold text-gray-900 tracking-tight">AI Engine is scanning Reddit...</p>
-                    <p className="text-xs text-gray-500 font-medium">{analysisMessage || 'Hunting for qualified leads based on your keywords'}</p>
-                  </div>
-                </div>
-                <div className="text-right">
-                  <span className="text-lg font-black text-orange-600 tracking-tighter">{analysisProgress}%</span>
-                  <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">Complete</p>
-                </div>
-              </div>
-              <div className="h-2.5 w-full bg-gray-100/50 rounded-full overflow-hidden border border-gray-100/50">
-                <div
-                  className="h-full bg-gradient-to-r from-orange-600 via-orange-400 to-orange-500 transition-all duration-700 ease-out shadow-[0_0_10px_rgba(234,88,12,0.3)]"
-                  style={{ width: `${analysisProgress}%` }}
-                />
-              </div>
+            <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+              <div
+                className="h-full bg-orange-500 rounded-full transition-all duration-500"
+                style={{ width: `${analysisProgress}%` }}
+              />
             </div>
           </div>
         )}
 
-        {/* Analytics Section */}
-        {!isLoading && project && showAnalytics && (
-          <MentionsAnalytics
-            mentions={allMentions}
-            keywords={project.keywords || []}
-          />
+        {/* Reddit Connect Warning */}
+        {!redditAuth.isAuthenticated && !isLoading && allMentions.length > 0 && (
+          <div className="mb-4 flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+            <span className="text-xs text-amber-800 font-medium flex-1">
+              Connect your Reddit account to post comments directly.
+            </span>
+            <Button
+              size="sm"
+              className="bg-gray-900 hover:bg-gray-800 text-white text-xs h-7 px-3"
+              onClick={() => redditAuth.ensureRedditConnection()}
+            >
+              Connect
+            </Button>
+          </div>
         )}
 
-        {/* Controls */}
+        {/* Analytics */}
+        {!isLoading && project && showAnalytics && (
+          <MentionsAnalytics mentions={allMentions} keywords={project.keywords || []} />
+        )}
+
+        {/* Filters */}
         {!isLoading && allMentions.length > 0 && (
-          <div className="mb-6 grid grid-cols-1 md:grid-cols-12 gap-3">
-            {/* Search */}
-            <div className="md:col-span-5 min-w-0">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+          <div className="mb-5 space-y-3">
+            <div className="flex flex-col sm:flex-row gap-2">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
                 <input
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search title or content..."
-                  className="w-full h-10 pl-9 pr-3 rounded-md border border-gray-200 bg-white/80 focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))] text-sm"
+                  placeholder="Search leads..."
+                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-gray-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
                 />
               </div>
-            </div>
-            {/* Subreddit */}
-            <div className="md:col-span-3 min-w-0">
-              <div className="flex items-center gap-2">
-                <Zap className="h-4 w-4 text-[hsl(var(--primary))] opacity-70" />
-                <select
-                  value={selectedSubreddit}
-                  onChange={(e) => setSelectedSubreddit(e.target.value)}
-                  className="flex-1 h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))]"
-                >
-                  <option value="all">All subreddits</option>
-                  {availableSubreddits.map(sr => (
-                    <option key={sr} value={sr}>{`r/${sr}`}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {/* Intent */}
-            <div className="md:col-span-2 min-w-0">
+              <select
+                value={selectedSubreddit}
+                onChange={(e) => setSelectedSubreddit(e.target.value)}
+                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+              >
+                <option value="all">All subreddits</option>
+                {availableSubreddits.map(sr => <option key={sr} value={sr}>r/{sr}</option>)}
+              </select>
               <select
                 value={selectedIntent}
                 onChange={(e) => setSelectedIntent(e.target.value)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))]"
+                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               >
                 <option value="all">All intents</option>
-                {availableIntents.map(int => (
-                  <option key={int} value={int}>{int}</option>
-                ))}
+                {availableIntents.map(int => <option key={int} value={int}>{int}</option>)}
               </select>
-            </div>
-            {/* Sort */}
-            <div className="md:col-span-2 min-w-0">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="w-full h-10 px-3 rounded-md border border-gray-200 bg-white/80 text-sm focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))]/30 focus:border-[hsl(var(--primary))]"
+                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
               >
                 <option value="new">Newest</option>
                 <option value="comments">Most comments</option>
                 <option value="relevance">Highest relevance</option>
               </select>
             </div>
-            <div className="md:col-span-12 flex items-center justify-between text-xs text-gray-500">
-              <div>
-                Showing <span className="font-medium text-gray-700">{displayMentions.length}</span> of <span className="font-medium text-gray-700">{filteredAll.length}</span> matching leads
-              </div>
-              {(searchQuery || selectedSubreddit !== 'all' || selectedIntent !== 'all' || sortBy !== 'new') && (
+            <div className="flex items-center justify-between text-[11px] text-gray-400">
+              <span>
+                Showing <span className="font-medium text-gray-600">{displayMentions.length}</span> of <span className="font-medium text-gray-600">{filteredAll.length}</span> leads
+              </span>
+              {hasActiveFilters && (
                 <button
-                  type="button"
                   onClick={() => { setSearchQuery(''); setSelectedSubreddit('all'); setSelectedIntent('all'); setSortBy('new'); }}
-                  className="text-primary hover:underline"
+                  className="text-orange-600 hover:text-orange-700 font-medium"
                 >
                   Clear filters
                 </button>
@@ -734,364 +555,259 @@ export default function MentionsPage() {
           </div>
         )}
 
+        {/* Content */}
         {isLoading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
+          <div className="flex flex-col items-center justify-center py-16">
+            <Loader2 className="h-5 w-5 animate-spin text-gray-400 mb-3" />
+            <p className="text-xs text-gray-400">Loading leads...</p>
           </div>
         ) : allMentions.length === 0 ? (
-          <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
-            No leads found yet. Click refresh to scan Reddit.
+          <div className="text-center py-16 bg-white border border-dashed border-gray-200 rounded-xl">
+            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3 text-gray-400">
+              <Search className="h-5 w-5" />
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-1">No leads found yet</p>
+            <p className="text-xs text-gray-400">Click Refresh to scan Reddit for leads.</p>
           </div>
         ) : displayMentions.length === 0 ? (
-          <div className="text-center py-10 bg-white/60 border border-dashed border-gray-300 rounded-lg">
-            No results match your filters.
+          <div className="text-center py-12 bg-white border border-dashed border-gray-200 rounded-xl">
+            <p className="text-sm text-gray-500">No results match your filters.</p>
           </div>
         ) : (
           <>
-            <div id="mentions-list" className="space-y-6">
-              {displayMentions.map((mention, index) => (
-                <div
-                  key={mention.id}
-                  className={`
-                    relative bg-white rounded-2xl border transition-all duration-300 hover:shadow-xl hover:-translate-y-1 overflow-hidden
-                    ${mention.relevance_score > 90
-                      ? 'border-orange-100/50 ring-1 ring-orange-100/30 bg-gradient-to-br from-white via-white to-orange-50/10'
-                      : 'border-gray-100'}
-                    ${viewedPosts.has(mention.id) ? 'opacity-90 grayscale-[0.2]' : 'opacity-100'}
-                  `}
-                >
-                  {mention.relevance_score > 90 && (
-                    <div className="absolute top-0 left-0 px-3 py-1 bg-orange-500 text-white text-[10px] font-black uppercase tracking-widest rounded-br-xl shadow-lg z-10 flex items-center gap-1">
-                      <Zap className="h-3 w-3 fill-white" />
-                      High Intent
-                    </div>
-                  )}
-                  <div className="p-4 sm:p-6">
-                    <div className="space-y-3 sm:space-y-4">
-                      <div className="flex flex-col space-y-2">
-                        <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-3">
-                          <h3 className="text-base sm:text-lg font-medium flex-grow order-2 sm:order-1">
-                            <span
-                              className="hover:text-[hsl(var(--primary))] transition-colors duration-200"
-                              dangerouslySetInnerHTML={{
-                                __html: highlightKeywords(mention.title, mention.matching_keywords)
-                              }}
-                            />
-                          </h3>
-                          <div className="flex items-center gap-2 order-1 sm:order-2 self-start flex-wrap">
-                            <Badge variant="outline" className="bg-gray-100 hover:bg-gray-200 transition-colors text-xs sm:text-sm">
-                              r/{mention.subreddit}
-                            </Badge>
-                            <a
-                              href={mention.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className={`inline-flex items-center gap-1 px-3 py-1.5 rounded-md transition-all duration-200 text-xs sm:text-sm font-medium h-7 sm:h-8 ${viewedPosts.has(mention.id) ? 'bg-gray-100 hover:bg-gray-200 text-gray-700' : 'bg-[hsl(var(--secondary))]/60 hover:bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] border border-[hsl(var(--primary))]/15 hover:border-[hsl(var(--primary))]/25'}`}
-                              onClick={() => handleMarkAsViewed(mention.id)}
-                            >
-                              {viewedPosts.has(mention.id) ? 'Viewed' : 'View Post'}
-                              <ArrowUpRight className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
-                            </a>
-                          </div>
+            <div className="space-y-3">
+              {displayMentions.map((mention) => {
+                const relevance = getRelevanceBadge(mention.relevance_score);
+                const isHighIntent = mention.relevance_score > 90;
+
+                return (
+                  <div
+                    key={mention.id}
+                    className={`
+                      bg-white rounded-xl border transition-all duration-200 overflow-hidden
+                      ${isHighIntent ? 'border-orange-100 shadow-sm' : 'border-gray-100'}
+                      ${viewedPosts.has(mention.id) ? 'opacity-80' : ''}
+                      hover:shadow-md hover:border-gray-200
+                    `}
+                  >
+                    {/* High intent indicator */}
+                    {isHighIntent && (
+                      <div className="h-0.5 bg-gradient-to-r from-orange-500 to-amber-400" />
+                    )}
+
+                    <div className="p-4 sm:p-5">
+                      {/* Top row: subreddit, intent, relevance, external link */}
+                      <div className="flex items-center gap-2 mb-2.5 flex-wrap">
+                        <span className="text-[11px] font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100/50">
+                          r/{mention.subreddit}
+                        </span>
+                        {mention.intent && (
+                          <span className="text-[10px] font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100/50 uppercase tracking-wider">
+                            {mention.intent}
+                          </span>
+                        )}
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${relevance.bg} flex items-center gap-1`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${relevance.dot}`} />
+                          {mention.relevance_score}%
+                        </span>
+                        {publishedComments[mention.id] && (
+                          <span className="text-[10px] font-semibold text-green-700 bg-green-50 px-2 py-0.5 rounded-md border border-green-100 flex items-center gap-1">
+                            <CheckCircle className="h-2.5 w-2.5" />
+                            Published
+                          </span>
+                        )}
+                        <div className="ml-auto flex items-center gap-1.5">
+                          <a
+                            href={mention.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium transition-all ${viewedPosts.has(mention.id) ? 'text-gray-400 bg-gray-50' : 'text-gray-600 bg-gray-50 hover:bg-gray-100'}`}
+                            onClick={() => handleMarkAsViewed(mention.id)}
+                          >
+                            {viewedPosts.has(mention.id) ? 'Viewed' : 'Open'}
+                            <ArrowUpRight className="h-2.5 w-2.5" />
+                          </a>
                         </div>
-                        <div className="flex flex-wrap gap-2 items-center order-3 mt-1 opacity-80">
-                          {mention.matching_keywords?.length > 0 && (
-                            <div className="flex flex-wrap gap-1.5 items-center">
-                              <Target className="h-3 w-3 text-gray-400" />
-                              <div className="flex flex-wrap gap-1.5">
-                                {mention.matching_keywords.map((keyword) => (
-                                  <span
-                                    key={keyword}
-                                    className="text-[10px] font-bold text-gray-500 uppercase tracking-wider"
-                                  >
-                                    #{keyword}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
+                      </div>
+
+                      {/* Title */}
+                      <h3 className="text-[13px] sm:text-sm font-medium text-gray-900 leading-snug mb-2">
+                        <span dangerouslySetInnerHTML={{ __html: highlightKeywords(mention.title, mention.matching_keywords) }} />
+                      </h3>
+
+                      {/* Meta row */}
+                      <div className="flex flex-wrap items-center gap-3 text-[11px] text-gray-400 mb-3">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {mention.formatted_date}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MessageSquare className="h-3 w-3" />
+                          {mention.num_comments}
+                        </span>
+                        {mention.matching_keywords?.length > 0 && (
+                          <span className="flex items-center gap-1">
+                            <Target className="h-3 w-3" />
+                            {mention.matching_keywords.map(k => `#${k}`).join(' ')}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Score explanation */}
+                      {mention.suggested_comment && (
+                        <div className="text-xs text-gray-500 leading-relaxed mb-3">
+                          {expandedSuggestedComments[mention.id]
+                            ? mention.suggested_comment
+                            : `${mention.suggested_comment.substring(0, 140)}${mention.suggested_comment.length > 140 ? '...' : ''}`}
+                          {mention.suggested_comment.length > 140 && (
+                            <button
+                              onClick={() => toggleSuggestedComment(mention.id)}
+                              className="text-orange-600 hover:text-orange-700 ml-1 font-medium"
+                            >
+                              {expandedSuggestedComments[mention.id] ? 'less' : 'more'}
+                            </button>
                           )}
-                          {mention.intent && (
+                        </div>
+                      )}
+
+                      {/* AI Reply Button */}
+                      {!generatedReplies[mention.id] && (
+                        <button
+                          onClick={() => handleGenerateReply(mention)}
+                          disabled={generatingReplyFor === mention.id}
+                          className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50"
+                        >
+                          {generatingReplyFor === mention.id ? (
                             <>
-                              <div className="h-3 w-px bg-gray-200 mx-1" />
-                              <div className="flex items-center gap-1.5">
-                                <Zap className="h-3 w-3 text-blue-500" />
-                                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">{mention.intent}</span>
-                              </div>
+                              <Loader2 className="h-3 w-3 animate-spin" />
+                              Generating...
+                            </>
+                          ) : (
+                            <>
+                              <Sparkles className="h-3 w-3 text-orange-500" />
+                              Generate Reply
                             </>
                           )}
-                        </div>
-                      </div>
+                        </button>
+                      )}
 
-                      <div className="flex flex-col space-y-3">
-                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                          <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-600">
-                            <div className="flex items-center gap-1.5">
-                              <Calendar className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              {mention.formatted_date}
-                            </div>
-                            <div className="flex items-center gap-1.5">
-                              <MessageSquare className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
-                              {mention.num_comments} comments
-                            </div>
-                            {publishedComments[mention.id] && (
-                              <div className="flex items-center gap-1.5">
-                                <CheckCircle className="h-3.5 w-3.5 text-green-600" />
-                                <span className="text-green-600 font-medium">Published</span>
-                              </div>
-                            )}
-                            {typeof mention.relevance_score === 'number' && (
-                              <div className="flex items-center gap-2">
-                                <span className="text-gray-400 font-medium">Relevance:</span>
-                                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-white border border-gray-100 shadow-sm">
-                                  <div className={`w-1.5 h-1.5 rounded-full animate-pulse ${mention.relevance_score > 80 ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : mention.relevance_score > 60 ? 'bg-orange-500' : 'bg-gray-400'}`}></div>
-                                  <span className={`text-xs font-black tracking-tight ${getRelevanceColor(mention.relevance_score)}`}>
-                                    {mention.relevance_score}% Match
-                                  </span>
+                      {/* Generated Reply */}
+                      {generatedReplies[mention.id] && (
+                        <div className="mt-3 rounded-lg border border-gray-100 overflow-hidden bg-gray-50/50">
+                          <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
+                            <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Generated Reply</span>
+                            <button
+                              className="text-gray-400 hover:text-gray-600 p-0.5"
+                              onClick={() => {
+                                setGeneratedReplies(prev => { const n = { ...prev }; delete n[mention.id]; return n; });
+                              }}
+                            >
+                              <X className="h-3.5 w-3.5" />
+                            </button>
+                          </div>
+
+                          <div className="p-4">
+                            {editingReplyId === mention.id ? (
+                              <div className="space-y-2">
+                                <textarea
+                                  autoFocus
+                                  className="w-full border border-gray-200 rounded-lg p-3 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all resize-none"
+                                  rows={4}
+                                  value={editedReplies[mention.id] || ''}
+                                  onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
+                                />
+                                <div className="flex justify-end gap-2">
+                                  <Button
+                                    variant="outline"
+                                    size="sm"
+                                    onClick={() => { setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] })); setEditingReplyId(null); }}
+                                    className="text-xs h-7 px-3 border-gray-200"
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    onClick={() => { setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] })); setEditingReplyId(null); }}
+                                    className="text-xs h-7 px-3 bg-gray-900 hover:bg-gray-800 text-white"
+                                  >
+                                    Save
+                                  </Button>
                                 </div>
                               </div>
-                            )}
-                          </div>
-                          <Button
-                            onClick={() => handleGenerateReply(mention)}
-                            disabled={generatingReplyFor === mention.id}
-                            className={`
-                              relative group flex items-center gap-2 
-                              bg-white hover:bg-white text-[hsl(var(--primary))] 
-                              border border-[hsl(var(--primary))]/20 shadow-sm 
-                              h-9 px-5 transition-all duration-300 w-full sm:w-auto mt-2 sm:mt-0 
-                              hover:shadow-md hover:border-[hsl(var(--primary))]/40 font-bold overflow-hidden
-                            `}
-                            size="sm"
-                          >
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[hsl(var(--primary))]/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                            {generatingReplyFor === mention.id ? (
-                              <>
-                                <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                                <span>Generating...</span>
-                              </>
                             ) : (
-                              <>
-                                <Sparkles className="h-3.5 w-3.5 text-orange-400 group-hover:scale-110 transition-transform" />
-                                <span>AI Reply</span>
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                        {mention.suggested_comment && (
-                          <div className="mt-3 pt-3 border-t border-gray-100">
-                            <p className="text-xs sm:text-sm text-gray-600">
-                              <span className="font-medium text-gray-700">Score Explanation: </span>
-                              {
-                                expandedSuggestedComments[mention.id]
-                                  ? mention.suggested_comment
-                                  : `${mention.suggested_comment.substring(0, 120)}${mention.suggested_comment.length > 120 ? '...' : ''}`
-                              }
-                              {mention.suggested_comment.length > 120 && (
-                                <button
-                                  onClick={() => toggleSuggestedComment(mention.id)}
-                                  className="text-blue-500 hover:text-blue-700 ml-1 text-xs font-medium"
-                                >
-                                  {expandedSuggestedComments[mention.id] ? 'Show less' : 'Show more'}
-                                </button>
-                              )}
-                            </p>
-                          </div>
-                        )}
-                        {/* Show generated reply if available */}
-                        {generatedReplies[mention.id] && (
-                          <div className="mt-4 space-y-3">
-                            <div className="border border-gray-100 rounded-lg bg-white overflow-hidden">
-                              {/* Header */}
-                              <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-                                <h4 className="text-sm font-medium text-gray-700">Generated Reply</h4>
-                              </div>
-
-                              {/* Content */}
-                              <div
-                                className={`p-4 cursor-text ${editingReplyId !== mention.id ? 'hover:bg-gray-50 transition-colors' : ''}`}
-                                onClick={() => {
-                                  if (editingReplyId !== mention.id) {
-                                    setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
-                                    setEditingReplyId(mention.id);
-                                  }
-                                }}
+                              <p
+                                className="text-xs text-gray-600 leading-relaxed whitespace-pre-wrap cursor-pointer hover:bg-white rounded p-1 -m-1 transition-colors"
+                                onClick={() => { setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] })); setEditingReplyId(mention.id); }}
                               >
-                                {editingReplyId === mention.id ? (
-                                  <div className="space-y-3">
-                                    <textarea
-                                      autoFocus
-                                      className="w-full border border-gray-200 rounded-md p-3 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-[hsl(var(--primary))] focus:border-transparent transition-all"
-                                      rows={4}
-                                      value={editedReplies[mention.id] || ''}
-                                      onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
-                                    />
-                                    <div className="flex justify-end gap-2 pt-1">
-                                      <Button
-                                        variant="outline"
-                                        size="sm"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
-                                          setEditingReplyId(null);
-                                        }}
-                                        className="text-xs h-8"
-                                      >
-                                        Cancel
-                                      </Button>
-                                      <Button
-                                        size="sm"
-                                        onClick={(e) => {
-                                          e.stopPropagation();
-                                          setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] }));
-                                          setEditingReplyId(null);
-                                        }}
-                                        className="text-xs h-8 bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white"
-                                      >
-                                        Save Changes
-                                      </Button>
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="group flex items-start justify-between">
-                                    <p className="text-sm text-gray-600 whitespace-pre-wrap break-words">{generatedReplies[mention.id]}</p>
-                                    <button
-                                      className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-gray-600 p-1 -mr-1 -mt-1"
-                                      onClick={(e) => {
-                                        e.stopPropagation();
-                                        setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] }));
-                                        setEditingReplyId(mention.id);
-                                      }}
-                                    >
-                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                      </svg>
-                                    </button>
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Actions */}
-                              <div className="px-4 py-3 border-t border-gray-100 bg-gray-50">
-                                <div className="flex items-center gap-2">
-                                  <Button
-                                    onClick={async (e) => {
-                                      e.stopPropagation();
-                                      try {
-                                        await navigator.clipboard.writeText(generatedReplies[mention.id]);
-                                        window.open(mention.url, '_blank', 'noopener,noreferrer');
-                                        toast.success('Reply copied and opening post...');
-                                      } catch (error) {
-                                        console.error('Error:', error);
-                                        toast.error('Failed to copy or open post');
-                                      }
-                                    }}
-                                    className="h-8 px-3 text-xs bg-white hover:bg-gray-50 text-gray-700 border border-gray-200 hover:border-gray-300 flex items-center gap-1.5"
-                                    size="sm"
-                                  >
-                                    <svg
-                                      className="w-3.5 h-3.5"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                    </svg>
-                                    Copy & Go to Post
-                                  </Button>
-
-                                  <Button
-                                    onClick={() => postComment(mention)}
-                                    disabled={isPosting === mention.id || !!publishedComments[mention.id]}
-                                    className={`h-8 px-3 text-xs ${isPosting === mention.id
-                                      ? 'bg-gray-100 text-gray-500'
-                                      : publishedComments[mention.id]
-                                        ? 'bg-green-600 hover:bg-green-700 text-white'
-                                        : 'bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-white'} flex-shrink-0`}
-                                    size="sm"
-                                  >
-                                    {isPosting === mention.id ? (
-                                      <>
-                                        <RefreshCw className="w-3.5 h-3.5 mr-1.5 animate-spin" />
-                                        Posting...
-                                      </>
-                                    ) : publishedComments[mention.id] ? (
-                                      <>
-                                        <CheckCircle className="w-3.5 h-3.5 mr-1.5" />
-                                        Published
-                                      </>
-                                    ) : (
-                                      'Publish'
-                                    )}
-                                  </Button>
-
-                                  <Button
-                                    variant="ghost"
-                                    size="sm"
-                                    className="h-8 w-8 p-0 text-gray-400 hover:text-gray-600 hover:bg-gray-100 ml-auto"
-                                    onClick={() => {
-                                      setGeneratedReplies(prev => {
-                                        const newReplies = { ...prev };
-                                        delete newReplies[mention.id];
-                                        return newReplies;
-                                      });
-                                    }}
-                                  >
-                                    <svg
-                                      className="w-4 h-4"
-                                      fill="none"
-                                      stroke="currentColor"
-                                      viewBox="0 0 24 24"
-                                    >
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                  </Button>
-                                </div>
-                              </div>
-                            </div>
+                                {generatedReplies[mention.id]}
+                              </p>
+                            )}
                           </div>
-                        )}
-                      </div>
+
+                          {editingReplyId !== mention.id && (
+                            <div className="px-4 py-2.5 border-t border-gray-100 flex items-center gap-2">
+                              <button
+                                onClick={async () => {
+                                  try {
+                                    await navigator.clipboard.writeText(generatedReplies[mention.id]);
+                                    window.open(mention.url, '_blank', 'noopener,noreferrer');
+                                    toast.success('Copied & opening post...');
+                                  } catch { toast.error('Failed to copy'); }
+                                }}
+                                className="flex items-center gap-1.5 px-2.5 h-7 rounded-md border border-gray-200 bg-white text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-all"
+                              >
+                                <Copy className="h-3 w-3" />
+                                Copy & Open
+                              </button>
+                              <button
+                                onClick={() => { setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] })); setEditingReplyId(mention.id); }}
+                                className="flex items-center gap-1.5 px-2.5 h-7 rounded-md border border-gray-200 bg-white text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-all"
+                              >
+                                <Edit3 className="h-3 w-3" />
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => postComment(mention)}
+                                disabled={isPosting === mention.id || !!publishedComments[mention.id]}
+                                className={`flex items-center gap-1.5 px-3 h-7 rounded-md text-[11px] font-semibold transition-all ${
+                                  publishedComments[mention.id]
+                                    ? 'bg-green-600 text-white'
+                                    : isPosting === mention.id
+                                    ? 'bg-gray-100 text-gray-400'
+                                    : 'bg-gray-900 hover:bg-gray-800 text-white'
+                                }`}
+                              >
+                                {isPosting === mention.id ? (
+                                  <><Loader2 className="h-3 w-3 animate-spin" /> Posting...</>
+                                ) : publishedComments[mention.id] ? (
+                                  <><CheckCircle className="h-3 w-3" /> Published</>
+                                ) : (
+                                  'Publish'
+                                )}
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {hasMoreLocal && (
-              <div className="mt-8 flex justify-center pb-12">
-                <Button
+              <div className="mt-6 flex justify-center pb-8">
+                <button
                   onClick={handleLoadMore}
                   disabled={isLoadingMore}
-                  variant="outline"
-                  className="bg-white hover:bg-gray-50 text-[hsl(var(--primary))] border-[hsl(var(--primary))]/20 px-8 py-6 rounded-xl hover:shadow-md transition-all duration-200"
+                  className="flex items-center gap-2 px-6 h-9 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
                 >
-                  <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingMore ? 'animate-spin' : ''}`} />
-                  {isLoadingMore ? 'Loading...' : `Show 25 More Leads (of ${filteredAll.length - displayMentions.length} remaining)`}
-                </Button>
+                  {isLoadingMore ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
+                  {isLoadingMore ? 'Loading...' : `Load ${Math.min(MENTIONS_PER_PAGE, filteredAll.length - displayMentions.length)} more`}
+                </button>
               </div>
             )}
           </>
-        )}
-        {!redditAuth.isAuthenticated && (
-          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-md">
-            <div className="flex items-center gap-2 text-amber-800">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                <line x1="12" y1="9" x2="12" y2="13"></line>
-                <line x1="12" y1="17" x2="12.01" y2="17"></line>
-              </svg>
-              <span className="text-sm font-medium">
-                Connect your Reddit account to post comments directly
-              </span>
-              <Button
-                size="sm"
-                className="ml-auto bg-[hsl(var(--primary))] hover:bg-[hsl(var(--primary))]/90 text-xs"
-                onClick={() => redditAuth.ensureRedditConnection()}
-              >
-                Connect
-              </Button>
-            </div>
-          </div>
         )}
       </div>
     </PaymentGuard>
