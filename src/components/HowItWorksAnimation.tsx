@@ -13,7 +13,7 @@ export function HowItWorksAnimation() {
   }, []);
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       <svg
         viewBox="0 0 800 260"
         fill="none"
@@ -129,7 +129,22 @@ export function HowItWorksAnimation() {
           <circle cx="510" cy="90" r="9" fill={step === 2 ? '#FF4500' : '#d1d5db'} style={{ transition: 'fill 0.6s ease' }}>
             {step === 2 && <animate attributeName="r" values="9;10;9" dur="2s" repeatCount="indefinite" />}
           </circle>
-          <text x="510" y="93.5" textAnchor="middle" fontSize="9" fill="white" fontFamily="system-ui" fontWeight="700">R</text>
+          {/* Reddit Snoo logo */}
+          <g transform="translate(501.5, 82)">
+            {/* Snoo head */}
+            <ellipse cx="8.5" cy="7.5" rx="7" ry="6" fill="white"/>
+            {/* Ears */}
+            <circle cx="2.5" cy="3" r="2" fill="white"/>
+            <circle cx="14.5" cy="3" r="2" fill="white"/>
+            {/* Eyes */}
+            <circle cx="5.5" cy="7" r="1.5" fill="#FF4500"/>
+            <circle cx="11.5" cy="7" r="1.5" fill="#FF4500"/>
+            {/* Antenna */}
+            <line x1="8.5" y1="1.5" x2="12" y2="-2" stroke="white" strokeWidth="1" strokeLinecap="round"/>
+            <circle cx="12" cy="-2.5" r="1.2" fill="#FF4500" stroke="white" strokeWidth="0.5"/>
+            {/* Smile */}
+            <path d="M5.5 10 Q8.5 12.5 11.5 10" stroke="#FF4500" strokeWidth="0.8" fill="none" strokeLinecap="round"/>
+          </g>
           {/* X icon */}
           <circle cx="535" cy="90" r="9" fill={step === 2 ? '#111827' : '#d1d5db'} style={{ transition: 'fill 0.6s ease' }}>
             {step === 2 && <animate attributeName="r" values="9;10;9" dur="2s" begin="0.3s" repeatCount="indefinite" />}
