@@ -50,7 +50,7 @@ export const metadata: Metadata = {
     siteName: 'SneakyGuy',
     images: [
       {
-        url: 'https://www.sneakyguy.com/images/hero_image_for_landingpage.png',
+        url: 'https://www.sneakyguy.com/images/og-image.png',
         width: 1200,
         height: 630,
         alt: 'SneakyGuy Reddit Lead Machine',
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SneakyGuy | 24/7 Reddit Lead Machine',
     description: 'Get Reddit leads on autopilot while you sleep.',
-    images: ['https://www.sneakyguy.com/images/hero_image_for_landingpage.png'],
+    images: ['https://www.sneakyguy.com/images/og-image.png'],
     creator: '@snow_stark17',
   },
   verification: {
