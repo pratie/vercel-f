@@ -17,7 +17,7 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 bg-gradient-to-br from-[#fff5f2] via-white to-[#f0f7ff]">
+      <main className="flex-1 bg-[#fafafa]">
         <Navbar />
         {children}
       </main>

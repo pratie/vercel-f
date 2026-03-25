@@ -295,7 +295,7 @@ export default function ProjectsPage() {
             </div>
             <div className={`grid ${view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-4`}>
               {Array.from({ length: view === 'grid' ? 6 : 3 }).map((_, i) => (
-                <div key={i} className="rounded-xl border border-gray-100 bg-white p-5 animate-pulse">
+                <div key={i} className="rounded-xl bg-white p-5 animate-pulse shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06)]">
                   <div className="h-4 w-32 bg-gray-100 rounded mb-3" />
                   <div className="h-3 w-full bg-gray-50 rounded mb-2" />
                   <div className="h-3 w-2/3 bg-gray-50 rounded" />
