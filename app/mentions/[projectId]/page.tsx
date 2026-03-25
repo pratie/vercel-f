@@ -456,7 +456,7 @@ export default function MentionsPage() {
 
         {/* Scanning Status */}
         {analysisStatus === 'scanning' && (
-          <div className="mb-6 p-4 bg-white rounded-xl shadow-[0px_0px_0px_1px_rgba(249,115,22,0.15),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)]">
+          <div className="mb-6 p-4 bg-white rounded-2xl shadow-[0_1px_3px_rgba(249,115,22,0.08),0_0_0_1px_rgba(249,115,22,0.1)]">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-3">
                 <div className="p-2 bg-orange-50 rounded-lg">
@@ -480,7 +480,7 @@ export default function MentionsPage() {
 
         {/* Reddit Connect Warning */}
         {!redditAuth.isAuthenticated && !isLoading && allMentions.length > 0 && (
-          <div className="mb-4 flex items-center gap-3 p-3 bg-amber-50 rounded-lg shadow-[0_0_0_1px_rgba(217,119,6,0.12)]">
+          <div className="mb-4 flex items-center gap-3 p-3 bg-amber-50 rounded-xl shadow-[0_1px_2px_rgba(217,119,6,0.06),0_0_0_1px_rgba(217,119,6,0.1)]">
             <span className="text-xs text-amber-800 font-medium flex-1">
               Connect your Reddit account to post comments directly.
             </span>
@@ -562,7 +562,7 @@ export default function MentionsPage() {
             <p className="text-xs text-gray-400">Loading leads...</p>
           </div>
         ) : allMentions.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06)]">
+          <div className="text-center py-16 bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]">
             <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center mx-auto mb-3 text-gray-400">
               <Search className="h-5 w-5" />
             </div>
@@ -570,7 +570,7 @@ export default function MentionsPage() {
             <p className="text-xs text-gray-400">Click Refresh to scan Reddit for leads.</p>
           </div>
         ) : displayMentions.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06)]">
+          <div className="text-center py-12 bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]">
             <p className="text-sm text-gray-500">No results match your filters.</p>
           </div>
         ) : (
@@ -583,13 +583,14 @@ export default function MentionsPage() {
                 return (
                   <div
                     key={mention.id}
+                    style={{ WebkitFontSmoothing: 'antialiased' } as any}
                     className={`
-                      bg-white rounded-xl transition-[box-shadow] duration-200 overflow-hidden
+                      bg-white rounded-2xl transition-[box-shadow,transform] duration-300 ease-out overflow-hidden
                       ${isHighIntent
-                        ? 'shadow-[0px_0px_0px_1px_rgba(249,115,22,0.15),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)]'
-                        : 'shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)]'}
-                      ${viewedPosts.has(mention.id) ? 'opacity-75' : ''}
-                      hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_4px_16px_-4px_rgba(0,0,0,0.1)]
+                        ? 'shadow-[0_1px_3px_rgba(249,115,22,0.1),0_0_0_1px_rgba(249,115,22,0.08)]'
+                        : 'shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]'}
+                      ${viewedPosts.has(mention.id) ? 'opacity-70' : ''}
+                      hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.06)] hover:-translate-y-px
                     `}
                   >
                     {/* High intent indicator */}
@@ -633,7 +634,7 @@ export default function MentionsPage() {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-[13px] sm:text-sm font-medium text-gray-900 leading-snug mb-2">
+                      <h3 className="text-[13px] sm:text-sm font-medium text-gray-900 leading-snug mb-2" style={{ textWrap: 'pretty' } as any}>
                         <span dangerouslySetInnerHTML={{ __html: highlightKeywords(mention.title, mention.matching_keywords) }} />
                       </h3>
 
@@ -695,7 +696,7 @@ export default function MentionsPage() {
 
                       {/* Generated Reply */}
                       {generatedReplies[mention.id] && (
-                        <div className="mt-3 rounded-lg overflow-hidden bg-gray-50/50 shadow-[0_0_0_1px_rgba(0,0,0,0.06)]">
+                        <div className="mt-3 rounded-xl overflow-hidden bg-gray-50/50 shadow-[0_1px_2px_rgba(0,0,0,0.04),0_0_0_1px_rgba(0,0,0,0.05)]">
                           <div className="px-4 py-2.5 border-b border-gray-100 flex items-center justify-between">
                             <span className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Generated Reply</span>
                             <button

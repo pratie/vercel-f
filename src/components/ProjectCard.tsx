@@ -84,13 +84,13 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
   };
 
   return (
-    <div className="w-full group">
-      <div className="w-full bg-white rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)] hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_4px_16px_-4px_rgba(0,0,0,0.1)] transition-[box-shadow,transform] duration-300 overflow-hidden">
+    <div className="w-full group" style={{ WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' } as any}>
+      <div className="w-full bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-[box-shadow,transform] duration-300 ease-out overflow-hidden">
         {/* Header */}
         <div className="p-5 pb-3">
           <div className="flex justify-between items-start">
             <div className="flex flex-col gap-1.5 min-w-0">
-              <h3 className="text-base font-semibold text-gray-900 tracking-tight truncate">
+              <h3 className="text-base font-semibold text-gray-900 tracking-tight truncate" style={{ textWrap: 'balance' } as any}>
                 {project.name}
               </h3>
               {project.analysis_status === 'scanning' ? (
@@ -156,7 +156,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
               {(showAllKeywords ? project.keywords : project.keywords.slice(0, 5)).map((keyword, index) => (
                 <span
                   key={index}
-                  className="px-2 py-0.5 rounded-md bg-gray-50 text-gray-500 border border-gray-100 text-[10px] font-medium"
+                  className="px-2 py-0.5 rounded-md bg-gray-50 text-gray-500 shadow-[0_0_0_1px_rgba(0,0,0,0.04)] text-[10px] font-medium"
                 >
                   {keyword}
                 </span>
@@ -183,7 +183,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
               {(showAllSubreddits ? project.subreddits : project.subreddits.slice(0, 5)).map((subreddit, index) => (
                 <span
                   key={index}
-                  className="px-2 py-0.5 rounded-md bg-blue-50/60 text-blue-600 border border-blue-100/50 text-[10px] font-medium"
+                  className="px-2 py-0.5 rounded-md bg-blue-50/60 text-blue-600 shadow-[0_0_0_1px_rgba(59,130,246,0.1)] text-[10px] font-medium"
                 >
                   r/{subreddit}
                 </span>
@@ -199,7 +199,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         <div className="px-5 pb-5">
           <Button
             onClick={handleViewMentions}
-            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-lg transition-[background-color,box-shadow,scale] shadow-sm hover:shadow-md group"
+            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.15)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.25)] group"
             disabled={loading}
           >
             {loading ? (

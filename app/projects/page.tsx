@@ -187,11 +187,11 @@ export default function ProjectsPage() {
         {/* URL Input Hero CTA */}
         {hasPaid && paymentStatusChecked && !isLoading && (
           <div className="mb-8">
-            <div className="bg-white rounded-xl p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)] hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_4px_16px_-4px_rgba(0,0,0,0.1)] transition-[box-shadow] duration-300">
+            <div className="bg-white rounded-2xl p-6 shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.06)] transition-[box-shadow] duration-300 ease-out" style={{ WebkitFontSmoothing: 'antialiased' } as any}>
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="flex-1 min-w-0">
-                  <h2 className="text-sm font-semibold text-gray-900 mb-0.5">Start monitoring a new brand</h2>
-                  <p className="text-xs text-gray-400">Paste any website URL — we'll extract brand info and generate keywords automatically.</p>
+                  <h2 className="text-sm font-semibold text-gray-900 mb-0.5" style={{ textWrap: 'balance' } as any}>Start monitoring a new brand</h2>
+                  <p className="text-xs text-gray-400" style={{ textWrap: 'pretty' } as any}>Paste any website URL — we'll extract brand info and generate keywords automatically.</p>
                 </div>
               </div>
               <div className="mt-4 flex gap-2">
@@ -208,7 +208,7 @@ export default function ProjectsPage() {
                 <button
                   onClick={handleUrlSubmit}
                   disabled={!urlInput.trim()}
-                  className="h-11 px-5 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-[background-color,box-shadow,scale] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shrink-0"
+                  className="h-11 px-5 rounded-xl bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.15)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.25)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shrink-0"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span className="hidden sm:inline">Analyze</span>
@@ -231,8 +231,8 @@ export default function ProjectsPage() {
         <div className="mb-6">
           <div className="flex items-center justify-between mb-5">
             <div>
-              <h1 className="text-xl font-bold text-gray-900 tracking-tight">Projects</h1>
-              <p className="text-xs text-gray-400 mt-0.5">Manage your Reddit monitoring projects</p>
+              <h1 className="text-xl font-bold text-gray-900 tracking-tight" style={{ WebkitFontSmoothing: 'antialiased' } as any}>Projects</h1>
+              <p className="text-xs text-gray-400 mt-0.5" style={{ textWrap: 'pretty' } as any}>Manage your Reddit monitoring projects</p>
             </div>
             {!hasPaid && paymentStatusChecked && (
               <button
@@ -295,7 +295,7 @@ export default function ProjectsPage() {
             </div>
             <div className={`grid ${view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-4`}>
               {Array.from({ length: view === 'grid' ? 6 : 3 }).map((_, i) => (
-                <div key={i} className="rounded-xl bg-white p-5 animate-pulse shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06)]">
+                <div key={i} className="rounded-2xl bg-white p-5 animate-pulse shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]">
                   <div className="h-4 w-32 bg-gray-100 rounded mb-3" />
                   <div className="h-3 w-full bg-gray-50 rounded mb-2" />
                   <div className="h-3 w-2/3 bg-gray-50 rounded" />

@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Font smoothing for macOS — sharper text rendering */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
