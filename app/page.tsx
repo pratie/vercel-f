@@ -158,15 +158,16 @@ export default function LandingPage() {
 
             {/* Headline */}
             <motion.h1 variants={fadeUp} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-[5.25rem] font-extrabold tracking-[-0.035em] text-gray-950 mb-6 leading-[1.05]">
-              Find leads on{' '}
+              Find{' '}
               <span className="inline-flex items-baseline gap-2 sm:gap-3">
                 <IconBrandReddit className="h-10 sm:h-14 md:h-16 lg:h-[4.5rem] w-auto text-[#FF4500] inline-block relative top-1 sm:top-1.5 no-outline" />
                 Reddit
               </span>
+              {' '}leads
               <br />
-              without getting{' '}
+              while you{' '}
               <span className="relative inline-block">
-                <span className="relative z-10">banned.</span>
+                <span className="relative z-10">sleep.</span>
                 <span className="absolute bottom-1 sm:bottom-2 left-0 right-0 h-[0.35em] bg-orange-300/50 -z-0 rounded-sm" />
               </span>
             </motion.h1>
