@@ -485,7 +485,7 @@ export default function MentionsPage() {
             </span>
             <Button
               size="sm"
-              className="bg-gray-900 hover:bg-gray-800 text-white text-xs h-7 px-3"
+              className="bg-orange-500 hover:bg-orange-600 text-white text-xs h-7 px-3 shadow-[0_2px_8px_-2px_rgba(234,88,12,0.4)]"
               onClick={() => redditAuth.ensureRedditConnection()}
             >
               Connect
@@ -544,13 +544,13 @@ export default function MentionsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search leads..."
-                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-gray-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
+                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-gray-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                 />
               </div>
               <select
                 value={selectedSubreddit}
                 onChange={(e) => setSelectedSubreddit(e.target.value)}
-                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/10"
               >
                 <option value="all">All subreddits</option>
                 {availableSubreddits.map(sr => <option key={sr} value={sr}>r/{sr}</option>)}
@@ -558,7 +558,7 @@ export default function MentionsPage() {
               <select
                 value={selectedIntent}
                 onChange={(e) => setSelectedIntent(e.target.value)}
-                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/10"
               >
                 <option value="all">All intents</option>
                 {availableIntents.map(int => <option key={int} value={int}>{int}</option>)}
@@ -566,7 +566,7 @@ export default function MentionsPage() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value as any)}
-                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-900/10"
+                className="h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/10"
               >
                 <option value="new">Newest</option>
                 <option value="comments">Most comments</option>
@@ -748,7 +748,7 @@ export default function MentionsPage() {
                               <div className="space-y-2">
                                 <textarea
                                   autoFocus
-                                  className="w-full border border-gray-200 rounded-lg p-3 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
+                                  className="w-full border border-gray-200 rounded-lg p-3 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
                                   rows={4}
                                   value={editedReplies[mention.id] || ''}
                                   onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
@@ -765,7 +765,7 @@ export default function MentionsPage() {
                                   <Button
                                     size="sm"
                                     onClick={() => { setGeneratedReplies(prev => ({ ...prev, [mention.id]: editedReplies[mention.id] || generatedReplies[mention.id] })); setEditingReplyId(null); }}
-                                    className="text-xs h-7 px-3 bg-gray-900 hover:bg-gray-800 text-white"
+                                    className="text-xs h-7 px-3 bg-orange-500 hover:bg-orange-600 text-white shadow-[0_2px_8px_-2px_rgba(234,88,12,0.3)]"
                                   >
                                     Save
                                   </Button>
@@ -811,7 +811,7 @@ export default function MentionsPage() {
                                     ? 'bg-green-600 text-white'
                                     : isPosting === mention.id
                                     ? 'bg-gray-100 text-gray-400'
-                                    : 'bg-gray-900 hover:bg-gray-800 text-white'
+                                    : 'bg-orange-500 hover:bg-orange-600 text-white shadow-[0_2px_8px_-2px_rgba(234,88,12,0.3)]'
                                 }`}
                               >
                                 {isPosting === mention.id ? (

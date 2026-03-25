@@ -64,7 +64,7 @@ export function Sidebar() {
       {/* Mobile toggle */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-gray-900 text-white shadow-lg"
+        className="md:hidden fixed top-3 left-3 z-50 p-2 rounded-lg bg-orange-500 text-white shadow-lg shadow-orange-500/20"
         aria-label={isOpen ? 'Close menu' : 'Open menu'}
       >
         {isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -125,7 +125,7 @@ export function Sidebar() {
                   "flex items-center rounded-lg text-[13px] font-medium transition-[color,background-color] duration-150",
                   collapsed && !isMobile ? "justify-center p-2.5" : "gap-2.5 px-3 py-2",
                   active
-                    ? "bg-gray-900 text-white shadow-sm"
+                    ? "bg-orange-500 text-white shadow-[0_2px_8px_-2px_rgba(234,88,12,0.4)]"
                     : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                 )}
               >

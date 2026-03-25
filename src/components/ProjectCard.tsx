@@ -199,7 +199,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         <div className="px-5 pb-5">
           <Button
             onClick={handleViewMentions}
-            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.15)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.25)] group"
+            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.2)] group"
             disabled={loading}
           >
             {loading ? (
