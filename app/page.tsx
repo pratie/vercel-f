@@ -87,7 +87,7 @@ export default function LandingPage() {
       <header
         className="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-300"
         style={{
-          backgroundColor: `rgba(255,255,255,${navOpacity * 0.85})`,
+          backgroundColor: `rgba(250,250,248,${navOpacity * 0.9})`,
           backdropFilter: navOpacity > 0 ? 'blur(20px) saturate(180%)' : 'none',
           borderBottom: navOpacity > 0.5 ? '1px solid rgba(0,0,0,0.04)' : '1px solid transparent',
         }}
@@ -136,84 +136,82 @@ export default function LandingPage() {
       </header>
 
       {/* ───── HERO ───── */}
-      <section className="relative pt-28 pb-16 md:pt-40 md:pb-24 px-6 overflow-hidden">
-        {/* Subtle gradient orbs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[600px] bg-gradient-to-b from-orange-50/80 via-orange-50/30 to-transparent rounded-full blur-3xl -z-10" />
-        <div className="absolute top-20 right-0 w-[400px] h-[400px] bg-purple-50/40 rounded-full blur-3xl -z-10" />
+      <section className="relative pt-28 pb-16 md:pt-36 md:pb-24 px-6 overflow-hidden bg-[#FAFAF8]">
+        {/* Subtle warm gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-orange-50/40 via-[#FAFAF8] to-white -z-10" />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[600px] bg-orange-100/20 rounded-full blur-[120px] -z-10" />
+        <div className="absolute top-10 right-1/4 w-[400px] h-[400px] bg-amber-50/30 rounded-full blur-[100px] -z-10" />
 
-        <div className="max-w-4xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <motion.div initial="hidden" animate="show" variants={stagger}>
 
-            {/* Badge */}
-            <motion.div variants={fadeUp} className="flex justify-center mb-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-50 border border-orange-100/80 text-[12px] font-semibold text-orange-700 tracking-wide uppercase">
-                <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
+            {/* Activity Badge */}
+            <motion.div variants={fadeUp} className="flex justify-center mb-8">
+              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200/60 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.06)] text-[13px] font-medium text-gray-600">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-500 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500" />
                 </span>
-                AI-Powered Reddit Lead Generation
+                12 founders joined this week!
               </div>
             </motion.div>
 
             {/* Headline */}
-            <motion.h1 variants={fadeUp} className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold tracking-[-0.04em] text-gray-950 mb-6 leading-[1.05]">
-              Turn Reddit into your{' '}
+            <motion.h1 variants={fadeUp} className="text-[2.75rem] sm:text-6xl md:text-7xl lg:text-[5.25rem] font-extrabold tracking-[-0.035em] text-gray-950 mb-6 leading-[1.05]">
+              Find leads on{' '}
+              <span className="inline-flex items-baseline gap-2 sm:gap-3">
+                <IconBrandReddit className="h-10 sm:h-14 md:h-16 lg:h-[4.5rem] w-auto text-[#FF4500] inline-block relative top-1 sm:top-1.5 no-outline" />
+                Reddit
+              </span>
+              <br />
+              without getting{' '}
               <span className="relative inline-block">
-                <span className="relative z-10 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 animate-gradient-text">
-                  #1 growth channel
-                </span>
+                <span className="relative z-10">banned.</span>
+                <span className="absolute bottom-1 sm:bottom-2 left-0 right-0 h-[0.35em] bg-orange-300/50 -z-0 rounded-sm" />
               </span>
             </motion.h1>
 
             {/* Subtitle */}
-            <motion.p variants={fadeUp} className="text-base sm:text-lg text-gray-500 mb-8 max-w-xl mx-auto leading-relaxed font-normal">
-              Monitor Reddit 24/7. Find high-intent conversations. Auto-generate authentic replies that convert readers into customers.
+            <motion.p variants={fadeUp} className="text-lg sm:text-xl text-gray-500 mb-10 max-w-2xl mx-auto leading-relaxed font-normal">
+              AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that actually convert.
             </motion.p>
 
             {/* URL Input CTA */}
-            <motion.div variants={fadeUp} className="max-w-xl mx-auto w-full">
-              <div className="flex flex-col sm:flex-row gap-2 p-2 bg-white/80 backdrop-blur-sm rounded-2xl border border-gray-200/80 shadow-[0_8px_40px_-12px_rgba(0,0,0,0.12)]">
+            <motion.div variants={fadeUp} className="max-w-lg mx-auto w-full">
+              <div className="flex flex-col sm:flex-row gap-2 p-2.5 bg-white rounded-full border border-gray-200/80 shadow-[0_4px_32px_-8px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.03)]">
                 <div className="relative flex-1">
-                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                  <Globe className="absolute left-4 top-1/2 -translate-y-1/2 h-[18px] w-[18px] text-gray-400" />
                   <input
                     value={heroUrl}
                     onChange={(e) => setHeroUrl(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleHeroUrlSubmit()}
-                    placeholder="Paste your website URL..."
-                    className="w-full h-12 pl-10 pr-4 rounded-xl bg-transparent text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none"
+                    placeholder="website.com"
+                    className="w-full h-12 pl-11 pr-4 rounded-full bg-transparent text-[15px] text-gray-900 placeholder:text-gray-400 focus:outline-none"
                   />
                 </div>
                 <Button
                   ref={ctaRef}
-                  className="relative overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 hover:from-orange-400 hover:via-orange-500 hover:to-orange-600 text-white px-6 h-12 rounded-xl text-sm font-semibold shadow-[0_4px_24px_-4px_rgba(234,88,12,0.5)] hover:shadow-[0_8px_32px_-4px_rgba(234,88,12,0.6)] transition-[box-shadow,scale,background] duration-300 flex items-center justify-center gap-2 group shrink-0 border border-orange-400/30"
+                  className="bg-orange-500 hover:bg-orange-600 text-white px-7 h-12 rounded-full text-[15px] font-semibold shadow-[0_4px_16px_-2px_rgba(234,88,12,0.4)] hover:shadow-[0_6px_24px_-2px_rgba(234,88,12,0.5)] transition-[box-shadow,background-color,scale] duration-200 flex items-center justify-center gap-2 group shrink-0"
                   onClick={handleHeroUrlSubmit}
                 >
-                  <span className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.12] pointer-events-none" />
-                  <Sparkles className="h-4 w-4" />
                   Find My Leads
-                  <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                 </Button>
               </div>
-              <p className="text-[11px] text-gray-400 mt-3 text-center">
-                Free to try — we'll analyze your site and show you Reddit leads in seconds
-              </p>
             </motion.div>
 
-            {/* Social proof mini */}
-            <motion.div variants={fadeUp} className="mt-8 flex items-center justify-center gap-3">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="w-7 h-7 rounded-full border-2 border-white bg-gray-100 overflow-hidden shadow-sm">
-                    <Image src={`https://i.pravatar.cc/100?img=${i + 10}`} alt="" width={28} height={28} />
+            {/* Social proof - bigger avatars */}
+            <motion.div variants={fadeUp} className="mt-10 flex flex-col items-center gap-3">
+              <div className="flex -space-x-3">
+                {[11, 12, 13, 14, 15, 16, 17].map((i) => (
+                  <div key={i} className="w-10 h-10 rounded-full border-[2.5px] border-[#FAFAF8] bg-gray-100 overflow-hidden shadow-sm">
+                    <Image src={`https://i.pravatar.cc/100?img=${i}`} alt="" width={40} height={40} className="no-outline" />
                   </div>
                 ))}
               </div>
-              <div className="flex items-center gap-1.5">
-                <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(i => <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />)}
-                </div>
-                <span className="text-xs text-gray-500 font-medium">Trusted by <span className="text-gray-900 font-semibold tabular-nums">100+</span> founders</span>
-              </div>
+              <span className="text-sm text-gray-500 font-medium">
+                Joined by <span className="text-gray-900 font-bold tabular-nums">100+</span> founders building in public
+              </span>
             </motion.div>
           </motion.div>
 
@@ -221,7 +219,7 @@ export default function LandingPage() {
           <motion.div
             initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: 0.8, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
             className="mt-16 relative"
           >
             <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent z-10 h-full pointer-events-none" />
@@ -243,7 +241,7 @@ export default function LandingPage() {
                 alt="SneakyGuy Dashboard"
                 width={1200}
                 height={675}
-                className="w-full h-auto"
+                className="w-full h-auto no-outline"
                 priority
               />
             </div>

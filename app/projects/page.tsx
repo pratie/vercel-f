@@ -187,7 +187,7 @@ export default function ProjectsPage() {
         {/* URL Input Hero CTA */}
         {hasPaid && paymentStatusChecked && !isLoading && (
           <div className="mb-8">
-            <div className="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-lg hover:shadow-gray-100/50 transition-[box-shadow] duration-300">
+            <div className="bg-white rounded-xl p-6 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)] hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_4px_16px_-4px_rgba(0,0,0,0.1)] transition-[box-shadow] duration-300">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="flex-1 min-w-0">
                   <h2 className="text-sm font-semibold text-gray-900 mb-0.5">Start monitoring a new brand</h2>
