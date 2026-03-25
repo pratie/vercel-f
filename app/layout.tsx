@@ -38,14 +38,14 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: 'SneakyGuy | 24/7 Reddit Lead Machine',
-  description: 'Never miss a relevant Reddit mention again. Track keywords and generate quality leads with AI-powered automation.',
+  description: 'AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that actually convert. Get leads on autopilot while you sleep.',
   icons: {
     icon: '/favicon.ico',
   },
   metadataBase: new URL('https://www.sneakyguy.com'),
   openGraph: {
     title: 'SneakyGuy | 24/7 Reddit Lead Machine',
-    description: 'Track keywords and generate quality leads on Reddit automatically.',
+    description: 'AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that actually convert.',
     url: 'https://www.sneakyguy.com',
     siteName: 'SneakyGuy',
     images: [
@@ -62,7 +62,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'SneakyGuy | 24/7 Reddit Lead Machine',
-    description: 'Get Reddit leads on autopilot while you sleep.',
+    description: 'AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that convert.',
     images: ['https://www.sneakyguy.com/images/og-image.png'],
     creator: '@snow_stark17',
   },
