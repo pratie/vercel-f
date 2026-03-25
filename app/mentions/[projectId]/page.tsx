@@ -5,7 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Download, CheckCircle, RefreshCw, Loader2, Search, Zap, Sparkles, Check, TrendingUp, ExternalLink, ChevronDown, ChevronUp, Copy, X, Edit3 } from 'lucide-react';
+import { ArrowLeft, MessageSquare, ArrowUpRight, Calendar, Target, Download, CheckCircle, RefreshCw, Loader2, Search, Zap, Sparkles, Check, TrendingUp, ExternalLink, ChevronDown, ChevronUp, Copy, X, Edit3, BarChart3 } from 'lucide-react';
 import { useRouter, useParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api } from '@/lib/api';
@@ -13,7 +13,6 @@ import { toast, Toaster } from 'sonner';
 import { checkRefreshRateLimit, formatTimeRemaining } from '@/lib/rateLimit';
 import { useRedditAuthStore } from '@/lib/redditAuth';
 import { PaymentGuard } from '@/components/PaymentGuard';
-import { MentionsAnalytics } from '@/components/MentionsAnalytics';
 
 
 interface RawMention {
@@ -106,7 +105,6 @@ export default function MentionsPage() {
   const [selectedSubreddit, setSelectedSubreddit] = useState('all');
   const [selectedIntent, setSelectedIntent] = useState('all');
   const [sortBy, setSortBy] = useState<'new' | 'comments' | 'relevance'>('new');
-  const [showAnalytics, setShowAnalytics] = useState(true);
   const [allMentions, setAllMentions] = useState<RedditMention[]>([]);
   const [visibleCount, setVisibleCount] = useState(MENTIONS_PER_PAGE);
   const [analysisStatus, setAnalysisStatus] = useState<'idle' | 'scanning' | 'completed' | 'failed'>('idle');
@@ -437,10 +435,11 @@ export default function MentionsPage() {
               </button>
 
               <button
-                onClick={() => setShowAnalytics(!showAnalytics)}
-                className={`flex items-center gap-1.5 px-3 h-8 rounded-lg border text-xs font-medium transition-[background-color,color,border-color] ${showAnalytics ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+                onClick={() => router.push(`/mentions/${projectId}/analytics`)}
+                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color]"
               >
-                Insights
+                <BarChart3 className="h-3 w-3" />
+                Analytics
               </button>
 
               <button
@@ -494,10 +493,45 @@ export default function MentionsPage() {
           </div>
         )}
 
-        {/* Analytics */}
-        {!isLoading && project && showAnalytics && (
-          <MentionsAnalytics mentions={allMentions} keywords={project.keywords || []} />
-        )}
+        {/* Compact Analytics Summary */}
+        {!isLoading && allMentions.length > 0 && (() => {
+          const avgRelevance = Math.round(allMentions.reduce((acc, m) => acc + (m.relevance_score || 0), 0) / allMentions.length);
+          const highIntent = allMentions.filter(m =>
+            m.intent?.toLowerCase().includes('purchase') ||
+            m.intent?.toLowerCase().includes('solution') ||
+            m.intent?.toLowerCase().includes('recommendation')
+          ).length;
+          const topSr = Object.entries(allMentions.reduce((acc, m) => { acc[m.subreddit] = (acc[m.subreddit] || 0) + 1; return acc; }, {} as Record<string, number>)).sort((a, b) => b[1] - a[1])[0];
+          return (
+            <button
+              onClick={() => router.push(`/mentions/${projectId}/analytics`)}
+              className="mb-5 w-full flex items-center gap-4 sm:gap-6 px-4 py-3 bg-white rounded-xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_16px_-4px_rgba(0,0,0,0.1),0_0_0_1px_rgba(0,0,0,0.06)] transition-[box-shadow] duration-300 text-left group"
+            >
+              <div className="flex items-center gap-1.5">
+                <Target className="h-3 w-3 text-emerald-500" />
+                <span className="text-xs text-gray-500">Relevance</span>
+                <span className="text-xs font-bold text-gray-900 tabular-nums" style={{ fontVariantNumeric: 'tabular-nums' }}>{avgRelevance}%</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <Zap className="h-3 w-3 text-orange-500" />
+                <span className="text-xs text-gray-500">High Intent</span>
+                <span className="text-xs font-bold text-gray-900 tabular-nums" style={{ fontVariantNumeric: 'tabular-nums' }}>{highIntent}</span>
+              </div>
+              {topSr && (
+                <div className="hidden sm:flex items-center gap-1.5">
+                  <TrendingUp className="h-3 w-3 text-violet-500" />
+                  <span className="text-xs text-gray-500">Top</span>
+                  <span className="text-xs font-bold text-gray-900">r/{topSr[0]}</span>
+                </div>
+              )}
+              <div className="ml-auto flex items-center gap-1 text-[11px] font-medium text-gray-400 group-hover:text-gray-600 transition-colors">
+                <BarChart3 className="h-3 w-3" />
+                <span className="hidden sm:inline">View Analytics</span>
+                <ArrowUpRight className="h-3 w-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+              </div>
+            </button>
+          );
+        })()}
 
         {/* Filters */}
         {!isLoading && allMentions.length > 0 && (
