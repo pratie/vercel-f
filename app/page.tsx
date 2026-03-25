@@ -95,8 +95,8 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2 group">
-              <Image src="/logo.png" alt="SneakyGuy" width={28} height={28} className="group-hover:scale-110 transition-transform" />
-              <span className="font-bold text-lg tracking-tight text-gray-900">SneakyGuy</span>
+              <Image src="/logo.png" alt="SneakyGuy" width={34} height={34} className="group-hover:scale-110 transition-transform" />
+              <span className="font-bold text-xl tracking-tight text-gray-900">SneakyGuy</span>
             </Link>
 
             <nav className="hidden md:flex items-center gap-1">

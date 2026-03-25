@@ -62,8 +62,8 @@ export function Sidebar() {
         {/* Logo */}
         <div className="px-5 h-14 flex items-center border-b border-gray-50">
           <Link href="/projects" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="SneakyGuy" width={24} height={24} priority />
-            <span className="font-bold text-sm text-gray-900 tracking-tight">SneakyGuy</span>
+            <Image src="/logo.png" alt="SneakyGuy" width={28} height={28} priority />
+            <span className="font-bold text-[15px] text-gray-900 tracking-tight">SneakyGuy</span>
           </Link>
         </div>
 
