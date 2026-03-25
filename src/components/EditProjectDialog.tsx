@@ -99,7 +99,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
               onChange={(e) => setName(e.target.value)}
               disabled={isSaving}
               placeholder="Enter project name"
-              className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all disabled:opacity-50"
+              className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] disabled:opacity-50"
             />
           </div>
 
@@ -114,7 +114,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
               disabled={isSaving}
               placeholder="Describe your project's purpose and goals"
               rows={3}
-              className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all resize-none disabled:opacity-50"
+              className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none disabled:opacity-50"
             />
           </div>
 
@@ -124,7 +124,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
               <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
                 Keywords
               </label>
-              <span className="text-[10px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded tabular-nums">
                 {keywords.length}
               </span>
             </div>
@@ -155,7 +155,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
                 placeholder="Add keyword..."
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddKeyword())}
                 disabled={isSaving}
-                className="flex-1 h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all disabled:opacity-50"
+                className="flex-1 h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] disabled:opacity-50"
               />
               <button
                 onClick={handleAddKeyword}
@@ -174,7 +174,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
               <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
                 Subreddits
               </label>
-              <span className="text-[10px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">
+              <span className="text-[10px] text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded tabular-nums">
                 {subreddits.length}
               </span>
             </div>
@@ -205,7 +205,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
                 placeholder="Add subreddit..."
                 onKeyDown={(e) => e.key === 'Enter' && (e.preventDefault(), handleAddSubreddit())}
                 disabled={isSaving}
-                className="flex-1 h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all disabled:opacity-50"
+                className="flex-1 h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] disabled:opacity-50"
               />
               <button
                 onClick={handleAddSubreddit}
@@ -231,7 +231,7 @@ export function EditProjectDialog({ project, open, onOpenChange, onSave }: EditP
           <button
             onClick={handleSave}
             disabled={isSaving || !name.trim()}
-            className="flex-1 h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-all shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+            className="flex-1 h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
           >
             {isSaving ? (
               <>

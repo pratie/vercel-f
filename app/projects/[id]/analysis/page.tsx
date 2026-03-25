@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/lib/auth';
 import { Button } from '@/components/ui/button';
@@ -20,6 +20,9 @@ export default function ProjectAnalysisPage() {
   const [analyzing, setAnalyzing] = useState(false);
   const [project, setProject] = useState<Project | null>(null);
   const [posts, setPosts] = useState<RedditPost[]>([]);
+  const [streamedComments, setStreamedComments] = useState<Map<number, string>>(new Map());
+  const [streamingDone, setStreamingDone] = useState<Set<number>>(new Set());
+  const streamingIntervals = useRef<ReturnType<typeof setInterval>[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -46,6 +49,49 @@ export default function ProjectAnalysisPage() {
     fetchData();
   }, [params.id, user?.token]);
 
+  useEffect(() => {
+    return () => {
+      streamingIntervals.current.forEach(clearInterval);
+    };
+  }, []);
+
+  const startStreamingAnimation = (newPosts: RedditPost[]) => {
+    streamingIntervals.current.forEach(clearInterval);
+    streamingIntervals.current = [];
+
+    const initialMap = new Map<number, string>();
+    const initialDone = new Set<number>();
+    newPosts.forEach((post, i) => {
+      if (!post.suggested_comment) {
+        initialDone.add(i);
+      }
+      initialMap.set(i, '');
+    });
+    setStreamedComments(new Map(initialMap));
+    setStreamingDone(new Set(initialDone));
+
+    newPosts.forEach((post, index) => {
+      if (!post.suggested_comment) return;
+      const text = post.suggested_comment;
+      let charIndex = 0;
+
+      const interval = setInterval(() => {
+        charIndex += 2; // 2 chars per tick = ~100 chars/sec at 20ms
+        setStreamedComments(prev => {
+          const next = new Map(prev);
+          next.set(index, text.slice(0, charIndex));
+          return next;
+        });
+        if (charIndex >= text.length) {
+          clearInterval(interval);
+          setStreamingDone(prev => new Set(prev).add(index));
+        }
+      }, 20);
+
+      streamingIntervals.current.push(interval);
+    });
+  };
+
   const runAnalysis = async () => {
     if (!project) return;
     
@@ -59,7 +105,8 @@ export default function ProjectAnalysisPage() {
         limit: 50
       });
       setPosts(result.posts);
-      
+      startStreamingAnimation(result.posts);
+
       // Cache the results
       localStorage.setItem(`analysis_${project.id}`, JSON.stringify(result.posts));
       toast.success('Analysis completed successfully');
@@ -221,7 +268,12 @@ export default function ProjectAnalysisPage() {
                 <div className="mt-6 bg-blue-50 p-4 rounded-lg border border-blue-100">
                   <div className="text-sm font-medium text-blue-800 mb-2">Suggested Reply:</div>
                   <div className="text-gray-700 whitespace-pre-wrap">
-                    {post.suggested_comment}
+                    {streamedComments.has(index)
+                      ? streamedComments.get(index)
+                      : post.suggested_comment}
+                    {streamedComments.has(index) && !streamingDone.has(index) && (
+                      <span className="inline-block w-0.5 h-4 bg-blue-600 ml-0.5 align-middle animate-pulse" />
+                    )}
                   </div>
                 </div>
               )}

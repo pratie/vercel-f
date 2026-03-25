@@ -31,8 +31,8 @@ const testimonials = [
 ];
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 24 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } },
+  hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
+  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
 };
 
 const SocialProof: React.FC = () => (
@@ -81,7 +81,7 @@ const SocialProof: React.FC = () => (
               <Link
                 href={t.link}
                 target="_blank"
-                className="w-7 h-7 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-300 hover:text-[#1DA1F2] hover:border-blue-100 hover:bg-blue-50 transition-all"
+                className="w-7 h-7 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-300 hover:text-[#1DA1F2] hover:border-blue-100 hover:bg-blue-50 transition-[color,border-color,background-color]"
               >
                 <Twitter size={12} />
               </Link>

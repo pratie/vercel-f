@@ -94,7 +94,7 @@ export function AnalysisSection({ keywords, subreddits, onResults }: AnalysisSec
           <Button
             onClick={handleAnalysis}
             disabled={analyzing}
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white shadow-lg transition-[background-color,box-shadow,transform] duration-300 hover:shadow-xl hover:-translate-y-0.5"
           >
             {analyzing ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

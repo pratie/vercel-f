@@ -71,13 +71,13 @@ export default function LandingPage() {
   };
 
   const fadeUp = {
-    hidden: { opacity: 0, y: 24 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+    hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
+    show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } }
   };
 
   const stagger = {
     hidden: { opacity: 0 },
-    show: { opacity: 1, transition: { staggerChildren: 0.08 } }
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } }
   };
 
   return (
@@ -85,7 +85,7 @@ export default function LandingPage() {
 
       {/* ───── NAVIGATION ───── */}
       <header
-        className="fixed top-0 left-0 right-0 z-50 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-50 transition-[background-color,backdrop-filter,border-color] duration-300"
         style={{
           backgroundColor: `rgba(255,255,255,${navOpacity * 0.85})`,
           backdropFilter: navOpacity > 0 ? 'blur(20px) saturate(180%)' : 'none',
@@ -124,7 +124,7 @@ export default function LandingPage() {
                 Sign in
               </Link>
               <Button
-                className="bg-gray-900 hover:bg-gray-800 text-white text-[13px] font-semibold px-4 h-9 rounded-lg shadow-sm transition-all hover:shadow-md"
+                className="bg-gray-900 hover:bg-gray-800 text-white text-[13px] font-semibold px-4 h-9 rounded-lg shadow-sm transition-[background-color,box-shadow,scale] hover:shadow-md"
                 onClick={() => user ? router.push('/projects') : router.push('/login')}
               >
                 {user ? 'Dashboard' : 'Get Started'}
@@ -185,7 +185,7 @@ export default function LandingPage() {
                 </div>
                 <Button
                   ref={ctaRef}
-                  className="relative overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 hover:from-orange-400 hover:via-orange-500 hover:to-orange-600 text-white px-6 h-12 rounded-xl text-sm font-semibold shadow-[0_4px_24px_-4px_rgba(234,88,12,0.5)] hover:shadow-[0_8px_32px_-4px_rgba(234,88,12,0.6)] transition-all duration-300 flex items-center justify-center gap-2 group shrink-0 border border-orange-400/30"
+                  className="relative overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 hover:from-orange-400 hover:via-orange-500 hover:to-orange-600 text-white px-6 h-12 rounded-xl text-sm font-semibold shadow-[0_4px_24px_-4px_rgba(234,88,12,0.5)] hover:shadow-[0_8px_32px_-4px_rgba(234,88,12,0.6)] transition-[box-shadow,scale,background] duration-300 flex items-center justify-center gap-2 group shrink-0 border border-orange-400/30"
                   onClick={handleHeroUrlSubmit}
                 >
                   <span className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.12] pointer-events-none" />
@@ -212,15 +212,15 @@ export default function LandingPage() {
                 <div className="flex gap-0.5">
                   {[1,2,3,4,5].map(i => <Star key={i} className="h-3 w-3 fill-amber-400 text-amber-400" />)}
                 </div>
-                <span className="text-xs text-gray-500 font-medium">Trusted by <span className="text-gray-900 font-semibold">100+</span> founders</span>
+                <span className="text-xs text-gray-500 font-medium">Trusted by <span className="text-gray-900 font-semibold tabular-nums">100+</span> founders</span>
               </div>
             </motion.div>
           </motion.div>
 
           {/* Dashboard Preview */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 24, filter: 'blur(6px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ duration: 0.8, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="mt-16 relative"
           >
@@ -333,7 +333,7 @@ export default function LandingPage() {
               >
                 <div className="premium-card p-7 h-full">
                   <div className="flex items-center gap-3 mb-5">
-                    <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-all duration-300">
+                    <div className="w-10 h-10 rounded-xl bg-orange-50 border border-orange-100 flex items-center justify-center text-orange-600 group-hover:bg-orange-500 group-hover:text-white group-hover:border-orange-500 transition-[background-color,color,border-color] duration-300">
                       {item.icon}
                     </div>
                     <span className="text-[11px] font-bold text-gray-300 uppercase tracking-widest">Step {item.step}</span>
@@ -609,7 +609,7 @@ export default function LandingPage() {
                   />
                 </div>
                 <Button
-                  className="relative overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 hover:from-orange-400 hover:via-orange-500 hover:to-orange-600 text-white px-5 h-11 rounded-xl text-sm font-semibold shadow-[0_4px_24px_-4px_rgba(234,88,12,0.5)] hover:shadow-[0_8px_32px_-4px_rgba(234,88,12,0.6)] transition-all shrink-0 group border border-orange-400/30"
+                  className="relative overflow-hidden bg-gradient-to-b from-orange-500 via-orange-600 to-orange-700 hover:from-orange-400 hover:via-orange-500 hover:to-orange-600 text-white px-5 h-11 rounded-xl text-sm font-semibold shadow-[0_4px_24px_-4px_rgba(234,88,12,0.5)] hover:shadow-[0_8px_32px_-4px_rgba(234,88,12,0.6)] transition-[box-shadow,scale,background] shrink-0 group border border-orange-400/30"
                   onClick={handleHeroUrlSubmit}
                 >
                   <span className="absolute inset-0 bg-gradient-to-t from-transparent to-white/[0.12] pointer-events-none" />
@@ -663,10 +663,10 @@ export default function LandingPage() {
             <div>
               <h4 className="text-xs font-semibold text-gray-900 uppercase tracking-wider mb-3">Connect</h4>
               <div className="flex gap-3">
-                <a href="https://x.com/snow_stark17" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:border-gray-200 transition-all">
+                <a href="https://x.com/snow_stark17" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:border-gray-200 transition-[color,border-color]">
                   <Twitter size={14} />
                 </a>
-                <a href="https://www.linkedin.com/in/sneakyguyai/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:border-gray-200 transition-all">
+                <a href="https://www.linkedin.com/in/sneakyguyai/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center text-gray-400 hover:text-gray-700 hover:border-gray-200 transition-[color,border-color]">
                   <Linkedin size={14} />
                 </a>
               </div>
@@ -699,9 +699,9 @@ function MobileStickyBar({ user, router }: { user: any; router: any }) {
     <AnimatePresence>
       {show && (
         <motion.div
-          initial={{ y: 100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: 100, opacity: 0 }}
+          initial={{ y: 100, opacity: 0, filter: 'blur(4px)' }}
+          animate={{ y: 0, opacity: 1, filter: 'blur(0px)' }}
+          exit={{ y: 12, opacity: 0, filter: 'blur(4px)', transition: { duration: 0.15, ease: 'easeIn' } }}
           transition={{ type: "spring", stiffness: 260, damping: 25 }}
           className="fixed bottom-4 left-4 right-4 z-50 md:hidden"
         >

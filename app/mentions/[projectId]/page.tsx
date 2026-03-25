@@ -421,7 +421,7 @@ export default function MentionsPage() {
 
             <div className="flex items-center gap-2">
               {project && (
-                <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-md border border-green-100 text-[11px] font-semibold">
+                <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-md border border-green-100 text-[11px] font-semibold tabular-nums">
                   <TrendingUp className="h-3 w-3" />
                   {allMentions.length} leads
                 </span>
@@ -430,7 +430,7 @@ export default function MentionsPage() {
               <button
                 onClick={handleRefresh}
                 disabled={analysisStatus === 'scanning'}
-                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color] disabled:opacity-50"
               >
                 <RefreshCw className={`h-3 w-3 ${analysisStatus === 'scanning' ? 'animate-spin text-orange-500' : ''}`} />
                 {analysisStatus === 'scanning' ? 'Scanning...' : 'Refresh'}
@@ -438,14 +438,14 @@ export default function MentionsPage() {
 
               <button
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className={`flex items-center gap-1.5 px-3 h-8 rounded-lg border text-xs font-medium transition-all ${showAnalytics ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
+                className={`flex items-center gap-1.5 px-3 h-8 rounded-lg border text-xs font-medium transition-[background-color,color,border-color] ${showAnalytics ? 'bg-gray-900 text-white border-gray-900' : 'bg-white text-gray-600 border-gray-200 hover:bg-gray-50'}`}
               >
                 Insights
               </button>
 
               <button
                 onClick={exportToCSV}
-                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+                className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color]"
               >
                 <Download className="h-3 w-3" />
                 <span className="hidden sm:inline">Export</span>
@@ -467,11 +467,11 @@ export default function MentionsPage() {
                   <p className="text-xs text-gray-500">{analysisMessage || 'Finding leads based on your keywords'}</p>
                 </div>
               </div>
-              <span className="text-sm font-bold text-orange-600">{analysisProgress}%</span>
+              <span className="text-sm font-bold text-orange-600 tabular-nums">{analysisProgress}%</span>
             </div>
             <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-orange-500 rounded-full transition-all duration-500"
+                className="h-full bg-orange-500 rounded-full transition-[width] duration-500"
                 style={{ width: `${analysisProgress}%` }}
               />
             </div>
@@ -510,7 +510,7 @@ export default function MentionsPage() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search leads..."
-                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-gray-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
+                  className="w-full h-9 pl-9 pr-3 rounded-lg border border-gray-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                 />
               </div>
               <select
@@ -541,7 +541,7 @@ export default function MentionsPage() {
             </div>
             <div className="flex items-center justify-between text-[11px] text-gray-400">
               <span>
-                Showing <span className="font-medium text-gray-600">{displayMentions.length}</span> of <span className="font-medium text-gray-600">{filteredAll.length}</span> leads
+                Showing <span className="font-medium text-gray-600 tabular-nums">{displayMentions.length}</span> of <span className="font-medium text-gray-600 tabular-nums">{filteredAll.length}</span> leads
               </span>
               {hasActiveFilters && (
                 <button
@@ -584,7 +584,7 @@ export default function MentionsPage() {
                   <div
                     key={mention.id}
                     className={`
-                      bg-white rounded-xl border transition-all duration-200 overflow-hidden
+                      bg-white rounded-xl border transition-[box-shadow,border-color] duration-200 overflow-hidden
                       ${isHighIntent ? 'border-orange-100 shadow-sm' : 'border-gray-100'}
                       ${viewedPosts.has(mention.id) ? 'opacity-80' : ''}
                       hover:shadow-md hover:border-gray-200
@@ -606,7 +606,7 @@ export default function MentionsPage() {
                             {mention.intent}
                           </span>
                         )}
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${relevance.bg} flex items-center gap-1`}>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-md border ${relevance.bg} flex items-center gap-1 tabular-nums`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${relevance.dot}`} />
                           {mention.relevance_score}%
                         </span>
@@ -621,7 +621,7 @@ export default function MentionsPage() {
                             href={mention.url}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium transition-all ${viewedPosts.has(mention.id) ? 'text-gray-400 bg-gray-50' : 'text-gray-600 bg-gray-50 hover:bg-gray-100'}`}
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium transition-[background-color] ${viewedPosts.has(mention.id) ? 'text-gray-400 bg-gray-50' : 'text-gray-600 bg-gray-50 hover:bg-gray-100'}`}
                             onClick={() => handleMarkAsViewed(mention.id)}
                           >
                             {viewedPosts.has(mention.id) ? 'Viewed' : 'Open'}
@@ -641,7 +641,7 @@ export default function MentionsPage() {
                           <Calendar className="h-3 w-3" />
                           {mention.formatted_date}
                         </span>
-                        <span className="flex items-center gap-1">
+                        <span className="flex items-center gap-1 tabular-nums">
                           <MessageSquare className="h-3 w-3" />
                           {mention.num_comments}
                         </span>
@@ -675,7 +675,7 @@ export default function MentionsPage() {
                         <button
                           onClick={() => handleGenerateReply(mention)}
                           disabled={generatingReplyFor === mention.id}
-                          className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all disabled:opacity-50"
+                          className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color] disabled:opacity-50"
                         >
                           {generatingReplyFor === mention.id ? (
                             <>
@@ -711,7 +711,7 @@ export default function MentionsPage() {
                               <div className="space-y-2">
                                 <textarea
                                   autoFocus
-                                  className="w-full border border-gray-200 rounded-lg p-3 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all resize-none"
+                                  className="w-full border border-gray-200 rounded-lg p-3 text-xs text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
                                   rows={4}
                                   value={editedReplies[mention.id] || ''}
                                   onChange={e => setEditedReplies(prev => ({ ...prev, [mention.id]: e.target.value }))}
@@ -754,14 +754,14 @@ export default function MentionsPage() {
                                     toast.success('Copied & opening post...');
                                   } catch { toast.error('Failed to copy'); }
                                 }}
-                                className="flex items-center gap-1.5 px-2.5 h-7 rounded-md border border-gray-200 bg-white text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-all"
+                                className="flex items-center gap-1.5 px-2.5 h-7 rounded-md border border-gray-200 bg-white text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-[background-color]"
                               >
                                 <Copy className="h-3 w-3" />
                                 Copy & Open
                               </button>
                               <button
                                 onClick={() => { setEditedReplies(prev => ({ ...prev, [mention.id]: generatedReplies[mention.id] })); setEditingReplyId(mention.id); }}
-                                className="flex items-center gap-1.5 px-2.5 h-7 rounded-md border border-gray-200 bg-white text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-all"
+                                className="flex items-center gap-1.5 px-2.5 h-7 rounded-md border border-gray-200 bg-white text-[11px] font-medium text-gray-600 hover:bg-gray-50 transition-[background-color]"
                               >
                                 <Edit3 className="h-3 w-3" />
                                 Edit
@@ -769,7 +769,7 @@ export default function MentionsPage() {
                               <button
                                 onClick={() => postComment(mention)}
                                 disabled={isPosting === mention.id || !!publishedComments[mention.id]}
-                                className={`flex items-center gap-1.5 px-3 h-7 rounded-md text-[11px] font-semibold transition-all ${
+                                className={`flex items-center gap-1.5 px-3 h-7 rounded-md text-[11px] font-semibold transition-[background-color] ${
                                   publishedComments[mention.id]
                                     ? 'bg-green-600 text-white'
                                     : isPosting === mention.id
@@ -800,7 +800,7 @@ export default function MentionsPage() {
                 <button
                   onClick={handleLoadMore}
                   disabled={isLoadingMore}
-                  className="flex items-center gap-2 px-6 h-9 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-all"
+                  className="flex items-center gap-2 px-6 h-9 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color]"
                 >
                   {isLoadingMore ? <Loader2 className="h-3 w-3 animate-spin" /> : null}
                   {isLoadingMore ? 'Loading...' : `Load ${Math.min(MENTIONS_PER_PAGE, filteredAll.length - displayMentions.length)} more`}

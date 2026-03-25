@@ -162,7 +162,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeUrl()}
                     placeholder="https://yourproduct.com"
                     autoFocus
-                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
+                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                   />
                 </div>
               </div>
@@ -170,7 +170,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               <button
                 onClick={() => handleAnalyzeUrl()}
                 disabled={!url.trim()}
-                className="w-full h-11 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full h-11 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Sparkles className="h-4 w-4" />
                 Analyze & Generate
@@ -200,7 +200,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g., Sneakyguy AI"
-                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
+                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -210,13 +210,13 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Describe what your product does and who it's for..."
                       rows={3}
-                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all resize-none"
+                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
                     />
                   </div>
                   <button
                     onClick={handleManualAnalyze}
                     disabled={!name.trim() || !description.trim()}
-                    className="w-full h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-all shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-[background-color] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Generate Keywords
@@ -269,7 +269,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
+                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -278,7 +278,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={2}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all resize-none"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
                       />
                     </div>
                     <button
@@ -310,7 +310,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
                   <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                    Keywords <span className="text-gray-300 font-normal normal-case">({keywords.length})</span>
+                    Keywords <span className="text-gray-300 font-normal normal-case tabular-nums">({keywords.length})</span>
                   </label>
                   <button
                     onClick={handleRegenerate}
@@ -318,7 +318,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     className="flex items-center gap-1 text-[11px] font-medium text-gray-400 hover:text-gray-600 disabled:opacity-40 transition-colors"
                   >
                     <RefreshCw className="h-3 w-3" />
-                    Regenerate{regenerateCount > 0 ? ` (${2 - regenerateCount})` : ''}
+                    <span className="tabular-nums">Regenerate{regenerateCount > 0 ? ` (${2 - regenerateCount})` : ''}</span>
                   </button>
                 </div>
                 <div className="flex flex-wrap gap-1.5">
@@ -339,7 +339,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               {/* Subreddits */}
               <div className="space-y-2.5">
                 <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                  Subreddits <span className="text-gray-300 font-normal normal-case">({subreddits.length})</span>
+                  Subreddits <span className="text-gray-300 font-normal normal-case tabular-nums">({subreddits.length})</span>
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {subreddits.map((subreddit) => (
@@ -375,7 +375,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                 <button
                   onClick={handleSubmit}
                   disabled={loading || keywords.length === 0 || !name.trim()}
-                  className="flex-1 h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-all shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

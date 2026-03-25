@@ -187,7 +187,7 @@ export default function ProjectsPage() {
         {/* URL Input Hero CTA */}
         {hasPaid && paymentStatusChecked && !isLoading && (
           <div className="mb-8">
-            <div className="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-lg hover:shadow-gray-100/50 transition-all duration-300">
+            <div className="bg-white rounded-xl border border-gray-100 p-6 hover:shadow-lg hover:shadow-gray-100/50 transition-[box-shadow] duration-300">
               <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="flex-1 min-w-0">
                   <h2 className="text-sm font-semibold text-gray-900 mb-0.5">Start monitoring a new brand</h2>
@@ -202,13 +202,13 @@ export default function ProjectsPage() {
                     onChange={(e) => setUrlInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
                     placeholder="https://yourproduct.com"
-                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
+                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                   />
                 </div>
                 <button
                   onClick={handleUrlSubmit}
                   disabled={!urlInput.trim()}
-                  className="h-11 px-5 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-all shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shrink-0"
+                  className="h-11 px-5 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-[background-color,box-shadow,scale] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shrink-0"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span className="hidden sm:inline">Analyze</span>
@@ -237,7 +237,7 @@ export default function ProjectsPage() {
             {!hasPaid && paymentStatusChecked && (
               <button
                 onClick={handleNewProject}
-                className="flex items-center gap-2 px-4 h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-lg transition-all shadow-sm hover:shadow-md"
+                className="flex items-center gap-2 px-4 h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-lg transition-[background-color,box-shadow,scale] shadow-sm hover:shadow-md"
               >
                 Upgrade
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -254,7 +254,7 @@ export default function ProjectsPage() {
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
                   placeholder="Search projects..."
-                  className="w-full pl-9 pr-3 h-9 rounded-lg border border-gray-200 bg-white text-xs placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-all"
+                  className="w-full pl-9 pr-3 h-9 rounded-lg border border-gray-200 bg-white text-xs placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
                 />
               </div>
 

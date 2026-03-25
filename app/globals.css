@@ -70,10 +70,62 @@
   * {
     @apply border-border;
   }
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
   body {
-    @apply bg-background text-foreground antialiased;
+    @apply bg-background text-foreground;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02", "cv03", "cv04";
   }
+  h1, h2, h3 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* Layered shadow borders (replaces solid borders for depth) */
+:root {
+  --shadow-border:
+    0px 0px 0px 1px rgba(0, 0, 0, 0.06),
+    0px 1px 2px -1px rgba(0, 0, 0, 0.06),
+    0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+  --shadow-border-hover:
+    0px 0px 0px 1px rgba(0, 0, 0, 0.08),
+    0px 2px 8px -2px rgba(0, 0, 0, 0.08),
+    0px 4px 12px 0px rgba(0, 0, 0, 0.06);
+}
+
+.dark {
+  --shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.08);
+  --shadow-border-hover: 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+
+/* Subtle inset outline for images */
+img:not([role="presentation"]):not(.no-outline) {
+  outline: 1px solid rgba(0, 0, 0, 0.1);
+  outline-offset: -1px;
+}
+
+/* Tabular numbers for dynamic values */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Minimum 40x40 hit area for small interactive elements */
+.min-hit-area {
+  position: relative;
+}
+.min-hit-area::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px;
+  height: 40px;
 }
 
 /* Premium noise texture overlay */
@@ -134,11 +186,13 @@
 @keyframes reveal-up {
   from {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(12px);
+    filter: blur(4px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0px);
   }
 }
 
@@ -148,10 +202,14 @@
 
 /* Premium card hover */
 .premium-card {
-  @apply relative bg-white rounded-2xl border border-gray-100 transition-all duration-500;
+  @apply relative bg-white rounded-2xl;
+  box-shadow: var(--shadow-border);
+  transition-property: box-shadow, transform;
+  transition-duration: 500ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 .premium-card:hover {
-  @apply border-gray-200 shadow-xl shadow-gray-100/50;
+  box-shadow: var(--shadow-border-hover), 0px 8px 24px -8px rgba(0, 0, 0, 0.08);
   transform: translateY(-2px);
 }
 

@@ -85,7 +85,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
   return (
     <div className="w-full group">
-      <div className="w-full bg-white border border-gray-100 rounded-xl hover:border-gray-200 hover:shadow-lg hover:shadow-gray-100/50 transition-all duration-300 overflow-hidden">
+      <div className="w-full bg-white rounded-xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)] hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_4px_16px_-4px_rgba(0,0,0,0.1)] transition-[box-shadow,transform] duration-300 overflow-hidden">
         {/* Header */}
         <div className="p-5 pb-3">
           <div className="flex justify-between items-start">
@@ -100,7 +100,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
                   </span>
                   <span className="text-[10px] font-semibold uppercase tracking-wider">
-                    Scanning {project.analysis_progress}%
+                    Scanning <span className="tabular-nums">{project.analysis_progress}%</span>
                   </span>
                 </div>
               ) : project.last_analyzed ? (
@@ -199,7 +199,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         <div className="px-5 pb-5">
           <Button
             onClick={handleViewMentions}
-            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-lg transition-all shadow-sm hover:shadow-md group"
+            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-lg transition-[background-color,box-shadow,scale] shadow-sm hover:shadow-md group"
             disabled={loading}
           >
             {loading ? (

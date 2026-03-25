@@ -37,24 +37,24 @@ export function BrandInput({ onAnalyze }: BrandInputProps) {
               placeholder="Enter your brand name"
               value={brandName}
               onChange={(e) => setBrandName(e.target.value)}
-              className="transition-all duration-200 hover:border-blue-400 focus:ring-2 focus:ring-blue-500"
+              className="transition-[border-color,box-shadow] duration-200 hover:border-blue-400 focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          
+
           <div className="space-y-2">
             <label className="text-sm font-medium text-zinc-700">Description</label>
             <Textarea
               placeholder="Describe your brand and what you'd like to analyze..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="min-h-[120px] transition-all duration-200 hover:border-blue-400 focus:ring-2 focus:ring-blue-500"
+              className="min-h-[120px] transition-[border-color,box-shadow] duration-200 hover:border-blue-400 focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <Button
             onClick={handleSubmit}
             disabled={loading || !brandName || !description}
-            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-0.5"
+            className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg transition-[background-color,box-shadow,transform] duration-300 hover:shadow-xl hover:-translate-y-0.5"
           >
             {loading ? (
               <Loader2 className="mr-2 h-4 w-4 animate-spin" />

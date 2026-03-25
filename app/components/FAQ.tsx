@@ -20,7 +20,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => (
       <span className="text-sm font-semibold text-gray-900 group-hover:text-orange-600 transition-colors pr-4">
         {question}
       </span>
-      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-all duration-200 ${isOpen ? 'bg-orange-500 border-orange-500 rotate-0' : 'bg-white border-gray-200 group-hover:border-gray-300'}`}>
+      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-[background-color,border-color,transform] duration-200 ${isOpen ? 'bg-orange-500 border-orange-500 rotate-0' : 'bg-white border-gray-200 group-hover:border-gray-300'}`}>
         {isOpen ? (
           <Minus className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
         ) : (

@@ -16,7 +16,7 @@ interface KeywordCardProps {
 }
 
 const KeywordCard = ({ keyword, stats }: KeywordCardProps) => (
-  <Card className="p-4 hover:shadow-md transition-all duration-200 bg-gradient-to-br from-white to-gray-50/50">
+  <Card className="p-4 hover:shadow-md transition-[box-shadow] duration-200 bg-gradient-to-br from-white to-gray-50/50">
     <div className="space-y-3">
       <div className="flex items-center justify-between">
         <Badge variant="secondary" className="bg-[hsl(var(--secondary))] text-[hsl(var(--primary))] hover:bg-[hsl(var(--secondary))]/80 px-3 py-1">
@@ -28,14 +28,14 @@ const KeywordCard = ({ keyword, stats }: KeywordCardProps) => (
           <Clock className="h-3.5 w-3.5 text-gray-400" />
           <div className="flex flex-col">
             <span className="text-[11px] text-gray-500">24h</span>
-            <span className="text-sm font-semibold text-gray-900">{stats.last24h}</span>
+            <span className="text-sm font-semibold text-gray-900 tabular-nums">{stats.last24h}</span>
           </div>
         </div>
         <div className="flex items-center gap-2">
           <TrendingUp className="h-3.5 w-3.5 text-gray-400" />
           <div className="flex flex-col">
             <span className="text-[11px] text-gray-500">30d</span>
-            <span className="text-sm font-semibold text-gray-900">{stats.lastMonth}</span>
+            <span className="text-sm font-semibold text-gray-900 tabular-nums">{stats.lastMonth}</span>
           </div>
         </div>
       </div>

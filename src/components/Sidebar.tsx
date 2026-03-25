@@ -55,7 +55,7 @@ export function Sidebar() {
       </button>
 
       <div className={cn(
-        "fixed md:sticky top-0 left-0 z-40 transform transition-all duration-200 ease-out",
+        "fixed md:sticky top-0 left-0 z-40 transform transition-transform duration-200 ease-out",
         "h-screen flex flex-col w-[220px] bg-white border-r border-gray-100",
         isMobile && !isOpen ? "-translate-x-full" : "translate-x-0"
       )}>
@@ -77,7 +77,7 @@ export function Sidebar() {
                 href={item.href}
                 onClick={() => isMobile && setIsOpen(false)}
                 className={cn(
-                  "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-all duration-150",
+                  "flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] font-medium transition-[color,background-color] duration-150",
                   active
                     ? "bg-gray-900 text-white shadow-sm"
                     : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"

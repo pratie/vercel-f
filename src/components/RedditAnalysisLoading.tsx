@@ -89,7 +89,7 @@ export function RedditAnalysisLoading() {
       <div className="w-full max-w-md space-y-2">
         <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-[hsl(var(--primary))] transition-all duration-1000"
+            className="h-full bg-[hsl(var(--primary))] transition-[width] duration-1000"
             style={{ width: `${progress}%` }}
           />
         </div>

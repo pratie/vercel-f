@@ -92,7 +92,7 @@ export const MentionsAnalytics = ({ mentions, keywords }: MentionsAnalyticsProps
             {/* Detail Cards */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
                 {/* Keywords */}
-                <div className="bg-white rounded-xl border border-gray-100 p-4">
+                <div className="bg-white rounded-xl p-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-1.5 mb-3">
                         <BarChart3 className="h-3.5 w-3.5 text-gray-400" />
                         <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Keywords</h3>
@@ -102,11 +102,11 @@ export const MentionsAnalytics = ({ mentions, keywords }: MentionsAnalyticsProps
                             <div key={stat.kw} className="space-y-1">
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs font-medium text-gray-700">{stat.kw}</span>
-                                    <span className="text-[10px] text-gray-400">{stat.count}</span>
+                                    <span className="text-[10px] text-gray-400 tabular-nums">{stat.count}</span>
                                 </div>
                                 <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
                                     <div
-                                        className="h-full bg-blue-500 rounded-full transition-all duration-700"
+                                        className="h-full bg-blue-500 rounded-full transition-[width] duration-700"
                                         style={{ width: `${Math.max((stat.count / totalLeads) * 100, 4)}%` }}
                                     />
                                 </div>
@@ -119,7 +119,7 @@ export const MentionsAnalytics = ({ mentions, keywords }: MentionsAnalyticsProps
                 </div>
 
                 {/* Communities */}
-                <div className="bg-white rounded-xl border border-gray-100 p-4">
+                <div className="bg-white rounded-xl p-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-1.5 mb-3">
                         <Filter className="h-3.5 w-3.5 text-gray-400" />
                         <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Communities</h3>
@@ -143,7 +143,7 @@ export const MentionsAnalytics = ({ mentions, keywords }: MentionsAnalyticsProps
                 </div>
 
                 {/* Intents */}
-                <div className="bg-white rounded-xl border border-gray-100 p-4">
+                <div className="bg-white rounded-xl p-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)]">
                     <div className="flex items-center gap-1.5 mb-3">
                         <MessageSquare className="h-3.5 w-3.5 text-gray-400" />
                         <h3 className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Intent Analysis</h3>
@@ -153,11 +153,11 @@ export const MentionsAnalytics = ({ mentions, keywords }: MentionsAnalyticsProps
                             <div key={intent} className="space-y-1">
                                 <div className="flex justify-between items-center">
                                     <span className="text-xs font-medium text-gray-700 capitalize">{intent.replace(/_/g, ' ')}</span>
-                                    <span className="text-[10px] text-gray-400">{Math.round((count / totalLeads) * 100)}%</span>
+                                    <span className="text-[10px] text-gray-400 tabular-nums">{Math.round((count / totalLeads) * 100)}%</span>
                                 </div>
                                 <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full rounded-full transition-all duration-700 ${
+                                        className={`h-full rounded-full transition-[width] duration-700 ${
                                             intent.toLowerCase().includes('purchase') ? 'bg-orange-500' :
                                             intent.toLowerCase().includes('solution') ? 'bg-blue-500' :
                                             intent.toLowerCase().includes('recommendation') ? 'bg-green-500' : 'bg-gray-300'
@@ -185,13 +185,13 @@ interface MetricCardProps {
 }
 
 const MetricCard = ({ label, value, icon, badge }: MetricCardProps) => (
-    <div className="bg-white rounded-xl border border-gray-100 p-4 hover:shadow-sm transition-all">
+    <div className="bg-white rounded-xl p-4 shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_1px_2px_-1px_rgba(0,0,0,0.06),0px_2px_4px_0px_rgba(0,0,0,0.04)] hover:shadow-[0px_0px_0px_1px_rgba(0,0,0,0.08),0px_2px_8px_-2px_rgba(0,0,0,0.08)] transition-[box-shadow]">
         <div className="flex items-center justify-between mb-2">
             <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">{label}</span>
             <div className="p-1.5 bg-gray-50 rounded-lg">{icon}</div>
         </div>
         <div className="flex items-baseline gap-2">
-            <span className="text-lg font-bold text-gray-900 tracking-tight">{value}</span>
+            <span className="text-lg font-bold text-gray-900 tracking-tight tabular-nums">{value}</span>
             {badge && <span className="text-[9px] font-semibold text-green-700 bg-green-50 px-1.5 py-0.5 rounded-md">{badge}</span>}
         </div>
     </div>

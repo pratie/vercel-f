@@ -91,7 +91,7 @@ export default function BlogIndex() {
                 {/* Featured Post (First Post) */}
                 {allPosts.length > 0 && (
                     <div className="mb-16">
-                        <article className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-all duration-300">
+                        <article className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-[box-shadow] duration-300">
                             <div className="p-8 sm:p-10">
                                 <div className="flex flex-wrap items-center gap-3 mb-4">
                                     <span className="px-3 py-1 bg-[#FF6F20] text-white text-xs font-semibold rounded-full uppercase">
@@ -125,7 +125,7 @@ export default function BlogIndex() {
                                             {calculateReadingTime(allPosts[0].content)}
                                         </span>
                                     </div>
-                                    <span className="flex items-center gap-2 text-[#FF6F20] font-semibold group-hover:gap-3 transition-all">
+                                    <span className="flex items-center gap-2 text-[#FF6F20] font-semibold group-hover:gap-3 transition-[gap]">
                                         Read Article <ArrowRight className="w-4 h-4" />
                                     </span>
                                 </div>
@@ -139,7 +139,7 @@ export default function BlogIndex() {
                     {allPosts.slice(1).map((post) => (
                         <article
                             key={post.slug}
-                            className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:border-orange-100 transition-all duration-300"
+                            className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:border-orange-100 transition-[box-shadow,border-color] duration-300"
                         >
                             {/* Tags */}
                             {post.tags && post.tags.length > 0 && (

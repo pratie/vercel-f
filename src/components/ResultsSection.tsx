@@ -15,7 +15,7 @@ export function ResultsSection({ posts }: ResultsSectionProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-zinc-900">
-          Matching Posts ({posts.length})
+          Matching Posts (<span className="tabular-nums">{posts.length}</span>)
         </h2>
         <div className="flex items-center space-x-2 text-sm text-zinc-500">
           <Clock className="w-4 h-4" />
@@ -27,7 +27,7 @@ export function ResultsSection({ posts }: ResultsSectionProps) {
         {posts.map((post, index) => (
           <Card 
             key={`${post.subreddit}-${post.created_utc}-${index}`}
-            className="overflow-hidden bg-white shadow-lg border-0 transition-all duration-300 hover:shadow-xl hover:scale-[1.01] opacity-0 animate-slide-up"
+            className="overflow-hidden bg-white shadow-lg border-0 transition-[box-shadow,transform] duration-300 hover:shadow-xl hover:scale-[1.01] opacity-0 animate-slide-up"
             style={{ animationDelay: `${index * 100}ms` }}
           >
             <CardContent className="p-6">

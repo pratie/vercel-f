@@ -96,13 +96,13 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
         {plans.map((plan) => (
           <motion.div
             key={plan.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, y: 12, filter: 'blur(4px)' }}
+            whileInView={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-full max-w-md"
           >
-            <div className="relative bg-white rounded-2xl border border-gray-200 shadow-xl shadow-gray-100/50 overflow-hidden">
+            <div className="relative bg-white rounded-2xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_4px_16px_-4px_rgba(0,0,0,0.1),0px_8px_24px_-8px_rgba(0,0,0,0.06)] overflow-hidden">
               {/* Top accent */}
               <div className="h-1 bg-gradient-to-r from-orange-500 to-amber-500" />
 
@@ -121,7 +121,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 {/* Price */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-5xl font-extrabold text-gray-900 tracking-tight">{plan.price}</span>
+                    <span className="text-5xl font-extrabold text-gray-900 tracking-tight tabular-nums">{plan.price}</span>
                     <span className="text-sm text-gray-400 font-medium">/ {plan.billing}</span>
                   </div>
                   <p className="text-xs text-gray-500 mt-1.5">Full {plan.duration} access. No auto-renewal.</p>
@@ -131,7 +131,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 <Button
                   onClick={() => handlePlanSelect(plan.id)}
                   disabled={checkoutLoading === plan.id}
-                  className="w-full bg-gray-900 hover:bg-gray-800 text-white h-12 rounded-xl text-sm font-semibold transition-all duration-300 shadow-sm hover:shadow-md group"
+                  className="w-full bg-gray-900 hover:bg-gray-800 text-white h-12 rounded-xl text-sm font-semibold transition-[background-color,box-shadow,scale] duration-300 shadow-sm hover:shadow-md group"
                 >
                   {checkoutLoading === plan.id ? (
                     <div className="flex items-center gap-2">
