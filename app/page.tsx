@@ -200,7 +200,11 @@ export default function LandingPage() {
                       className="h-9 sm:h-11 w-auto text-[#ff4500] shrink-0"
                       aria-hidden="true"
                     />
-                    Reddit Leads
+                    {/* "Reddit" carries the same #ff4500 as the mark beside it,
+                        so the word and the logo read as one unit. */}
+                    <span>
+                      <span className="text-[#ff4500]">Reddit</span> Leads
+                    </span>
                   </span>
                   <br />
                   {/* Kept at full strength. A lighter grey here read as
