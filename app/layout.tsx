@@ -37,23 +37,25 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = {
-  title: 'SneakyGuy | 24/7 Reddit Lead Machine',
-  description: 'AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that actually convert. Get leads on autopilot while you sleep.',
+  title: 'SneakyGuy — Find Reddit Leads While You Sleep',
+  description: 'Every Reddit lead in one place. SneakyGuy watches the subreddits your buyers post in, scores each conversation for buying intent, and drafts the reply — so you get hours back every week.',
   icons: {
     icon: '/favicon.ico',
   },
   metadataBase: new URL('https://www.sneakyguy.com'),
   openGraph: {
-    title: 'SneakyGuy | 24/7 Reddit Lead Machine',
-    description: 'AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that actually convert.',
+    title: 'SneakyGuy — Find Reddit Leads While You Sleep',
+    description: 'Every Reddit lead in one place. We watch the subreddits your buyers post in, score each conversation for intent, and draft the reply — hours back every week.',
     url: 'https://www.sneakyguy.com',
     siteName: 'SneakyGuy',
     images: [
       {
-        url: 'https://www.sneakyguy.com/images/og-image.png',
+        // Bumped filename so Slack, X and LinkedIn fetch fresh art instead of
+        // serving the card they already cached for this URL.
+        url: 'https://www.sneakyguy.com/images/og-image-v2.png',
         width: 1200,
         height: 630,
-        alt: 'SneakyGuy Reddit Lead Machine',
+        alt: 'SneakyGuy: find Reddit leads while you sleep',
       },
     ],
     locale: 'en_US',
@@ -61,9 +63,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SneakyGuy | 24/7 Reddit Lead Machine',
-    description: 'AI monitors Reddit 24/7, finds high-intent conversations about your niche, and generates authentic replies that convert.',
-    images: ['https://www.sneakyguy.com/images/og-image.png'],
+    title: 'SneakyGuy — Find Reddit Leads While You Sleep',
+    description: 'Every Reddit lead in one place. We find the conversations worth replying to, and draft the reply for you.',
+    images: ['https://www.sneakyguy.com/images/og-image-v2.png'],
     creator: '@snow_stark17',
   },
   verification: {

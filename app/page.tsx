@@ -5,7 +5,6 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   ArrowRight,
   Check,
-  Sparkles,
   Brain,
   Target,
   MessageSquare,
@@ -170,13 +169,12 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* ───── ANNOUNCEMENT BAR ───── */}
-      {/* A full-bleed orange bar competed with the CTA for attention. A single
-          small dot carries the "new" signal without shouting. */}
+      {/* ───── VALUE LINE ───── */}
+      {/* Was "AI-powered reply generation is live", which is news about us
+          rather than value to the reader. Says what they get instead. */}
       <div className="border-b border-gray-100 bg-white py-2.5 px-4 text-center">
-        <p className="text-[13px] text-gray-500 inline-flex items-center gap-2">
-          <span className="h-1.5 w-1.5 rounded-full bg-[#ff4500] shrink-0" aria-hidden="true" />
-          AI-powered reply generation is live — find leads and respond in one place.
+        <p className="text-[13px] text-gray-500">
+          Every Reddit lead in one place — and hours of scrolling back every week.
         </p>
       </div>
 
@@ -186,11 +184,6 @@ export default function LandingPage() {
           <div className="lg:grid lg:grid-cols-12 lg:gap-12">
             <div className="text-center lg:text-left lg:col-span-6 lg:flex lg:items-center">
               <div>
-                <div className="inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-medium bg-gray-50 border border-gray-200/70 text-gray-600 mb-8">
-                  <Sparkles className="h-3.5 w-3.5 mr-2 text-[#ff4500]" aria-hidden="true" />
-                  <span>AI-Powered Lead Generation</span>
-                </div>
-
                 {/* One accent in the headline -- the Reddit mark. The second
                     line used to be solid orange, which fought the CTA. */}
                 <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.02em] text-gray-950 mb-6 leading-[1.15]">
