@@ -50,3 +50,4 @@ yarn-debug.log*
 yarn-error.log*
 ./sql_app.db
 "*.dmg"
+.env*

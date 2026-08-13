@@ -17,6 +17,23 @@ module.exports = {
     },
     extend: {
       colors: {
+        // Brand orange. Tailwind's stock orange-500 is #f97316, which is a
+        // visibly different hue to the #ff4500 used in the logo and landing
+        // page -- the app looked like a second product. Re-anchoring the ramp
+        // here fixes every existing orange-* utility in one place.
+        orange: {
+          50: '#fff4f0',
+          100: '#ffe4d9',
+          200: '#ffc7b3',
+          300: '#ffa284',
+          400: '#ff7448',
+          500: '#ff4500',
+          600: '#e63e00',
+          700: '#bf3400',
+          800: '#992900',
+          900: '#7a2100',
+          950: '#420f00',
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

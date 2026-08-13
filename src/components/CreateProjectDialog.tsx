@@ -23,6 +23,27 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
   const [regenerateCount, setRegenerateCount] = useState(0);
   const [editingInfo, setEditingInfo] = useState(false);
   const [showManual, setShowManual] = useState(false);
+  const [progressStep, setProgressStep] = useState(0);
+
+  // Scraping plus a model call takes ~15-25s. A bare spinner for that long
+  // reads as broken, so walk through what is actually happening.
+  const ANALYSIS_STAGES = [
+    'Reading your website',
+    'Working out what you do',
+    'Finding buying-intent keywords',
+    'Picking relevant subreddits',
+  ];
+
+  useEffect(() => {
+    if (!loading || step !== 'url') {
+      setProgressStep(0);
+      return;
+    }
+    const timers = ANALYSIS_STAGES.map((_, i) =>
+      setTimeout(() => setProgressStep(i), i * 5000)
+    );
+    return () => timers.forEach(clearTimeout);
+  }, [loading, step]);
 
   useEffect(() => {
     if (!open) {
@@ -162,7 +183,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeUrl()}
                     placeholder="https://yourproduct.com"
                     autoFocus
-                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
+                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow]"
                   />
                 </div>
               </div>
@@ -170,7 +191,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               <button
                 onClick={() => handleAnalyzeUrl()}
                 disabled={!url.trim()}
-                className="w-full h-11 rounded-lg bg-gray-900 text-white text-sm font-semibold hover:bg-gray-800 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full h-11 rounded-lg bg-[#ff4500] text-white text-sm font-semibold hover:bg-[#ff4500]/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Sparkles className="h-4 w-4" />
                 Analyze & Generate
@@ -200,7 +221,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g., Sneakyguy AI"
-                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
+                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow]"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -210,13 +231,13 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Describe what your product does and who it's for..."
                       rows={3}
-                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
+                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow] resize-none"
                     />
                   </div>
                   <button
                     onClick={handleManualAnalyze}
                     disabled={!name.trim() || !description.trim()}
-                    className="w-full h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-[background-color] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full h-10 rounded-lg bg-[#ff4500] text-white text-xs font-semibold hover:bg-[#ff4500]/90 transition-[background-color] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Generate Keywords
@@ -227,25 +248,36 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
           </>
         ) : step === 'url' && loading ? (
           /* Loading state */
-          <div className="px-6 py-16 flex flex-col items-center justify-center gap-4">
-            <div className="relative">
-              <div className="h-12 w-12 rounded-full bg-gray-50 flex items-center justify-center">
-                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
-              </div>
+          <div className="px-6 py-12 flex flex-col items-center justify-center">
+            <div className="h-11 w-11 rounded-full bg-[#ff4500]/[0.08] flex items-center justify-center mb-5">
+              <Loader2 className="h-5 w-5 animate-spin text-[#ff4500]" />
             </div>
-            <div className="text-center">
-              <p className="text-sm font-medium text-gray-900">Analyzing your website</p>
-              <p className="text-xs text-gray-400 mt-1">Scraping content, extracting brand info, generating keywords...</p>
-            </div>
-            <div className="flex gap-1 mt-2">
-              {[0, 1, 2].map(i => (
-                <div
-                  key={i}
-                  className="h-1.5 w-1.5 rounded-full bg-gray-300 animate-pulse"
-                  style={{ animationDelay: `${i * 200}ms` }}
-                />
-              ))}
-            </div>
+            <p className="text-sm font-semibold text-gray-900 mb-1">Analyzing your website</p>
+            <p className="text-xs text-gray-400 mb-6">This usually takes about 20 seconds.</p>
+
+            <ol className="w-full max-w-xs space-y-2.5" aria-live="polite">
+              {ANALYSIS_STAGES.map((label, i) => {
+                const done = i < progressStep;
+                const active = i === progressStep;
+                return (
+                  <li key={label} className="flex items-center gap-2.5 text-xs">
+                    <span
+                      className={`h-1.5 w-1.5 rounded-full shrink-0 transition-colors ${
+                        done ? 'bg-[#ff4500]' : active ? 'bg-[#ff4500] animate-pulse' : 'bg-gray-200'
+                      }`}
+                      aria-hidden="true"
+                    />
+                    <span
+                      className={`transition-colors ${
+                        done ? 'text-gray-500' : active ? 'text-gray-900 font-medium' : 'text-gray-300'
+                      }`}
+                    >
+                      {label}
+                    </span>
+                  </li>
+                );
+              })}
+            </ol>
           </div>
         ) : (
           <>
@@ -269,7 +301,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow]"
+                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow]"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -278,7 +310,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={2}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-gray-900/10 focus:border-gray-300 transition-[border-color,box-shadow] resize-none"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow] resize-none"
                       />
                     </div>
                     <button
@@ -345,10 +377,10 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                   {subreddits.map((subreddit) => (
                     <span
                       key={subreddit}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-blue-50/60 border border-blue-100/50 text-xs font-medium text-blue-600"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500]/[0.06] border border-[#ff4500]/15 text-xs font-medium text-[#ff4500]"
                     >
                       r/{subreddit}
-                      <button onClick={() => handleRemoveSubreddit(subreddit)} className="text-blue-300 hover:text-red-400 transition-colors">
+                      <button onClick={() => handleRemoveSubreddit(subreddit)} className="text-[#ff4500]/40 hover:text-red-500 transition-colors">
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -375,7 +407,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                 <button
                   onClick={handleSubmit}
                   disabled={loading || keywords.length === 0 || !name.trim()}
-                  className="flex-1 h-10 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 h-10 rounded-lg bg-[#ff4500] text-white text-xs font-semibold hover:bg-[#ff4500]/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>
