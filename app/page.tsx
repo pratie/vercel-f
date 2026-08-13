@@ -126,7 +126,7 @@ export default function LandingPage() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-gray-600 hover:text-[#ff4500] font-medium transition-colors"
+                  className="text-[13px] text-gray-500 hover:text-gray-950 font-medium transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -160,7 +160,7 @@ export default function LandingPage() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="py-2 text-gray-600 hover:text-[#ff4500] font-medium"
+                  className="py-2 text-gray-600 hover:text-gray-950 font-medium"
                 >
                   {link.label}
                 </Link>
@@ -171,30 +171,29 @@ export default function LandingPage() {
       </header>
 
       {/* ───── ANNOUNCEMENT BAR ───── */}
-      <div className="bg-[#ff4500] text-white py-3 px-4 text-center">
-        <p className="text-sm font-medium">
+      {/* A full-bleed orange bar competed with the CTA for attention. A single
+          small dot carries the "new" signal without shouting. */}
+      <div className="border-b border-gray-100 bg-white py-2.5 px-4 text-center">
+        <p className="text-[13px] text-gray-500 inline-flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#ff4500] shrink-0" aria-hidden="true" />
           AI-powered reply generation is live — find leads and respond in one place.
         </p>
       </div>
 
       {/* ───── HERO ───── */}
-      <section className="relative bg-gradient-to-b from-white to-gray-50">
-        <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
-          <div className="absolute inset-y-0 right-0 w-1/2">
-            <div className="h-full bg-gradient-to-r from-transparent to-[#fff3f0]/20" />
-          </div>
-        </div>
-
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+      <section className="relative bg-white">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
           <div className="lg:grid lg:grid-cols-12 lg:gap-12">
             <div className="text-center lg:text-left lg:col-span-6 lg:flex lg:items-center">
               <div>
-                <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-[#ff4500]/10 text-[#ff4500] mb-8">
-                  <Sparkles className="h-4 w-4 mr-2" />
+                <div className="inline-flex items-center px-3 py-1.5 rounded-full text-[13px] font-medium bg-gray-50 border border-gray-200/70 text-gray-600 mb-8">
+                  <Sparkles className="h-3.5 w-3.5 mr-2 text-[#ff4500]" aria-hidden="true" />
                   <span>AI-Powered Lead Generation</span>
                 </div>
 
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 mb-6 leading-tight">
+                {/* One accent in the headline -- the Reddit mark. The second
+                    line used to be solid orange, which fought the CTA. */}
+                <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.02em] text-gray-950 mb-6 leading-[1.15]">
                   <span className="inline-flex items-center gap-2 sm:gap-3">
                     Find
                     <IconBrandReddit
@@ -204,31 +203,33 @@ export default function LandingPage() {
                     Reddit Leads
                   </span>
                   <br />
-                  <span className="text-[#ff4500]">While You Sleep</span>
+                  {/* Kept at full strength. A lighter grey here read as
+                      disabled text and failed contrast at this size. */}
+                  While You Sleep
                 </h1>
 
-                <p className="text-lg sm:text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0">
+                <p className="text-lg text-gray-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
                   SneakyGuy helps founders and B2B teams discover and convert qualified leads from
                   Reddit discussions, with AI-powered monitoring and reply generation.
                 </p>
 
                 <div className="sm:flex sm:justify-center lg:justify-start gap-4">
                   <Button
-                    className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-8 py-4 rounded-full text-lg font-medium w-full sm:w-auto shadow-lg shadow-[#ff4500]/20"
+                    className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-7 h-12 rounded-xl text-base font-semibold w-full sm:w-auto"
                     onClick={handleGetStarted}
                   >
                     Find Leads Now
-                    <ArrowRight className="ml-2 h-5 w-5" />
+                    <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </div>
 
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500 justify-center lg:justify-start">
+                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-gray-500 justify-center lg:justify-start">
                   <span className="flex items-center">
-                    <Check className="h-5 w-5 text-[#ff4500] mr-2 shrink-0" />
+                    <Check className="h-4 w-4 text-gray-400 mr-2 shrink-0" aria-hidden="true" />
                     AI-powered lead generation
                   </span>
                   <span className="flex items-center">
-                    <Check className="h-5 w-5 text-[#ff4500] mr-2 shrink-0" />
+                    <Check className="h-4 w-4 text-gray-400 mr-2 shrink-0" aria-hidden="true" />
                     24/7 Reddit monitoring
                   </span>
                 </div>
@@ -261,35 +262,25 @@ export default function LandingPage() {
       <section id="how-it-works" className="py-20 bg-white scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">How SneakyGuy Works</h2>
-            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold tracking-[-0.02em] text-gray-950">How SneakyGuy Works</h2>
+            <p className="mt-3 text-base text-gray-500 max-w-2xl mx-auto">
               Reddit lead generation on autopilot, in three steps.
             </p>
           </div>
 
-          <div className="relative">
-            <div
-              className="hidden lg:block absolute top-14 left-0 right-0 h-px bg-gradient-to-r from-[#ff4500]/0 via-[#ff4500]/40 to-[#ff4500]/0"
-              aria-hidden="true"
-            />
-
-            <ol className="grid grid-cols-1 lg:grid-cols-3 gap-8 relative">
-              {STEPS.map((step, i) => (
-                <li
-                  key={step.title}
-                  className="bg-white rounded-xl border border-gray-200 shadow-sm p-8 transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
-                >
-                  <div className="bg-[#fff3f0] rounded-full w-12 h-12 flex items-center justify-center mb-6 mx-auto lg:mx-0">
-                    <span className="text-[#ff4500] font-bold text-xl">{i + 1}</span>
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3 text-center lg:text-left">
-                    {step.title}
-                  </h3>
-                  <p className="text-gray-600 text-center lg:text-left leading-relaxed">{step.body}</p>
-                </li>
-              ))}
-            </ol>
-          </div>
+          {/* Ghosted numerals instead of filled orange circles: the step
+              sequence still reads, without three more accent blobs. */}
+          <ol className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
+            {STEPS.map((step, i) => (
+              <li key={step.title} className="text-center lg:text-left">
+                <span className="block text-3xl font-bold text-gray-200 tabular-nums mb-4" aria-hidden="true">
+                  {String(i + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-lg font-semibold text-gray-950 mb-2">{step.title}</h3>
+                <p className="text-gray-500 leading-relaxed">{step.body}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
@@ -297,8 +288,8 @@ export default function LandingPage() {
       <section id="features" className="py-20 bg-gray-50 scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900">Everything you need to track and engage</h2>
-            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold tracking-[-0.02em] text-gray-950">Everything you need to track and engage</h2>
+            <p className="mt-3 text-base text-gray-500 max-w-2xl mx-auto">
               Built for people who want leads from Reddit without living on Reddit.
             </p>
           </div>
@@ -307,13 +298,12 @@ export default function LandingPage() {
             {FEATURES.map(({ icon: Icon, title, body }) => (
               <div
                 key={title}
-                className="bg-white rounded-xl border border-gray-200 p-6 hover:border-[#ff4500]/30 hover:shadow-md transition-all"
+                className="bg-white rounded-xl border border-gray-200/80 p-6 hover:border-gray-300 transition-colors"
               >
-                <div className="bg-[#fff3f0] rounded-lg w-11 h-11 flex items-center justify-center mb-4">
-                  <Icon className="h-5 w-5 text-[#ff4500]" aria-hidden="true" />
-                </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
-                <p className="text-gray-600 leading-relaxed">{body}</p>
+                {/* Bare icon, no peach tile. The orange stays as a small mark. */}
+                <Icon className="h-5 w-5 text-[#ff4500] mb-4" aria-hidden="true" />
+                <h3 className="text-[15px] font-semibold text-gray-950 mb-1.5">{title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
@@ -324,8 +314,8 @@ export default function LandingPage() {
       <section id="pricing" className="py-20 bg-white scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900">Simple, honest pricing</h2>
-            <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold tracking-[-0.02em] text-gray-950">Simple, honest pricing</h2>
+            <p className="mt-3 text-base text-gray-500 max-w-2xl mx-auto">
               One plan, everything included. One-time payment, no subscription.
             </p>
           </div>
@@ -342,21 +332,23 @@ export default function LandingPage() {
       <FAQ />
 
       {/* ───── FINAL CTA ───── */}
-      <section className="py-16 sm:py-20">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-gradient-to-r from-[#ff4500] to-[#ff6b3d] rounded-2xl p-8 sm:p-12 text-white text-center">
-            <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to grow on Reddit?</h2>
-            <p className="text-white/90 mb-8 max-w-xl mx-auto">
-              Let AI find the conversations worth joining, and draft the reply for you.
-            </p>
-            <Button
-              onClick={handleGetStarted}
-              className="bg-white text-[#ff4500] hover:bg-white/90 font-semibold px-8 py-3 rounded-full"
-            >
-              Get Started
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </div>
+      {/* Was a full orange gradient panel. White with a hairline rule lets the
+          one orange button actually be the loudest thing on the page. */}
+      <section className="py-20 sm:py-28 border-t border-gray-100">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
+          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-gray-950 mb-4">
+            Ready to grow on Reddit?
+          </h2>
+          <p className="text-lg text-gray-500 mb-8 leading-relaxed">
+            Let AI find the conversations worth joining, and draft the reply for you.
+          </p>
+          <Button
+            onClick={handleGetStarted}
+            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold px-7 h-12 rounded-xl text-base"
+          >
+            Get Started
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </section>
 
@@ -376,10 +368,10 @@ export default function LandingPage() {
             </div>
 
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-600">
-              <Link href="/blog" className="hover:text-[#ff4500]">Blog</Link>
-              <Link href="/about" className="hover:text-[#ff4500]">About</Link>
-              <Link href="/privacy" className="hover:text-[#ff4500]">Privacy</Link>
-              <Link href="/terms" className="hover:text-[#ff4500]">Terms</Link>
+              <Link href="/blog" className="hover:text-gray-950">Blog</Link>
+              <Link href="/about" className="hover:text-gray-950">About</Link>
+              <Link href="/privacy" className="hover:text-gray-950">Privacy</Link>
+              <Link href="/terms" className="hover:text-gray-950">Terms</Link>
             </nav>
 
             <p className="text-sm text-gray-500">
