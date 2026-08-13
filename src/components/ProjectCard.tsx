@@ -96,8 +96,8 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
               {project.analysis_status === 'scanning' ? (
                 <div className="flex items-center gap-1.5 text-orange-600">
                   <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75 active:scale-[0.98]" />
+                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500 active:scale-[0.98]" />
                   </span>
                   <span className="text-[10px] font-semibold uppercase tracking-wider">
                     Scanning <span className="tabular-nums">{project.analysis_progress}%</span>
@@ -199,7 +199,7 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
         <div className="px-5 pb-5">
           <Button
             onClick={handleViewMentions}
-            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.2)] group"
+            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.2)] group active:scale-[0.98]"
             disabled={loading}
           >
             {loading ? (

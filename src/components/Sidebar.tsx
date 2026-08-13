@@ -82,7 +82,16 @@ export function Sidebar() {
           collapsed && !isMobile ? "px-0 justify-center" : "px-5 justify-between"
         )}>
           <Link href="/projects" className="flex items-center gap-2 min-w-0">
-            <Image src="/logo.png" alt="SneakyGuy" width={28} height={28} priority className="shrink-0" />
+            {/* 544x336 source: a square box squashes him, and globals.css
+                outlines every img unless told not to. */}
+            <Image
+              src="/logo.png"
+              alt=""
+              width={30}
+              height={19}
+              priority
+              className="shrink-0 h-auto w-[30px] no-outline"
+            />
             {(!collapsed || isMobile) && (
               <span className="font-bold text-[15px] text-gray-900 tracking-tight truncate">SneakyGuy</span>
             )}
@@ -122,14 +131,25 @@ export function Sidebar() {
                 onClick={() => isMobile && setIsOpen(false)}
                 title={collapsed && !isMobile ? item.name : undefined}
                 className={cn(
-                  "flex items-center rounded-lg text-[13px] font-medium transition-[color,background-color] duration-150",
+                  // A solid orange slab is a lot of colour for something that
+                  // sits on screen all day. A tint plus an orange rail marks
+                  // the current page without shouting.
+                  "relative flex items-center rounded-lg text-[13px] font-medium",
+                  "transition-[color,background-color] duration-150 ease-out active:scale-[0.98]",
                   collapsed && !isMobile ? "justify-center p-2.5" : "gap-2.5 px-3 py-2",
                   active
-                    ? "bg-orange-500 text-white shadow-[0_2px_8px_-2px_rgba(234,88,12,0.4)]"
+                    ? "bg-orange-500/[0.08] text-orange-600"
                     : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
                 )}
+                aria-current={active ? 'page' : undefined}
               >
-                <item.icon className={cn("h-4 w-4 shrink-0", active ? "text-white" : "text-gray-400")} />
+                {active && !collapsed && (
+                  <span
+                    className="absolute left-0 top-1.5 bottom-1.5 w-[3px] rounded-r-full bg-orange-500"
+                    aria-hidden="true"
+                  />
+                )}
+                <item.icon className={cn("h-4 w-4 shrink-0", active ? "text-orange-500" : "text-gray-400")} />
                 {(!collapsed || isMobile) && item.name}
               </Link>
             );

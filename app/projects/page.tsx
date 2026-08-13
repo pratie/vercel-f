@@ -208,7 +208,7 @@ export default function ProjectsPage() {
                 <button
                   onClick={handleUrlSubmit}
                   disabled={!urlInput.trim()}
-                  className="h-11 px-5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-[background-color,box-shadow,transform] duration-200 shadow-[0_4px_16px_-2px_rgba(234,88,12,0.35)] hover:shadow-[0_6px_24px_-2px_rgba(234,88,12,0.45)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shrink-0"
+                  className="h-11 px-5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition-[background-color,box-shadow,transform] duration-200 shadow-[0_4px_16px_-2px_rgba(234,88,12,0.35)] hover:shadow-[0_6px_24px_-2px_rgba(234,88,12,0.45)] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2 shrink-0 active:scale-[0.98]"
                 >
                   <Sparkles className="h-4 w-4" />
                   <span className="hidden sm:inline">Analyze</span>
@@ -237,7 +237,7 @@ export default function ProjectsPage() {
             {!hasPaid && paymentStatusChecked && (
               <button
                 onClick={handleNewProject}
-                className="flex items-center gap-2 px-4 h-9 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-[background-color,box-shadow] shadow-[0_2px_8px_-2px_rgba(234,88,12,0.4)] hover:shadow-[0_4px_16px_-2px_rgba(234,88,12,0.5)]"
+                className="flex items-center gap-2 px-4 h-9 bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold rounded-lg transition-[background-color,box-shadow] shadow-[0_2px_8px_-2px_rgba(234,88,12,0.4)] hover:shadow-[0_4px_16px_-2px_rgba(234,88,12,0.5)] active:scale-[0.98]"
               >
                 Upgrade
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -309,14 +309,23 @@ export default function ProjectsPage() {
             <p className="ml-2 text-sm text-gray-500">Redirecting...</p>
           </div>
         ) : filtered.length === 0 && projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 mb-3">
+          <div className="flex flex-col items-center justify-center min-h-[320px] text-center px-6">
+            <div className="w-12 h-12 rounded-2xl bg-orange-500/[0.08] flex items-center justify-center text-orange-500 mb-4 active:scale-[0.98]">
               <Globe className="h-5 w-5" />
             </div>
-            <h2 className="text-sm font-semibold text-gray-900 mb-1">No projects yet</h2>
-            <p className="text-xs text-gray-400 max-w-xs">
-              Paste a URL above to create your first project automatically.
+            <h2 className="text-base font-semibold text-gray-900 mb-1.5">Create your first project</h2>
+            <p className="text-sm text-gray-500 max-w-sm leading-relaxed mb-6">
+              Paste your website and we&apos;ll read it, work out what you sell, and suggest the
+              keywords and subreddits worth monitoring. You can edit everything before it saves.
             </p>
+            <button
+              onClick={handleNewProject}
+              className="h-10 px-5 rounded-xl bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 active:scale-[0.98] transition-[background-color,transform] duration-150 ease-out flex items-center gap-2"
+            >
+              <Sparkles className="h-4 w-4" />
+              Analyze a website
+            </button>
+            <p className="text-[11px] text-gray-400 mt-4">Takes about 20 seconds</p>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[200px] text-center">

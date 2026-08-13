@@ -37,10 +37,10 @@ export default function BlogIndex() {
                         <Link href="/" className="flex items-center">
                             <Image
                                 src="/logo.png"
-                                alt="SneakyGuy Logo"
+                                alt=""
                                 width={40}
-                                height={40}
-                                className="mr-2"
+                                height={25}
+                                className="mr-2 h-auto w-10 no-outline"
                             />
                             <span className="font-bold text-xl text-gray-900">SneakyGuy</span>
                         </Link>
