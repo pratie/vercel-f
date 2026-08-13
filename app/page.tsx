@@ -241,7 +241,9 @@ export default function LandingPage() {
                   <iframe
                     src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83"
                     allowFullScreen
-                    loading="lazy"
+                    /* Not lazy: this sits above the fold, and deferring it
+                       leaves a blank white panel next to the headline on
+                       first paint. */
                     style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
                     title="SneakyGuy product demo"
                   />
