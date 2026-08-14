@@ -104,8 +104,8 @@ html {
     0px 2px 8px -2px rgba(62, 44, 24, 0.08),
     0px 8px 20px -6px rgba(62, 44, 24, 0.10);
   --shadow-orange:
-    0px 1px 2px rgba(180, 40, 0, 0.25),
-    0px 4px 12px -2px rgba(255, 69, 0, 0.35);
+    0px 1px 2px rgba(150, 33, 0, 0.25),
+    0px 4px 12px -2px rgba(230, 62, 0, 0.35);
 }
 
 /* Soft-tinted chip — the base for intent/score/subreddit chips */
@@ -113,14 +113,14 @@ html {
   @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold leading-none;
 }
 
-/* Primary action — warm gradient with a subtle glow */
+/* Primary action — the same deep orange as headline accents (orange-600) */
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all;
-  background-image: linear-gradient(180deg, #ff6a2b 0%, #ff4500 100%);
+  background-image: linear-gradient(180deg, #f24d10 0%, #e63e00 100%);
   box-shadow: var(--shadow-orange);
 }
 .btn-primary:hover {
-  background-image: linear-gradient(180deg, #ff5a14 0%, #ed3f00 100%);
+  background-image: linear-gradient(180deg, #e64509 0%, #d13800 100%);
   transform: translateY(-1px);
 }
 .btn-primary:active {
