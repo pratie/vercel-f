@@ -215,11 +215,7 @@ export default function LandingPage() {
       {/* Single centred column: one message, one action. The URL box IS the
           CTA — pasting a URL is lower-friction than "Get Started", and the
           analysis result (their own keywords) is the aha moment that sells. */}
-      <section className="relative bg-paper overflow-hidden">
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(255,69,0,0.07),transparent_60%)]"
-          aria-hidden="true"
-        />
+      <section className="relative bg-white overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-10 text-center">
           <h1 className="text-4xl sm:text-[52px] font-bold tracking-[-0.025em] text-ink-900 leading-[1.12] mb-5">
             People on Reddit are{' '}
