@@ -1,6 +1,6 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
+import { motion } from 'framer-motion';
 import { useRouter, usePathname } from 'next/navigation';
 import {
   ArrowRight,
@@ -211,45 +211,42 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* ───── NAVIGATION ───── */}
-      <header className="sticky top-0 z-50 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex justify-between items-center h-16">
+      {/* Floating glass pill. Content scrolls under it; the blur keeps it legible. */}
+      <header className="fixed inset-x-0 top-3 sm:top-4 z-50 px-3 sm:px-6">
+        <div className={`max-w-4xl mx-auto ${mobileOpen ? 'rounded-3xl' : 'rounded-full'} bg-white/85 backdrop-blur-md shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_4px_16px_-4px_rgba(62,44,24,0.12)]`}>
+          <div className="flex justify-between items-center h-[52px] pl-4 pr-2">
             <Link href="/" className="flex items-center gap-2" aria-label="SneakyGuy home">
               <Image
                 src="/logo.png"
                 alt=""
-                width={44}
-                height={logoHeight(44)}
+                width={36}
+                height={logoHeight(36)}
                 priority
-                className="h-auto w-11 no-outline"
+                className="h-auto w-9 no-outline"
               />
-              <span className="font-bold text-xl text-gray-900">SneakyGuy</span>
+              <span className="font-bold text-[17px] text-ink-900 tracking-tight">SneakyGuy</span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-8" aria-label="Main">
+            <nav className="hidden md:flex items-center gap-7" aria-label="Main">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[13px] text-gray-500 hover:text-gray-950 font-medium transition-colors"
+                  className="text-[13px] text-ink-600 hover:text-ink-900 font-medium transition-colors"
                 >
                   {link.label}
                 </Link>
               ))}
             </nav>
 
-            <div className="flex items-center gap-2">
-              <Button
-                className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white"
-                onClick={handleGetStarted}
-              >
-                Get Started
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Button>
+            <div className="flex items-center gap-1.5">
+              <button onClick={handleGetStarted} className="btn-primary h-9 px-4 text-[13px] rounded-full">
+                Get started
+              </button>
               <button
                 type="button"
                 onClick={() => setMobileOpen((open) => !open)}
-                className="md:hidden p-2 -mr-2 text-gray-600"
+                className="md:hidden p-2 text-ink-600"
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={mobileOpen}
               >
@@ -259,13 +256,13 @@ export default function LandingPage() {
           </div>
 
           {mobileOpen && (
-            <nav className="md:hidden border-t border-gray-100 py-3 flex flex-col" aria-label="Mobile">
+            <nav className="md:hidden border-t border-[#f0e9dd] py-3 px-5 flex flex-col rounded-b-3xl" aria-label="Mobile">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="py-2 text-gray-600 hover:text-gray-950 font-medium"
+                  className="py-2 text-ink-600 hover:text-ink-900 font-medium"
                 >
                   {link.label}
                 </Link>
@@ -280,17 +277,16 @@ export default function LandingPage() {
           CTA — pasting a URL is lower-friction than "Get Started", and the
           analysis result (their own keywords) is the aha moment that sells. */}
       <section className="relative bg-white overflow-hidden">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-10 text-center">
-          <h1 className="text-4xl sm:text-[52px] font-bold tracking-[-0.025em] text-ink-900 leading-[1.12] mb-5">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-32 sm:pt-40 pb-10 text-center">
+          <h1 className="text-[40px] sm:text-[60px] font-bold tracking-[-0.03em] text-ink-900 leading-[1.08] mb-6">
             People on Reddit are{' '}
-            <span className="relative whitespace-nowrap">
-              <span className="absolute inset-x-0 bottom-[0.08em] h-[0.35em] bg-orange-200/70 -rotate-[0.5deg]" aria-hidden="true" />
-              <span className="relative">already asking</span>
-            </span>{' '}
+            <em className="font-display font-medium italic tracking-[-0.01em] text-orange-600 whitespace-nowrap">
+              already asking
+            </em>{' '}
             for your product
           </h1>
 
-          <p className="text-lg text-ink-600 mb-8 max-w-xl mx-auto leading-relaxed">
+          <p className="text-lg text-ink-600 mb-9 max-w-xl mx-auto leading-relaxed">
             Paste your website. SneakyGuy finds those conversations, scores the buying
             intent, and drafts replies that don&apos;t sound like ads.
           </p>
@@ -302,7 +298,7 @@ export default function LandingPage() {
             }}
             className="max-w-xl mx-auto"
           >
-            <div className="flex flex-col sm:flex-row gap-2.5 p-2 bg-white rounded-2xl shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_8px_30px_-8px_rgba(62,44,24,0.18)]">
+            <div className="flex flex-col sm:flex-row gap-2.5 p-2 bg-white rounded-2xl shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_8px_30px_-8px_rgba(62,44,24,0.18)] focus-within:shadow-[0_0_0_2px_rgba(255,69,0,0.25),0_8px_30px_-8px_rgba(62,44,24,0.18)] transition-shadow duration-200">
               <div className="relative flex-1">
                 <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" aria-hidden="true" />
                 <input
@@ -312,8 +308,14 @@ export default function LandingPage() {
                   inputMode="url"
                   autoComplete="url"
                   aria-label="Your website URL"
-                  className="w-full h-12 pl-10 pr-3 rounded-xl text-[15px] text-ink-900 placeholder:text-ink-300 focus:outline-none bg-transparent"
+                  className="w-full h-12 pl-10 pr-10 rounded-xl text-[15px] text-ink-900 placeholder:text-ink-300 focus:outline-none bg-transparent"
                 />
+                <kbd
+                  className="hidden sm:block absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-ink-300 border border-[#e9e1d4] rounded-md px-1.5 py-0.5"
+                  aria-hidden="true"
+                >
+                  ⏎
+                </kbd>
               </div>
               <button
                 type="submit"
@@ -364,8 +366,44 @@ export default function LandingPage() {
 
         {/* Product preview — a live-styled mock of the actual dashboard, so it
             never goes stale the way the old demo video did. Decorative. */}
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20" aria-hidden="true">
-          <div className="rounded-2xl bg-white shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_24px_60px_-20px_rgba(62,44,24,0.25)] overflow-hidden text-left">
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pb-20 sm:pb-24" aria-hidden="true">
+          {/* Floating moments around the frame. Hidden on small screens. */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:flex absolute -right-14 top-16 z-10 items-center gap-2.5 bg-white rounded-2xl pl-3 pr-4 py-2.5 shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_12px_32px_-8px_rgba(62,44,24,0.2)]"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50">
+              <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
+            </span>
+            <span className="text-left">
+              <span className="block text-[12px] font-bold text-ink-900 leading-tight">Reply posted</span>
+              <span className="block text-[10.5px] text-ink-400">r/smallbusiness · just now</span>
+            </span>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
+            className="hidden lg:flex absolute -left-12 bottom-32 z-10 items-center gap-2 bg-white rounded-2xl px-4 py-2.5 shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_12px_32px_-8px_rgba(62,44,24,0.2)]"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-60" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
+            </span>
+            <span className="text-[12px] font-semibold text-ink-700">3 new leads while you were away</span>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 32 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            className="rounded-2xl bg-white shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_32px_80px_-24px_rgba(62,44,24,0.3)] overflow-hidden text-left"
+          >
             {/* window chrome */}
             <div className="flex items-center gap-1.5 px-4 py-3 border-b border-[#f0e9dd] bg-[#fbf8f3]">
               <span className="h-2.5 w-2.5 rounded-full bg-[#f4bf4f]/60" />
@@ -431,7 +469,7 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -439,39 +477,49 @@ export default function LandingPage() {
       <SocialProof />
 
       {/* ───── HOW IT WORKS ───── */}
-      <section id="how-it-works" className="py-20 bg-white scroll-mt-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-[-0.02em] text-gray-950">How SneakyGuy Works</h2>
-            <p className="mt-3 text-base text-gray-500 max-w-2xl mx-auto">
-              Reddit lead generation on autopilot, in three steps.
-            </p>
+      <section id="how-it-works" className="py-24 bg-white scroll-mt-24">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-14">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">How it works</p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-ink-900">
+              From your URL to your first reply,{' '}
+              <em className="font-display font-medium italic text-orange-600">in minutes</em>
+            </h2>
           </div>
 
-          {/* Ghosted numerals instead of filled orange circles: the step
-              sequence still reads, without three more accent blobs. */}
-          <ol className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-12">
+          <ol className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             {STEPS.map((step, i) => (
-              <li key={step.title} className="text-center lg:text-left">
-                <span className="block text-3xl font-bold text-gray-200 tabular-nums mb-4" aria-hidden="true">
-                  {String(i + 1).padStart(2, '0')}
+              <motion.li
+                key={step.title}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                className="relative bg-white rounded-2xl shadow-card p-6 text-left"
+              >
+                <span
+                  className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-orange-50 text-orange-700 text-[12px] font-bold tabular-nums mb-4"
+                  aria-hidden="true"
+                >
+                  {i + 1}
                 </span>
-                <h3 className="text-lg font-semibold text-gray-950 mb-2">{step.title}</h3>
-                <p className="text-gray-500 leading-relaxed">{step.body}</p>
-              </li>
+                <h3 className="text-[16px] font-semibold text-ink-900 mb-1.5">{step.title}</h3>
+                <p className="text-[14px] text-ink-600 leading-relaxed">{step.body}</p>
+              </motion.li>
             ))}
           </ol>
         </div>
       </section>
 
       {/* ───── FEATURES ───── */}
-      <section id="features" className="py-20 bg-gray-50 scroll-mt-16">
+      <section id="features" className="py-24 bg-paper scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold tracking-[-0.02em] text-gray-950">Everything you need to track and engage</h2>
-            <p className="mt-3 text-base text-gray-500 max-w-2xl mx-auto">
-              Built for people who want leads from Reddit without living on Reddit.
-            </p>
+          <div className="text-center mb-14">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">The toolkit</p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-ink-900">
+              Leads from Reddit,{' '}
+              <em className="font-display font-medium italic text-orange-600">without living on Reddit</em>
+            </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -495,9 +543,13 @@ export default function LandingPage() {
       <section id="pricing" className="py-20 bg-white scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold tracking-[-0.02em] text-gray-950">Simple, honest pricing</h2>
-            <p className="mt-3 text-base text-gray-500 max-w-2xl mx-auto">
-              One plan, everything included. One-time payment, no subscription.
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">Pricing</p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-ink-900">
+              One plan.{' '}
+              <em className="font-display font-medium italic text-orange-600">No subscription.</em>
+            </h2>
+            <p className="mt-3 text-base text-ink-600 max-w-2xl mx-auto">
+              Everything included, one-time payment.
             </p>
           </div>
 
@@ -513,28 +565,57 @@ export default function LandingPage() {
       <FAQ />
 
       {/* ───── FINAL CTA ───── */}
-      {/* Was a full orange gradient panel. White with a hairline rule lets the
-          one orange button actually be the loudest thing on the page. */}
-      <section className="py-20 sm:py-28 border-t border-gray-100">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.02em] text-gray-950 mb-4">
-            Ready to grow on Reddit?
+      {/* The page's one moment of drama: a deep warm-ink panel that repeats
+          the URL device from the hero for people who scrolled all the way. */}
+      <section className="py-16 sm:py-24 px-4 sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="relative max-w-4xl mx-auto overflow-hidden rounded-3xl bg-[#211a13] px-6 py-14 sm:px-14 sm:py-16 text-center"
+        >
+          <div
+            className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-[radial-gradient(ellipse_at_top,rgba(255,110,43,0.18),transparent_65%)]"
+            aria-hidden="true"
+          />
+          <h2 className="relative text-3xl sm:text-[40px] font-bold tracking-[-0.025em] text-white leading-tight mb-3">
+            Your next customer posted{' '}
+            <em className="font-display font-medium italic text-orange-400">today</em>
           </h2>
-          <p className="text-lg text-gray-500 mb-8 leading-relaxed">
-            Let AI find the conversations worth joining, and draft the reply for you.
+          <p className="relative text-[15px] text-white/60 mb-8 max-w-md mx-auto leading-relaxed">
+            Paste your website and see the conversations you&apos;ve been missing.
           </p>
-          <Button
-            onClick={handleGetStarted}
-            className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white font-semibold px-7 h-12 rounded-xl text-base"
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleHeroAnalyze();
+            }}
+            className="relative max-w-lg mx-auto"
           >
-            Get Started
-            <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+            <div className="flex flex-col sm:flex-row gap-2 p-1.5 bg-white/[0.07] backdrop-blur rounded-2xl ring-1 ring-white/15">
+              <input
+                value={heroUrl}
+                onChange={(e) => setHeroUrl(e.target.value)}
+                placeholder="yourwebsite.com"
+                inputMode="url"
+                aria-label="Your website URL"
+                className="flex-1 h-12 px-4 rounded-xl text-[15px] text-white placeholder:text-white/35 focus:outline-none bg-transparent"
+              />
+              <button type="submit" className="btn-primary h-12 px-6 text-[15px] shrink-0">
+                Find my leads
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </form>
+          <p className="relative text-[11.5px] text-white/40 mt-4">
+            Free analysis · No subscription · 7-day money-back guarantee
+          </p>
+        </motion.div>
       </section>
 
       {/* ───── FOOTER ───── */}
-      <footer className="border-t border-gray-200 bg-white">
+      <footer className="border-t border-[#f0e9dd] bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
@@ -545,17 +626,17 @@ export default function LandingPage() {
                 height={logoHeight(28)}
                 className="h-auto w-7 no-outline"
               />
-              <span className="font-bold text-gray-900">SneakyGuy</span>
+              <span className="font-bold text-ink-900">SneakyGuy</span>
             </div>
 
-            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-gray-600">
-              <Link href="/blog" className="hover:text-gray-950">Blog</Link>
-              <Link href="/about" className="hover:text-gray-950">About</Link>
-              <Link href="/privacy" className="hover:text-gray-950">Privacy</Link>
-              <Link href="/terms" className="hover:text-gray-950">Terms</Link>
+            <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-ink-600">
+              <Link href="/blog" className="hover:text-ink-900">Blog</Link>
+              <Link href="/about" className="hover:text-ink-900">About</Link>
+              <Link href="/privacy" className="hover:text-ink-900">Privacy</Link>
+              <Link href="/terms" className="hover:text-ink-900">Terms</Link>
             </nav>
 
-            <p className="text-sm text-gray-500">
+            <p className="text-sm text-ink-400">
               © {new Date().getFullYear()} SneakyGuy
             </p>
           </div>

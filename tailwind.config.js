@@ -102,6 +102,7 @@ module.exports = {
         sans: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
         inter: ['var(--font-inter)', 'sans-serif'],
         heading: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
+        display: ['var(--font-display)', 'Georgia', 'serif'],
       },
       boxShadow: {
         // The layered "shadow border" cards use everywhere. Tokenised so the
