@@ -5,17 +5,12 @@ import { useRouter, usePathname } from 'next/navigation';
 import {
   ArrowRight,
   Check,
-  Brain,
-  Target,
-  MessageSquare,
-  Bell,
-  BarChart3,
   Globe,
   Menu,
   X,
 } from 'lucide-react';
 import { useAuth } from '@/components/AuthContext';
-import { useEffect, useState, type SVGProps } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import SocialProof from '@/components/SocialProof';
@@ -29,33 +24,6 @@ import { FAQ } from './components/FAQ';
 // img, which draws a visible rectangle around the transparent areas.
 const LOGO_RATIO = 336 / 544;
 const logoHeight = (width: number) => Math.round(width * LOGO_RATIO);
-
-// Reddit brand mark. Lucide ships no Reddit icon, so this inlines the outline
-// path from Tabler Icons (MIT) that this page previously imported — same
-// viewBox and stroke settings, so it renders pixel-identical.
-function IconBrandReddit(props: SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={24}
-      height={24}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth={2}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      {...props}
-    >
-      <path d="M12 8c2.648 0 5.028 .826 6.675 2.14a2.5 2.5 0 0 1 2.326 4.36c0 3.59 -4.03 6.5 -9 6.5c-4.875 0 -8.845 -2.8 -9 -6.294l-1 -.206a2.5 2.5 0 0 1 2.326 -4.36c1.646 -1.313 4.026 -2.14 6.674 -2.14z" />
-      <path d="M12 8l1 -5l6 1" />
-      <path d="M19 4m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0" />
-      <circle cx="9" cy="13" r=".5" fill="currentColor" />
-      <circle cx="15" cy="13" r=".5" fill="currentColor" />
-      <path d="M10 17c.667 .333 1.333 .5 2 .5s1.333 -.167 2 -.5" />
-    </svg>
-  );
-}
 
 const NAV_LINKS = [
   { label: 'How It Works', href: '#how-it-works' },
@@ -119,36 +87,92 @@ const STEPS = [
   },
 ];
 
-const FEATURES = [
+// Each feature leads with a fragment of the actual product UI instead of a
+// stock icon — show the thing, don't symbolise it.
+const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
   {
-    icon: Target,
     title: 'Smart Keyword Discovery',
     body: 'AI suggests the keywords your buyers actually type, not the ones you wish they did.',
+    visual: (
+      <div className="flex flex-wrap gap-1.5">
+        <span className="chip bg-cream text-ink-700">stripe alternative</span>
+        <span className="chip bg-cream text-ink-700">lower fees</span>
+        <span className="chip bg-cream text-ink-700">payment setup</span>
+        <span className="chip bg-white text-ink-300 border border-dashed border-[#d8cfc0]">+ add your own</span>
+      </div>
+    ),
   },
   {
-    icon: IconBrandReddit,
     title: 'Subreddit Targeting',
     body: 'Find the communities where your audience already hangs out, ranked by relevance.',
+    visual: (
+      <div className="flex flex-wrap gap-1.5">
+        <span className="chip bg-orange-50 text-orange-700">r/ecommerce</span>
+        <span className="chip bg-orange-50 text-orange-700">r/smallbusiness</span>
+        <span className="chip bg-orange-50 text-orange-700">r/SaaS</span>
+        <span className="chip bg-orange-50 text-orange-700">r/startups</span>
+      </div>
+    ),
   },
   {
-    icon: Brain,
     title: 'Relevancy Scoring',
-    body: 'Every mention is scored for intent so low-value noise never reaches your dashboard.',
+    body: 'Every mention is scored for buying intent, so low-value noise never reaches your dashboard.',
+    visual: (
+      <div className="flex flex-wrap gap-1.5">
+        <span className="chip bg-emerald-50 text-emerald-700">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          92% · Strong match
+        </span>
+        <span className="chip bg-stone-100 text-stone-500">
+          <span className="w-1.5 h-1.5 rounded-full bg-stone-400" />
+          31% · Weak match
+        </span>
+      </div>
+    ),
   },
   {
-    icon: MessageSquare,
     title: 'AI Reply Generation',
     body: 'Context-aware replies that read like a helpful human, matched to your chosen tone.',
+    visual: (
+      <div className="rounded-lg bg-[#fffaf6] border border-orange-100 px-3 py-2 text-[11.5px] text-ink-700 text-left">
+        <span className="font-bold text-orange-700/70 text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
+        Been there — happy to share what worked for us…
+      </div>
+    ),
   },
   {
-    icon: Bell,
     title: 'Instant Alerts',
     body: 'Email and Telegram alerts the moment a high-intent conversation appears.',
+    visual: (
+      <div className="flex items-center gap-2 rounded-lg bg-cream px-3 py-2 text-[11.5px] text-ink-700">
+        <span className="relative flex h-1.5 w-1.5 shrink-0">
+          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-60" />
+          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
+        </span>
+        New high-intent lead in r/SaaS
+        <span className="ml-auto text-ink-300 text-[10.5px]">just now</span>
+      </div>
+    ),
   },
   {
-    icon: BarChart3,
     title: 'Analytics',
     body: 'Track mentions, keyword performance and engagement over time in one place.',
+    visual: (
+      <div className="space-y-1.5">
+        {[
+          { label: 'r/ecommerce', w: 'w-4/5' },
+          { label: 'r/smallbusiness', w: 'w-3/5' },
+          { label: 'r/SaaS', w: 'w-2/5' },
+        ].map((r) => (
+          <div key={r.label} className="flex items-center gap-2">
+            <span className="text-[10.5px] text-ink-400 w-24 shrink-0 truncate text-left">{r.label}</span>
+            <span className="h-1.5 flex-1 rounded-full bg-cream overflow-hidden">
+              <span className={`block h-full ${r.w} rounded-full bg-gradient-to-r from-orange-400 to-orange-600`} />
+            </span>
+          </div>
+        ))}
+      </div>
+    ),
   },
 ];
 
@@ -450,16 +474,17 @@ export default function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {FEATURES.map(({ icon: Icon, title, body }) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {FEATURES.map(({ title, body, visual }) => (
               <div
                 key={title}
-                className="bg-white rounded-xl border border-gray-200/80 p-6 hover:border-gray-300 transition-colors"
+                className="bg-white rounded-2xl shadow-card hover:shadow-card-hover transition-[box-shadow] duration-300 p-6"
               >
-                {/* Bare icon, no peach tile. The orange stays as a small mark. */}
-                <Icon className="h-5 w-5 text-[#ff4500] mb-4" aria-hidden="true" />
-                <h3 className="text-[15px] font-semibold text-gray-950 mb-1.5">{title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{body}</p>
+                <div className="mb-4 min-h-[52px] flex items-center" aria-hidden="true">
+                  <div className="w-full">{visual}</div>
+                </div>
+                <h3 className="text-[15px] font-semibold text-ink-900 mb-1.5">{title}</h3>
+                <p className="text-sm text-ink-600 leading-relaxed">{body}</p>
               </div>
             ))}
           </div>
