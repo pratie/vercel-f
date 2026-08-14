@@ -1,19 +1,11 @@
 import type { Metadata } from 'next';
-import { Inter, Poppins, Space_Grotesk, Plus_Jakarta_Sans } from 'next/font/google';
+import { Plus_Jakarta_Sans } from 'next/font/google';
 import './globals.css';
-import '@mantine/core/styles.css';
-import '@mantine/notifications/styles.css';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { Providers } from './providers';
 import ChatWidget from '@/components/ChatWidget';
 
 import Script from 'next/script';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  display: 'swap',
-});
 
 const jakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -21,20 +13,6 @@ const jakartaSans = Plus_Jakarta_Sans({
   variable: '--font-jakarta',
   display: 'swap',
 });
-
-const poppins = Poppins({
-  weight: ['400', '500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-poppins',
-  display: 'swap',
-});
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-space-grotesk',
-  display: 'swap',
-})
 
 export const metadata: Metadata = {
   title: 'SneakyGuy — Find Reddit Leads While You Sleep',
@@ -79,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jakartaSans.variable} ${spaceGrotesk.variable} ${inter.variable} font-sans`}>
+    <html lang="en" className={`${jakartaSans.variable} font-sans`}>
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
@@ -90,7 +68,7 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className={`${jakartaSans.className} font-sans antialiased`}>
+      <body className="font-sans antialiased">
         <Providers>
           {children}
         </Providers>

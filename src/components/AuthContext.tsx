@@ -32,8 +32,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (user?.token) {
       if (typeof window !== 'undefined') {
-        console.log('User is logged in, checking Reddit auth status...');
-        // Use a ref to ensure we only check once per session
+        // Only check once per session
         const checkOnce = sessionStorage.getItem('reddit_auth_checked');
         if (!checkOnce) {
           // Use the checkStatus directly with no automatic rechecking
@@ -51,17 +50,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog');
 
     if (!user?.token && !isPublicRoute) {
-      console.log('No token, redirecting to home...');
       router.push('/');
     } else if (user?.token && pathname === '/login') {
-      console.log('Has token, redirecting to projects...');
       router.push('/projects');
     }
   }, [user, router, pathname, isInitialized]);
 
-  // Don't render until initialized
+  // While auth state hydrates, hold the app background instead of flashing
+  // a bare white document.
   if (!isInitialized) {
-    return null;
+    return <div className="min-h-screen bg-[#fafafa]" aria-busy="true" />;
   }
 
   const value = {

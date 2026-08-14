@@ -159,6 +159,27 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
   const handleRemoveKeyword = (kw: string) => setKeywords(keywords.filter(k => k !== kw));
   const handleRemoveSubreddit = (sr: string) => setSubreddits(subreddits.filter(s => s !== sr));
 
+  const [newKeyword, setNewKeyword] = useState('');
+  const [newSubreddit, setNewSubreddit] = useState('');
+
+  const handleAddKeyword = () => {
+    const kw = newKeyword.trim().toLowerCase();
+    if (!kw) return;
+    if (keywords.length >= 15) { toast.error('Maximum 15 keywords'); return; }
+    if (keywords.includes(kw)) { toast.error('Keyword already added'); return; }
+    setKeywords([...keywords, kw]);
+    setNewKeyword('');
+  };
+
+  const handleAddSubreddit = () => {
+    const sr = newSubreddit.trim().replace(/^r\//, '').replace(/\s+/g, '');
+    if (!sr) return;
+    if (subreddits.length >= 15) { toast.error('Maximum 15 subreddits'); return; }
+    if (subreddits.some(s => s.toLowerCase() === sr.toLowerCase())) { toast.error('Subreddit already added'); return; }
+    setSubreddits([...subreddits, sr]);
+    setNewSubreddit('');
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[90vw] sm:max-w-lg overflow-y-auto max-h-[85vh] p-0 bg-white rounded-xl border border-gray-200 shadow-xl gap-0">
@@ -183,7 +204,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeUrl()}
                     placeholder="https://yourproduct.com"
                     autoFocus
-                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow]"
+                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow]"
                   />
                 </div>
               </div>
@@ -191,7 +212,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               <button
                 onClick={() => handleAnalyzeUrl()}
                 disabled={!url.trim()}
-                className="w-full h-11 rounded-lg bg-[#ff4500] text-white text-sm font-semibold hover:bg-[#ff4500]/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="w-full h-11 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-500/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               >
                 <Sparkles className="h-4 w-4" />
                 Analyze & Generate
@@ -221,7 +242,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g., Sneakyguy AI"
-                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow]"
+                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow]"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -231,13 +252,13 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Describe what your product does and who it's for..."
                       rows={3}
-                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow] resize-none"
+                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow] resize-none"
                     />
                   </div>
                   <button
                     onClick={handleManualAnalyze}
                     disabled={!name.trim() || !description.trim()}
-                    className="w-full h-10 rounded-lg bg-[#ff4500] text-white text-xs font-semibold hover:bg-[#ff4500]/90 transition-[background-color] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full h-10 rounded-lg bg-orange-500 text-white text-xs font-semibold hover:bg-orange-500/90 transition-[background-color] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Generate Keywords
@@ -249,8 +270,8 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
         ) : step === 'url' && loading ? (
           /* Loading state */
           <div className="px-6 py-12 flex flex-col items-center justify-center">
-            <div className="h-11 w-11 rounded-full bg-[#ff4500]/[0.08] flex items-center justify-center mb-5">
-              <Loader2 className="h-5 w-5 animate-spin text-[#ff4500]" />
+            <div className="h-11 w-11 rounded-full bg-orange-500/[0.08] flex items-center justify-center mb-5">
+              <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
             </div>
             <p className="text-sm font-semibold text-gray-900 mb-1">Analyzing your website</p>
             <p className="text-xs text-gray-400 mb-6">This usually takes about 20 seconds.</p>
@@ -263,7 +284,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                   <li key={label} className="flex items-center gap-2.5 text-xs">
                     <span
                       className={`h-1.5 w-1.5 rounded-full shrink-0 transition-colors ${
-                        done ? 'bg-[#ff4500]' : active ? 'bg-[#ff4500] animate-pulse' : 'bg-gray-200'
+                        done ? 'bg-orange-500' : active ? 'bg-orange-500 animate-pulse' : 'bg-gray-200'
                       }`}
                       aria-hidden="true"
                     />
@@ -301,7 +322,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow]"
+                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow]"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -310,7 +331,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={2}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#ff4500]/20 focus:border-[#ff4500]/40 transition-[border-color,box-shadow] resize-none"
+                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow] resize-none"
                       />
                     </div>
                     <button
@@ -365,6 +386,14 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       </button>
                     </span>
                   ))}
+                  <input
+                    value={newKeyword}
+                    onChange={(e) => setNewKeyword(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddKeyword(); } }}
+                    onBlur={handleAddKeyword}
+                    placeholder="+ add keyword"
+                    className="h-[26px] px-2 w-28 rounded-md border border-dashed border-gray-200 bg-transparent text-xs placeholder:text-gray-300 focus:outline-none focus:border-orange-300 transition-colors"
+                  />
                 </div>
               </div>
 
@@ -377,14 +406,22 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                   {subreddits.map((subreddit) => (
                     <span
                       key={subreddit}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#ff4500]/[0.06] border border-[#ff4500]/15 text-xs font-medium text-[#ff4500]"
+                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-orange-500/[0.06] border border-orange-500/15 text-xs font-medium text-orange-500"
                     >
                       r/{subreddit}
-                      <button onClick={() => handleRemoveSubreddit(subreddit)} className="text-[#ff4500]/40 hover:text-red-500 transition-colors">
+                      <button onClick={() => handleRemoveSubreddit(subreddit)} className="text-orange-500/40 hover:text-red-500 transition-colors">
                         <X className="h-3 w-3" />
                       </button>
                     </span>
                   ))}
+                  <input
+                    value={newSubreddit}
+                    onChange={(e) => setNewSubreddit(e.target.value)}
+                    onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSubreddit(); } }}
+                    onBlur={handleAddSubreddit}
+                    placeholder="+ add subreddit"
+                    className="h-[26px] px-2 w-28 rounded-md border border-dashed border-gray-200 bg-transparent text-xs placeholder:text-gray-300 focus:outline-none focus:border-orange-300 transition-colors"
+                  />
                 </div>
               </div>
 
@@ -407,7 +444,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                 <button
                   onClick={handleSubmit}
                   disabled={loading || keywords.length === 0 || !name.trim()}
-                  className="flex-1 h-10 rounded-lg bg-[#ff4500] text-white text-xs font-semibold hover:bg-[#ff4500]/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="flex-1 h-10 rounded-lg bg-orange-500 text-white text-xs font-semibold hover:bg-orange-500/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                 >
                   {loading ? (
                     <>

@@ -88,23 +88,17 @@ module.exports = {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        inter: ['Inter', 'sans-serif'],
+        sans: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
+        inter: ['var(--font-inter)', 'sans-serif'],
+        heading: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
       },
-      scrollbar: {
-        width: '14px',
-        height: '14px',
-        thumbBG: 'hsl(var(--scrollbar-thumb))',
-        thumbBGHover: 'hsl(var(--scrollbar-thumb-hover)',
-        thumbBGActive: 'hsl(var(--scrollbar-thumb-active)',
-        trackBG: 'hsl(var(--scrollbar-track))',
-        trackBGHover: 'hsl(var(--scrollbar-track-hover)',
-        corner: 'hsl(var(--scrollbar-corner))',
-      },
-      scrollbarThumb: {
-        rounded: 'rounded',
-        roundedFull: 'rounded-full',
+      boxShadow: {
+        // The layered "shadow border" cards use everywhere. Tokenised so the
+        // raw rgba stack isn't copy-pasted into 15 different className strings.
+        card: 'var(--shadow-border)',
+        'card-hover': 'var(--shadow-border-hover)',
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 }

@@ -15,7 +15,6 @@ import { useRouter } from 'next/navigation';
 import { api, Project } from '@/lib/api';
 import { toast } from 'sonner';
 import { EditProjectDialog } from './EditProjectDialog';
-import { RedditAnalysisLoading } from './RedditAnalysisLoading';
 import { isValidRedditUrl } from '@/lib/securityUtils';
 import { logError } from '@/lib/errorUtils';
 
@@ -24,7 +23,9 @@ interface ProjectCardProps {
   onDelete?: (projectId: string) => void;
 }
 
-export function ProjectCard({ project, onDelete }: ProjectCardProps) {
+export function ProjectCard({ project: initialProject, onDelete }: ProjectCardProps) {
+  // Local copy so an edit updates the card in place instead of reloading the page.
+  const [project, setProject] = useState(initialProject);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showAllKeywords, setShowAllKeywords] = useState(false);
@@ -65,10 +66,10 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
 
   const handleEdit = async (updatedProject: Project) => {
     try {
-      await api.updateProject(project.id, updatedProject);
-      toast.success('Project updated successfully');
-      window.location.reload();
+      const saved = await api.updateProject(project.id, updatedProject);
+      setProject(saved);
       setIsEditOpen(false);
+      toast.success('Project updated');
     } catch (error) {
       console.error('Failed to update project:', error);
       toast.error('Failed to update project. Please try again.');
@@ -214,12 +215,6 @@ export function ProjectCard({ project, onDelete }: ProjectCardProps) {
               </>
             )}
           </Button>
-
-          {loading && (
-            <div className="mt-3">
-              <RedditAnalysisLoading />
-            </div>
-          )}
         </div>
       </div>
 

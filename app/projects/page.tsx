@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Plus, Loader2, ArrowRight, Search, LayoutGrid, Rows, Globe, Sparkles } from 'lucide-react';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CreateProjectDialog } from '@/components/CreateProjectDialog';
-import { Toaster, toast } from 'sonner';
+import { toast } from 'sonner';
 import { api, Project } from '@/lib/api';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -56,6 +56,7 @@ export default function ProjectsPage() {
         setIsProcessingPayment(true);
         try {
           await api.updatePaymentStatus(paymentId ? { paymentId } : undefined);
+          sessionStorage.removeItem('payment-status-v1');
           setHasPaid(true);
           toast.success('Payment successful! You can now create projects.');
         } catch (error) {
@@ -119,7 +120,11 @@ export default function ProjectsPage() {
         keywords: projectData.keywords,
         subreddits: projectData.subreddits.map(s => s.replace(/^r\//, '')),
       });
-      setProjects(prevProjects => [...prevProjects, newProject]);
+      setProjects(prevProjects => {
+        const next = [...prevProjects, newProject];
+        window.dispatchEvent(new CustomEvent('sneakyguy:projects-updated', { detail: next }));
+        return next;
+      });
       toast.success('Project created successfully!');
     } catch (error) {
       console.error('Failed to create project:', error);
@@ -130,7 +135,11 @@ export default function ProjectsPage() {
 
   const handleDeleteProject = async (projectId: string) => {
     try {
-      setProjects(prevProjects => prevProjects.filter(p => p.id !== projectId));
+      setProjects(prevProjects => {
+        const next = prevProjects.filter(p => p.id !== projectId);
+        window.dispatchEvent(new CustomEvent('sneakyguy:projects-updated', { detail: next }));
+        return next;
+      });
       await api.deleteProject(projectId);
       toast.success('Project deleted successfully');
 
@@ -356,7 +365,6 @@ export default function ProjectsPage() {
           onSubmit={handleCreateProject}
           initialUrl={pendingUrl}
         />
-        <Toaster position="top-center" />
         {paymentStatusChecked && !hasPaid && <FreeAccessMessage />}
       </div>
     </div>

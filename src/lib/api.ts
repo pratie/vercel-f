@@ -784,4 +784,24 @@ export const api = {
         }
         return data;
     },
+
+    /** Rolling 24h Reddit reply quota (backend caps at 5/day). */
+    async getReplyQuota(): Promise<{ used: number; limit: number; remaining: number }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/reddit/comment/quota`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch reply quota');
+        }
+        return response.json();
+    },
+
+    /** Re-score mentions that only have the placeholder relevance (no intent). */
+    async rescoreMentions(brandId: string | number): Promise<{ status: string; count: number }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/mentions/${brandId}/rescore`, {
+            method: 'POST',
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to start re-scoring');
+        }
+        return response.json();
+    },
 };

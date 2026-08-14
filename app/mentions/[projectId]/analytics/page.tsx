@@ -1,70 +1,58 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, Loader2, RefreshCw, Download } from 'lucide-react';
+import { ArrowLeft, Download, Inbox } from 'lucide-react';
+import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
-import { api } from '@/lib/api';
-import { toast, Toaster } from 'sonner';
+import { api, Project } from '@/lib/api';
 import { PaymentGuard } from '@/components/PaymentGuard';
+import { Mention, transformRawMention, exportMentionsToCSV } from '@/lib/mentions';
 import { MentionsAnalytics } from '@/components/MentionsAnalytics';
 
-interface RawMention {
-  id: number;
-  brand_id: number;
-  title: string;
-  content: string;
-  url: string;
-  subreddit: string;
-  author?: string;
-  created_utc: number;
-  score: number;
-  num_comments: number;
-  matching_keywords?: string[] | string;
-  keyword?: string;
-  relevance_score: number;
-  suggested_comment: string;
-  intent?: string;
+/** Mirrors the analytics layout while data loads — no spinner, no jump. */
+function AnalyticsSkeleton() {
+  return (
+    <div className="space-y-4 animate-pulse" aria-hidden="true">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className="bg-white rounded-2xl shadow-card p-4">
+            <div className="h-2.5 w-20 bg-gray-100 rounded mb-4" />
+            <div className="h-7 w-14 bg-gray-100 rounded mb-2" />
+            <div className="h-2.5 w-24 bg-gray-100 rounded" />
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        {[0, 1].map((i) => (
+          <div key={i} className="bg-white rounded-2xl shadow-card p-5">
+            <div className="h-2.5 w-28 bg-gray-100 rounded mb-5" />
+            <div className="h-[190px] bg-gray-50 rounded-xl" />
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="bg-white rounded-2xl shadow-card p-5">
+            <div className="h-2.5 w-32 bg-gray-100 rounded mb-5" />
+            <div className="space-y-4">
+              {[0, 1, 2, 3].map((j) => (
+                <div key={j}>
+                  <div className="h-2.5 w-3/4 bg-gray-100 rounded mb-2" />
+                  <div className="h-1.5 w-full bg-gray-50 rounded-full" />
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-
-interface RedditMention {
-  id: number;
-  brand_id: number;
-  title: string;
-  subreddit: string;
-  relevance_score: number;
-  matching_keywords: string[];
-  intent?: string;
-  num_comments: number;
-  score: number;
-  created_utc: number;
-}
-
-interface Project {
-  id: string;
-  name: string;
-  description: string;
-  keywords: string[];
-  subreddits: string[];
-}
-
-const transformRawMention = (mention: RawMention): RedditMention => ({
-  id: mention.id,
-  brand_id: mention.brand_id,
-  title: mention.title,
-  subreddit: mention.subreddit,
-  relevance_score: mention.relevance_score,
-  matching_keywords: Array.isArray(mention.matching_keywords)
-    ? mention.matching_keywords
-    : (mention.keyword ? [mention.keyword] : []),
-  intent: mention.intent,
-  num_comments: mention.num_comments,
-  score: mention.score,
-  created_utc: mention.created_utc,
-});
 
 export default function AnalyticsPage() {
-  const [mentions, setMentions] = useState<RedditMention[]>([]);
+  const [mentions, setMentions] = useState<Mention[]>([]);
   const [project, setProject] = useState<Project | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { user } = useAuth();
@@ -73,20 +61,18 @@ export default function AnalyticsPage() {
   const projectId = params?.projectId as string;
 
   useEffect(() => {
-    if (!user) { router.push('/login'); return; }
-
+    if (!user) {
+      router.push('/login');
+      return;
+    }
     if (projectId && !isNaN(parseInt(projectId, 10))) {
       setIsLoading(true);
-      Promise.all([
-        api.getProject(projectId),
-        api.getMentions(projectId, 0, 5000),
-      ])
+      Promise.all([api.getProject(projectId), api.getMentions(projectId, 0, 5000)])
         .then(([projectData, rawMentions]) => {
           setProject(projectData);
-          const transformed = rawMentions.map(transformRawMention);
-          setMentions(transformed);
+          setMentions(rawMentions.map(transformRawMention));
         })
-        .catch(error => {
+        .catch((error) => {
           console.error('Error loading analytics data:', error);
           toast.error('Failed to load analytics data.');
         })
@@ -94,60 +80,44 @@ export default function AnalyticsPage() {
     }
   }, [projectId, user, router]);
 
-  const exportToCSV = () => {
-    try {
-      const headers = ['Subreddit', 'Score', 'Comments', 'Relevance', 'Intent', 'Keywords', 'Date'].join(',');
-      const rows = mentions.map(m => [
-        `"r/${m.subreddit}"`,
-        m.score,
-        m.num_comments,
-        m.relevance_score,
-        `"${m.intent || ''}"`,
-        `"${m.matching_keywords.join('; ')}"`,
-        `"${new Date(m.created_utc * 1000).toLocaleDateString()}"`,
-      ].join(','));
-      const csvContent = [headers, ...rows].join('\n');
-      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      link.setAttribute('href', URL.createObjectURL(blob));
-      link.setAttribute('download', `analytics_${project?.name || projectId}_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      toast.success('CSV exported');
-    } catch {
-      toast.error('Failed to export CSV');
-    }
-  };
-
   return (
     <PaymentGuard>
-      <div className="max-w-5xl mx-auto px-4 py-4" style={{ WebkitFontSmoothing: 'antialiased' } as any}>
-        <Toaster position="top-center" />
-
-        {/* Header */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="flex items-center gap-3">
-            <button
-              onClick={() => router.push(`/mentions/${projectId}`)}
-              className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors group"
+      <div className="max-w-5xl mx-auto px-4 py-4">
+        {/* Header — breadcrumb back to the leads dashboard */}
+        <div className="flex items-center justify-between mb-6 gap-3">
+          <div className="flex items-center gap-3 min-w-0">
+            <Link
+              href={`/mentions/${projectId}`}
+              className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors group shrink-0"
             >
               <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
               Leads
-            </button>
+            </Link>
             {project && (
               <>
                 <span className="text-gray-200">/</span>
                 <span className="text-sm font-semibold text-gray-900 truncate max-w-[200px]">{project.name}</span>
                 <span className="text-gray-200">/</span>
-                <span className="text-sm font-medium text-gray-500">Analytics</span>
+                <span className="text-sm font-medium text-gray-500 shrink-0">Analytics</span>
               </>
             )}
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3 shrink-0">
+            {!isLoading && mentions.length > 0 && (
+              <span className="text-xs text-gray-500 tabular-nums" style={{ fontVariantNumeric: 'tabular-nums' }}>
+                {mentions.length.toLocaleString()} {mentions.length === 1 ? 'lead' : 'leads'}
+              </span>
+            )}
             <button
-              onClick={exportToCSV}
+              onClick={() => {
+                try {
+                  exportMentionsToCSV(mentions, `sneakyguy_analytics_${project?.name || projectId}`);
+                  toast.success('CSV exported');
+                } catch {
+                  toast.error('Failed to export CSV');
+                }
+              }}
               disabled={isLoading || mentions.length === 0}
               className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color] disabled:opacity-50"
             >
@@ -159,17 +129,26 @@ export default function AnalyticsPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-24">
-            <Loader2 className="h-5 w-5 animate-spin text-gray-400 mb-3" />
-            <p className="text-xs text-gray-400">Loading analytics...</p>
-          </div>
+          <AnalyticsSkeleton />
         ) : mentions.length === 0 ? (
-          <div className="text-center py-24 bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)]">
-            <p className="text-sm font-medium text-gray-900 mb-1">No data yet</p>
-            <p className="text-xs text-gray-400">Run a scan from the leads page to generate analytics.</p>
+          <div className="text-center py-20 bg-white rounded-2xl shadow-card">
+            <div className="mx-auto w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mb-3">
+              <Inbox className="h-5 w-5 text-orange-500" />
+            </div>
+            <p className="text-sm font-medium text-gray-900 mb-1">No leads to analyze yet</p>
+            <p className="text-xs text-gray-400 mb-5 max-w-xs mx-auto">
+              Analytics fills in once your first scan finds leads. Start a scan from the leads dashboard.
+            </p>
+            <Link
+              href={`/mentions/${projectId}`}
+              className="inline-flex items-center gap-1.5 px-3.5 h-8 rounded-lg bg-orange-500 text-white text-xs font-semibold hover:bg-orange-600 transition-colors"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" />
+              Back to leads
+            </Link>
           </div>
         ) : project ? (
-          <MentionsAnalytics mentions={mentions} keywords={project.keywords || []} />
+          <MentionsAnalytics mentions={mentions} keywords={project.keywords || []} projectId={projectId} />
         ) : null}
       </div>
     </PaymentGuard>

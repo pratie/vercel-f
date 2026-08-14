@@ -79,6 +79,9 @@ const authStore = create<AuthState>((set, get) => ({
       localStorage.removeItem('userEmail');
       sessionStorage.removeItem('token');
       localStorage.removeItem('token'); // Clear any legacy token storage
+      sessionStorage.removeItem('payment-status-v1');
+      sessionStorage.removeItem('sidebar-projects-v1');
+      sessionStorage.removeItem('reddit_auth_checked');
       removeCookie('token');
     }
     set({ user: null });
