@@ -28,18 +28,20 @@ export default function ProjectsPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Pick up pending URL from landing page
+  // Pick up pending URL from the landing page. Runs for unpaid users too:
+  // the analysis itself is free, and seeing their own keywords is the moment
+  // that sells the plan. The URL stays in sessionStorage until a project is
+  // actually created, so it survives the trip through the payment flow.
   useEffect(() => {
-    if (hasPaid && paymentStatusChecked && !isLoading) {
-      const analyze = searchParams.get('analyze');
+    if (paymentStatusChecked && !isLoading && !isCreateOpen) {
       const pendingFromLanding = typeof window !== 'undefined' ? sessionStorage.getItem('pending_analyze_url') : null;
-      if (analyze === 'true' && pendingFromLanding) {
-        sessionStorage.removeItem('pending_analyze_url');
+      if (pendingFromLanding) {
         setPendingUrl(pendingFromLanding);
         setIsCreateOpen(true);
       }
     }
-  }, [hasPaid, paymentStatusChecked, isLoading, searchParams]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [paymentStatusChecked, isLoading, searchParams]);
 
   useEffect(() => {
     if (!user) {
@@ -74,10 +76,15 @@ export default function ProjectsPage() {
   }, [user, router, searchParams, hasPaid]);
 
   useEffect(() => {
-    if (user && paymentStatusChecked && hasPaid === false && !isLoading && !isProcessingPayment) {
+    // Unpaid users normally go straight to /upgrade — but if they arrived with
+    // a URL to analyze, let them run the free analysis first. They hit the
+    // paywall at "Create Project" instead, after seeing their own keywords.
+    const hasPendingAnalysis =
+      isCreateOpen || (typeof window !== 'undefined' && !!sessionStorage.getItem('pending_analyze_url'));
+    if (user && paymentStatusChecked && hasPaid === false && !isLoading && !isProcessingPayment && !hasPendingAnalysis) {
       router.push('/upgrade');
     }
-  }, [user, paymentStatusChecked, hasPaid, isLoading, isProcessingPayment, router]);
+  }, [user, paymentStatusChecked, hasPaid, isLoading, isProcessingPayment, router, isCreateOpen]);
 
   const checkPaymentStatus = async () => {
     try {
@@ -109,8 +116,12 @@ export default function ProjectsPage() {
     subreddits: string[];
   }) => {
     if (!hasPaid) {
-      handleNewProject();
-      return;
+      // They've seen their analysis — this is the paywall moment. The pending
+      // URL stays in sessionStorage so the dialog reopens after payment.
+      // Throwing keeps the dialog from firing its own success toast/close.
+      toast.info('Almost there — unlock SneakyGuy to start monitoring these keywords.');
+      router.push('/upgrade');
+      throw new Error('payment_required');
     }
 
     try {
@@ -120,6 +131,7 @@ export default function ProjectsPage() {
         keywords: projectData.keywords,
         subreddits: projectData.subreddits.map(s => s.replace(/^r\//, '')),
       });
+      sessionStorage.removeItem('pending_analyze_url');
       setProjects(prevProjects => {
         const next = [...prevProjects, newProject];
         window.dispatchEvent(new CustomEvent('sneakyguy:projects-updated', { detail: next }));
@@ -368,7 +380,15 @@ export default function ProjectsPage() {
           open={isCreateOpen}
           onOpenChange={(open) => {
             setIsCreateOpen(open);
-            if (!open) setPendingUrl(undefined);
+            if (!open) {
+              setPendingUrl(undefined);
+              // Unpaid visitor closed the analysis dialog: clear the stashed
+              // URL (so the redirect effect resumes) and send them to pricing.
+              if (!hasPaid && paymentStatusChecked) {
+                sessionStorage.removeItem('pending_analyze_url');
+                router.push('/upgrade');
+              }
+            }
           }}
           onSubmit={handleCreateProject}
           initialUrl={pendingUrl}

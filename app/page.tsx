@@ -10,7 +10,7 @@ import {
   MessageSquare,
   Bell,
   BarChart3,
-  Shield,
+  Globe,
   Menu,
   X,
 } from 'lucide-react';
@@ -66,8 +66,8 @@ const NAV_LINKS = [
 
 const STEPS = [
   {
-    title: 'Set Up Your Keywords',
-    body: 'Describe your business and SneakyGuy generates the keywords and subreddits worth watching. Adjust anything you like.',
+    title: 'Paste Your Website',
+    body: 'We read your site and draft the keywords and subreddits worth watching — in about 20 seconds. Adjust anything you like.',
   },
   {
     title: 'AI Monitors Reddit 24/7',
@@ -126,6 +126,22 @@ export default function LandingPage() {
 
   const handleGetStarted = () => {
     router.push(user ? '/upgrade' : '/login');
+  };
+
+  const [heroUrl, setHeroUrl] = useState('');
+
+  // The URL funnel: stash the URL, send them to sign in. The projects page
+  // picks up pending_analyze_url and runs the analysis — before the paywall,
+  // so new users see their own keywords first.
+  const handleHeroAnalyze = () => {
+    const raw = heroUrl.trim();
+    if (!raw) {
+      router.push(user ? '/projects' : '/login');
+      return;
+    }
+    const normalized = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    sessionStorage.setItem('pending_analyze_url', normalized);
+    router.push(user ? '/projects?analyze=true' : '/login');
   };
 
   return (
@@ -195,83 +211,143 @@ export default function LandingPage() {
         </div>
       </header>
 
-      {/* ───── VALUE LINE ───── */}
-      {/* Was "AI-powered reply generation is live", which is news about us
-          rather than value to the reader. Says what they get instead. */}
-      <div className="border-b border-gray-100 bg-white py-2.5 px-4 text-center">
-        <p className="text-[13px] text-gray-500">
-          Every Reddit lead in one place — and hours of scrolling back every week.
-        </p>
-      </div>
-
       {/* ───── HERO ───── */}
-      <section className="relative bg-white">
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-24">
-          <div className="lg:grid lg:grid-cols-12 lg:gap-12">
-            <div className="text-center lg:text-left lg:col-span-6 lg:flex lg:items-center">
-              <div>
-                {/* One accent in the headline -- the Reddit mark. The second
-                    line used to be solid orange, which fought the CTA. */}
-                <h1 className="text-4xl sm:text-5xl font-bold tracking-[-0.02em] text-gray-950 mb-6 leading-[1.15]">
-                  <span className="inline-flex items-center gap-2 sm:gap-3">
-                    Find
-                    <IconBrandReddit
-                      className="h-9 sm:h-11 w-auto text-[#ff4500] shrink-0"
-                      aria-hidden="true"
-                    />
-                    {/* "Reddit" carries the same #ff4500 as the mark beside it,
-                        so the word and the logo read as one unit. */}
-                    <span>
-                      <span className="text-[#ff4500]">Reddit</span> Leads
-                    </span>
-                  </span>
-                  <br />
-                  {/* Kept at full strength. A lighter grey here read as
-                      disabled text and failed contrast at this size. */}
-                  While You Sleep
-                </h1>
+      {/* Single centred column: one message, one action. The URL box IS the
+          CTA — pasting a URL is lower-friction than "Get Started", and the
+          analysis result (their own keywords) is the aha moment that sells. */}
+      <section className="relative bg-paper overflow-hidden">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-[420px] bg-[radial-gradient(ellipse_at_top,rgba(255,69,0,0.07),transparent_60%)]"
+          aria-hidden="true"
+        />
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-20 pb-10 text-center">
+          <h1 className="text-4xl sm:text-[52px] font-bold tracking-[-0.025em] text-ink-900 leading-[1.12] mb-5">
+            People on Reddit are{' '}
+            <span className="relative whitespace-nowrap">
+              <span className="absolute inset-x-0 bottom-[0.08em] h-[0.35em] bg-orange-200/70 -rotate-[0.5deg]" aria-hidden="true" />
+              <span className="relative">already asking</span>
+            </span>{' '}
+            for your product
+          </h1>
 
-                <p className="text-lg text-gray-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                  SneakyGuy helps founders and B2B teams discover and convert qualified leads from
-                  Reddit discussions, with AI-powered monitoring and reply generation.
-                </p>
+          <p className="text-lg text-ink-600 mb-8 max-w-xl mx-auto leading-relaxed">
+            Paste your website. SneakyGuy finds those conversations, scores the buying
+            intent, and drafts replies that don&apos;t sound like ads.
+          </p>
 
-                <div className="sm:flex sm:justify-center lg:justify-start gap-4">
-                  <Button
-                    className="bg-[#ff4500] hover:bg-[#ff4500]/90 text-white px-7 h-12 rounded-xl text-base font-semibold w-full sm:w-auto"
-                    onClick={handleGetStarted}
-                  >
-                    Find Leads Now
-                    <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-gray-500 justify-center lg:justify-start">
-                  <span className="flex items-center">
-                    <Check className="h-4 w-4 text-gray-400 mr-2 shrink-0" aria-hidden="true" />
-                    AI-powered lead generation
-                  </span>
-                  <span className="flex items-center">
-                    <Check className="h-4 w-4 text-gray-400 mr-2 shrink-0" aria-hidden="true" />
-                    24/7 Reddit monitoring
-                  </span>
-                </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleHeroAnalyze();
+            }}
+            className="max-w-xl mx-auto"
+          >
+            <div className="flex flex-col sm:flex-row gap-2.5 p-2 bg-white rounded-2xl shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_8px_30px_-8px_rgba(62,44,24,0.18)]">
+              <div className="relative flex-1">
+                <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" aria-hidden="true" />
+                <input
+                  value={heroUrl}
+                  onChange={(e) => setHeroUrl(e.target.value)}
+                  placeholder="yourwebsite.com"
+                  inputMode="url"
+                  autoComplete="url"
+                  aria-label="Your website URL"
+                  className="w-full h-12 pl-10 pr-3 rounded-xl text-[15px] text-ink-900 placeholder:text-ink-300 focus:outline-none bg-transparent"
+                />
               </div>
+              <button
+                type="submit"
+                className="btn-primary h-12 px-6 text-[15px] shrink-0"
+              >
+                Find my leads
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+          </form>
+
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-ink-400 justify-center">
+            <span className="flex items-center">
+              <Check className="h-4 w-4 text-emerald-500 mr-1.5 shrink-0" aria-hidden="true" />
+              Free keyword &amp; community analysis
+            </span>
+            <span className="flex items-center">
+              <Check className="h-4 w-4 text-emerald-500 mr-1.5 shrink-0" aria-hidden="true" />
+              AI-scored buying intent
+            </span>
+            <span className="flex items-center">
+              <Check className="h-4 w-4 text-emerald-500 mr-1.5 shrink-0" aria-hidden="true" />
+              No subscription
+            </span>
+          </div>
+        </div>
+
+        {/* Product preview — a live-styled mock of the actual dashboard, so it
+            never goes stale the way the old demo video did. Decorative. */}
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pb-16 sm:pb-20" aria-hidden="true">
+          <div className="rounded-2xl bg-white shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_24px_60px_-20px_rgba(62,44,24,0.25)] overflow-hidden text-left">
+            {/* window chrome */}
+            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-[#f0e9dd] bg-[#fbf8f3]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#f4bf4f]/60" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#e8927c]/60" />
+              <span className="h-2.5 w-2.5 rounded-full bg-[#9ec97f]/60" />
+              <span className="ml-3 text-[11px] text-ink-300 font-medium truncate">sneakyguy.com — your leads</span>
             </div>
 
-            <div className="mt-12 lg:mt-0 lg:col-span-6">
-              <div className="relative mx-auto w-full rounded-2xl shadow-lg overflow-hidden bg-white">
-                <div style={{ position: 'relative', paddingBottom: '51.67%', height: 0 }}>
-                  <iframe
-                    src="https://www.loom.com/embed/01050bb0c0584256be51ddd489787480?sid=e4f38ddc-3d39-4627-8a78-b44f940d2b83"
-                    allowFullScreen
-                    /* Not lazy: this sits above the fold, and deferring it
-                       leaves a blank white panel next to the headline on
-                       first paint. */
-                    style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 0 }}
-                    title="SneakyGuy product demo"
-                  />
+            <div className="p-4 sm:p-6 bg-paper">
+              {/* mini stats */}
+              <div className="grid grid-cols-3 gap-2.5 mb-4">
+                {[
+                  { label: 'Leads', value: '128', sub: '12 new today' },
+                  { label: 'Avg match', value: '81%', sub: 'across scored' },
+                  { label: 'High intent', value: '23', sub: 'reply first' },
+                ].map((s) => (
+                  <div key={s.label} className="bg-white rounded-xl shadow-card px-3.5 py-3">
+                    <p className="text-[10px] font-bold uppercase tracking-[0.07em] text-ink-400">{s.label}</p>
+                    <p className="text-lg font-bold text-ink-900 tabular-nums leading-tight">{s.value}</p>
+                    <p className="text-[10px] text-ink-400 hidden sm:block">{s.sub}</p>
+                  </div>
+                ))}
+              </div>
+
+              {/* lead card 1 — hot */}
+              <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(255,69,0,0.12),0_0_0_1px_rgba(255,69,0,0.14)] mb-3">
+                <div className="h-0.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-300" />
+                <div className="p-4">
+                  <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                    <span className="chip bg-orange-50 text-orange-700">r/smallbusiness</span>
+                    <span className="chip bg-gradient-to-r from-orange-500 to-amber-500 text-white">⚡ Hot lead</span>
+                    <span className="chip bg-emerald-50 text-emerald-700">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                      92% · Strong match
+                    </span>
+                    <span className="chip bg-blue-50 text-blue-700 hidden sm:inline-flex">Solution seeking</span>
+                  </div>
+                  <p className="text-[13.5px] font-semibold text-ink-900 mb-1">
+                    Any tool that finds customers talking about your niche on Reddit?
+                  </p>
+                  <p className="text-[12px] text-ink-600 line-clamp-1 mb-2.5">
+                    I keep hearing Reddit is great for early customers but I don&apos;t have hours to scroll…
+                  </p>
+                  <div className="rounded-lg bg-[#fffaf6] border border-orange-100 px-3 py-2 text-[11.5px] text-ink-700">
+                    <span className="font-bold text-orange-700/70 text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
+                    Been there — I ended up automating this exact thing. Happy to share what worked…
+                  </div>
                 </div>
+              </div>
+
+              {/* lead card 2 — partially faded to suggest more below */}
+              <div className="bg-white rounded-xl shadow-card p-4 opacity-70">
+                <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                  <span className="chip bg-orange-50 text-orange-700">r/Entrepreneur</span>
+                  <span className="chip bg-amber-50 text-amber-700">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                    74% · Good match
+                  </span>
+                  <span className="chip bg-violet-50 text-violet-700 hidden sm:inline-flex">Recommendation</span>
+                </div>
+                <p className="text-[13.5px] font-semibold text-ink-900">
+                  What&apos;s your best channel for B2B leads that isn&apos;t cold email?
+                </p>
               </div>
             </div>
           </div>
