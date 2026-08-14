@@ -208,113 +208,71 @@ export default function ProjectsPage() {
       return b.name.localeCompare(a.name);
     });
 
+  const hasProjects = projects.length > 0;
+  // Search and sort earn their place only once the list is long enough to
+  // need them. Two cards with a search bar reads as template filler.
+  const showControls = projects.length > 6;
+
   return (
     <div className="relative">
       <div className="max-w-6xl mx-auto py-2">
-        {/* URL Input Hero CTA */}
-        {hasPaid && paymentStatusChecked && !isLoading && (
-          <div className="mb-8">
-            <div className="relative overflow-hidden bg-white rounded-2xl p-6 shadow-card hover:shadow-card-hover transition-[box-shadow] duration-300 ease-out" style={{ WebkitFontSmoothing: 'antialiased' } as any}>
-              <div className="absolute inset-x-0 top-0 h-[3px] bg-gradient-to-r from-orange-500 via-orange-400 to-amber-300" aria-hidden="true" />
-              <div className="absolute -top-10 -right-10 h-32 w-32 rounded-full bg-orange-50 blur-2xl opacity-70 pointer-events-none" aria-hidden="true" />
-              <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                <div className="flex-1 min-w-0">
-                  <h2 className="text-sm font-semibold text-ink-900 mb-0.5" style={{ textWrap: 'balance' } as any}>Start monitoring a new brand</h2>
-                  <p className="text-xs text-ink-400" style={{ textWrap: 'pretty' } as any}>Paste any website URL and we'll extract brand info and generate keywords automatically.</p>
-                </div>
+        {/* Header */}
+        {hasPaid && paymentStatusChecked && !isLoading && hasProjects && (
+          <div className="mb-6">
+            <div className="flex items-end justify-between gap-3">
+              <div>
+                <h1 className="text-2xl font-bold text-ink-900 tracking-tight">Projects</h1>
+                <p className="text-sm text-ink-400 mt-0.5">
+                  {projects.length === 1 ? 'One product being monitored' : `${projects.length} products being monitored`}
+                </p>
               </div>
-              <div className="relative mt-4 flex gap-2">
+              <button onClick={handleNewProject} className="btn-primary h-10 px-4 text-[13px] shrink-0">
+                <Plus className="h-4 w-4" />
+                New project
+              </button>
+            </div>
+
+            {showControls && (
+              <div className="mt-5 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                 <div className="relative flex-1">
-                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink-400" />
                   <input
-                    value={urlInput}
-                    onChange={(e) => setUrlInput(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
-                    placeholder="https://yourproduct.com"
-                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
+                    value={query}
+                    onChange={(e) => setQuery(e.target.value)}
+                    placeholder="Search projects..."
+                    className="w-full pl-9 pr-3 h-9 rounded-xl border border-[#e9e1d4] bg-white text-xs text-ink-900 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                   />
                 </div>
-                <button
-                  onClick={handleUrlSubmit}
-                  disabled={!urlInput.trim()}
-                  className="btn-primary h-11 px-5 disabled:cursor-not-allowed shrink-0"
-                >
-                  <Sparkles className="h-4 w-4" />
-                  <span className="hidden sm:inline">Analyze</span>
-                </button>
-              </div>
-              <div className="relative mt-2.5 flex items-center gap-3">
-                <span className="text-[10px] text-ink-300">or</span>
-                <button
-                  onClick={handleNewProject}
-                  className="text-[11px] font-medium text-ink-400 hover:text-ink-600 transition-colors duration-150"
-                >
-                  enter details manually
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Header */}
-        <div className="mb-6">
-          <div className="flex items-center justify-between mb-5">
-            <div>
-              <h1 className="text-2xl font-bold text-ink-900 tracking-tight" style={{ WebkitFontSmoothing: 'antialiased' } as any}>Projects</h1>
-              <p className="text-sm text-ink-400 mt-0.5" style={{ textWrap: 'pretty' } as any}>Manage your Reddit monitoring projects</p>
-            </div>
-            {!hasPaid && paymentStatusChecked && (
-              <button
-                onClick={handleNewProject}
-                className="btn-primary h-9 px-4 text-xs"
-              >
-                Upgrade
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            )}
-          </div>
-
-          {/* Controls */}
-          {projects.length > 0 && (
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
-              <div className="relative flex-1">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink-400" />
-                <input
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search projects..."
-                  className="w-full pl-9 pr-3 h-9 rounded-xl border border-[#e9e1d4] bg-white text-xs text-ink-900 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
-                />
-              </div>
-
-              <div className="flex items-center gap-2">
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value as 'recent' | 'name')}
-                  className="h-9 px-3 rounded-xl border border-[#e9e1d4] bg-white text-xs text-ink-600 focus:outline-none focus:ring-2 focus:ring-orange-400/30"
-                >
-                  <option value="recent">Recent</option>
-                  <option value="name">Name</option>
-                </select>
-
-                <div className="inline-flex rounded-xl border border-[#e9e1d4] bg-white p-0.5">
-                  <button
-                    onClick={() => setView('grid')}
-                    className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'grid' ? 'bg-cream text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                <div className="flex items-center gap-2">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as 'recent' | 'name')}
+                    className="h-9 px-3 rounded-xl border border-[#e9e1d4] bg-white text-xs text-ink-600 focus:outline-none focus:ring-2 focus:ring-orange-400/30"
                   >
-                    <LayoutGrid className="h-3.5 w-3.5" />
-                  </button>
-                  <button
-                    onClick={() => setView('list')}
-                    className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'list' ? 'bg-cream text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
-                  >
-                    <Rows className="h-3.5 w-3.5" />
-                  </button>
+                    <option value="recent">Recent</option>
+                    <option value="name">Name</option>
+                  </select>
+                  <div className="inline-flex rounded-xl border border-[#e9e1d4] bg-white p-0.5">
+                    <button
+                      onClick={() => setView('grid')}
+                      className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'grid' ? 'bg-cream text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                      aria-label="Grid view"
+                    >
+                      <LayoutGrid className="h-3.5 w-3.5" />
+                    </button>
+                    <button
+                      onClick={() => setView('list')}
+                      className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'list' ? 'bg-cream text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                      aria-label="List view"
+                    >
+                      <Rows className="h-3.5 w-3.5" />
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
         {(isLoading || !paymentStatusChecked || isProcessingPayment) ? (
           <div className="min-h-[40vh]">
@@ -338,23 +296,44 @@ export default function ProjectsPage() {
             <p className="ml-2 text-sm text-ink-600">Redirecting...</p>
           </div>
         ) : filtered.length === 0 && projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[320px] text-center px-6">
-            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-500 mb-4 shadow-card">
-              <Globe className="h-5 w-5" />
-            </div>
-            <h2 className="text-base font-semibold text-ink-900 mb-1.5">Create your first project</h2>
-            <p className="text-sm text-ink-600 max-w-sm leading-relaxed mb-6">
-              Paste your website and we&apos;ll read it, work out what you sell, and suggest the
-              keywords and subreddits worth monitoring. You can edit everything before it saves.
+          <div className="flex flex-col items-center justify-center min-h-[55vh] text-center px-6">
+            <h1 className="text-[26px] font-bold text-ink-900 tracking-tight mb-2">
+              Where does your product live?
+            </h1>
+            <p className="text-[15px] text-ink-600 max-w-md leading-relaxed mb-7">
+              Paste your website. We&apos;ll read it, work out what you sell, and find the
+              Reddit communities already talking about it.
             </p>
-            <button
-              onClick={handleNewProject}
-              className="btn-primary h-10 px-5"
-            >
-              <Sparkles className="h-4 w-4" />
-              Analyze a website
-            </button>
-            <p className="text-[11px] text-ink-400 mt-4">Takes about 20 seconds</p>
+            <div className="w-full max-w-lg">
+              <div className="flex gap-2 p-1.5 bg-white rounded-2xl shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_8px_30px_-8px_rgba(62,44,24,0.15)]">
+                <div className="relative flex-1">
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
+                  <input
+                    value={urlInput}
+                    onChange={(e) => setUrlInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
+                    placeholder="yourproduct.com"
+                    autoFocus
+                    className="w-full h-11 pl-10 pr-3 rounded-xl text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none bg-transparent"
+                  />
+                </div>
+                <button
+                  onClick={handleUrlSubmit}
+                  disabled={!urlInput.trim()}
+                  className="btn-primary h-11 px-5 disabled:cursor-not-allowed shrink-0"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Analyze
+                </button>
+              </div>
+              <p className="text-[11px] text-ink-400 mt-3">
+                Takes about 20 seconds, and you can edit everything before it saves. Or{' '}
+                <button onClick={handleNewProject} className="underline decoration-ink-300 underline-offset-2 hover:text-ink-600">
+                  enter details manually
+                </button>
+                .
+              </p>
+            </div>
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
