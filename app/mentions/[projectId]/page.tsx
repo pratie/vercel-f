@@ -207,7 +207,7 @@ export default function MentionsPage() {
           const after = await loadMentions();
           if (status === 'completed') {
             const found = after.length - before;
-            toast.success(found > 0 ? `Scan complete — ${found} new lead${found === 1 ? '' : 's'}` : 'Scan complete — no new leads this time');
+            toast.success(found > 0 ? `Scan complete. ${found} new lead${found === 1 ? '' : 's'} found` : 'Scan complete. No new leads this time');
           } else {
             toast.error('Scan failed', { description: updated.analysis_status_message || 'Try again in a few minutes.' });
           }
@@ -232,7 +232,7 @@ export default function MentionsPage() {
     try {
       const res = await api.rescoreMentions(projectId);
       if (res.status === 'started') {
-        toast.success(`Scoring ${res.count} leads with AI`, { description: 'This runs in the background — results appear as they finish.' });
+        toast.success(`Scoring ${res.count} leads with AI`, { description: 'This runs in the background. Results appear as they finish.' });
         // Refresh periodically while the background job works through the batch.
         let runs = 0;
         const interval = setInterval(async () => {
@@ -246,7 +246,7 @@ export default function MentionsPage() {
           } catch { /* keep trying until the cap */ }
         }, 20_000);
       } else if (res.status === 'already_running') {
-        toast.info('Scoring is already running — results appear as they finish.');
+        toast.info('Scoring is already running. Results appear as they finish.');
         setRescoring(false);
       } else {
         toast.info('All leads are already scored.');

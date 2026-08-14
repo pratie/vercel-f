@@ -98,7 +98,7 @@ export function StatsStrip({ stats, onOpenAnalytics, onRescore, rescoring }: Sta
               View analytics <ArrowUpRight className="h-2.5 w-2.5" />
             </span>
           }
-          title="Community with the most leads — click for full analytics"
+          title="Community with the most leads. Click for full analytics"
         />
       </div>
 

@@ -40,7 +40,7 @@ const HERO_QUESTIONS: { sub: string; q: string }[] = [
   { sub: 'r/SaaS', q: 'How did you get your first 100 users?' },
   { sub: 'r/marketing', q: 'Cheaper Mailchimp alternative that doesn’t suck?' },
   { sub: 'r/startups', q: 'What CRM do you actually use day to day?' },
-  { sub: 'r/nocode', q: 'Zapier is getting expensive — what else is there?' },
+  { sub: 'r/nocode', q: 'Zapier is getting expensive, what else is there?' },
   { sub: 'r/freelance', q: 'Best invoicing tool for freelancers?' },
   { sub: 'r/shopify', q: 'App recommendations for abandoned carts?' },
   { sub: 'r/productivity', q: 'Is there a better scheduling tool than Calendly?' },
@@ -75,7 +75,7 @@ function QuestionMarqueeRow({ items, reverse }: { items: { sub: string; q: strin
 const STEPS = [
   {
     title: 'Paste Your Website',
-    body: 'We read your site and draft the keywords and subreddits worth watching — in about 20 seconds. Adjust anything you like.',
+    body: 'We read your site and draft the keywords and subreddits worth watching, in about 20 seconds. Adjust anything you like.',
   },
   {
     title: 'AI Monitors Reddit 24/7',
@@ -136,7 +136,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
     visual: (
       <div className="rounded-lg bg-[#fffaf6] border border-orange-100 px-3 py-2 text-[11.5px] text-ink-700 text-left">
         <span className="font-bold text-orange-700/70 text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
-        Been there — happy to share what worked for us…
+        Been there. Happy to share what worked for us…
       </div>
     ),
   },
@@ -371,7 +371,7 @@ export default function LandingPage() {
               <span className="h-2.5 w-2.5 rounded-full bg-[#f4bf4f]/60" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#e8927c]/60" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#9ec97f]/60" />
-              <span className="ml-3 text-[11px] text-ink-300 font-medium truncate">sneakyguy.com — your leads</span>
+              <span className="ml-3 text-[11px] text-ink-300 font-medium truncate">sneakyguy.com / your leads</span>
             </div>
 
             <div className="p-4 sm:p-6 bg-paper">
@@ -411,7 +411,7 @@ export default function LandingPage() {
                   </p>
                   <div className="rounded-lg bg-[#fffaf6] border border-orange-100 px-3 py-2 text-[11.5px] text-ink-700">
                     <span className="font-bold text-orange-700/70 text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
-                    Been there — I ended up automating this exact thing. Happy to share what worked…
+                    Been there. I ended up automating this exact thing, happy to share what worked…
                   </div>
                 </div>
               </div>

@@ -29,7 +29,7 @@ export default function PaymentSuccessPage() {
         if (cancelled) return;
         console.error('Error updating payment status:', err);
         setStatus('error');
-        setError('We received your payment but could not activate it automatically. Please contact support — it will be fixed quickly.');
+        setError('We received your payment but could not activate it automatically. Please contact support and it will be fixed quickly.');
       }
     })();
     return () => { cancelled = true; };

@@ -321,7 +321,7 @@ export const MentionsAnalytics = ({ mentions, keywords, projectId }: MentionsAna
           </CardTitle>
           {last30Total === 0 ? (
             <EmptyCardState>
-              Nothing new in the last 30 days — your older leads still count toward the totals above.
+              Nothing new in the last 30 days. Your older leads still count toward the totals above.
             </EmptyCardState>
           ) : mounted && (
             <div className="h-[190px]">
@@ -361,7 +361,7 @@ export const MentionsAnalytics = ({ mentions, keywords, projectId }: MentionsAna
         <div className="bg-white rounded-2xl shadow-card p-6">
           <CardTitle icon={Gauge} tint="bg-emerald-50 text-emerald-600">Match quality</CardTitle>
           {scored.length === 0 && unscoredCount === 0 ? (
-            <EmptyCardState>No leads to bucket yet — this fills in as leads come through.</EmptyCardState>
+            <EmptyCardState>No leads to bucket yet. This fills in as leads come through.</EmptyCardState>
           ) : (
             <>
               {mounted && (
@@ -390,7 +390,7 @@ export const MentionsAnalytics = ({ mentions, keywords, projectId }: MentionsAna
               <p className="text-[11px] text-ink-400 mt-3 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-[3px] bg-stone-200 border border-dashed border-stone-400 shrink-0" />
                 {scored.length === 0
-                  ? `All ${unscoredCount.toLocaleString()} leads are awaiting AI scoring — buckets fill in as scoring runs.`
+                  ? `All ${unscoredCount.toLocaleString()} leads are awaiting AI scoring. Buckets fill in as scoring runs.`
                   : unscoredCount > 0
                     ? `${unscoredCount.toLocaleString()} ${unscoredCount === 1 ? 'lead' : 'leads'} not yet scored by AI (shown dashed, excluded from averages).`
                     : 'Every lead has been scored.'}
@@ -406,7 +406,7 @@ export const MentionsAnalytics = ({ mentions, keywords, projectId }: MentionsAna
         <div className="bg-white rounded-2xl shadow-card p-6">
           <CardTitle icon={Users} tint="bg-orange-50 text-orange-500">Where your buyers hang out</CardTitle>
           {topSubreddits.length === 0 ? (
-            <EmptyCardState>No communities yet — run a scan to find where your buyers post.</EmptyCardState>
+            <EmptyCardState>No communities yet. Run a scan to find where your buyers post.</EmptyCardState>
           ) : (
             <div className="space-y-1.5">
               {topSubreddits.map((s) => (

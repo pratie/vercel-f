@@ -26,15 +26,15 @@ const fallbackPlans: PricingPlan[] = [
 ];
 
 // Benefit first, mechanism second. Buyers don't purchase "15 subreddits
-// monitoring" — they purchase not missing the customer who asked yesterday.
+// monitoring". They purchase not missing the customer who asked yesterday.
 const features = [
-  'Catch buyers the moment they ask — up to 15 communities watched for you',
-  'Skip the noise — every lead scored for buying intent, best ones first',
-  'Reply in seconds, not hours — unlimited AI drafts written in your voice',
-  'Never sound like an ad — set your tone once, every draft follows it',
-  'Know what’s working — keyword & community analytics included',
-  'Set up in 60 seconds — paste your URL and we build the rest',
-  'Zero risk — 7-day money-back guarantee, nothing auto-renews',
+  'Catch buyers the moment they ask, across up to 15 communities',
+  'Skip the noise. Every lead scored for buying intent, best ones first',
+  'Reply in seconds, not hours, with unlimited AI drafts in your voice',
+  'Never sound like an ad. Set your tone once, every draft follows it',
+  'Know what’s working with keyword and community analytics',
+  'Set up in 60 seconds. Paste your URL and we build the rest',
+  'Zero risk: 7-day money-back guarantee, nothing auto-renews',
 ];
 
 export function PricingTable({ onPlanSelect, showHeader = false, compact = false }: PricingTableProps) {

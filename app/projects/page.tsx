@@ -119,7 +119,7 @@ export default function ProjectsPage() {
       // They've seen their analysis — this is the paywall moment. The pending
       // URL stays in sessionStorage so the dialog reopens after payment.
       // Throwing keeps the dialog from firing its own success toast/close.
-      toast.info('Almost there — unlock SneakyGuy to start monitoring these keywords.');
+      toast.info('Almost there. Unlock SneakyGuy to start monitoring these keywords.');
       router.push('/upgrade');
       throw new Error('payment_required');
     }
@@ -220,7 +220,7 @@ export default function ProjectsPage() {
               <div className="relative flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="flex-1 min-w-0">
                   <h2 className="text-sm font-semibold text-ink-900 mb-0.5" style={{ textWrap: 'balance' } as any}>Start monitoring a new brand</h2>
-                  <p className="text-xs text-ink-400" style={{ textWrap: 'pretty' } as any}>Paste any website URL — we'll extract brand info and generate keywords automatically.</p>
+                  <p className="text-xs text-ink-400" style={{ textWrap: 'pretty' } as any}>Paste any website URL and we'll extract brand info and generate keywords automatically.</p>
                 </div>
               </div>
               <div className="relative mt-4 flex gap-2">

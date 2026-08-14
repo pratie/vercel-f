@@ -98,7 +98,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
       await navigator.clipboard.writeText(reply);
       window.open(mention.url, '_blank', 'noopener,noreferrer');
       onViewed(mention.id);
-      toast.success('Reply copied — paste it on Reddit');
+      toast.success('Reply copied. Paste it on Reddit');
     } catch {
       toast.error('Failed to copy');
     }
@@ -121,7 +121,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
           </span>
 
           {highIntent && (
-            <span className="chip bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-[0_2px_6px_-1px_rgba(255,69,0,0.4)]" title="Strong buying or solution-seeking signal — reply to this one first">
+            <span className="chip bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-[0_2px_6px_-1px_rgba(255,69,0,0.4)]" title="Strong buying or solution-seeking signal. Reply to this one first">
               <Zap className="h-3 w-3 fill-current" />
               Hot lead
             </span>

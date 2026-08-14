@@ -15,15 +15,15 @@ const jakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'SneakyGuy — Find Reddit Leads While You Sleep',
-  description: 'Every Reddit lead in one place. SneakyGuy watches the subreddits your buyers post in, scores each conversation for buying intent, and drafts the reply — so you get hours back every week.',
+  title: 'SneakyGuy: Find Reddit Leads While You Sleep',
+  description: 'Every Reddit lead in one place. SneakyGuy watches the subreddits your buyers post in, scores each conversation for buying intent, and drafts the reply, so you get hours back every week.',
   icons: {
     icon: '/favicon.ico',
   },
   metadataBase: new URL('https://www.sneakyguy.com'),
   openGraph: {
-    title: 'SneakyGuy — Find Reddit Leads While You Sleep',
-    description: 'Every Reddit lead in one place. We watch the subreddits your buyers post in, score each conversation for intent, and draft the reply — hours back every week.',
+    title: 'SneakyGuy: Find Reddit Leads While You Sleep',
+    description: 'Every Reddit lead in one place. We watch the subreddits your buyers post in, score each conversation for intent, and draft the reply. Hours back every week.',
     url: 'https://www.sneakyguy.com',
     siteName: 'SneakyGuy',
     images: [
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SneakyGuy — Find Reddit Leads While You Sleep',
+    title: 'SneakyGuy: Find Reddit Leads While You Sleep',
     description: 'Every Reddit lead in one place. We find the conversations worth replying to, and draft the reply for you.',
     images: ['https://www.sneakyguy.com/images/og-image-v2.png'],
     creator: '@snow_stark17',
