@@ -149,8 +149,8 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
       onOpenChange(false);
       toast.success('Project created successfully!');
     } catch (error) {
+      // Error toast is shown by the page-level handler; keep the dialog open so edits aren't lost.
       console.error('Error creating project:', error);
-      toast.error('Failed to create project. Please try again.');
     } finally {
       setLoading(false);
     }

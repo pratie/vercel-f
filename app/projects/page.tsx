@@ -126,9 +126,15 @@ export default function ProjectsPage() {
         return next;
       });
       toast.success('Project created successfully!');
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to create project:', error);
-      toast.error('Failed to create project. Please try again.');
+      if (error?.statusCode === 402) {
+        toast.error(error.message || 'Your subscription has expired. Please renew to continue.');
+        sessionStorage.removeItem('payment-status-v1');
+        router.push('/upgrade');
+      } else {
+        toast.error(error?.message || 'Failed to create project. Please try again.');
+      }
       throw error;
     }
   };
