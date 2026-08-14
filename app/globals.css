@@ -272,3 +272,23 @@ img:not([role="presentation"]):not(.no-outline) {
 .animate-marquee {
   animation: marquee 30s linear infinite;
 }
+
+/* Hero question marquee — slow drift, two rows in opposite directions.
+   Speed is deliberate: fast marquees read as template noise. */
+.animate-drift {
+  animation: marquee 55s linear infinite;
+}
+.animate-drift-reverse {
+  animation: marquee 70s linear infinite reverse;
+}
+.marquee-paused:hover .animate-drift,
+.marquee-paused:hover .animate-drift-reverse {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-drift,
+  .animate-drift-reverse,
+  .animate-marquee {
+    animation: none;
+  }
+}

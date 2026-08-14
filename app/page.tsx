@@ -64,6 +64,46 @@ const NAV_LINKS = [
   { label: 'Blog', href: '/blog' },
 ];
 
+// The threads SneakyGuy catches, styled as they appear on Reddit. Two rows,
+// split so each row loops over its own half. Illustrative, not live data.
+const HERO_QUESTIONS: { sub: string; q: string }[] = [
+  { sub: 'r/smallbusiness', q: 'Best alternative to HubSpot for a tiny team?' },
+  { sub: 'r/ecommerce', q: 'Stripe alternative with lower fees?' },
+  { sub: 'r/SaaS', q: 'How did you get your first 100 users?' },
+  { sub: 'r/marketing', q: 'Cheaper Mailchimp alternative that doesn’t suck?' },
+  { sub: 'r/startups', q: 'What CRM do you actually use day to day?' },
+  { sub: 'r/nocode', q: 'Zapier is getting expensive — what else is there?' },
+  { sub: 'r/freelance', q: 'Best invoicing tool for freelancers?' },
+  { sub: 'r/shopify', q: 'App recommendations for abandoned carts?' },
+  { sub: 'r/productivity', q: 'Is there a better scheduling tool than Calendly?' },
+  { sub: 'r/webdev', q: 'What analytics do you use instead of GA4?' },
+  { sub: 'r/Entrepreneur', q: 'QuickBooks alternative for a one-person business?' },
+  { sub: 'r/socialmedia', q: 'Canva alternative for daily posts?' },
+  { sub: 'r/sales', q: 'Anyone found a good Instantly alternative?' },
+  { sub: 'r/CustomerSuccess', q: 'AI support bot that isn’t Intercom pricing?' },
+  { sub: 'r/indiehackers', q: 'Where do you find early adopters besides PH?' },
+  { sub: 'r/b2b_sales', q: 'Tools for finding warm leads without cold email?' },
+];
+
+function QuestionMarqueeRow({ items, reverse }: { items: { sub: string; q: string }[]; reverse?: boolean }) {
+  // Content duplicated once so the -50% translate loops seamlessly.
+  return (
+    <div className="flex overflow-hidden">
+      <div className={`flex gap-3 pr-3 w-max shrink-0 ${reverse ? 'animate-drift-reverse' : 'animate-drift'}`}>
+        {[...items, ...items].map(({ sub, q }, i) => (
+          <span
+            key={i}
+            className="flex items-center gap-2 shrink-0 bg-white rounded-full pl-1.5 pr-4 py-1.5 shadow-[0_0_0_1px_rgba(62,44,24,0.07),0_1px_3px_rgba(62,44,24,0.06)]"
+          >
+            <span className="chip bg-orange-50 text-orange-700">{sub}</span>
+            <span className="text-[12.5px] text-ink-700 whitespace-nowrap">{q}</span>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const STEPS = [
   {
     title: 'Paste Your Website',
@@ -275,6 +315,27 @@ export default function LandingPage() {
               No subscription
             </span>
           </div>
+        </div>
+
+        {/* Question drift — the threads this product exists for. Edge-faded,
+            slow, pauses on hover. Decorative for screen readers. */}
+        <div className="relative mt-10 mb-2 marquee-paused" aria-hidden="true">
+          <p className="text-center text-[11px] font-bold uppercase tracking-[0.12em] text-ink-300 mb-4">
+            <span className="inline-flex items-center gap-1.5">
+              <span className="relative flex h-1.5 w-1.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-60" />
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
+              </span>
+              Asked on Reddit every hour
+            </span>
+          </p>
+          <div className="space-y-3">
+            <QuestionMarqueeRow items={HERO_QUESTIONS.slice(0, 8)} />
+            <QuestionMarqueeRow items={HERO_QUESTIONS.slice(8)} reverse />
+          </div>
+          {/* edge fades */}
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-white to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-white to-transparent" />
         </div>
 
         {/* Product preview — a live-styled mock of the actual dashboard, so it
