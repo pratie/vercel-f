@@ -262,28 +262,31 @@ export default function LandingPage() {
   return (
     <main className="min-h-screen bg-white">
       {/* ───── NAVIGATION ───── */}
-      {/* Floating glass pill. Content scrolls under it; the blur keeps it legible. */}
-      <header className="fixed inset-x-0 top-3 sm:top-4 z-50 px-3 sm:px-6">
-        <div className={`max-w-4xl mx-auto ${mobileOpen ? 'rounded-3xl' : 'rounded-full'} bg-white/85 backdrop-blur-md shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_4px_16px_-4px_rgba(62,44,24,0.12)]`}>
-          <div className="flex justify-between items-center h-[52px] pl-4 pr-2">
+      {/* Full-width bar: logo anchored left, links centred, CTA anchored right. */}
+      <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-[#f0e9dd]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="relative flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2" aria-label="SneakyGuy home">
               <Image
                 src="/logo.png"
                 alt=""
-                width={36}
-                height={logoHeight(36)}
+                width={44}
+                height={logoHeight(44)}
                 priority
-                className="h-auto w-9 no-outline"
+                className="h-auto w-11 no-outline"
               />
-              <span className="font-bold text-[17px] text-ink-900 tracking-tight">SneakyGuy</span>
+              <span className="font-bold text-xl text-ink-900 tracking-tight">SneakyGuy</span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-7" aria-label="Main">
+            <nav
+              className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2"
+              aria-label="Main"
+            >
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className="text-[13px] text-ink-600 hover:text-ink-900 font-medium transition-colors"
+                  className="text-[13.5px] text-ink-600 hover:text-ink-900 font-medium transition-colors"
                 >
                   {link.label}
                 </Link>
@@ -291,13 +294,14 @@ export default function LandingPage() {
             </nav>
 
             <div className="flex items-center gap-1.5">
-              <button onClick={handleGetStarted} className="btn-primary h-9 px-4 text-[13px] rounded-full">
-                Get started
+              <button onClick={handleGetStarted} className="btn-primary h-10 px-5 text-sm">
+                Get Started
+                <ArrowRight className="h-4 w-4" />
               </button>
               <button
                 type="button"
                 onClick={() => setMobileOpen((open) => !open)}
-                className="md:hidden p-2 text-ink-600"
+                className="md:hidden p-2 -mr-2 text-ink-600"
                 aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
                 aria-expanded={mobileOpen}
               >
@@ -307,7 +311,7 @@ export default function LandingPage() {
           </div>
 
           {mobileOpen && (
-            <nav className="md:hidden border-t border-[#f0e9dd] py-3 px-5 flex flex-col rounded-b-3xl" aria-label="Mobile">
+            <nav className="md:hidden border-t border-[#f0e9dd] py-3 flex flex-col" aria-label="Mobile">
               {NAV_LINKS.map((link) => (
                 <Link
                   key={link.href}
@@ -328,7 +332,7 @@ export default function LandingPage() {
           CTA — pasting a URL is lower-friction than "Get Started", and the
           analysis result (their own keywords) is the aha moment that sells. */}
       <section className="relative bg-white overflow-hidden">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-32 sm:pt-40 pb-10 text-center">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-10 text-center">
           <h1 className="text-[40px] sm:text-[60px] font-bold tracking-[-0.03em] text-ink-900 leading-[1.08] mb-6">
             People on Reddit are{' '}
             <em className="font-display font-medium italic tracking-[-0.01em] text-orange-600 whitespace-nowrap">
