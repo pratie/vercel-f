@@ -48,6 +48,10 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => (
 
 const faqs = [
   {
+    question: "Will this actually work for my niche?",
+    answer: "That's exactly what the free analysis answers. Paste your website and you'll see the real keywords and communities for your specific product before paying anything. If your buyers ask questions anywhere on Reddit, from SaaS to skincare to accounting software, SneakyGuy finds those threads. If the analysis looks thin for your niche, don't buy. That's the point of showing it first."
+  },
+  {
     question: "Will using SneakyGuy get my Reddit account banned?",
     answer: "No. Unlike bots that spam subreddits, SneakyGuy helps you find relevant conversations where your product is a legitimate solution. We recommend reviewing AI responses and posting them naturally to maintain a high-quality reputation."
   },

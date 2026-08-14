@@ -72,6 +72,56 @@ function QuestionMarqueeRow({ items, reverse }: { items: { sub: string; q: strin
   );
 }
 
+// The preview personalizes by what the visitor sells. Belief is specific:
+// a Shopify founder doesn't trust a SaaS example, so let them pick their
+// world and watch the dashboard fill with it.
+const SEGMENTS = [
+  {
+    key: 'saas',
+    label: 'SaaS',
+    hotSub: 'r/SaaS',
+    hotQ: 'Any tool that finds customers talking about your niche on Reddit?',
+    hotBody: 'I keep hearing Reddit is great for early customers but I don’t have hours to scroll…',
+    reply: 'Been there. I ended up automating this exact thing, happy to share what worked…',
+    sub2: 'r/Entrepreneur',
+    q2: 'What’s your best channel for B2B leads that isn’t cold email?',
+    intent2: 'Recommendation',
+  },
+  {
+    key: 'ecom',
+    label: 'E-commerce',
+    hotSub: 'r/shopify',
+    hotQ: 'How do you get sales without burning money on Meta ads?',
+    hotBody: 'CPMs are killing me. Two products, decent reviews, but paid is eating all my margin…',
+    reply: 'Same boat last year. What actually moved the needle for us was showing up where people already ask…',
+    sub2: 'r/ecommerce',
+    q2: 'Best tool for finding what customers complain about in my niche?',
+    intent2: 'Solution seeking',
+  },
+  {
+    key: 'agency',
+    label: 'Agencies',
+    hotSub: 'r/smallbusiness',
+    hotQ: 'How do I find clients who actually value marketing help?',
+    hotBody: 'Referrals dried up this quarter. Cold email gets 1% replies. Where are people actually asking for help?',
+    reply: 'Honestly, half my clients came from answering questions like this one…',
+    sub2: 'r/agency',
+    q2: 'Where do you find leads besides Upwork and referrals?',
+    intent2: 'Recommendation',
+  },
+  {
+    key: 'creator',
+    label: 'Courses & creators',
+    hotSub: 'r/growmybusiness',
+    hotQ: 'Is there a way to find people asking about topics I teach?',
+    hotBody: 'I have a course that genuinely helps but I refuse to run ads. Want to help people already asking…',
+    reply: 'This is exactly how I sold my first 50 seats. Found the threads, answered properly…',
+    sub2: 'r/coursecreators',
+    q2: 'How do you promote a course without feeling spammy?',
+    intent2: 'Solution seeking',
+  },
+];
+
 const STEPS = [
   {
     title: 'Paste Your Website',
@@ -193,6 +243,7 @@ export default function LandingPage() {
   };
 
   const [heroUrl, setHeroUrl] = useState('');
+  const [segment, setSegment] = useState(SEGMENTS[0]);
 
   // The URL funnel: stash the URL, send them to sign in. The projects page
   // picks up pending_analyze_url and runs the analysis — before the paywall,
@@ -365,38 +416,26 @@ export default function LandingPage() {
         </div>
 
         {/* Product preview — a live-styled mock of the actual dashboard, so it
-            never goes stale the way the old demo video did. Decorative. */}
-        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pb-20 sm:pb-24" aria-hidden="true">
-          {/* Floating moments around the frame. Hidden on small screens. */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:flex absolute -right-14 top-16 z-10 items-center gap-2.5 bg-white rounded-2xl pl-3 pr-4 py-2.5 shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_12px_32px_-8px_rgba(62,44,24,0.2)]"
-          >
-            <span className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-50">
-              <Check className="h-4 w-4 text-emerald-600" strokeWidth={3} />
-            </span>
-            <span className="text-left">
-              <span className="block text-[12px] font-bold text-ink-900 leading-tight">Reply posted</span>
-              <span className="block text-[10.5px] text-ink-400">r/smallbusiness · just now</span>
-            </span>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="hidden lg:flex absolute -left-12 bottom-32 z-10 items-center gap-2 bg-white rounded-2xl px-4 py-2.5 shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_12px_32px_-8px_rgba(62,44,24,0.2)]"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-60" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" />
-            </span>
-            <span className="text-[12px] font-semibold text-ink-700">3 new leads while you were away</span>
-          </motion.div>
-
+            never goes stale the way the old demo video did. The segment picker
+            personalizes it: belief is specific to what the visitor sells. */}
+        <div className="relative max-w-4xl mx-auto px-4 sm:px-6 pb-20 sm:pb-24">
+          <div className="flex flex-wrap items-center justify-center gap-1.5 mb-5">
+            <span className="text-[12.5px] text-ink-400 mr-1.5">Show me leads for</span>
+            {SEGMENTS.map((s) => (
+              <button
+                key={s.key}
+                onClick={() => setSegment(s)}
+                aria-pressed={segment.key === s.key}
+                className={`px-3.5 h-8 rounded-full text-[12.5px] font-semibold transition-all duration-200 ${
+                  segment.key === s.key
+                    ? 'bg-ink-900 text-white shadow-[0_2px_8px_-2px_rgba(36,29,21,0.4)]'
+                    : 'bg-white text-ink-600 shadow-[0_0_0_1px_rgba(62,44,24,0.08)] hover:text-ink-900'
+                }`}
+              >
+                {s.label}
+              </button>
+            ))}
+          </div>
           <motion.div
             initial={{ opacity: 0, y: 32 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -428,46 +467,54 @@ export default function LandingPage() {
                 ))}
               </div>
 
-              {/* lead card 1 — hot */}
-              <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(255,69,0,0.12),0_0_0_1px_rgba(255,69,0,0.14)] mb-3">
-                <div className="h-0.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-300" />
-                <div className="p-4">
-                  <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                    <span className="chip bg-orange-50 text-orange-700">r/smallbusiness</span>
-                    <span className="chip bg-gradient-to-r from-orange-500 to-amber-500 text-white">⚡ Hot lead</span>
-                    <span className="chip bg-emerald-50 text-emerald-700">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      92% · Strong match
-                    </span>
-                    <span className="chip bg-blue-50 text-blue-700 hidden sm:inline-flex">Solution seeking</span>
-                  </div>
-                  <p className="text-[13.5px] font-semibold text-ink-900 mb-1">
-                    Any tool that finds customers talking about your niche on Reddit?
-                  </p>
-                  <p className="text-[12px] text-ink-600 line-clamp-1 mb-2.5">
-                    I keep hearing Reddit is great for early customers but I don&apos;t have hours to scroll…
-                  </p>
-                  <div className="rounded-lg bg-[#fffaf6] border border-orange-100 px-3 py-2 text-[11.5px] text-ink-700">
-                    <span className="font-bold text-orange-700/70 text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
-                    Been there. I ended up automating this exact thing, happy to share what worked…
+              {/* Segment-driven lead cards. Keyed so the swap animates. */}
+              <motion.div
+                key={segment.key}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              >
+                {/* lead card 1 — hot */}
+                <div className="bg-white rounded-xl overflow-hidden shadow-[0_1px_3px_rgba(255,69,0,0.12),0_0_0_1px_rgba(255,69,0,0.14)] mb-3">
+                  <div className="h-0.5 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-300" />
+                  <div className="p-4">
+                    <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                      <span className="chip bg-orange-50 text-orange-700">{segment.hotSub}</span>
+                      <span className="chip bg-gradient-to-r from-orange-500 to-amber-500 text-white">⚡ Hot lead</span>
+                      <span className="chip bg-emerald-50 text-emerald-700">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                        92% · Strong match
+                      </span>
+                      <span className="chip bg-blue-50 text-blue-700 hidden sm:inline-flex">Solution seeking</span>
+                    </div>
+                    <p className="text-[13.5px] font-semibold text-ink-900 mb-1">
+                      {segment.hotQ}
+                    </p>
+                    <p className="text-[12px] text-ink-600 line-clamp-1 mb-2.5">
+                      {segment.hotBody}
+                    </p>
+                    <div className="rounded-lg bg-[#fffaf6] border border-orange-100 px-3 py-2 text-[11.5px] text-ink-700">
+                      <span className="font-bold text-orange-700/70 text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
+                      {segment.reply}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* lead card 2 — partially faded to suggest more below */}
-              <div className="bg-white rounded-xl shadow-card p-4 opacity-70">
-                <div className="flex items-center gap-1.5 mb-2 flex-wrap">
-                  <span className="chip bg-orange-50 text-orange-700">r/Entrepreneur</span>
-                  <span className="chip bg-amber-50 text-amber-700">
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-                    74% · Good match
-                  </span>
-                  <span className="chip bg-violet-50 text-violet-700 hidden sm:inline-flex">Recommendation</span>
+                {/* lead card 2 — partially faded to suggest more below */}
+                <div className="bg-white rounded-xl shadow-card p-4 opacity-70">
+                  <div className="flex items-center gap-1.5 mb-2 flex-wrap">
+                    <span className="chip bg-orange-50 text-orange-700">{segment.sub2}</span>
+                    <span className="chip bg-amber-50 text-amber-700">
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                      74% · Good match
+                    </span>
+                    <span className="chip bg-violet-50 text-violet-700 hidden sm:inline-flex">{segment.intent2}</span>
+                  </div>
+                  <p className="text-[13.5px] font-semibold text-ink-900">
+                    {segment.q2}
+                  </p>
                 </div>
-                <p className="text-[13.5px] font-semibold text-ink-900">
-                  What&apos;s your best channel for B2B leads that isn&apos;t cold email?
-                </p>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
