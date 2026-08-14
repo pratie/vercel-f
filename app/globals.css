@@ -10,35 +10,36 @@ html {
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    /* Warm paper palette — the app should feel like good stationery, not a spreadsheet */
+    --background: 36 33% 97%;
+    --foreground: 30 22% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 30 22% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 30 22% 10%;
 
     --primary: 16 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 35 30% 93%;
+    --secondary-foreground: 30 22% 12%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 35 30% 93%;
+    --muted-foreground: 30 7% 46%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 22 100% 95%;
+    --accent-foreground: 16 85% 35%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
+    --border: 36 24% 89%;
+    --input: 36 24% 86%;
     --ring: 16 100% 50%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
   }
 
   .dark {
@@ -92,16 +93,51 @@ html {
   }
 }
 
-/* Layered shadow borders (replaces solid borders for depth) */
+/* Layered shadow borders (replaces solid borders for depth) — warmed */
 :root {
   --shadow-border:
-    0px 0px 0px 1px rgba(0, 0, 0, 0.06),
-    0px 1px 2px -1px rgba(0, 0, 0, 0.06),
-    0px 2px 4px 0px rgba(0, 0, 0, 0.04);
+    0px 0px 0px 1px rgba(62, 44, 24, 0.07),
+    0px 1px 2px -1px rgba(62, 44, 24, 0.06),
+    0px 2px 6px 0px rgba(62, 44, 24, 0.04);
   --shadow-border-hover:
-    0px 0px 0px 1px rgba(0, 0, 0, 0.08),
-    0px 2px 8px -2px rgba(0, 0, 0, 0.08),
-    0px 4px 12px 0px rgba(0, 0, 0, 0.06);
+    0px 0px 0px 1px rgba(62, 44, 24, 0.09),
+    0px 2px 8px -2px rgba(62, 44, 24, 0.08),
+    0px 8px 20px -6px rgba(62, 44, 24, 0.10);
+  --shadow-orange:
+    0px 1px 2px rgba(180, 40, 0, 0.25),
+    0px 4px 12px -2px rgba(255, 69, 0, 0.35);
+}
+
+/* Soft-tinted chip — the base for intent/score/subreddit chips */
+.chip {
+  @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold leading-none;
+}
+
+/* Primary action — warm gradient with a subtle glow */
+.btn-primary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all;
+  background-image: linear-gradient(180deg, #ff6a2b 0%, #ff4500 100%);
+  box-shadow: var(--shadow-orange);
+}
+.btn-primary:hover {
+  background-image: linear-gradient(180deg, #ff5a14 0%, #ed3f00 100%);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
+.btn-primary:disabled {
+  opacity: 0.55;
+  transform: none;
+}
+
+/* Secondary action — quiet, warm-bordered */
+.btn-secondary {
+  @apply inline-flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-stone-700 transition-all hover:bg-orange-50/60 hover:text-stone-900;
+  box-shadow: var(--shadow-border);
+}
+.btn-secondary:hover {
+  box-shadow: var(--shadow-border-hover);
 }
 
 .dark {

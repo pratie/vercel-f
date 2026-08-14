@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // While auth state hydrates, hold the app background instead of flashing
   // a bare white document.
   if (!isInitialized) {
-    return <div className="min-h-screen bg-[#fafafa]" aria-busy="true" />;
+    return <div className="min-h-screen bg-paper" aria-busy="true" />;
   }
 
   const value = {

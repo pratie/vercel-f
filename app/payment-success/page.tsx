@@ -36,7 +36,7 @@ export default function PaymentSuccessPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#fafafa] px-6">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-paper px-6">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-card p-8 text-center">
         {status === 'loading' && (
           <>

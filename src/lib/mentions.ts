@@ -65,10 +65,21 @@ export function isHighIntent(m: Pick<Mention, 'relevance_score' | 'intent'>): bo
 const PLACEHOLDER_EXPLANATIONS = [
   'This feature will be live soon! Stay tuned!😊',
   'Failed to parse response',
+  'Error during scoring',
 ];
+
+/** Scoring crashed for these — the stored 20 is a fallback, not a judgment.
+ * Surface them as unscored so the rescore flow can pick them up. */
+function isErrorScored(raw: RawMention): boolean {
+  const exp = (raw.suggested_comment || '').trim();
+  return exp === 'Error during scoring' || exp === 'Failed to parse response';
+}
 
 export function transformRawMention(raw: RawMention): Mention {
   const explanation = raw.suggested_comment || '';
+  if (isErrorScored(raw)) {
+    raw = { ...raw, relevance_score: null, intent: null };
+  }
   return {
     id: raw.id,
     brand_id: raw.brand_id,
@@ -91,6 +102,23 @@ export function transformRawMention(raw: RawMention): Mention {
   };
 }
 
+/** Match "temperature" — one visual language for how good a lead is.
+ * Green = strong, amber = warm, stone = weak, dashed gray = not scored yet. */
+export function scoreTier(m: Pick<Mention, 'relevance_score' | 'intent'>): {
+  label: string;
+  chip: string;
+  dot: string;
+} {
+  if (isUnscored(m)) {
+    return { label: 'Not scored yet', chip: 'bg-stone-100 text-stone-500 border border-dashed border-stone-300', dot: 'bg-stone-300' };
+  }
+  const s = m.relevance_score ?? 0;
+  if (s >= 80) return { label: 'Strong match', chip: 'bg-emerald-50 text-emerald-700', dot: 'bg-emerald-500' };
+  if (s >= 60) return { label: 'Good match', chip: 'bg-amber-50 text-amber-700', dot: 'bg-amber-500' };
+  if (s >= 40) return { label: 'Fair match', chip: 'bg-orange-50/70 text-orange-800/70', dot: 'bg-orange-300' };
+  return { label: 'Weak match', chip: 'bg-stone-100 text-stone-500', dot: 'bg-stone-400' };
+}
+
 /** Human label for an intent slug: "solution_seeking" → "Solution seeking". */
 export function intentLabel(intent: string): string {
   const cleaned = intent.replace(/_/g, ' ').trim();
@@ -106,7 +134,7 @@ export function intentTone(intent: string | null): { chip: string; bar: string }
   if (i.includes('comparison')) return { chip: 'bg-cyan-50 text-cyan-700 border-cyan-100', bar: 'bg-cyan-500' };
   if (i.includes('complaint')) return { chip: 'bg-rose-50 text-rose-700 border-rose-100', bar: 'bg-rose-500' };
   if (i.includes('feature') || i.includes('feedback')) return { chip: 'bg-amber-50 text-amber-700 border-amber-100', bar: 'bg-amber-500' };
-  return { chip: 'bg-gray-50 text-gray-600 border-gray-100', bar: 'bg-gray-400' };
+  return { chip: 'bg-stone-100 text-stone-600 border-stone-200/60', bar: 'bg-stone-400' };
 }
 
 /** "2h ago" under 24h · "3d ago" under a week · "Aug 5" beyond that. */

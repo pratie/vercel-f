@@ -33,7 +33,7 @@ interface FilterBarProps {
 }
 
 const selectCls =
-  'h-9 px-3 rounded-lg border border-gray-200 bg-white text-xs text-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-gray-300';
+  'h-10 px-3 rounded-xl bg-white text-xs font-medium text-ink-600 shadow-card focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition-shadow cursor-pointer hover:shadow-card-hover';
 
 export function FilterBar({ filters, onChange, subreddits, intents, counts, shown, matched }: FilterBarProps) {
   const hasActiveFilters =
@@ -48,34 +48,40 @@ export function FilterBar({ filters, onChange, subreddits, intents, counts, show
   return (
     <div className="mb-5 space-y-3">
       {/* Triage tabs */}
-      <div className="flex items-center gap-1 p-1 bg-gray-100/80 rounded-lg w-fit" role="tablist" aria-label="Lead status">
+      <div className="flex items-center gap-1 p-1 bg-cream rounded-full w-fit" role="tablist" aria-label="Lead status">
         {tabs.map((t) => (
           <button
             key={t.key}
             role="tab"
             aria-selected={filters.tab === t.key}
             onClick={() => onChange({ tab: t.key })}
-            className={`px-3 h-7 rounded-md text-xs font-medium transition-colors tabular-nums ${
+            className={`px-4 h-8 rounded-full text-xs font-semibold transition-all tabular-nums ${
               filters.tab === t.key
-                ? 'bg-white text-gray-900 shadow-sm'
-                : 'text-gray-500 hover:text-gray-800'
+                ? 'bg-white text-orange-700 shadow-card'
+                : 'text-ink-600 hover:text-ink-900'
             }`}
           >
             {t.label}
-            <span className={`ml-1.5 ${filters.tab === t.key ? 'text-gray-400' : 'text-gray-400/70'}`}>{t.count}</span>
+            <span
+              className={`ml-1.5 inline-flex items-center justify-center min-w-[18px] h-[18px] px-1 rounded-full text-[10px] font-bold ${
+                filters.tab === t.key ? 'bg-orange-100 text-orange-700' : 'bg-white/70 text-ink-400'
+              }`}
+            >
+              {t.count}
+            </span>
           </button>
         ))}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-ink-400" />
           <input
             type="text"
             value={filters.query}
             onChange={(e) => onChange({ query: e.target.value })}
             placeholder="Search leads…"
-            className="w-full h-9 pl-9 pr-3 rounded-lg border border-gray-200 bg-white text-xs focus:outline-none focus:ring-2 focus:ring-orange-500/10 focus:border-gray-300 transition-[border-color,box-shadow]"
+            className="w-full h-10 pl-10 pr-3 rounded-xl bg-white text-[13px] text-ink-900 placeholder:text-ink-300 shadow-card focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:shadow-card-hover transition-shadow"
           />
         </div>
         <div className="grid grid-cols-3 sm:flex gap-2">
@@ -100,13 +106,13 @@ export function FilterBar({ filters, onChange, subreddits, intents, counts, show
         </div>
       </div>
 
-      <div className="flex items-center justify-between text-[11px] text-gray-400">
+      <div className="flex items-center justify-between text-[11px] text-ink-400">
         <span>
-          Showing <span className="font-medium text-gray-600 tabular-nums">{shown}</span> of{' '}
-          <span className="font-medium text-gray-600 tabular-nums">{matched}</span> leads
+          Showing <span className="font-semibold text-ink-600 tabular-nums">{shown}</span> of{' '}
+          <span className="font-semibold text-ink-600 tabular-nums">{matched}</span> leads
         </span>
         {hasActiveFilters && (
-          <button onClick={() => onChange({ ...DEFAULT_FILTERS })} className="text-orange-600 hover:text-orange-700 font-medium">
+          <button onClick={() => onChange({ ...DEFAULT_FILTERS })} className="text-orange-600 hover:text-orange-700 font-semibold">
             Clear filters
           </button>
         )}

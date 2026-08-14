@@ -58,12 +58,12 @@ function normalizeAlerts(data: Partial<AlertSettings>): AlertSettings {
 }
 
 function Skeleton({ className }: { className?: string }) {
-  return <div className={cn('animate-pulse rounded-md bg-gray-100', className)} />;
+  return <div className={cn('animate-pulse rounded-md bg-cream', className)} />;
 }
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold">
+    <p className="text-[10px] uppercase tracking-wider text-ink-400 font-semibold">
       {children}
     </p>
   );
@@ -106,7 +106,7 @@ function Toggle({
         'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        checked ? 'bg-orange-500' : 'bg-gray-200'
+        checked ? 'bg-orange-500' : 'bg-[#e2d9c9]'
       )}
     >
       <span
@@ -266,13 +266,13 @@ export default function SettingsPage() {
     <PaymentGuard>
       <div className="max-w-3xl mx-auto px-4 py-8">
         <SectionLabel>Workspace</SectionLabel>
-        <h1 className="text-2xl font-bold text-gray-900 mt-1 mb-6">Settings</h1>
+        <h1 className="text-2xl font-bold text-ink-900 mt-1 mb-6">Settings</h1>
 
         {/* Pill tabs, synced to ?tab= */}
         <div
           role="tablist"
           aria-label="Settings sections"
-          className="flex gap-1 p-1 bg-gray-100/80 rounded-lg w-full sm:w-fit mb-6"
+          className="flex gap-1 p-1 bg-cream rounded-full w-full sm:w-fit mb-6"
         >
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
@@ -283,8 +283,8 @@ export default function SettingsPage() {
               className={cn(
                 'flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors',
                 activeTab === id
-                  ? 'bg-white shadow-sm text-gray-900'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-white shadow-sm text-ink-900'
+                  : 'text-ink-400 hover:text-ink-700'
               )}
             >
               <Icon className="h-3.5 w-3.5" />
@@ -297,24 +297,24 @@ export default function SettingsPage() {
         {activeTab === 'account' && (
           <SettingsCard>
             <SectionLabel>Reddit account</SectionLabel>
-            <h2 className="text-sm font-semibold text-gray-900 mt-1">Reddit Connection</h2>
-            <p className="text-[13px] text-gray-500 mt-1 mb-5">
+            <h2 className="text-sm font-semibold text-ink-900 mt-1">Reddit Connection</h2>
+            <p className="text-[13px] text-ink-400 mt-1 mb-5">
               Connect your Reddit account to post comments directly from this application.
             </p>
 
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-gray-100 bg-gray-50/60 px-4 py-3.5">
+            <div className="flex items-center justify-between gap-4 rounded-xl border border-[#efe8dc] bg-[#faf6ef] px-4 py-3.5">
               {redditAuth.isAuthenticated ? (
                 <div className="flex items-center gap-2 min-w-0">
                   <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                  <span className="text-[13px] text-gray-700 truncate">
+                  <span className="text-[13px] text-ink-700 truncate">
                     Connected as{' '}
-                    <span className="font-semibold text-gray-900">{redditAuth.username}</span>
+                    <span className="font-semibold text-ink-900">{redditAuth.username}</span>
                   </span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-gray-300 shrink-0" />
-                  <span className="text-[13px] text-gray-500">Not connected</span>
+                  <span className="h-2 w-2 rounded-full bg-stone-300 shrink-0" />
+                  <span className="text-[13px] text-ink-400">Not connected</span>
                 </div>
               )}
 
@@ -374,7 +374,7 @@ export default function SettingsPage() {
               </div>
             )}
 
-            <div className="text-xs text-gray-400 mt-4 space-y-1">
+            <div className="text-xs text-ink-400 mt-4 space-y-1">
               <p>Connecting your Reddit account allows you to post comments directly from this application.</p>
               <p>Your account connection will be used only for posting comments you explicitly approve.</p>
               <p>You can post up to 5 comments per 24 hours due to Reddit&apos;s rate limiting.</p>
@@ -386,8 +386,8 @@ export default function SettingsPage() {
         {activeTab === 'notifications' && (
           <SettingsCard>
             <SectionLabel>Alerts</SectionLabel>
-            <h2 className="text-sm font-semibold text-gray-900 mt-1">Email Notifications</h2>
-            <p className="text-[13px] text-gray-500 mt-1 mb-5">
+            <h2 className="text-sm font-semibold text-ink-900 mt-1">Email Notifications</h2>
+            <p className="text-[13px] text-ink-400 mt-1 mb-5">
               Configure how you receive email notifications for new Reddit mentions.
             </p>
 
@@ -407,10 +407,10 @@ export default function SettingsPage() {
               <div className="space-y-5">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-[13px] font-medium text-gray-900">
+                    <p className="text-[13px] font-medium text-ink-900">
                       Enable Email Notifications
                     </p>
-                    <p className="text-xs text-gray-400 mt-0.5">Receive alerts via email</p>
+                    <p className="text-xs text-ink-400 mt-0.5">Receive alerts via email</p>
                   </div>
                   <Toggle
                     label="Enable email notifications"
@@ -426,12 +426,12 @@ export default function SettingsPage() {
                 </div>
 
                 <div>
-                  <p className="text-[10px] uppercase tracking-wider text-gray-400 font-semibold mb-2">
+                  <p className="text-[10px] uppercase tracking-wider text-ink-400 font-semibold mb-2">
                     Frequency
                   </p>
                   <div
                     className={cn(
-                      'flex gap-1 p-1 bg-gray-100/80 rounded-lg w-fit',
+                      'flex gap-1 p-1 bg-cream rounded-full w-fit',
                       !alertSettings.enable_email_alerts && 'opacity-50 pointer-events-none'
                     )}
                     role="radiogroup"
@@ -462,8 +462,8 @@ export default function SettingsPage() {
                           className={cn(
                             'px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors',
                             current === value
-                              ? 'bg-white shadow-sm text-gray-900'
-                              : 'text-gray-500 hover:text-gray-700'
+                              ? 'bg-white shadow-sm text-ink-900'
+                              : 'text-ink-400 hover:text-ink-700'
                           )}
                         >
                           {label}
@@ -499,7 +499,7 @@ export default function SettingsPage() {
           <div className="space-y-5">
             <SettingsCard>
               <SectionLabel>Reply voice</SectionLabel>
-              <h2 className="text-sm font-semibold text-gray-900 mt-1 mb-4">Brand Tone</h2>
+              <h2 className="text-sm font-semibold text-ink-900 mt-1 mb-4">Brand Tone</h2>
 
               {isPrefsLoading ? (
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -521,15 +521,15 @@ export default function SettingsPage() {
                         'flex items-start gap-2.5 rounded-xl border p-3.5 cursor-pointer transition-colors',
                         settings.tone === value
                           ? 'border-orange-500 bg-orange-50/50'
-                          : 'border-gray-200 hover:border-orange-300'
+                          : 'border-[#e9e1d4] hover:border-orange-300'
                       )}
                     >
                       <RadioGroupItem value={value} id={value} className="mt-0.5" />
                       <span className="block">
-                        <span className="block text-[13px] font-semibold text-gray-900">
+                        <span className="block text-[13px] font-semibold text-ink-900">
                           {title}
                         </span>
-                        <span className="block text-xs text-gray-400 mt-0.5 font-normal">
+                        <span className="block text-xs text-ink-400 mt-0.5 font-normal">
                           {body}
                         </span>
                       </span>
@@ -541,7 +541,7 @@ export default function SettingsPage() {
 
             <SettingsCard>
               <SectionLabel>Reply structure</SectionLabel>
-              <h2 className="text-sm font-semibold text-gray-900 mt-1 mb-4">Response Style</h2>
+              <h2 className="text-sm font-semibold text-ink-900 mt-1 mb-4">Response Style</h2>
 
               {isPrefsLoading ? (
                 <Skeleton className="h-[100px] w-full rounded-lg" />

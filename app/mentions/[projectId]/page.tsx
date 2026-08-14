@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import {
-  ArrowLeft, BarChart3, Download, Loader2, RefreshCw, Search, TrendingUp,
+  ArrowLeft, BarChart3, Download, RefreshCw, Search,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
@@ -321,56 +321,55 @@ export default function MentionsPage() {
     <PaymentGuard>
       <div className="max-w-5xl mx-auto px-4 py-4">
         {/* Top bar */}
-        <div className="flex items-center justify-between gap-2 mb-6 flex-wrap">
-          <div className="flex items-center gap-3 min-w-0">
-            <button
-              onClick={() => router.push('/projects')}
-              className="flex items-center gap-1.5 text-xs font-medium text-gray-400 hover:text-gray-700 transition-colors group shrink-0"
-            >
-              <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
-              Projects
-            </button>
-            {project && (
-              <>
-                <span className="text-gray-200">/</span>
-                <h1 className="text-sm font-semibold text-gray-900 truncate">{project.name}</h1>
-              </>
-            )}
-          </div>
+        <div className="mb-6">
+          <button
+            onClick={() => router.push('/projects')}
+            className="flex items-center gap-1.5 text-xs font-semibold text-ink-400 hover:text-ink-700 transition-colors group mb-1.5"
+          >
+            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            Projects
+          </button>
+          <div className="flex items-end justify-between gap-3 flex-wrap">
+            <div className="min-w-0">
+              <h1 className="text-[22px] font-bold text-ink-900 tracking-tight truncate leading-tight">
+                {project ? project.name : ' '}
+              </h1>
+              {allMentions.length > 0 && (
+                <p className="text-[12.5px] text-ink-400 mt-0.5">
+                  <span className="font-semibold text-ink-600 tabular-nums">{allMentions.length}</span> conversations found across{' '}
+                  <span className="font-semibold text-ink-600 tabular-nums">{availableSubreddits.length}</span> communities
+                </p>
+              )}
+            </div>
 
-          <div className="flex items-center gap-2">
-            {allMentions.length > 0 && (
-              <span className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-green-50 text-green-700 rounded-md border border-green-100 text-[11px] font-semibold tabular-nums">
-                <TrendingUp className="h-3 w-3" />
-                {allMentions.length} leads
-              </span>
-            )}
-            <button
-              onClick={() => startScan()}
-              disabled={scanStatus === 'scanning'}
-              className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color] disabled:opacity-50"
-            >
-              <RefreshCw className={`h-3 w-3 ${scanStatus === 'scanning' ? 'animate-spin text-orange-500' : ''}`} />
-              {scanStatus === 'scanning' ? 'Scanning…' : 'Scan now'}
-            </button>
-            <button
-              onClick={() => router.push(`/mentions/${projectId}/analytics`)}
-              className="hidden sm:flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color]"
-            >
-              <BarChart3 className="h-3 w-3" />
-              Analytics
-            </button>
-            <button
-              onClick={() => {
-                exportMentionsToCSV(filteredAll, project ? project.name.replace(/\s+/g, '_').toLowerCase() : 'sneakyguy_leads');
-                toast.success(`Exported ${filteredAll.length} leads`);
-              }}
-              disabled={filteredAll.length === 0}
-              className="flex items-center gap-1.5 px-3 h-8 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color] disabled:opacity-40"
-            >
-              <Download className="h-3 w-3" />
-              <span className="hidden sm:inline">Export</span>
-            </button>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => startScan()}
+                disabled={scanStatus === 'scanning'}
+                className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-50"
+              >
+                <RefreshCw className={`h-3 w-3 ${scanStatus === 'scanning' ? 'animate-spin text-orange-500' : ''}`} />
+                {scanStatus === 'scanning' ? 'Scanning…' : 'Scan now'}
+              </button>
+              <button
+                onClick={() => router.push(`/mentions/${projectId}/analytics`)}
+                className="hidden sm:flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color]"
+              >
+                <BarChart3 className="h-3 w-3" />
+                Analytics
+              </button>
+              <button
+                onClick={() => {
+                  exportMentionsToCSV(filteredAll, project ? project.name.replace(/\s+/g, '_').toLowerCase() : 'sneakyguy_leads');
+                  toast.success(`Exported ${filteredAll.length} leads`);
+                }}
+                disabled={filteredAll.length === 0}
+                className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-40"
+              >
+                <Download className="h-3 w-3" />
+                <span className="hidden sm:inline">Export</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -378,12 +377,12 @@ export default function MentionsPage() {
 
         {/* Reddit connect nudge */}
         {!redditAuth.isAuthenticated && !isLoading && allMentions.length > 0 && (
-          <div className="mb-4 flex items-center gap-3 p-3 bg-amber-50 rounded-xl shadow-[0_1px_2px_rgba(217,119,6,0.06),0_0_0_1px_rgba(217,119,6,0.1)]">
-            <span className="text-xs text-amber-800 font-medium flex-1">
+          <div className="mb-4 flex items-center gap-3 px-4 py-3 bg-[#fff8ec] rounded-2xl shadow-[0_0_0_1px_rgba(217,150,6,0.16)]">
+            <span className="text-[12.5px] text-amber-900 font-medium flex-1 leading-snug">
               Connect your Reddit account to publish replies without leaving SneakyGuy.
             </span>
             <button
-              className="px-3 h-7 rounded-md bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold shadow-[0_2px_8px_-2px_rgba(255,69,0,0.4)] transition-colors"
+              className="px-3.5 h-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-orange transition-colors shrink-0"
               onClick={() => redditAuth.ensureRedditConnection()}
             >
               Connect
@@ -418,34 +417,34 @@ export default function MentionsPage() {
             {Array.from({ length: 4 }).map((_, i) => (
               <div key={i} className="bg-white rounded-2xl shadow-card p-5 animate-pulse">
                 <div className="flex gap-2 mb-3">
-                  <div className="h-5 w-20 bg-gray-100 rounded-md" />
-                  <div className="h-5 w-24 bg-gray-100 rounded-md" />
+                  <div className="h-5 w-20 bg-cream rounded-full" />
+                  <div className="h-5 w-24 bg-cream rounded-full" />
                 </div>
-                <div className="h-4 w-3/4 bg-gray-100 rounded mb-2" />
-                <div className="h-3 w-1/2 bg-gray-100 rounded" />
+                <div className="h-4 w-3/4 bg-cream rounded mb-2" />
+                <div className="h-3 w-1/2 bg-cream rounded" />
               </div>
             ))}
           </div>
         ) : loadError ? (
           <div className="text-center py-16 bg-white rounded-2xl shadow-card">
-            <p className="text-sm font-medium text-gray-900 mb-1">Couldn&apos;t load this project</p>
-            <p className="text-xs text-gray-400 mb-4">{loadError}</p>
+            <p className="text-sm font-semibold text-ink-900 mb-1">Couldn&apos;t load this project</p>
+            <p className="text-xs text-ink-400 mb-4">{loadError}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 h-8 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold transition-colors"
+              className="px-4 h-9 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-orange transition-colors"
             >
               Try again
             </button>
           </div>
         ) : allMentions.length === 0 ? (
           <div className="text-center py-16 bg-white rounded-2xl shadow-card px-6">
-            <div className="w-10 h-10 rounded-xl bg-orange-50 flex items-center justify-center mx-auto mb-3 text-orange-500">
+            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center mx-auto mb-3 text-orange-500">
               <Search className="h-5 w-5" />
             </div>
-            <p className="text-sm font-medium text-gray-900 mb-1">
+            <p className="text-[15px] font-semibold text-ink-900 mb-1">
               {scanStatus === 'scanning' ? 'Your first scan is running' : 'No leads yet'}
             </p>
-            <p className="text-xs text-gray-400 mb-4 max-w-sm mx-auto">
+            <p className="text-[12.5px] text-ink-400 mb-4 max-w-sm mx-auto leading-relaxed">
               {scanStatus === 'scanning'
                 ? 'We’re combing your subreddits for conversations that match your keywords. This usually takes a minute or two.'
                 : 'Scan Reddit to find conversations that match your keywords.'}
@@ -453,14 +452,14 @@ export default function MentionsPage() {
             {project && project.keywords.length > 0 && (
               <div className="flex flex-wrap justify-center gap-1.5 mb-5 max-w-md mx-auto">
                 {project.keywords.slice(0, 8).map((k) => (
-                  <span key={k} className="text-[11px] px-2 py-0.5 bg-gray-50 text-gray-500 rounded-md border border-gray-100">{k}</span>
+                  <span key={k} className="chip bg-cream text-ink-600">{k}</span>
                 ))}
               </div>
             )}
             {scanStatus !== 'scanning' && (
               <button
                 onClick={() => startScan()}
-                className="inline-flex items-center gap-1.5 px-4 h-9 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-xs font-semibold shadow-[0_2px_8px_-2px_rgba(255,69,0,0.4)] transition-colors"
+                className="btn-primary text-xs"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Scan Reddit now
@@ -469,10 +468,10 @@ export default function MentionsPage() {
           </div>
         ) : displayMentions.length === 0 ? (
           <div className="text-center py-12 bg-white rounded-2xl shadow-card">
-            <p className="text-sm text-gray-500 mb-3">No leads match your filters.</p>
+            <p className="text-sm text-ink-600 mb-3">No leads match your filters.</p>
             <button
               onClick={() => updateFilters({ ...DEFAULT_FILTERS })}
-              className="text-xs font-medium text-orange-600 hover:text-orange-700"
+              className="text-xs font-semibold text-orange-600 hover:text-orange-700"
             >
               Clear all filters
             </button>
@@ -497,7 +496,7 @@ export default function MentionsPage() {
               <div className="mt-6 flex justify-center pb-8">
                 <button
                   onClick={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
-                  className="flex items-center gap-2 px-6 h-9 rounded-lg border border-gray-200 bg-white text-xs font-medium text-gray-600 hover:bg-gray-50 hover:border-gray-300 transition-[background-color,border-color]"
+                  className="flex items-center gap-2 px-6 h-10 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color]"
                 >
                   Show {Math.min(MENTIONS_PER_PAGE, filteredAll.length - visibleCount)} more
                 </button>

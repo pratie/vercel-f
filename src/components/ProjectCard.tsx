@@ -1,16 +1,6 @@
 // src/components/ProjectCard.tsx
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardFooter, CardTitle, CardDescription } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { MoreVertical, Trash2, Loader2, Edit, MessageSquare, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Trash2, Loader2, Edit, ChevronDown, ChevronUp, ArrowRight } from "lucide-react";
 import { useRouter } from 'next/navigation';
 import { api, Project } from '@/lib/api';
 import { toast } from 'sonner';
@@ -22,6 +12,8 @@ interface ProjectCardProps {
   project: Project;
   onDelete?: (projectId: string) => void;
 }
+
+const VISIBLE_CHIPS = 4;
 
 export function ProjectCard({ project: initialProject, onDelete }: ProjectCardProps) {
   // Local copy so an edit updates the card in place instead of reloading the page.
@@ -86,56 +78,31 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
 
   return (
     <div className="w-full group" style={{ WebkitFontSmoothing: 'antialiased', MozOsxFontSmoothing: 'grayscale' } as any}>
-      <div className="w-full bg-white rounded-2xl shadow-[0_1px_3px_rgba(0,0,0,0.06),0_0_0_1px_rgba(0,0,0,0.04)] hover:shadow-[0_8px_30px_-6px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.06)] hover:-translate-y-0.5 transition-[box-shadow,transform] duration-300 ease-out overflow-hidden">
+      <div className="premium-card w-full overflow-hidden">
         {/* Header */}
         <div className="p-5 pb-3">
-          <div className="flex justify-between items-start">
-            <div className="flex flex-col gap-1.5 min-w-0">
-              <h3 className="text-base font-semibold text-gray-900 tracking-tight truncate" style={{ textWrap: 'balance' } as any}>
-                {project.name}
-              </h3>
-              {project.analysis_status === 'scanning' ? (
-                <div className="flex items-center gap-1.5 text-orange-600">
-                  <span className="relative flex h-1.5 w-1.5">
-                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75 active:scale-[0.98]" />
-                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500 active:scale-[0.98]" />
-                  </span>
-                  <span className="text-[10px] font-semibold uppercase tracking-wider">
-                    Scanning <span className="tabular-nums">{project.analysis_progress}%</span>
-                  </span>
-                </div>
-              ) : project.last_analyzed ? (
-                <span className="text-[11px] text-gray-400">
-                  Updated {new Date(project.last_analyzed).toLocaleDateString()}
+          <div className="flex flex-col gap-1.5 min-w-0">
+            <h3 className="text-base font-semibold text-ink-900 tracking-tight truncate" style={{ textWrap: 'balance' } as any}>
+              {project.name}
+            </h3>
+            {project.analysis_status === 'scanning' ? (
+              <div className="flex items-center gap-1.5 text-orange-600">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
                 </span>
-              ) : null}
-            </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 -mr-1">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-40 p-1">
-                <DropdownMenuItem
-                  onClick={() => setIsEditOpen(true)}
-                  className="flex items-center gap-2 px-2.5 py-1.5 cursor-pointer rounded-md text-[13px] text-gray-600 hover:text-gray-900"
-                >
-                  <Edit className="h-3.5 w-3.5" />
-                  Edit
-                </DropdownMenuItem>
-                <DropdownMenuItem
-                  onClick={handleDelete}
-                  className="flex items-center gap-2 px-2.5 py-1.5 cursor-pointer rounded-md text-[13px] text-red-600 hover:text-red-700 hover:bg-red-50"
-                >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                  Scanning <span className="tabular-nums">{project.analysis_progress}%</span>
+                </span>
+              </div>
+            ) : project.last_analyzed ? (
+              <span className="text-[11px] text-ink-400">
+                Updated {new Date(project.last_analyzed).toLocaleDateString()}
+              </span>
+            ) : null}
           </div>
           {project.description && (
-            <p className="text-xs text-gray-400 mt-1.5 line-clamp-2 leading-relaxed">{project.description}</p>
+            <p className="text-[13.5px] text-ink-600 mt-1.5 line-clamp-2 leading-relaxed">{project.description}</p>
           )}
         </div>
 
@@ -143,78 +110,102 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
         <div className="px-5 pb-4 space-y-3">
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Keywords</span>
-              {project.keywords.length > 5 && (
+              <span className="text-[10px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Keywords</span>
+              {showAllKeywords && project.keywords.length > VISIBLE_CHIPS && (
                 <button
-                  onClick={() => setShowAllKeywords(!showAllKeywords)}
-                  className="text-gray-400 hover:text-gray-600"
+                  onClick={() => setShowAllKeywords(false)}
+                  className="text-ink-300 hover:text-ink-600 transition-colors duration-150"
+                  aria-label="Show fewer keywords"
                 >
-                  {showAllKeywords ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  <ChevronUp className="h-3 w-3" />
                 </button>
               )}
             </div>
-            <div className="flex flex-wrap gap-1">
-              {(showAllKeywords ? project.keywords : project.keywords.slice(0, 5)).map((keyword, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-0.5 rounded-md bg-gray-50 text-gray-500 shadow-[0_0_0_1px_rgba(0,0,0,0.04)] text-[10px] font-medium"
-                >
+            <div className="flex flex-wrap gap-1.5">
+              {(showAllKeywords ? project.keywords : project.keywords.slice(0, VISIBLE_CHIPS)).map((keyword, index) => (
+                <span key={index} className="chip bg-cream text-ink-700 text-[11px]">
                   {keyword}
                 </span>
               ))}
-              {!showAllKeywords && project.keywords.length > 5 && (
-                <span className="text-[10px] text-gray-400 self-center">+{project.keywords.length - 5}</span>
+              {!showAllKeywords && project.keywords.length > VISIBLE_CHIPS && (
+                <button
+                  onClick={() => setShowAllKeywords(true)}
+                  className="chip bg-white text-ink-400 shadow-card hover:text-ink-600 hover:shadow-card-hover transition-all duration-200 text-[11px]"
+                  aria-label="Show all keywords"
+                >
+                  +{project.keywords.length - VISIBLE_CHIPS} more
+                </button>
               )}
             </div>
           </div>
 
           <div>
             <div className="flex justify-between items-center mb-1.5">
-              <span className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Subreddits</span>
-              {project.subreddits.length > 5 && (
+              <span className="text-[10px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Subreddits</span>
+              {showAllSubreddits && project.subreddits.length > VISIBLE_CHIPS && (
                 <button
-                  onClick={() => setShowAllSubreddits(!showAllSubreddits)}
-                  className="text-gray-400 hover:text-gray-600"
+                  onClick={() => setShowAllSubreddits(false)}
+                  className="text-ink-300 hover:text-ink-600 transition-colors duration-150"
+                  aria-label="Show fewer subreddits"
                 >
-                  {showAllSubreddits ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                  <ChevronUp className="h-3 w-3" />
                 </button>
               )}
             </div>
-            <div className="flex flex-wrap gap-1">
-              {(showAllSubreddits ? project.subreddits : project.subreddits.slice(0, 5)).map((subreddit, index) => (
-                <span
-                  key={index}
-                  className="px-2 py-0.5 rounded-md bg-blue-50/60 text-blue-600 shadow-[0_0_0_1px_rgba(59,130,246,0.1)] text-[10px] font-medium"
-                >
+            <div className="flex flex-wrap gap-1.5">
+              {(showAllSubreddits ? project.subreddits : project.subreddits.slice(0, VISIBLE_CHIPS)).map((subreddit, index) => (
+                <span key={index} className="chip bg-orange-50 text-orange-700 text-[11px]">
                   r/{subreddit}
                 </span>
               ))}
-              {!showAllSubreddits && project.subreddits.length > 5 && (
-                <span className="text-[10px] text-gray-400 self-center">+{project.subreddits.length - 5}</span>
+              {!showAllSubreddits && project.subreddits.length > VISIBLE_CHIPS && (
+                <button
+                  onClick={() => setShowAllSubreddits(true)}
+                  className="chip bg-white text-ink-400 shadow-card hover:text-ink-600 hover:shadow-card-hover transition-all duration-200 text-[11px]"
+                  aria-label="Show all subreddits"
+                >
+                  +{project.subreddits.length - VISIBLE_CHIPS} more
+                </button>
               )}
             </div>
           </div>
         </div>
 
-        {/* Action */}
-        <div className="px-5 pb-5">
-          <Button
+        {/* Footer */}
+        <div className="px-5 py-3.5 border-t border-[#f0e9dd] flex items-center justify-between">
+          <button
             onClick={handleViewMentions}
-            className="w-full h-9 bg-gray-900 hover:bg-gray-800 text-white text-xs font-semibold rounded-xl transition-[background-color,box-shadow,transform] duration-200 shadow-[0_1px_2px_rgba(0,0,0,0.1)] hover:shadow-[0_4px_12px_-2px_rgba(0,0,0,0.2)] group active:scale-[0.98]"
             disabled={loading}
+            className="inline-flex items-center gap-1.5 hover:gap-2.5 text-[13px] font-semibold text-orange-600 hover:text-orange-700 transition-all duration-200 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60 rounded-lg"
           >
             {loading ? (
               <>
-                <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                <Loader2 className="h-3.5 w-3.5 animate-spin" />
                 Loading...
               </>
             ) : (
               <>
-                Open Dashboard
-                <ArrowRight className="ml-1.5 h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />
+                View leads
+                <ArrowRight className="h-3.5 w-3.5" />
               </>
             )}
-          </Button>
+          </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => setIsEditOpen(true)}
+              className="p-1.5 rounded-lg text-ink-300 hover:text-ink-600 hover:bg-cream transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+              aria-label={`Edit ${project.name}`}
+            >
+              <Edit className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={handleDelete}
+              className="p-1.5 rounded-lg text-ink-300 hover:text-rose-600 hover:bg-rose-50 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+              aria-label={`Delete ${project.name}`}
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+          </div>
         </div>
       </div>
 

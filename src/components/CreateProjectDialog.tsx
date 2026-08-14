@@ -182,29 +182,29 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[90vw] sm:max-w-lg overflow-y-auto max-h-[85vh] p-0 bg-white rounded-xl border border-gray-200 shadow-xl gap-0">
+      <DialogContent className="max-w-[90vw] sm:max-w-lg overflow-y-auto max-h-[85vh] p-0 bg-white rounded-2xl border border-[#f0e9dd] shadow-xl gap-0">
 
         {step === 'url' && !loading ? (
           <>
             {/* URL Step */}
             <div className="px-6 pt-6 pb-4">
-              <h2 className="text-base font-semibold text-gray-900 tracking-tight">Add a new project</h2>
-              <p className="text-xs text-gray-400 mt-0.5">Paste your website URL and we'll do the rest.</p>
+              <h2 className="text-lg font-semibold text-ink-900 tracking-tight">Add a new project</h2>
+              <p className="text-[13px] text-ink-400 mt-0.5">Paste your website URL and we'll do the rest.</p>
             </div>
 
             <div className="px-6 pb-6 space-y-4">
               {/* URL Input */}
               <div className="space-y-1.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Website URL</label>
+                <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Website URL</label>
                 <div className="relative">
-                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-300" />
+                  <Globe className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
                   <input
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeUrl()}
                     placeholder="https://yourproduct.com"
                     autoFocus
-                    className="w-full h-11 pl-10 pr-4 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow]"
+                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                   />
                 </div>
               </div>
@@ -212,7 +212,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               <button
                 onClick={() => handleAnalyzeUrl()}
                 disabled={!url.trim()}
-                className="w-full h-11 rounded-lg bg-orange-500 text-white text-sm font-semibold hover:bg-orange-500/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                className="btn-primary w-full h-11 disabled:cursor-not-allowed"
               >
                 <Sparkles className="h-4 w-4" />
                 Analyze & Generate
@@ -221,12 +221,12 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               {/* Manual fallback */}
               <div className="relative">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-gray-100" />
+                  <div className="w-full border-t border-[#f0e9dd]" />
                 </div>
                 <div className="relative flex justify-center">
                   <button
                     onClick={() => setShowManual(!showManual)}
-                    className="bg-white px-3 text-[11px] text-gray-400 hover:text-gray-600 transition-colors flex items-center gap-1"
+                    className="bg-white px-3 text-[11px] text-ink-400 hover:text-ink-600 transition-colors duration-150 flex items-center gap-1"
                   >
                     or enter manually
                     {showManual ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
@@ -237,28 +237,28 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               {showManual && (
                 <div className="space-y-3 pt-1">
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Project Name</label>
+                    <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Project Name</label>
                     <input
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g., Sneakyguy AI"
-                      className="w-full h-10 px-3 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow]"
+                      className="w-full h-10 px-3 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                     />
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Description</label>
+                    <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Description</label>
                     <textarea
                       value={description}
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Describe what your product does and who it's for..."
                       rows={3}
-                      className="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm placeholder:text-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow] resize-none"
+                      className="w-full px-3 py-2.5 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200 resize-none"
                     />
                   </div>
                   <button
                     onClick={handleManualAnalyze}
                     disabled={!name.trim() || !description.trim()}
-                    className="w-full h-10 rounded-lg bg-orange-500 text-white text-xs font-semibold hover:bg-orange-500/90 transition-[background-color] shadow-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="btn-primary w-full h-10 disabled:cursor-not-allowed"
                   >
                     <Sparkles className="h-3.5 w-3.5" />
                     Generate Keywords
@@ -270,11 +270,11 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
         ) : step === 'url' && loading ? (
           /* Loading state */
           <div className="px-6 py-12 flex flex-col items-center justify-center">
-            <div className="h-11 w-11 rounded-full bg-orange-500/[0.08] flex items-center justify-center mb-5">
+            <div className="h-11 w-11 rounded-full bg-orange-50 flex items-center justify-center mb-5">
               <Loader2 className="h-5 w-5 animate-spin text-orange-500" />
             </div>
-            <p className="text-sm font-semibold text-gray-900 mb-1">Analyzing your website</p>
-            <p className="text-xs text-gray-400 mb-6">This usually takes about 20 seconds.</p>
+            <p className="text-sm font-semibold text-ink-900 mb-1">Analyzing your website</p>
+            <p className="text-xs text-ink-400 mb-6">This usually takes about 20 seconds.</p>
 
             <ol className="w-full max-w-xs space-y-2.5" aria-live="polite">
               {ANALYSIS_STAGES.map((label, i) => {
@@ -284,13 +284,13 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                   <li key={label} className="flex items-center gap-2.5 text-xs">
                     <span
                       className={`h-1.5 w-1.5 rounded-full shrink-0 transition-colors ${
-                        done ? 'bg-orange-500' : active ? 'bg-orange-500 animate-pulse' : 'bg-gray-200'
+                        done ? 'bg-orange-500' : active ? 'bg-orange-500 animate-pulse' : 'bg-[#e9e1d4]'
                       }`}
                       aria-hidden="true"
                     />
                     <span
                       className={`transition-colors ${
-                        done ? 'text-gray-500' : active ? 'text-gray-900 font-medium' : 'text-gray-300'
+                        done ? 'text-ink-600' : active ? 'text-ink-900 font-medium' : 'text-ink-300'
                       }`}
                     >
                       {label}
@@ -303,11 +303,11 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
         ) : (
           <>
             {/* Review Step */}
-            <div className="px-6 pt-6 pb-4 border-b border-gray-100">
+            <div className="px-6 pt-6 pb-4 border-b border-[#f0e9dd]">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-base font-semibold text-gray-900 tracking-tight">Review & Create</h2>
-                  <p className="text-xs text-gray-400 mt-0.5">Everything was auto-generated. Edit anything before creating.</p>
+                  <h2 className="text-lg font-semibold text-ink-900 tracking-tight">Review & Create</h2>
+                  <p className="text-[13px] text-ink-400 mt-0.5">Everything was auto-generated. Edit anything before creating.</p>
                 </div>
               </div>
             </div>
@@ -318,39 +318,39 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                 {editingInfo ? (
                   <>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Name</label>
+                      <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Name</label>
                       <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full h-9 px-3 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow]"
+                        className="w-full h-9 px-3 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">Description</label>
+                      <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Description</label>
                       <textarea
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={2}
-                        className="w-full px-3 py-2 rounded-lg border border-gray-200 bg-white text-sm focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500/40 transition-[border-color,box-shadow] resize-none"
+                        className="w-full px-3 py-2 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200 resize-none"
                       />
                     </div>
                     <button
                       onClick={() => setEditingInfo(false)}
-                      className="text-[11px] font-medium text-gray-900 hover:underline"
+                      className="text-[11px] font-medium text-ink-900 hover:underline"
                     >
                       Done editing
                     </button>
                   </>
                 ) : (
-                  <div className="bg-gray-50 rounded-lg p-3.5 border border-gray-100">
+                  <div className="bg-cream/60 rounded-xl p-3.5 border border-[#f0e9dd]">
                     <div className="flex items-start justify-between gap-3">
                       <div className="min-w-0">
-                        <h3 className="text-sm font-semibold text-gray-900 truncate">{name}</h3>
-                        <p className="text-xs text-gray-500 mt-0.5 line-clamp-2 leading-relaxed">{description}</p>
+                        <h3 className="text-sm font-semibold text-ink-900 truncate">{name}</h3>
+                        <p className="text-xs text-ink-600 mt-0.5 line-clamp-2 leading-relaxed">{description}</p>
                       </div>
                       <button
                         onClick={() => setEditingInfo(true)}
-                        className="shrink-0 p-1.5 rounded-md hover:bg-white text-gray-400 hover:text-gray-600 transition-colors"
+                        className="shrink-0 p-1.5 rounded-lg hover:bg-white text-ink-400 hover:text-ink-600 transition-colors duration-150"
                       >
                         <Pencil className="h-3 w-3" />
                       </button>
@@ -362,13 +362,13 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
               {/* Keywords */}
               <div className="space-y-2.5">
                 <div className="flex items-center justify-between">
-                  <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                    Keywords <span className="text-gray-300 font-normal normal-case tabular-nums">({keywords.length})</span>
+                  <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">
+                    Keywords <span className="text-ink-300 font-normal normal-case tabular-nums">({keywords.length})</span>
                   </label>
                   <button
                     onClick={handleRegenerate}
                     disabled={loading || regenerateCount >= 2}
-                    className="flex items-center gap-1 text-[11px] font-medium text-gray-400 hover:text-gray-600 disabled:opacity-40 transition-colors"
+                    className="flex items-center gap-1 text-[11px] font-medium text-ink-400 hover:text-ink-600 disabled:opacity-40 transition-colors duration-150"
                   >
                     <RefreshCw className="h-3 w-3" />
                     <span className="tabular-nums">Regenerate{regenerateCount > 0 ? ` (${2 - regenerateCount})` : ''}</span>
@@ -378,10 +378,14 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                   {keywords.map((keyword) => (
                     <span
                       key={keyword}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-gray-50 border border-gray-100 text-xs font-medium text-gray-700"
+                      className="chip bg-cream text-ink-700"
                     >
                       {keyword}
-                      <button onClick={() => handleRemoveKeyword(keyword)} className="text-gray-300 hover:text-red-400 transition-colors">
+                      <button
+                        onClick={() => handleRemoveKeyword(keyword)}
+                        className="rounded-full p-0.5 -mr-1 text-ink-400 hover:bg-rose-50 hover:text-rose-600 transition-colors duration-150"
+                        aria-label={`Remove keyword ${keyword}`}
+                      >
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -392,24 +396,28 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddKeyword(); } }}
                     onBlur={handleAddKeyword}
                     placeholder="+ add keyword"
-                    className="h-[26px] px-2 w-28 rounded-md border border-dashed border-gray-200 bg-transparent text-xs placeholder:text-gray-300 focus:outline-none focus:border-orange-300 transition-colors"
+                    className="h-[26px] px-2.5 w-28 rounded-full border border-dashed border-[#d8cfc0] bg-transparent text-xs text-ink-700 placeholder:text-ink-300 focus:outline-none focus:border-orange-400 transition-colors duration-150"
                   />
                 </div>
               </div>
 
               {/* Subreddits */}
               <div className="space-y-2.5">
-                <label className="text-[11px] font-semibold text-gray-500 uppercase tracking-wider">
-                  Subreddits <span className="text-gray-300 font-normal normal-case tabular-nums">({subreddits.length})</span>
+                <label className="text-[11px] font-semibold text-ink-400 uppercase tracking-[0.08em]">
+                  Subreddits <span className="text-ink-300 font-normal normal-case tabular-nums">({subreddits.length})</span>
                 </label>
                 <div className="flex flex-wrap gap-1.5">
                   {subreddits.map((subreddit) => (
                     <span
                       key={subreddit}
-                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-orange-500/[0.06] border border-orange-500/15 text-xs font-medium text-orange-500"
+                      className="chip bg-orange-50 text-orange-700"
                     >
                       r/{subreddit}
-                      <button onClick={() => handleRemoveSubreddit(subreddit)} className="text-orange-500/40 hover:text-red-500 transition-colors">
+                      <button
+                        onClick={() => handleRemoveSubreddit(subreddit)}
+                        className="rounded-full p-0.5 -mr-1 text-orange-400 hover:bg-rose-50 hover:text-rose-600 transition-colors duration-150"
+                        aria-label={`Remove subreddit ${subreddit}`}
+                      >
                         <X className="h-3 w-3" />
                       </button>
                     </span>
@@ -420,15 +428,15 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); handleAddSubreddit(); } }}
                     onBlur={handleAddSubreddit}
                     placeholder="+ add subreddit"
-                    className="h-[26px] px-2 w-28 rounded-md border border-dashed border-gray-200 bg-transparent text-xs placeholder:text-gray-300 focus:outline-none focus:border-orange-300 transition-colors"
+                    className="h-[26px] px-2.5 w-28 rounded-full border border-dashed border-[#d8cfc0] bg-transparent text-xs text-ink-700 placeholder:text-ink-300 focus:outline-none focus:border-orange-400 transition-colors duration-150"
                   />
                 </div>
               </div>
 
               {loading && (
                 <div className="flex items-center justify-center gap-2 py-2">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin text-gray-400" />
-                  <span className="text-xs text-gray-400">Regenerating...</span>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin text-ink-400" />
+                  <span className="text-xs text-ink-400">Regenerating...</span>
                 </div>
               )}
 
@@ -437,14 +445,14 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                 <button
                   onClick={() => { setStep('url'); setEditingInfo(false); }}
                   disabled={loading}
-                  className="flex-1 h-10 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors disabled:opacity-40"
+                  className="btn-secondary flex-1 h-10 disabled:opacity-40"
                 >
                   Back
                 </button>
                 <button
                   onClick={handleSubmit}
                   disabled={loading || keywords.length === 0 || !name.trim()}
-                  className="flex-1 h-10 rounded-lg bg-orange-500 text-white text-xs font-semibold hover:bg-orange-500/90 transition-[background-color,box-shadow] shadow-sm hover:shadow-md disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  className="btn-primary flex-1 h-10 disabled:cursor-not-allowed"
                 >
                   {loading ? (
                     <>

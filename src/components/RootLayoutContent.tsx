@@ -22,7 +22,7 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
   // Mobile: Sidebar renders a sticky top bar in normal flow (block layout).
   // Desktop (md+): flex row with a sticky rail on the left.
   return (
-    <div className="min-h-screen md:flex bg-[#fafafa]">
+    <div className="min-h-screen md:flex bg-paper">
       <Sidebar />
       <main className="flex-1 min-w-0 px-4 md:px-8 py-6 md:py-8">
         {children}
