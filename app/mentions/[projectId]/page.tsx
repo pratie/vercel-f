@@ -8,7 +8,6 @@ import {
 import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
 import { api, Project } from '@/lib/api';
-import { useRedditAuthStore } from '@/lib/redditAuth';
 import { PaymentGuard } from '@/components/PaymentGuard';
 import {
   Mention, transformRawMention, isUnscored, isHighIntent, exportMentionsToCSV,
@@ -29,7 +28,6 @@ export default function MentionsPage() {
   const params = useParams();
   const searchParams = useSearchParams();
   const projectId = params?.projectId as string;
-  const redditAuth = useRedditAuthStore();
 
   const [allMentions, setAllMentions] = useState<Mention[]>([]);
   const [project, setProject] = useState<Project | null>(null);
@@ -43,7 +41,6 @@ export default function MentionsPage() {
 
   const [viewedPosts, setViewedPosts] = useState<Set<number>>(new Set());
   const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
-  const [quota, setQuota] = useState<{ used: number; limit: number; remaining: number } | null>(null);
   const [rescoring, setRescoring] = useState(false);
 
   // Filters initialise from the URL so filtered views survive refresh and can be shared.
@@ -101,7 +98,6 @@ export default function MentionsPage() {
       localStorage.setItem(`published-comments-${projectId}`, JSON.stringify(next));
       return next;
     });
-    setQuota((q) => (q ? { ...q, used: q.used + 1, remaining: Math.max(0, q.remaining - 1) } : q));
   }, [projectId]);
 
   // ---- Data loading ----
@@ -176,8 +172,6 @@ export default function MentionsPage() {
         if (!cancelled) setIsLoading(false);
       }
     })();
-
-    api.getReplyQuota().then(setQuota).catch(() => setQuota(null));
 
     return () => { cancelled = true; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -375,21 +369,6 @@ export default function MentionsPage() {
 
         {scanStatus === 'scanning' && <ScanBanner progress={scanProgress} message={scanMessage} />}
 
-        {/* Reddit connect nudge */}
-        {!redditAuth.isAuthenticated && !isLoading && allMentions.length > 0 && (
-          <div className="mb-4 flex items-center gap-3 px-4 py-3 bg-[#fff8ec] rounded-2xl shadow-[0_0_0_1px_rgba(217,150,6,0.16)]">
-            <span className="text-[12.5px] text-amber-900 font-medium flex-1 leading-snug">
-              Connect your Reddit account to publish replies without leaving SneakyGuy.
-            </span>
-            <button
-              className="px-3.5 h-8 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-orange transition-colors shrink-0"
-              onClick={() => redditAuth.ensureRedditConnection()}
-            >
-              Connect
-            </button>
-          </div>
-        )}
-
         {!isLoading && allMentions.length > 0 && (
           <StatsStrip
             stats={stats}
@@ -487,7 +466,6 @@ export default function MentionsPage() {
                   publishedUrl={publishedComments[mention.id]}
                   onViewed={markViewed}
                   onPublished={markPublished}
-                  quotaRemaining={quota ? quota.remaining : null}
                 />
               ))}
             </div>

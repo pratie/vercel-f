@@ -15,7 +15,6 @@ import {
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { RedditStatusIndicator } from './RedditStatusIndicator';
 import { api, Project } from '@/lib/api';
 
 const PROJECTS_CACHE_KEY = 'sidebar-projects-v1';
@@ -192,11 +191,6 @@ export function Sidebar() {
 
         {/* Bottom */}
         <div className="mt-auto border-t border-[#e9e1d4]/70 shrink-0">
-          {showLabels && (
-            <div className="p-3">
-              <RedditStatusIndicator />
-            </div>
-          )}
           <div className={cn(showLabels ? 'px-3 pb-3' : 'px-2 pb-3')}>
             {user && showLabels && (
               <div className="px-3 py-1.5 mb-2">

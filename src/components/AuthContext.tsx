@@ -3,7 +3,6 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore, User } from '@/lib/auth';
-import { useRedditAuthStore } from '@/lib/redditAuth';
 
 interface AuthContextType {
   user: User | null;
@@ -19,7 +18,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const store = useAuthStore();
   const { user, logout, initialize, isInitialized } = store;
-  const redditAuthStore = useRedditAuthStore();
 
   // Initialize auth state
   useEffect(() => {
@@ -28,20 +26,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [initialize, isInitialized]);
 
-  // Check Reddit auth status when user is authenticated
-  useEffect(() => {
-    if (user?.token) {
-      if (typeof window !== 'undefined') {
-        // Only check once per session
-        const checkOnce = sessionStorage.getItem('reddit_auth_checked');
-        if (!checkOnce) {
-          // Use the checkStatus directly with no automatic rechecking
-          redditAuthStore.checkStatus(true);
-          sessionStorage.setItem('reddit_auth_checked', 'true');
-        }
-      }
-    }
-  }, [user, redditAuthStore]);
 
   // Handle navigation
   useEffect(() => {

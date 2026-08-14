@@ -7,8 +7,8 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
 import { CheckCircle2, AlertTriangle, Mail, User, Bell, SlidersHorizontal } from 'lucide-react';
-import { useRedditAuthStore } from '@/lib/redditAuth';
-import { api } from '@/lib/api';
+import { api, PaymentStatus } from '@/lib/api';
+import { getUserEmail } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { PaymentGuard } from '@/components/PaymentGuard';
 
@@ -137,7 +137,7 @@ export default function SettingsPage() {
   const [isAlertsLoading, setIsAlertsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [activeTab, setActiveTab] = useState<TabId>('account');
-  const redditAuth = useRedditAuthStore();
+  const [payment, setPayment] = useState<PaymentStatus | null>(null);
 
   // Load settings when the page loads
   useEffect(() => {
@@ -175,31 +175,14 @@ export default function SettingsPage() {
 
     loadSettings();
     loadAlertSettings();
-
-    const urlParams = new URLSearchParams(window.location.search);
+    api.getPaymentStatus().then(setPayment).catch(() => setPayment(null));
 
     // Restore active tab from the URL
+    const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     if (tabParam === 'account' || tabParam === 'notifications' || tabParam === 'preferences') {
       setActiveTab(tabParam);
     }
-
-    // Check for the reddit_connected query parameter
-    if (urlParams.get('reddit_connected') === 'true') {
-      toast.success('Successfully connected to Reddit!');
-      // Clear the parameter without reloading the page (keep any others, e.g. ?tab=)
-      urlParams.delete('reddit_connected');
-      const rest = urlParams.toString();
-      window.history.replaceState(
-        {},
-        document.title,
-        rest ? `${window.location.pathname}?${rest}` : window.location.pathname
-      );
-
-      // Use direct status check instead of the wrapper function
-      redditAuth.checkStatus(true);
-    }
-    // Don't automatically check status otherwise - let the user connect manually
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -296,88 +279,47 @@ export default function SettingsPage() {
         {/* ── Account ── */}
         {activeTab === 'account' && (
           <SettingsCard>
-            <SectionLabel>Reddit account</SectionLabel>
-            <h2 className="text-sm font-semibold text-ink-900 mt-1">Reddit Connection</h2>
+            <SectionLabel>Account</SectionLabel>
+            <h2 className="text-sm font-semibold text-ink-900 mt-1">Your plan</h2>
             <p className="text-[13px] text-ink-400 mt-1 mb-5">
-              Connect your Reddit account to post comments directly from this application.
+              Signed in as <span className="font-medium text-ink-600">{getUserEmail() || '…'}</span>
             </p>
 
             <div className="flex items-center justify-between gap-4 rounded-xl border border-[#efe8dc] bg-[#faf6ef] px-4 py-3.5">
-              {redditAuth.isAuthenticated ? (
-                <div className="flex items-center gap-2 min-w-0">
-                  <CheckCircle2 className="h-4 w-4 text-green-500 shrink-0" />
-                  <span className="text-[13px] text-ink-700 truncate">
-                    Connected as{' '}
-                    <span className="font-semibold text-ink-900">{redditAuth.username}</span>
+              {payment === null ? (
+                <span className="text-[13px] text-ink-400">Loading plan…</span>
+              ) : payment.has_paid ? (
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+                  <span className="text-[13px] text-ink-700">
+                    <span className="font-semibold text-ink-900">Pro</span>
+                    {payment.plan_expires_at && (
+                      <span className="text-ink-400">
+                        {' '}· access until {new Date(payment.plan_expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                      </span>
+                    )}
                   </span>
                 </div>
               ) : (
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2.5">
                   <span className="h-2 w-2 rounded-full bg-stone-300 shrink-0" />
-                  <span className="text-[13px] text-ink-400">Not connected</span>
+                  <span className="text-[13px] text-ink-700">
+                    <span className="font-semibold text-ink-900">Free</span>
+                    <span className="text-ink-400"> · analysis only</span>
+                  </span>
                 </div>
               )}
 
-              {redditAuth.isAuthenticated ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-600 shrink-0"
-                  onClick={async () => {
-                    console.log('Disconnect Reddit button clicked');
-                    toast.info('Disconnecting from Reddit...');
-
-                    try {
-                      const success = await redditAuth.disconnectReddit();
-                      if (success) {
-                        toast.success('Successfully disconnected from Reddit');
-                      } else {
-                        toast.error('Failed to disconnect from Reddit');
-                      }
-                    } catch (error) {
-                      console.error('Error in disconnect flow:', error);
-                      toast.error('Failed to disconnect from Reddit', {
-                        description: 'Please check the console for more details',
-                      });
-                    }
-                  }}
-                  disabled={redditAuth.isLoading || redditAuth.isStatusLoading}
-                >
-                  {redditAuth.isLoading ? 'Disconnecting...' : 'Disconnect'}
-                </Button>
-              ) : (
-                <Button
-                  size="sm"
-                  className="bg-orange-500 hover:bg-orange-600 text-white shrink-0"
-                  onClick={() => {
-                    toast.info('Connecting to Reddit...', {
-                      description: 'A popup window will open for authentication',
-                    });
-
-                    redditAuth.connectReddit().catch((error) => {
-                      console.error('Error in Reddit connection flow:', error);
-                    });
-                  }}
-                  disabled={redditAuth.isLoading || redditAuth.isStatusLoading}
-                >
-                  {redditAuth.isLoading || redditAuth.isStatusLoading
-                    ? 'Connecting...'
-                    : 'Connect with Reddit'}
-                </Button>
+              {payment !== null && !payment.has_paid && (
+                <a href="/upgrade" className="btn-primary h-9 px-4 text-xs shrink-0">
+                  Upgrade
+                </a>
               )}
             </div>
 
-            {redditAuth.error && (
-              <div className="text-xs text-red-600 mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <div className="font-semibold">Error connecting to Reddit:</div>
-                <div className="mt-0.5">{redditAuth.error}</div>
-              </div>
-            )}
-
             <div className="text-xs text-ink-400 mt-4 space-y-1">
-              <p>Connecting your Reddit account allows you to post comments directly from this application.</p>
-              <p>Your account connection will be used only for posting comments you explicitly approve.</p>
-              <p>You can post up to 5 comments per 24 hours due to Reddit&apos;s rate limiting.</p>
+              <p>SneakyGuy drafts replies for you; you review and post them yourself on Reddit.</p>
+              <p>Posting manually from your own account keeps it safe and in good standing.</p>
             </div>
           </SettingsCard>
         )}

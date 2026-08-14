@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
-import { useRedditAuthStore } from '@/lib/redditAuth';
 import {
   Mention, highlightKeywordsSafe, intentLabel, intentTone,
   isHighIntent, isUnscored, relativeTime, scoreTier,
@@ -18,18 +17,15 @@ interface MentionCardProps {
   viewed: boolean;
   publishedUrl?: string;
   onViewed: (id: number) => void;
+  /** Marks the lead as replied in local triage state. */
   onPublished: (id: number, commentUrl: string) => void;
-  /** null = unknown (endpoint unavailable) — don't block on it */
-  quotaRemaining: number | null;
 }
 
-export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished, quotaRemaining }: MentionCardProps) {
-  const redditAuth = useRedditAuthStore();
+export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished }: MentionCardProps) {
   const [reply, setReply] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [posting, setPosting] = useState(false);
   const [showWhy, setShowWhy] = useState(false);
 
   const unscored = isUnscored(mention);
@@ -59,36 +55,6 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
       });
     } finally {
       setGenerating(false);
-    }
-  };
-
-  const handlePublish = async () => {
-    if (posting || !reply) return;
-    if (quotaRemaining !== null && quotaRemaining <= 0) {
-      toast.error('Daily reply limit reached', {
-        description: 'Reddit lets you post 5 replies per 24h through SneakyGuy. Use Copy & Open for the rest.',
-      });
-      return;
-    }
-    setPosting(true);
-    try {
-      const result = await redditAuth.postComment({
-        brand_id: mention.brand_id,
-        post_url: mention.url,
-        post_title: mention.title,
-        comment_text: reply,
-      });
-      onPublished(mention.id, result.comment_url);
-      toast.success(
-        result.status === 'already_exists' ? 'You already replied to this post' : 'Reply posted to Reddit',
-        { action: { label: 'View', onClick: () => window.open(result.comment_url, '_blank') } }
-      );
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : 'Failed to post reply', {
-        description: 'You can still use Copy & Open to reply manually.',
-      });
-    } finally {
-      setPosting(false);
     }
   };
 
@@ -301,40 +267,22 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
                   <Edit3 className="h-3 w-3" />
                   Edit
                 </button>
-                {redditAuth.isAuthenticated ? (
-                  <button
-                    onClick={handlePublish}
-                    disabled={posting || !!publishedUrl}
-                    className={`flex items-center gap-1.5 px-3.5 h-8 rounded-lg text-[11.5px] font-bold transition-colors ${
-                      publishedUrl
-                        ? 'bg-emerald-600 text-white'
-                        : posting
-                          ? 'bg-cream text-ink-400'
-                          : 'bg-orange-500 hover:bg-orange-600 text-white shadow-orange'
-                    }`}
-                  >
-                    {posting ? (
-                      <><Loader2 className="h-3 w-3 animate-spin" /> Posting…</>
-                    ) : publishedUrl ? (
-                      <><CheckCircle className="h-3 w-3" /> Replied</>
-                    ) : (
-                      'Publish'
-                    )}
-                  </button>
-                ) : (
-                  <button
-                    onClick={() => useRedditAuthStore.getState().ensureRedditConnection()}
-                    className="flex items-center gap-1.5 px-3.5 h-8 rounded-lg bg-orange-500 hover:bg-orange-600 text-white text-[11.5px] font-bold shadow-orange transition-colors"
-                    title="Connect your Reddit account to publish directly"
-                  >
-                    Connect Reddit to publish
-                  </button>
-                )}
-                {quotaRemaining !== null && !publishedUrl && (
-                  <span className="ml-auto text-[10.5px] text-ink-400 tabular-nums" title="Direct replies through SneakyGuy are capped at 5 per 24h to keep your Reddit account safe">
-                    {quotaRemaining} of 5 replies left today
-                  </span>
-                )}
+                <button
+                  onClick={() => {
+                    onPublished(mention.id, mention.url);
+                    toast.success('Marked as replied');
+                  }}
+                  disabled={!!publishedUrl}
+                  className={`flex items-center gap-1.5 px-3.5 h-8 rounded-lg text-[11.5px] font-bold transition-colors ${
+                    publishedUrl
+                      ? 'bg-emerald-600 text-white'
+                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                  }`}
+                  title="Posted it on Reddit? Mark it done so it moves to your Replied tab"
+                >
+                  <CheckCircle className="h-3 w-3" />
+                  {publishedUrl ? 'Replied' : 'Mark as replied'}
+                </button>
               </div>
             )}
           </div>
