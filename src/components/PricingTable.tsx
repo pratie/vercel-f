@@ -25,15 +25,16 @@ const fallbackPlans: PricingPlan[] = [
   }
 ];
 
+// Benefit first, mechanism second. Buyers don't purchase "15 subreddits
+// monitoring" — they purchase not missing the customer who asked yesterday.
 const features = [
-  '500 AI-generated replies/month',
-  'Unlimited customizable keywords',
-  '15 subreddits monitoring',
-  'Unlimited reply generation',
-  '24/7 Reddit monitoring',
-  'AI-powered lead detection',
-  'Fine-tune AI tone & style',
-  '7-day money-back guarantee',
+  'Catch buyers the moment they ask — up to 15 communities watched for you',
+  'Skip the noise — every lead scored for buying intent, best ones first',
+  'Reply in seconds, not hours — unlimited AI drafts written in your voice',
+  'Never sound like an ad — set your tone once, every draft follows it',
+  'Know what’s working — keyword & community analytics included',
+  'Set up in 60 seconds — paste your URL and we build the rest',
+  'Zero risk — 7-day money-back guarantee, nothing auto-renews',
 ];
 
 export function PricingTable({ onPlanSelect, showHeader = false, compact = false }: PricingTableProps) {
@@ -149,7 +150,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 {/* Features */}
                 {!compact && (
                   <div className="mt-7 pt-7 border-t border-gray-100">
-                    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">Everything included</p>
+                    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">What you get</p>
                     <ul className="space-y-3">
                       {features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2.5">
