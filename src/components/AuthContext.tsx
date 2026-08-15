@@ -27,22 +27,27 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [initialize, isInitialized]);
 
 
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog');
+
   // Handle navigation
   useEffect(() => {
     if (!isInitialized) return;
-
-    const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog');
 
     if (!user?.token && !isPublicRoute) {
       router.push('/');
     } else if (user?.token && pathname === '/login') {
       router.push('/projects');
     }
-  }, [user, router, pathname, isInitialized]);
+  }, [user, router, pathname, isInitialized, isPublicRoute]);
 
-  // While auth state hydrates, hold the app background instead of flashing
-  // a bare white document.
-  if (!isInitialized) {
+  // While auth state hydrates, hold the app background instead of flashing a
+  // bare white document.
+  //
+  // Public routes are deliberately exempt. `isInitialized` is always false on
+  // the server, so gating them here meant the landing page and every blog post
+  // prerendered as nothing but this empty div: no headings, no copy, no links.
+  // Crawlers were served an empty shell on every indexable page.
+  if (!isInitialized && !isPublicRoute) {
     return <div className="min-h-screen bg-paper" aria-busy="true" />;
   }
 
