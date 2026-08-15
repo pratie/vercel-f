@@ -8,6 +8,7 @@ import { ReadingProgress } from '../_components/ReadingProgress';
 import { TableOfContents } from '../_components/TableOfContents';
 import { ShareRow } from '../_components/ShareRow';
 import { BlogNav } from '../_components/BlogNav';
+import { ToolCard } from '../_components/ToolCard';
 
 const SITE_URL = 'https://www.sneakyguy.com';
 
@@ -150,6 +151,8 @@ function createComponents() {
             // eslint-disable-next-line @next/next/no-img-element
             <img className="my-7 w-full rounded-xl shadow-card" alt="" {...props} />
         ),
+        // Custom blocks a post can use directly in its MDX.
+        ToolCard,
     };
 }
 
