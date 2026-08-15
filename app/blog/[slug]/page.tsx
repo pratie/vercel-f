@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
 import { ReadingProgress } from '../_components/ReadingProgress';
 import { TableOfContents } from '../_components/TableOfContents';
 import { ShareRow } from '../_components/ShareRow';
+import { BlogNav } from '../_components/BlogNav';
 
 const SITE_URL = 'https://www.sneakyguy.com';
 
@@ -108,18 +109,18 @@ function createComponents() {
             );
         },
         p: (props: any) => (
-            <p className="mb-5 text-[17px] leading-[1.75] text-ink-700" {...props} />
+            <p className="mb-6 text-[18px] leading-[1.75] text-ink-700" {...props} />
         ),
         ul: (props: any) => (
-            <ul className="mb-6 ml-1 list-none space-y-2.5 text-[17px] leading-[1.7] text-ink-700 [&>li]:relative [&>li]:pl-6 [&>li]:before:absolute [&>li]:before:left-1 [&>li]:before:top-[0.66em] [&>li]:before:h-[5px] [&>li]:before:w-[5px] [&>li]:before:rounded-full [&>li]:before:bg-orange-400" {...props} />
+            <ul className="mb-7 ml-1 list-none space-y-3 text-[18px] leading-[1.72] text-ink-700 [&>li]:relative [&>li]:pl-6 [&>li]:before:absolute [&>li]:before:left-1 [&>li]:before:top-[0.66em] [&>li]:before:h-[5px] [&>li]:before:w-[5px] [&>li]:before:rounded-full [&>li]:before:bg-orange-400" {...props} />
         ),
         ol: (props: any) => (
-            <ol className="mb-6 ml-5 list-decimal space-y-2.5 text-[17px] leading-[1.7] text-ink-700 marker:font-semibold marker:text-ink-300" {...props} />
+            <ol className="mb-7 ml-5 list-decimal space-y-3 text-[18px] leading-[1.72] text-ink-700 marker:font-semibold marker:text-ink-300" {...props} />
         ),
-        li: (props: any) => <li className="leading-[1.7]" {...props} />,
+        li: (props: any) => <li className="leading-[1.72]" {...props} />,
         blockquote: (props: any) => (
             <blockquote
-                className="my-7 rounded-r-xl border-l-[3px] border-orange-500 bg-cream/60 py-4 pl-5 pr-5 text-[16.5px] italic leading-relaxed text-ink-700 [&>p:last-child]:mb-0"
+                className="my-8 rounded-r-xl border-l-[3px] border-orange-500 bg-white py-5 pl-6 pr-6 text-[17px] italic leading-relaxed text-ink-700 shadow-card [&>p:last-child]:mb-0"
                 {...props}
             />
         ),
@@ -242,18 +243,21 @@ export default async function BlogPost({ params }: Props) {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
             <ReadingProgress targetId="article-body" />
+            <BlogNav />
 
-            {/* ---- Header: editorial, on paper, no dark slab ---- */}
-            <header className="mx-auto max-w-5xl px-4 pb-10 pt-10 sm:px-6 sm:pt-14">
-                <Link
-                    href="/blog"
-                    className="group mb-8 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-400 transition-colors hover:text-ink-900"
-                >
-                    <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
-                    All articles
-                </Link>
+            {/* ---- Header: full-bleed band so the article opens on something ---- */}
+            <header className="border-b border-cream bg-white">
+                <div className="mx-auto max-w-7xl px-5 pb-11 pt-9 sm:px-8 sm:pb-14 sm:pt-12 lg:px-12">
+                    <nav className="mb-7 flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-400">
+                        <Link
+                            href="/blog"
+                            className="group inline-flex items-center gap-1.5 transition-colors hover:text-ink-900"
+                        >
+                            <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+                            Blog
+                        </Link>
+                    </nav>
 
-                <div className="max-w-3xl">
                     {post.tags && post.tags.length > 0 && (
                         <div className="mb-5 flex flex-wrap items-center gap-2">
                             {post.tags.map((tag: string) => (
@@ -267,23 +271,23 @@ export default async function BlogPost({ params }: Props) {
                         </div>
                     )}
 
-                    <h1 className="font-display text-[34px] font-semibold leading-[1.1] tracking-tight text-ink-900 sm:text-[46px] lg:text-[54px]">
+                    <h1 className="max-w-4xl font-display text-[36px] font-semibold leading-[1.06] tracking-tight text-ink-900 sm:text-[52px] lg:text-[62px]">
                         {post.title}
                     </h1>
 
-                    <p className="mt-5 max-w-2xl text-[18px] leading-relaxed text-ink-600 sm:text-[19px]">
+                    <p className="mt-6 max-w-2xl text-[19px] leading-relaxed text-ink-600 sm:text-[20px]">
                         {post.excerpt}
                     </p>
 
-                    <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-cream pt-5">
-                        <div className="flex items-center gap-2.5">
-                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-400 text-[11px] font-bold text-white shadow-orange">
+                    <div className="mt-9 flex flex-wrap items-center gap-x-4 gap-y-3">
+                        <div className="flex items-center gap-3">
+                            <span className="flex h-11 w-11 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-400 text-[13px] font-bold text-white shadow-orange">
                                 {initialsOf(post.author)}
                             </span>
                             <div className="leading-tight">
-                                <div className="text-[13px] font-semibold text-ink-900">{post.author}</div>
-                                <div className="flex items-center gap-1.5 text-[12px] text-ink-400">
-                                    <time dateTime={post.date}>{formatDate(post.date)}</time>
+                                <div className="text-[14px] font-bold text-ink-900">{post.author}</div>
+                                <div className="mt-0.5 flex items-center gap-1.5 text-[12.5px] text-ink-400">
+                                    <time dateTime={post.date}>Published {formatDate(post.date)}</time>
                                     <span aria-hidden="true">·</span>
                                     <span className="inline-flex items-center gap-1">
                                         <Clock className="h-3 w-3" />
@@ -300,26 +304,24 @@ export default async function BlogPost({ params }: Props) {
             </header>
 
             {/* ---- Body + sticky contents ---- */}
-            <div className="mx-auto max-w-5xl px-4 pb-16 sm:px-6">
-                <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_13rem] lg:items-start lg:gap-10">
-                    <article
-                        id="article-body"
-                        className="rounded-2xl bg-white px-5 py-8 shadow-card sm:px-10 sm:py-11"
-                    >
-                        <div className="mx-auto max-w-[660px]">
-                            <MDXRemote source={post.content} components={components} />
-                        </div>
+            <div className="mx-auto max-w-7xl px-5 pb-16 pt-12 sm:px-8 sm:pt-14 lg:px-12">
+                <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_16rem] lg:items-start lg:gap-12 xl:gap-16">
+                    {/* No card. Body copy sits straight on the page like every
+                        other blog; wrapping it in a white sheet read as a document. */}
+                    <article id="article-body" className="max-w-[780px]">
+                        <MDXRemote source={post.content} components={components} />
                     </article>
 
                     {headings.length >= 3 && (
-                        <aside className="hidden lg:sticky lg:top-24 lg:block">
+                        <aside className="hidden lg:sticky lg:top-20 lg:block">
                             <TableOfContents headings={headings} />
                         </aside>
                     )}
                 </div>
 
-                {/* ---- Conversion card ---- */}
-                <section className="mt-10 overflow-hidden rounded-2xl bg-ink-900 px-6 py-10 shadow-card sm:px-12 sm:py-12">
+                {/* ---- Conversion card. Held to the text column so the page
+                     doesn't jump from a 720px measure to full bleed. ---- */}
+                <section className="mt-14 max-w-[780px] overflow-hidden rounded-2xl bg-ink-900 px-6 py-10 shadow-card sm:px-12 sm:py-12">
                     <div className="mx-auto max-w-xl text-center">
                         <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500 shadow-orange">
                             <svg viewBox="0 0 24 24" className="h-6 w-6 fill-white" aria-hidden="true">
@@ -345,7 +347,7 @@ export default async function BlogPost({ params }: Props) {
 
                 {/* ---- Keep reading ---- */}
                 {related.length > 0 && (
-                    <section className="mt-14">
+                    <section className="mt-14 max-w-[780px]">
                         <h2 className="mb-5 font-display text-[22px] font-semibold tracking-tight text-ink-900">
                             Keep reading
                         </h2>
@@ -364,7 +366,7 @@ export default async function BlogPost({ params }: Props) {
                                     <h3 className="text-[15px] font-bold leading-snug tracking-tight text-ink-900 transition-colors group-hover:text-orange-600">
                                         {item.title}
                                     </h3>
-                                    <p className="mt-2 line-clamp-3 text-[13px] leading-relaxed text-ink-400">
+                                    <p className="mt-2 line-clamp-2 text-[13px] leading-relaxed text-ink-400">
                                         {item.excerpt}
                                     </p>
                                     <span className="mt-4 inline-flex items-center gap-1 text-[12px] font-semibold text-ink-400 transition-colors group-hover:text-orange-600">

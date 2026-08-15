@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { getAllPosts } from '@/lib/blog';
 import { Metadata } from 'next';
 import { ArrowRight, Clock } from 'lucide-react';
-import Image from 'next/image';
+import { BlogNav } from './_components/BlogNav';
 
 export const metadata: Metadata = {
     title: 'Reddit Marketing Blog | SneakyGuy',
@@ -44,56 +44,10 @@ export default function BlogIndex() {
 
     return (
         <div className="min-h-screen bg-paper">
-            {/* ---- Nav ---- */}
-            <header className="sticky top-0 z-50 border-b border-cream/80 bg-paper/80 backdrop-blur supports-[backdrop-filter]:bg-paper/70">
-                <div className="mx-auto max-w-6xl px-4 sm:px-6">
-                    <div className="flex h-16 items-center justify-between">
-                        <Link href="/" className="flex items-center gap-2">
-                            <Image
-                                src="/logo.png"
-                                alt=""
-                                width={40}
-                                height={25}
-                                className="no-outline h-auto w-9"
-                            />
-                            <span className="text-[17px] font-bold tracking-tight text-ink-900">
-                                SneakyGuy
-                            </span>
-                        </Link>
-
-                        <nav className="hidden items-center gap-8 md:flex">
-                            <Link
-                                href="/#features"
-                                className="text-[13.5px] font-semibold text-ink-600 transition-colors hover:text-ink-900"
-                            >
-                                Features
-                            </Link>
-                            <Link
-                                href="/#how-it-works"
-                                className="text-[13.5px] font-semibold text-ink-600 transition-colors hover:text-ink-900"
-                            >
-                                How it works
-                            </Link>
-                            <Link
-                                href="/#pricing"
-                                className="text-[13.5px] font-semibold text-ink-600 transition-colors hover:text-ink-900"
-                            >
-                                Pricing
-                            </Link>
-                            <Link href="/blog" className="text-[13.5px] font-bold text-orange-600">
-                                Blog
-                            </Link>
-                        </nav>
-
-                        <Link href="/login" className="btn-primary text-[13px]">
-                            Get started
-                        </Link>
-                    </div>
-                </div>
-            </header>
+            <BlogNav />
 
             {/* ---- Masthead ---- */}
-            <div className="mx-auto max-w-6xl px-4 pb-12 pt-14 sm:px-6 sm:pt-20">
+            <div className="mx-auto max-w-7xl px-5 pb-12 pt-14 sm:px-8 sm:pt-20 lg:px-12">
                 <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-orange-600">
                     The SneakyGuy Blog
                 </p>
@@ -106,13 +60,13 @@ export default function BlogIndex() {
                 </p>
             </div>
 
-            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+            <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-12">
                 <div className="h-px w-full bg-cream" />
             </div>
 
             {/* ---- Featured ---- */}
             {featured && (
-                <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+                <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-12">
                     <article className="group relative overflow-hidden rounded-2xl bg-white p-7 shadow-card transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-card-hover sm:p-10">
                         <div className="mb-4 flex flex-wrap items-center gap-2">
                             <span className="chip bg-orange-500 text-[10.5px] uppercase tracking-[0.1em] text-white">
@@ -155,7 +109,7 @@ export default function BlogIndex() {
 
             {/* ---- Archive ---- */}
             {rest.length > 0 && (
-                <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+                <div className="mx-auto max-w-7xl px-5 pb-16 sm:px-8 lg:px-12">
                     <h2 className="mb-6 text-[11px] font-bold uppercase tracking-[0.18em] text-ink-400">
                         More articles
                     </h2>
@@ -198,7 +152,7 @@ export default function BlogIndex() {
             )}
 
             {/* ---- CTA ---- */}
-            <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+            <div className="mx-auto max-w-7xl px-5 pb-20 sm:px-8 lg:px-12">
                 <div className="rounded-2xl bg-ink-900 px-6 py-11 text-center shadow-card sm:px-12">
                     <h2 className="mx-auto max-w-lg font-display text-[26px] font-semibold leading-tight tracking-tight text-white sm:text-[32px]">
                         Stop reading. Start finding leads.

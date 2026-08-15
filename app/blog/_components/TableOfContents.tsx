@@ -50,11 +50,11 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
     if (headings.length < 3) return null;
 
     return (
-        <nav aria-label="On this page" className="text-[12.5px]">
-            <p className="mb-3 font-semibold uppercase tracking-[0.14em] text-[10.5px] text-ink-400">
-                On this page
+        <nav aria-label="On this page">
+            <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600">
+                Table of contents
             </p>
-            <ul className="space-y-[3px] border-l border-cream">
+            <ul className="space-y-1 border-l border-cream">
                 {headings.map((h) => {
                     const active = h.id === activeId;
                     return (
@@ -63,10 +63,12 @@ export function TableOfContents({ headings }: { headings: Heading[] }) {
                                 href={`#${h.id}`}
                                 aria-current={active ? 'location' : undefined}
                                 className={[
-                                    'block border-l-2 py-1 leading-snug transition-colors',
-                                    h.level === 3 ? 'pl-6 text-[12px]' : 'pl-3.5',
+                                    'block border-l-2 py-1 leading-[1.45] transition-colors',
+                                    h.level === 3
+                                        ? 'pl-7 text-[13px]'
+                                        : 'pl-4 text-[13.5px] font-semibold',
                                     active
-                                        ? 'border-orange-500 font-semibold text-ink-900'
+                                        ? 'border-orange-500 text-ink-900'
                                         : 'border-transparent text-ink-400 hover:text-ink-700',
                                 ].join(' ')}
                             >
