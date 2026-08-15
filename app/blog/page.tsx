@@ -1,20 +1,32 @@
 import Link from 'next/link';
 import { getAllPosts } from '@/lib/blog';
 import { Metadata } from 'next';
-import { ArrowRight, Clock, BookOpen } from 'lucide-react';
+import { ArrowRight, Clock } from 'lucide-react';
 import Image from 'next/image';
 
 export const metadata: Metadata = {
     title: 'Reddit Marketing Blog | SneakyGuy',
-    description: 'Learn how to find leads on Reddit, Reddit marketing strategies, and how to use Reddit for business growth.',
+    description:
+        'Learn how to find leads on Reddit, Reddit marketing strategies, and how to use Reddit for business growth.',
 };
 
-// Calculate reading time
 function calculateReadingTime(content: string): string {
     const wordsPerMinute = 200;
     const words = content.trim().split(/\s+/).length;
-    const minutes = Math.ceil(words / wordsPerMinute);
-    return `${minutes} min`;
+    return `${Math.ceil(words / wordsPerMinute)} min`;
+}
+
+/** Dates in frontmatter are calendar days, so format them in UTC to stop them
+ * rendering a day early for readers west of Greenwich. */
+function formatDate(date: string): string {
+    const parsed = new Date(date);
+    if (Number.isNaN(parsed.getTime())) return date;
+    return parsed.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
+    });
 }
 
 export default function BlogIndex() {
@@ -28,171 +40,179 @@ export default function BlogIndex() {
         'tags',
     ]);
 
+    const [featured, ...rest] = allPosts;
+
     return (
-        <div className="min-h-screen bg-gradient-to-b from-orange-50/50 to-white">
-            {/* Navigation */}
-            <header className="sticky top-0 z-50 bg-white/70 backdrop-blur supports-[backdrop-filter]:bg-white/60 border-b border-gray-100">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6">
-                    <div className="flex justify-between items-center h-20">
-                        <Link href="/" className="flex items-center">
+        <div className="min-h-screen bg-paper">
+            {/* ---- Nav ---- */}
+            <header className="sticky top-0 z-50 border-b border-cream/80 bg-paper/80 backdrop-blur supports-[backdrop-filter]:bg-paper/70">
+                <div className="mx-auto max-w-6xl px-4 sm:px-6">
+                    <div className="flex h-16 items-center justify-between">
+                        <Link href="/" className="flex items-center gap-2">
                             <Image
                                 src="/logo.png"
                                 alt=""
                                 width={40}
                                 height={25}
-                                className="mr-2 h-auto w-10 no-outline"
+                                className="no-outline h-auto w-9"
                             />
-                            <span className="font-bold text-xl text-gray-900">SneakyGuy</span>
+                            <span className="text-[17px] font-bold tracking-tight text-ink-900">
+                                SneakyGuy
+                            </span>
                         </Link>
 
-                        <nav className="hidden md:flex space-x-10">
-                            <Link href="/#features" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                        <nav className="hidden items-center gap-8 md:flex">
+                            <Link
+                                href="/#features"
+                                className="text-[13.5px] font-semibold text-ink-600 transition-colors hover:text-ink-900"
+                            >
                                 Features
                             </Link>
-                            <Link href="/#how-it-works" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
-                                How it Works
+                            <Link
+                                href="/#how-it-works"
+                                className="text-[13.5px] font-semibold text-ink-600 transition-colors hover:text-ink-900"
+                            >
+                                How it works
                             </Link>
-                            <Link href="/#pricing" className="text-gray-600 hover:text-gray-900 font-medium transition-colors">
+                            <Link
+                                href="/#pricing"
+                                className="text-[13.5px] font-semibold text-ink-600 transition-colors hover:text-ink-900"
+                            >
                                 Pricing
                             </Link>
-                            <Link href="/blog" className="text-[#FF6F20] font-medium transition-colors">
+                            <Link href="/blog" className="text-[13.5px] font-bold text-orange-600">
                                 Blog
                             </Link>
                         </nav>
 
-                        <Link
-                            href="/login"
-                            className="bg-gray-900 hover:bg-gray-800 text-white px-6 py-2.5 rounded-full font-medium transition-colors"
-                        >
-                            Get Started
+                        <Link href="/login" className="btn-primary text-[13px]">
+                            Get started
                         </Link>
                     </div>
                 </div>
             </header>
 
-            {/* Hero Section */}
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-                <div className="max-w-6xl mx-auto px-4 sm:px-6 py-20 sm:py-28 text-center">
-                    <div className="inline-flex items-center gap-2 bg-[#FF6F20]/20 text-[#FF6F20] px-4 py-2 rounded-full text-sm font-medium mb-6">
-                        <BookOpen className="w-4 h-4" />
-                        Reddit Marketing Insights
-                    </div>
-                    <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight mb-6">
-                        The SneakyGuy Blog
-                    </h1>
-                    <p className="text-xl text-gray-300 max-w-2xl mx-auto">
-                        Real strategies, honest reviews, and lessons learned from building a business on Reddit. No fluff.
-                    </p>
-                </div>
+            {/* ---- Masthead ---- */}
+            <div className="mx-auto max-w-6xl px-4 pb-12 pt-14 sm:px-6 sm:pt-20">
+                <p className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-orange-600">
+                    The SneakyGuy Blog
+                </p>
+                <h1 className="max-w-3xl font-display text-[36px] font-semibold leading-[1.08] tracking-tight text-ink-900 sm:text-[52px]">
+                    Everything we learned finding customers on Reddit.
+                </h1>
+                <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-ink-600">
+                    Real strategies, honest tool reviews, and the mistakes we made first. No growth
+                    hacks, no fluff.
+                </p>
             </div>
 
-            {/* Posts Grid */}
-            <div className="max-w-6xl mx-auto px-4 sm:px-6 py-16">
-                {/* Featured Post (First Post) */}
-                {allPosts.length > 0 && (
-                    <div className="mb-16">
-                        <article className="group relative bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-[box-shadow] duration-300">
-                            <div className="p-8 sm:p-10">
-                                <div className="flex flex-wrap items-center gap-3 mb-4">
-                                    <span className="px-3 py-1 bg-[#FF6F20] text-white text-xs font-semibold rounded-full uppercase">
-                                        Featured
-                                    </span>
-                                    {allPosts[0].tags?.slice(0, 2).map((tag: string) => (
-                                        <span
-                                            key={tag}
-                                            className="px-3 py-1 bg-gray-100 text-gray-600 text-xs font-medium rounded-full"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                                <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4 group-hover:text-[#FF6F20] transition-colors">
-                                    <Link href={`/blog/${allPosts[0].slug}`} className="after:absolute after:inset-0">
-                                        {allPosts[0].title}
-                                    </Link>
-                                </h2>
-                                <p className="text-gray-600 text-lg mb-6 line-clamp-2">
-                                    {allPosts[0].excerpt}
-                                </p>
-                                <div className="flex items-center justify-between">
-                                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                                        <span>{allPosts[0].author}</span>
-                                        <span>•</span>
-                                        <time>{allPosts[0].date}</time>
-                                        <span>•</span>
-                                        <span className="flex items-center gap-1">
-                                            <Clock className="w-4 h-4" />
-                                            {calculateReadingTime(allPosts[0].content)}
-                                        </span>
-                                    </div>
-                                    <span className="flex items-center gap-2 text-[#FF6F20] font-semibold group-hover:gap-3 transition-[gap]">
-                                        Read Article <ArrowRight className="w-4 h-4" />
-                                    </span>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                )}
+            <div className="mx-auto max-w-6xl px-4 sm:px-6">
+                <div className="h-px w-full bg-cream" />
+            </div>
 
-                {/* Rest of Posts */}
-                <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-                    {allPosts.slice(1).map((post) => (
-                        <article
-                            key={post.slug}
-                            className="group relative bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-lg hover:border-orange-100 transition-[box-shadow,border-color] duration-300"
-                        >
-                            {/* Tags */}
-                            {post.tags && post.tags.length > 0 && (
-                                <div className="flex flex-wrap gap-2 mb-3">
-                                    {post.tags.slice(0, 2).map((tag: string) => (
-                                        <span
-                                            key={tag}
-                                            className="px-2 py-0.5 bg-gray-100 text-gray-500 text-xs font-medium rounded"
-                                        >
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                            )}
-
-                            <h2 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-[#FF6F20] transition-colors line-clamp-2">
-                                <Link href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
-                                    {post.title}
-                                </Link>
-                            </h2>
-
-                            <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-                                {post.excerpt}
-                            </p>
-
-                            <div className="flex items-center justify-between text-sm text-gray-500 mt-auto pt-4 border-t border-gray-50">
-                                <div className="flex items-center gap-2">
-                                    <time>{post.date}</time>
-                                </div>
-                                <span className="flex items-center gap-1">
-                                    <Clock className="w-3 h-3" />
-                                    {calculateReadingTime(post.content)}
+            {/* ---- Featured ---- */}
+            {featured && (
+                <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+                    <article className="group relative overflow-hidden rounded-2xl bg-white p-7 shadow-card transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-card-hover sm:p-10">
+                        <div className="mb-4 flex flex-wrap items-center gap-2">
+                            <span className="chip bg-orange-500 text-[10.5px] uppercase tracking-[0.1em] text-white">
+                                Latest
+                            </span>
+                            {featured.tags?.slice(0, 2).map((tag: string) => (
+                                <span key={tag} className="chip bg-cream text-[11px] text-ink-600">
+                                    {tag}
                                 </span>
-                            </div>
-                        </article>
-                    ))}
-                </div>
-            </div>
+                            ))}
+                        </div>
 
-            {/* CTA Section */}
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
-                <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-10 text-center">
-                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                        Stop Reading. Start Finding Leads.
+                        <h2 className="max-w-3xl font-display text-[27px] font-semibold leading-tight tracking-tight text-ink-900 transition-colors group-hover:text-orange-600 sm:text-[34px]">
+                            <Link href={`/blog/${featured.slug}`} className="after:absolute after:inset-0">
+                                {featured.title}
+                            </Link>
+                        </h2>
+
+                        <p className="mt-4 max-w-2xl text-[16px] leading-relaxed text-ink-600">
+                            {featured.excerpt}
+                        </p>
+
+                        <div className="mt-7 flex flex-wrap items-center gap-x-3 gap-y-2 text-[12.5px] text-ink-400">
+                            <span className="font-semibold text-ink-600">{featured.author}</span>
+                            <span aria-hidden="true">·</span>
+                            <time dateTime={featured.date}>{formatDate(featured.date)}</time>
+                            <span aria-hidden="true">·</span>
+                            <span className="inline-flex items-center gap-1">
+                                <Clock className="h-3 w-3" />
+                                {calculateReadingTime(featured.content)}
+                            </span>
+                            <span className="ml-auto inline-flex items-center gap-1.5 text-[13px] font-bold text-orange-600">
+                                Read article
+                                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
+                            </span>
+                        </div>
+                    </article>
+                </div>
+            )}
+
+            {/* ---- Archive ---- */}
+            {rest.length > 0 && (
+                <div className="mx-auto max-w-6xl px-4 pb-16 sm:px-6">
+                    <h2 className="mb-6 text-[11px] font-bold uppercase tracking-[0.18em] text-ink-400">
+                        More articles
                     </h2>
-                    <p className="text-gray-400 mb-6 max-w-lg mx-auto">
-                        SneakyGuy monitors Reddit 24/7 and alerts you to high-intent conversations. Try it free.
+                    <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+                        {rest.map((post) => (
+                            <article
+                                key={post.slug}
+                                className="group relative flex flex-col rounded-2xl bg-white p-6 shadow-card transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-card-hover"
+                            >
+                                {post.tags?.[0] && (
+                                    <span className="mb-3 text-[10.5px] font-bold uppercase tracking-[0.1em] text-orange-600">
+                                        {post.tags[0]}
+                                    </span>
+                                )}
+
+                                <h3 className="text-[17px] font-bold leading-snug tracking-tight text-ink-900 transition-colors group-hover:text-orange-600">
+                                    <Link
+                                        href={`/blog/${post.slug}`}
+                                        className="after:absolute after:inset-0"
+                                    >
+                                        {post.title}
+                                    </Link>
+                                </h3>
+
+                                <p className="mt-2.5 line-clamp-3 text-[13.5px] leading-relaxed text-ink-400">
+                                    {post.excerpt}
+                                </p>
+
+                                <div className="mt-5 flex items-center justify-between border-t border-cream pt-3.5 text-[12px] text-ink-400">
+                                    <time dateTime={post.date}>{formatDate(post.date)}</time>
+                                    <span className="inline-flex items-center gap-1">
+                                        <Clock className="h-3 w-3" />
+                                        {calculateReadingTime(post.content)}
+                                    </span>
+                                </div>
+                            </article>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* ---- CTA ---- */}
+            <div className="mx-auto max-w-6xl px-4 pb-20 sm:px-6">
+                <div className="rounded-2xl bg-ink-900 px-6 py-11 text-center shadow-card sm:px-12">
+                    <h2 className="mx-auto max-w-lg font-display text-[26px] font-semibold leading-tight tracking-tight text-white sm:text-[32px]">
+                        Stop reading. Start finding leads.
+                    </h2>
+                    <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-ink-300">
+                        SneakyGuy scans the subreddits your buyers live in, scores every conversation
+                        for real buying intent, and drafts the reply. $19 for 30 days.
                     </p>
                     <Link
-                        href="/"
-                        className="inline-flex items-center gap-2 bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white font-semibold px-8 py-3 rounded-lg transition-colors"
+                        href="/login"
+                        className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-orange-500 px-7 text-[13.5px] font-bold text-white shadow-orange transition-colors hover:bg-orange-600"
                     >
-                        Get Started Free <ArrowRight className="w-4 h-4" />
+                        Find my first leads
+                        <ArrowRight className="h-4 w-4" />
                     </Link>
                 </div>
             </div>

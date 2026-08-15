@@ -1,46 +1,14 @@
-import { getPostBySlug, getAllPosts } from '@/lib/blog';
+import { getPostBySlug, getAllPosts, extractHeadings, slugify, type Post } from '@/lib/blog';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import { Clock, Calendar, ArrowLeft, User } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Clock } from 'lucide-react';
+import { ReadingProgress } from '../_components/ReadingProgress';
+import { TableOfContents } from '../_components/TableOfContents';
+import { ShareRow } from '../_components/ShareRow';
 
-// Custom MDX components for better styling
-const components = {
-    h2: (props: any) => (
-        <h2 className="text-2xl font-bold text-gray-900 mt-12 mb-4 pb-2 border-b border-gray-100" {...props} />
-    ),
-    h3: (props: any) => (
-        <h3 className="text-xl font-semibold text-gray-800 mt-8 mb-3" {...props} />
-    ),
-    p: (props: any) => (
-        <p className="text-gray-700 leading-relaxed mb-4" {...props} />
-    ),
-    ul: (props: any) => (
-        <ul className="list-disc list-inside space-y-2 mb-6 text-gray-700" {...props} />
-    ),
-    ol: (props: any) => (
-        <ol className="list-decimal list-inside space-y-2 mb-6 text-gray-700" {...props} />
-    ),
-    li: (props: any) => (
-        <li className="leading-relaxed" {...props} />
-    ),
-    blockquote: (props: any) => (
-        <blockquote className="border-l-4 border-[#FF6F20] bg-orange-50 px-6 py-4 my-6 italic text-gray-700 rounded-r-lg" {...props} />
-    ),
-    strong: (props: any) => (
-        <strong className="font-semibold text-gray-900" {...props} />
-    ),
-    a: (props: any) => (
-        <a className="text-[#FF6F20] hover:underline font-medium" {...props} />
-    ),
-    code: (props: any) => (
-        <code className="bg-gray-100 text-gray-800 px-1.5 py-0.5 rounded text-sm font-mono" {...props} />
-    ),
-    pre: (props: any) => (
-        <pre className="bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-6 text-sm" {...props} />
-    ),
-};
+const SITE_URL = 'https://www.sneakyguy.com';
 
 type Props = {
     params: {
@@ -48,37 +16,193 @@ type Props = {
     };
 };
 
-// Calculate reading time
 function calculateReadingTime(content: string): string {
     const wordsPerMinute = 200;
     const words = content.trim().split(/\s+/).length;
-    const minutes = Math.ceil(words / wordsPerMinute);
-    return `${minutes} min read`;
+    return `${Math.ceil(words / wordsPerMinute)} min read`;
+}
+
+/** "2026-08-15" is a date, not an instant. Format it in UTC so it doesn't
+ * render as the 14th for anyone west of Greenwich. */
+function formatDate(date: string): string {
+    const parsed = new Date(date);
+    if (Number.isNaN(parsed.getTime())) return date;
+    return parsed.toLocaleDateString('en-US', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+        timeZone: 'UTC',
+    });
+}
+
+function initialsOf(name: string): string {
+    return name
+        .split(/\s+/)
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((word) => word[0]?.toUpperCase() ?? '')
+        .join('');
+}
+
+/** MDX gives headings their children as a string, an array, or nested
+ * elements when the title contains bold or code. Flatten to plain text so the
+ * generated anchor matches the one the table of contents computed. */
+function toText(node: any): string {
+    if (node == null || node === false) return '';
+    if (typeof node === 'string' || typeof node === 'number') return String(node);
+    if (Array.isArray(node)) return node.map(toText).join('');
+    if (node.props?.children) return toText(node.props.children);
+    return '';
+}
+
+/**
+ * Heading ids are assigned by mirroring `extractHeadings`: same slug, same
+ * duplicate-suffix rule, applied in document order. Anchors and the sidebar
+ * therefore agree without either side needing to know about the other.
+ */
+function createComponents() {
+    const seen = new Map<string, number>();
+
+    const headingId = (children: any) => {
+        const base = slugify(toText(children));
+        const count = seen.get(base) ?? 0;
+        seen.set(base, count + 1);
+        return count > 0 ? `${base}-${count + 1}` : base;
+    };
+
+    const Anchor = ({ id }: { id: string }) => (
+        <a
+            href={`#${id}`}
+            aria-label="Link to this section"
+            className="absolute -left-5 top-1/2 hidden -translate-y-1/2 text-orange-300 opacity-0 transition-opacity group-hover:opacity-100 lg:block"
+        >
+            #
+        </a>
+    );
+
+    return {
+        h2: ({ children, ...props }: any) => {
+            const id = headingId(children);
+            return (
+                <h2
+                    id={id}
+                    className="group relative mb-4 mt-14 scroll-mt-28 font-display text-[26px] font-semibold leading-tight tracking-tight text-ink-900 first:mt-0 sm:text-[30px]"
+                    {...props}
+                >
+                    <Anchor id={id} />
+                    {children}
+                </h2>
+            );
+        },
+        h3: ({ children, ...props }: any) => {
+            const id = headingId(children);
+            return (
+                <h3
+                    id={id}
+                    className="group relative mb-3 mt-10 scroll-mt-28 text-[18px] font-bold leading-snug tracking-tight text-ink-900 sm:text-[19px]"
+                    {...props}
+                >
+                    <Anchor id={id} />
+                    {children}
+                </h3>
+            );
+        },
+        p: (props: any) => (
+            <p className="mb-5 text-[17px] leading-[1.75] text-ink-700" {...props} />
+        ),
+        ul: (props: any) => (
+            <ul className="mb-6 ml-1 list-none space-y-2.5 text-[17px] leading-[1.7] text-ink-700 [&>li]:relative [&>li]:pl-6 [&>li]:before:absolute [&>li]:before:left-1 [&>li]:before:top-[0.66em] [&>li]:before:h-[5px] [&>li]:before:w-[5px] [&>li]:before:rounded-full [&>li]:before:bg-orange-400" {...props} />
+        ),
+        ol: (props: any) => (
+            <ol className="mb-6 ml-5 list-decimal space-y-2.5 text-[17px] leading-[1.7] text-ink-700 marker:font-semibold marker:text-ink-300" {...props} />
+        ),
+        li: (props: any) => <li className="leading-[1.7]" {...props} />,
+        blockquote: (props: any) => (
+            <blockquote
+                className="my-7 rounded-r-xl border-l-[3px] border-orange-500 bg-cream/60 py-4 pl-5 pr-5 text-[16.5px] italic leading-relaxed text-ink-700 [&>p:last-child]:mb-0"
+                {...props}
+            />
+        ),
+        strong: (props: any) => <strong className="font-semibold text-ink-900" {...props} />,
+        em: (props: any) => <em className="italic" {...props} />,
+        a: (props: any) => {
+            const href: string = props.href ?? '';
+            const external = /^https?:\/\//.test(href) && !href.includes('sneakyguy.com');
+            return (
+                <a
+                    className="font-medium text-orange-600 underline decoration-orange-300 decoration-2 underline-offset-[3px] transition-colors hover:text-orange-700 hover:decoration-orange-500"
+                    {...(external ? { target: '_blank', rel: 'noopener' } : {})}
+                    {...props}
+                />
+            );
+        },
+        hr: () => (
+            <hr className="my-10 border-0 text-center after:text-lg after:tracking-[0.6em] after:text-ink-300 after:content-['•••']" />
+        ),
+        code: (props: any) => (
+            <code className="rounded-md bg-cream px-1.5 py-0.5 font-mono text-[14px] text-ink-900" {...props} />
+        ),
+        pre: (props: any) => (
+            <pre className="my-6 overflow-x-auto rounded-xl bg-ink-900 p-4 font-mono text-[13.5px] leading-relaxed text-cream" {...props} />
+        ),
+        img: (props: any) => (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img className="my-7 w-full rounded-xl shadow-card" alt="" {...props} />
+        ),
+    };
+}
+
+/** Most-related posts first: shared tags win, then recency. */
+function relatedPosts(current: Post, all: Post[]): Post[] {
+    const currentTags = new Set(current.tags ?? []);
+    return all
+        .filter((p) => p.slug !== current.slug)
+        .map((p) => ({
+            post: p,
+            shared: (p.tags ?? []).filter((t) => currentTags.has(t)).length,
+        }))
+        .sort((a, b) => b.shared - a.shared || (a.post.date > b.post.date ? -1 : 1))
+        .slice(0, 3)
+        .map((entry) => entry.post);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     try {
-        const post = getPostBySlug(params.slug, ['title', 'excerpt']);
+        const post = getPostBySlug(params.slug, ['title', 'excerpt', 'date', 'author', 'tags']);
+        const url = `${SITE_URL}/blog/${params.slug}`;
         return {
             title: `${post.title} | SneakyGuy Blog`,
             description: post.excerpt,
+            keywords: post.tags,
+            alternates: { canonical: url },
+            openGraph: {
+                type: 'article',
+                title: post.title,
+                description: post.excerpt,
+                url,
+                siteName: 'SneakyGuy',
+                publishedTime: post.date,
+                authors: [post.author],
+                tags: post.tags,
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: post.title,
+                description: post.excerpt,
+            },
         };
     } catch (e) {
-        return {
-            title: 'Blog Post Not Found',
-        };
+        return { title: 'Blog Post Not Found' };
     }
 }
 
 export async function generateStaticParams() {
     const posts = getAllPosts(['slug']);
-    return posts.map((post) => ({
-        slug: post.slug,
-    }));
+    return posts.map((post) => ({ slug: post.slug }));
 }
 
 export default async function BlogPost({ params }: Props) {
-    let post;
+    let post: Post;
 
     try {
         post = getPostBySlug(params.slug, [
@@ -95,27 +219,47 @@ export default async function BlogPost({ params }: Props) {
     }
 
     const readingTime = calculateReadingTime(post.content);
+    const headings = extractHeadings(post.content);
+    const related = relatedPosts(post, getAllPosts(['title', 'slug', 'date', 'excerpt', 'tags']));
+    const components = createComponents();
+
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: post.title,
+        description: post.excerpt,
+        datePublished: post.date,
+        author: { '@type': 'Organization', name: post.author },
+        publisher: { '@type': 'Organization', name: 'SneakyGuy' },
+        mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
+        keywords: (post.tags ?? []).join(', '),
+    };
 
     return (
-        <div className="min-h-screen bg-gradient-to-b from-orange-50/50 to-white">
-            {/* Hero Section */}
-            <div className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-white">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 py-16 sm:py-24">
-                    <Link
-                        href="/blog"
-                        className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-8 group"
-                    >
-                        <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                        Back to Blog
-                    </Link>
+        <div className="min-h-screen bg-paper">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <ReadingProgress targetId="article-body" />
 
-                    {/* Tags */}
+            {/* ---- Header: editorial, on paper, no dark slab ---- */}
+            <header className="mx-auto max-w-5xl px-4 pb-10 pt-10 sm:px-6 sm:pt-14">
+                <Link
+                    href="/blog"
+                    className="group mb-8 inline-flex items-center gap-1.5 text-[12.5px] font-semibold text-ink-400 transition-colors hover:text-ink-900"
+                >
+                    <ArrowLeft className="h-3.5 w-3.5 transition-transform group-hover:-translate-x-0.5" />
+                    All articles
+                </Link>
+
+                <div className="max-w-3xl">
                     {post.tags && post.tags.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mb-6">
+                        <div className="mb-5 flex flex-wrap items-center gap-2">
                             {post.tags.map((tag: string) => (
                                 <span
                                     key={tag}
-                                    className="px-3 py-1 bg-[#FF6F20]/20 text-[#FF6F20] text-xs font-medium rounded-full uppercase tracking-wide"
+                                    className="chip bg-orange-50 text-[11px] uppercase tracking-[0.08em] text-orange-700"
                                 >
                                     {tag}
                                 </span>
@@ -123,77 +267,116 @@ export default async function BlogPost({ params }: Props) {
                         </div>
                     )}
 
-                    <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 leading-tight">
+                    <h1 className="font-display text-[34px] font-semibold leading-[1.1] tracking-tight text-ink-900 sm:text-[46px] lg:text-[54px]">
                         {post.title}
                     </h1>
 
-                    <p className="text-lg text-gray-300 mb-8 max-w-2xl">
+                    <p className="mt-5 max-w-2xl text-[18px] leading-relaxed text-ink-600 sm:text-[19px]">
                         {post.excerpt}
                     </p>
 
-                    {/* Meta info */}
-                    <div className="flex flex-wrap items-center gap-6 text-sm text-gray-400">
-                        <div className="flex items-center gap-2">
-                            <div className="w-10 h-10 bg-gradient-to-br from-[#FF6F20] to-orange-400 rounded-full flex items-center justify-center">
-                                <User className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <div className="text-white font-medium">{post.author}</div>
-                                <div className="text-xs">Author</div>
+                    <div className="mt-8 flex flex-wrap items-center gap-x-4 gap-y-3 border-t border-cream pt-5">
+                        <div className="flex items-center gap-2.5">
+                            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-orange-500 to-orange-400 text-[11px] font-bold text-white shadow-orange">
+                                {initialsOf(post.author)}
+                            </span>
+                            <div className="leading-tight">
+                                <div className="text-[13px] font-semibold text-ink-900">{post.author}</div>
+                                <div className="flex items-center gap-1.5 text-[12px] text-ink-400">
+                                    <time dateTime={post.date}>{formatDate(post.date)}</time>
+                                    <span aria-hidden="true">·</span>
+                                    <span className="inline-flex items-center gap-1">
+                                        <Clock className="h-3 w-3" />
+                                        {readingTime}
+                                    </span>
+                                </div>
                             </div>
                         </div>
-                        <div className="flex items-center gap-2">
-                            <Calendar className="w-4 h-4" />
-                            <time dateTime={post.date}>{post.date}</time>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Clock className="w-4 h-4" />
-                            <span>{readingTime}</span>
+                        <div className="ml-auto">
+                            <ShareRow title={post.title} />
                         </div>
                     </div>
                 </div>
+            </header>
+
+            {/* ---- Body + sticky contents ---- */}
+            <div className="mx-auto max-w-5xl px-4 pb-16 sm:px-6">
+                <div className="lg:grid lg:grid-cols-[minmax(0,1fr)_13rem] lg:items-start lg:gap-10">
+                    <article
+                        id="article-body"
+                        className="rounded-2xl bg-white px-5 py-8 shadow-card sm:px-10 sm:py-11"
+                    >
+                        <div className="mx-auto max-w-[660px]">
+                            <MDXRemote source={post.content} components={components} />
+                        </div>
+                    </article>
+
+                    {headings.length >= 3 && (
+                        <aside className="hidden lg:sticky lg:top-24 lg:block">
+                            <TableOfContents headings={headings} />
+                        </aside>
+                    )}
+                </div>
+
+                {/* ---- Conversion card ---- */}
+                <section className="mt-10 overflow-hidden rounded-2xl bg-ink-900 px-6 py-10 shadow-card sm:px-12 sm:py-12">
+                    <div className="mx-auto max-w-xl text-center">
+                        <span className="mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500 shadow-orange">
+                            <svg viewBox="0 0 24 24" className="h-6 w-6 fill-white" aria-hidden="true">
+                                <path d="M12 0C5.373 0 0 5.373 0 12c0 3.314 1.343 6.314 3.515 8.485l-2.286 2.286A.72.72 0 0 0 1.738 24H12c6.627 0 12-5.373 12-12S18.627 0 12 0M6.5 12a1.5 1.5 0 1 1 3 0 1.5 1.5 0 0 1-3 0m8.25 4.5a5.6 5.6 0 0 1-2.75.69 5.6 5.6 0 0 1-2.75-.69.75.75 0 1 1 .75-1.3 4.1 4.1 0 0 0 2 .49 4.1 4.1 0 0 0 2-.49.75.75 0 1 1 .75 1.3M16 13.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3" />
+                            </svg>
+                        </span>
+                        <h2 className="font-display text-[26px] font-semibold leading-tight tracking-tight text-white sm:text-[30px]">
+                            Someone is describing your product right now
+                        </h2>
+                        <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-ink-300">
+                            SneakyGuy scans the subreddits your buyers live in, scores every match for
+                            real buying intent, and drafts the reply. You post it. $19 for 30 days.
+                        </p>
+                        <Link
+                            href="/login"
+                            className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-orange-500 px-7 text-[13.5px] font-bold text-white shadow-orange transition-colors hover:bg-orange-600"
+                        >
+                            Find my first leads
+                            <ArrowRight className="h-4 w-4" />
+                        </Link>
+                    </div>
+                </section>
+
+                {/* ---- Keep reading ---- */}
+                {related.length > 0 && (
+                    <section className="mt-14">
+                        <h2 className="mb-5 font-display text-[22px] font-semibold tracking-tight text-ink-900">
+                            Keep reading
+                        </h2>
+                        <div className="grid gap-4 sm:grid-cols-3">
+                            {related.map((item) => (
+                                <Link
+                                    key={item.slug}
+                                    href={`/blog/${item.slug}`}
+                                    className="group flex h-full flex-col rounded-2xl bg-white p-5 shadow-card transition-[box-shadow,transform] hover:-translate-y-0.5 hover:shadow-card-hover"
+                                >
+                                    {item.tags?.[0] && (
+                                        <span className="mb-2.5 text-[10.5px] font-bold uppercase tracking-[0.1em] text-orange-600">
+                                            {item.tags[0]}
+                                        </span>
+                                    )}
+                                    <h3 className="text-[15px] font-bold leading-snug tracking-tight text-ink-900 transition-colors group-hover:text-orange-600">
+                                        {item.title}
+                                    </h3>
+                                    <p className="mt-2 line-clamp-3 text-[13px] leading-relaxed text-ink-400">
+                                        {item.excerpt}
+                                    </p>
+                                    <span className="mt-4 inline-flex items-center gap-1 text-[12px] font-semibold text-ink-400 transition-colors group-hover:text-orange-600">
+                                        Read
+                                        <ArrowRight className="h-3 w-3 transition-transform group-hover:translate-x-0.5" />
+                                    </span>
+                                </Link>
+                            ))}
+                        </div>
+                    </section>
+                )}
             </div>
-
-            {/* Article Content */}
-            <article className="max-w-3xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sm:p-10 -mt-8 relative z-10">
-                    <div className="prose prose-lg max-w-none">
-                        <MDXRemote source={post.content} components={components} />
-                    </div>
-                </div>
-
-                {/* CTA Section */}
-                <div className="mt-12 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 sm:p-10 text-center shadow-xl">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-[#FF6F20]/20 rounded-full mb-6">
-                        <svg className="w-8 h-8 text-[#FF6F20]" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.14.18-.357.295-.6.295-.002 0-.003 0-.005 0l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.538-.194 1.006.128.832.94z" />
-                        </svg>
-                    </div>
-                    <h3 className="text-2xl font-bold text-white mb-3">
-                        Ready to Find Leads on Reddit?
-                    </h3>
-                    <p className="text-gray-400 mb-6 max-w-md mx-auto">
-                        Stop scrolling manually. Let SneakyGuy find high-intent conversations while you focus on closing deals.
-                    </p>
-                    <Link
-                        href="/"
-                        className="inline-flex items-center justify-center bg-[#FF6F20] hover:bg-[#FF6F20]/90 text-white font-semibold px-8 py-3 rounded-lg transition-colors shadow-lg shadow-orange-500/20"
-                    >
-                        Start Free Trial
-                    </Link>
-                </div>
-
-                {/* Back to Blog */}
-                <div className="mt-8 text-center">
-                    <Link
-                        href="/blog"
-                        className="inline-flex items-center gap-2 text-gray-600 hover:text-[#FF6F20] transition-colors font-medium"
-                    >
-                        <ArrowLeft className="w-4 h-4" />
-                        View All Articles
-                    </Link>
-                </div>
-            </article>
         </div>
     );
 }
