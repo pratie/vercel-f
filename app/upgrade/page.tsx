@@ -4,8 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { PricingTable } from '@/components/PricingTable';
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowLeft, Eye, MessageSquare, Search } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -42,125 +41,110 @@ export default function UpgradePage() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[hsl(var(--primary))]"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <div className="min-h-screen bg-paper">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="bg-white/80 backdrop-blur-sm border-b border-[#f0e9dd] sticky top-0 z-10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
-            <Button
-              variant="ghost"
+            <button
               onClick={() => router.back()}
-              className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+              className="flex items-center gap-1.5 text-[13px] font-medium text-ink-600 hover:text-ink-900 transition-colors"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to Projects
-            </Button>
-
-            <div className="text-center">
-              <h1 className="text-lg font-semibold text-gray-900">Upgrade to Premium</h1>
-              <p className="text-sm text-gray-600">Just $19 - One month of unlimited Reddit lead generation</p>
-            </div>
-
-            <div className="w-24" /> {/* Spacer for centering */}
+              Back
+            </button>
+            <span className="text-[13px] font-semibold text-ink-400">$19, one month, no auto renewal</span>
           </div>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="py-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Section */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-100 to-blue-100 text-purple-700 mb-6">
-              <span>🚀 Unlock Premium Features</span>
-            </div>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
 
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 font-heading">
-              Ready to Scale Your <span className="text-[hsl(var(--primary))]">Reddit Growth</span>?
-            </h2>
+        {/* The hook: the product demonstrated on the buyer's own problem. */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <h1 className="text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-ink-900 leading-[1.1] mb-4">
+            Right now, AI is answering{' '}
+            <em className="font-display font-medium italic text-orange-600">without you</em>
+          </h1>
+          <p className="text-[17px] text-ink-600 leading-relaxed">
+            Your buyers ask Reddit, then they ask ChatGPT. SneakyGuy finds the conversations
+            worth joining and tracks whether the assistants start naming you.
+          </p>
+        </div>
 
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-4">
-              Join 41 founders & solopreneurs generating qualified leads from Reddit for just <span className="font-bold text-[hsl(var(--primary))]">$19</span>.
-              Get 500 AI replies, unlimited keywords, and 24/7 monitoring.
-            </p>
-
-            <p className="text-sm text-gray-500 mb-8">
-              One-time payment for 30 days. No recurring subscription.
-            </p>
-
-            {/* Benefits Preview */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-12">
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-                <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🎯</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">AI-Powered Targeting</h3>
-                <p className="text-sm text-gray-600">Automatically find high-intent prospects discussing your solutions</p>
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-                <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">💬</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Smart Responses</h3>
-                <p className="text-sm text-gray-600">Generate authentic, helpful replies that build trust and drive traffic</p>
-              </div>
-
-              <div className="bg-white rounded-xl p-6 shadow-md border border-gray-100">
-                <div className="w-12 h-12 rounded-full bg-purple-100 flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">⚡</span>
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">24/7 Monitoring</h3>
-                <p className="text-sm text-gray-600">Never miss an opportunity with continuous Reddit monitoring</p>
-              </div>
-            </div>
+        {/* Concrete demonstration. These are real answers we recorded. */}
+        <div className="bg-white rounded-2xl shadow-card overflow-hidden mb-12">
+          <div className="px-5 sm:px-6 py-3.5 border-b border-[#f4ede1] flex items-center gap-2">
+            <Search className="h-3.5 w-3.5 text-ink-300" />
+            <span className="text-[13px] text-ink-600">
+              &ldquo;What are the best tools to find leads on Reddit?&rdquo;
+            </span>
           </div>
-
-          {/* Pricing Table */}
-          <PricingTable
-            onPlanSelect={handlePlanSelect}
-            showHeader={false}
-          />
-
-          {/* Trust Signals */}
-          <div className="mt-16 text-center">
-            <div className="bg-gray-50 rounded-xl p-8 max-w-3xl mx-auto">
-              <h4 className="text-lg font-semibold text-gray-900 mb-4">Why Choose SneakyGuy?</h4>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">41</div>
-                  <div className="text-sm text-gray-600">Founders & Solopreneurs</div>
+          <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-[#f4ede1]">
+            {[
+              { engine: 'ChatGPT', named: ['Leado', 'Leadline', 'Optareach', 'LeadSnipe', 'Leadmatically'] },
+              { engine: 'Perplexity', named: ['Linkeddit', 'CommunityTracker', 'RedReach', 'Buska', 'Syften'] },
+            ].map((row) => (
+              <div key={row.engine} className="p-5 sm:p-6">
+                <p className="text-[11px] font-bold uppercase tracking-[0.08em] text-ink-400 mb-3">
+                  {row.engine} recommended
+                </p>
+                <div className="flex flex-wrap gap-1.5 mb-4">
+                  {row.named.map((n) => (
+                    <span key={n} className="chip bg-cream text-ink-700">{n}</span>
+                  ))}
                 </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">85%</div>
-                  <div className="text-sm text-gray-600">Response Rate</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-[hsl(var(--primary))] mb-1">7-Day</div>
-                  <div className="text-sm text-gray-600">Money-Back Guarantee</div>
+                <div className="flex items-center gap-2 pt-3 border-t border-dashed border-[#e9e1d4]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-ink-300" />
+                  <span className="text-[12.5px] text-ink-400">Your product, not mentioned</span>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
+          <p className="px-5 sm:px-6 py-3 bg-[#fdf9f3] text-[12px] text-ink-400 border-t border-[#f4ede1]">
+            A real check we ran. If the assistants do not say your name, they are saying a competitor&rsquo;s.
+          </p>
+        </div>
 
-          {/* FAQ or Additional Info */}
-          <div className="mt-12 text-center">
-            <p className="text-gray-600 mb-4">
-              Questions or need help?
-              <a href="mailto:support@sneakyguy.com" className="text-[hsl(var(--primary))] hover:underline ml-1">
-                Contact our support team
-              </a>
-            </p>
-            <p className="text-sm text-gray-500">
-              One simple price. All features included. 7-day money-back guarantee.
-            </p>
-          </div>
+        {/* What you actually get. Two halves of one loop, not a feature dump. */}
+        <div className="grid sm:grid-cols-2 gap-4 mb-12">
+          {[
+            {
+              icon: MessageSquare,
+              title: 'Find the conversations',
+              body: 'We scan the subreddits your buyers post in and score every thread for buying intent, so you reply to the three that matter instead of reading two hundred.',
+            },
+            {
+              icon: Eye,
+              title: 'Track whether AI names you',
+              body: 'We ask ChatGPT, Gemini, Perplexity and Claude the questions your buyers ask, record who gets recommended, and show you the Reddit threads that would change it.',
+            },
+          ].map((f) => (
+            <div key={f.title} className="bg-white rounded-2xl shadow-card p-5 sm:p-6">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-50 text-orange-600 mb-4">
+                <f.icon className="h-4 w-4" />
+              </span>
+              <h3 className="text-[15px] font-bold text-ink-900 mb-1.5 tracking-tight">{f.title}</h3>
+              <p className="text-[13.5px] text-ink-600 leading-relaxed">{f.body}</p>
+            </div>
+          ))}
+        </div>
+
+        <PricingTable onPlanSelect={handlePlanSelect} showHeader={false} />
+
+        <div className="mt-12 text-center">
+          <p className="text-[13px] text-ink-400">
+            Questions?{' '}
+            <a href="mailto:support@sneakyguy.com" className="text-orange-600 hover:text-orange-700 font-medium">
+              Email support
+            </a>
+          </p>
         </div>
       </div>
     </div>

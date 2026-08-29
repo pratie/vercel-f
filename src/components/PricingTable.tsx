@@ -30,9 +30,10 @@ const fallbackPlans: PricingPlan[] = [
 const features = [
   'Catch buyers the moment they ask, across up to 15 communities',
   'Skip the noise. Every lead scored for buying intent, best ones first',
+  'See whether ChatGPT, Gemini, Perplexity and Claude recommend you, checked weekly',
+  'Find out who they recommend instead, and the Reddit threads that would change it',
   'Reply in seconds, not hours, with unlimited AI drafts in your voice',
   'Never sound like an ad. Set your tone once, every draft follows it',
-  'Know what’s working with keyword and community analytics',
   'Set up in 60 seconds. Paste your URL and we build the rest',
   'Zero risk: 7-day money-back guarantee, nothing auto-renews',
 ];
