@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import {
-  ArrowLeft, ChevronDown, Loader2, MessageSquare, Sparkles,
+  ArrowLeft, ChevronDown, Info, Loader2, MessageSquare, Sparkles,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
@@ -159,9 +159,12 @@ export default function VisibilityPage() {
             const fresh = await loadResults();
             if (stopped) return;
             setRunStatus('completed');
+            // A percentage never travels without its denominator, toasts
+            // included. "0%" reads as a verdict, "0 of 12 answers" reads as a
+            // sample.
             toast.success(
-              fresh && fresh.run_id !== null
-                ? `You are recommended in ${fresh.brand.visibility_pct}% of AI answers`
+              fresh && fresh.run_id !== null && fresh.brand.total_checks > 0
+                ? `You are recommended in ${fresh.brand.mention_count} of ${fresh.brand.total_checks} AI answers (${fresh.brand.visibility_pct}%)`
                 : 'Visibility check complete'
             );
           } else {
@@ -255,6 +258,28 @@ export default function VisibilityPage() {
 
   const brandName = latest?.brand.name || project?.name || '';
 
+  // Opportunities hides itself when there is nothing to act on. The page needs
+  // to know the same thing so the elevated band around it is not an empty box.
+  const showAction = opportunities.length > 0 || hasGaps;
+
+  // A single point is a dot, not a trend, and TrendChart hides itself below two.
+  // Only pair it with the engine strip when it is actually going to render.
+  const hasTrend = trend.length >= 2;
+
+  // EngineCards hides itself the same way. Both halves have to be present
+  // before the band splits into two columns, or the survivor sits in a
+  // half-empty grid.
+  const hasEngines = (latest?.by_engine.length ?? 0) > 0;
+
+  // How much one extra mention would move a percentage in this run. At 12
+  // answers it is 8 points, which is why a five-way tie at 25% is a sample-size
+  // artifact rather than a standing. Said out loud rather than left implied.
+  const pointsPerAnswer = latest && latest.brand.total_checks > 0
+    ? Math.round(100 / latest.brand.total_checks)
+    : 0;
+  const showSampleNote =
+    pointsPerAnswer >= 2 && (latest?.competitors.length ?? 0) > 0 && hasEngines;
+
   const setupPanelProps = {
     brandName: project?.name || '',
     prompts: setup?.prompts || [],
@@ -346,27 +371,62 @@ export default function VisibilityPage() {
           /* Empty state: the pitch, the suggested questions, and the first run. */
           <SetupPanel variant="onboarding" {...setupPanelProps} />
         ) : (
-          <div className="space-y-5 pb-8">
+          /* Reading order, widest and airiest first: the standing, then the
+             thing to do about it, then the measurement that backs it up. */
+          <div className="pb-10">
+            {/* ── The standing ── */}
             <Scoreboard
               brand={latest!.brand}
               competitors={latest!.competitors}
               completedAt={latest!.completed_at}
             />
 
-            <Opportunities
-              items={opportunities}
-              hasGaps={hasGaps}
-              onOpenLeads={() => router.push(`/mentions/${projectId}`)}
-            />
+            {showSampleNote && (
+              <p className="mt-3 flex items-start gap-2 px-1 text-[11.5px] leading-snug text-ink-400">
+                <Info className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                <span>
+                  This run asked{' '}
+                  <span className="font-semibold text-ink-600 tabular-nums">{latest!.prompts.length}</span>{' '}
+                  question{latest!.prompts.length === 1 ? '' : 's'} across{' '}
+                  <span className="font-semibold text-ink-600 tabular-nums">{latest!.by_engine.length}</span>{' '}
+                  assistant{latest!.by_engine.length === 1 ? '' : 's'}, so one extra mention moves any name by
+                  about <span className="font-semibold text-ink-600 tabular-nums">{pointsPerAnswer}</span> points.
+                  Read close positions as ties, not as a ranking. Add questions to sharpen it.
+                </span>
+              </p>
+            )}
 
-            <EngineCards byEngine={latest!.by_engine} />
+            {/* ── Close the gap. The one section that asks for a decision, so it
+                 gets its own warm panel instead of another card in the stack.
+                 The tint is orange-100/60, not orange-50: orange-50 (#fff4f0)
+                 sits at 1.02:1 against the page background so it does not read
+                 as a tint at all, and it erases the orange-50 plates
+                 Opportunities draws on top of it. orange-100/60 lands on the
+                 same surface step the app already uses for cream, so the band
+                 reads as a panel and its contents keep their own surfaces. ── */}
+            {showAction && (
+              <div className="-mx-4 mt-7 bg-orange-100/60 px-4 py-6 ring-1 ring-inset ring-orange-500/10 sm:mx-0 sm:mt-8 sm:rounded-3xl sm:px-6 sm:py-7">
+                <Opportunities
+                  items={opportunities}
+                  hasGaps={hasGaps}
+                  onOpenLeads={() => router.push(`/mentions/${projectId}`)}
+                />
+              </div>
+            )}
 
-            <TrendChart data={trend} brandName={brandName} />
+            {/* ── The measurement behind the number. Compact, and paired into one
+                 band when there is a trend worth showing. ── */}
+            <div className={`mt-8 grid items-start gap-5 sm:mt-10 ${hasTrend && hasEngines ? 'lg:grid-cols-2' : ''}`}>
+              <EngineCards byEngine={latest!.by_engine} />
+              <TrendChart data={trend} brandName={brandName} />
+            </div>
 
-            <PromptList prompts={latest!.prompts} />
+            <div className="mt-6">
+              <PromptList prompts={latest!.prompts} />
+            </div>
 
             {/* Editing questions and competitors stays available, just out of the way. */}
-            <div>
+            <div className="mt-6">
               <button
                 onClick={() => setShowManage((v) => !v)}
                 aria-expanded={showManage}
