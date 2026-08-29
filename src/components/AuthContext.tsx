@@ -11,7 +11,8 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const PUBLIC_ROUTES = ['/', '/login', '/signup', '/forgot-password', '/privacy', '/terms', '/about'];
+// '/explore' is the anonymous onboarding funnel: it must render with no token.
+const PUBLIC_ROUTES = ['/', '/login', '/signup', '/forgot-password', '/privacy', '/terms', '/about', '/explore'];
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();

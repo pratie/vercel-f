@@ -2,7 +2,9 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 // List of public routes that don't require authentication
-const publicRoutes = ['/', '/login', '/signup', '/forgot-password', '/privacy', '/terms', '/about', '/verify-email']
+// `/explore` is the anonymous onboarding funnel. It has to work with no token
+// at all, that is the entire point of it.
+const publicRoutes = ['/', '/login', '/signup', '/forgot-password', '/privacy', '/terms', '/about', '/verify-email', '/explore']
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

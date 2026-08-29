@@ -332,9 +332,11 @@ export default function LandingPage() {
   const [heroUrl, setHeroUrl] = useState('');
   const [segment, setSegment] = useState(SEGMENTS[0]);
 
-  // The URL funnel: stash the URL, send them to sign in. The projects page
-  // picks up pending_analyze_url and runs the analysis — before the paywall,
-  // so new users see their own keywords first.
+  // The URL funnel: stash the URL, then send them straight into /explore, where
+  // they watch us analyse their own site before anyone mentions money.
+  // pending_analyze_url is still written here on purpose: after they sign up,
+  // app/projects/page.tsx reads it and opens the create-project dialog, and
+  // that path has to keep working exactly as it does today.
   const handleHeroAnalyze = () => {
     const raw = heroUrl.trim();
     if (!raw) {
@@ -342,8 +344,17 @@ export default function LandingPage() {
       return;
     }
     const normalized = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
-    sessionStorage.setItem('pending_analyze_url', normalized);
-    router.push(user ? '/projects?analyze=true' : '/login');
+    // Safari private mode and blocked-storage settings throw on setItem. An
+    // unhandled throw here would abort the handler before the router.push and
+    // the only CTA on the landing page would silently do nothing. The URL also
+    // travels in the query string, and ReadyPanel backfills this key from
+    // session.url at the hand off, so losing the write costs us nothing.
+    try {
+      sessionStorage.setItem('pending_analyze_url', normalized);
+    } catch {
+      /* storage unavailable, the funnel still works */
+    }
+    router.push(`/explore?url=${encodeURIComponent(normalized)}`);
   };
 
   return (

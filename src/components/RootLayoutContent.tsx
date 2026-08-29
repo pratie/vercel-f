@@ -7,9 +7,12 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isAuthPage = pathname.startsWith('/login') || pathname.startsWith('/signup');
   const isLandingPage = pathname === '/';
+  // /explore is the anonymous onboarding funnel. It is full bleed and dark, so
+  // it must not get the warm app sidebar wrapped around it.
   const isPublicPage =
     isAuthPage ||
     isLandingPage ||
+    pathname.startsWith('/explore') ||
     pathname === '/privacy' ||
     pathname === '/terms' ||
     pathname === '/about' ||
