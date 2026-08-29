@@ -122,18 +122,46 @@ const SEGMENTS = [
   },
 ];
 
+// The demonstration that sells AI visibility. We ran this question on the
+// day the check shipped and kept the answers exactly as they came back,
+// SneakyGuy absent from both, which is the whole point of the section.
+const AI_PROMPT = 'What are the best tools to find leads on Reddit?';
+
+const AI_ANSWERS: {
+  engine: string;
+  dotClass: string;
+  headerClass: string;
+  named: string[];
+}[] = [
+  {
+    engine: 'ChatGPT',
+    dotClass: 'bg-emerald-500',
+    headerClass: 'bg-emerald-50/60',
+    named: ['Leado', 'Leadline', 'Optareach', 'LeadSnipe', 'Leadmatically'],
+  },
+  {
+    engine: 'Perplexity',
+    dotClass: 'bg-sky-500',
+    headerClass: 'bg-sky-50/60',
+    named: ['Linkeddit', 'CommunityTracker', 'RedReach', 'Buska', 'Syften'],
+  },
+];
+
+const AI_ENGINES = ['ChatGPT', 'Perplexity', 'Gemini', 'Claude'];
+
+// The three beats of the product. Find it, join it, get named for it.
 const STEPS = [
   {
-    title: 'Paste Your Website',
-    body: 'We read your site and draft the keywords and subreddits worth watching, in about 20 seconds. Adjust anything you like.',
+    title: 'Find the conversation',
+    body: 'Paste your website. We draft the keywords and subreddits worth watching in about 20 seconds, then scan those subreddits and score every thread for buying intent.',
   },
   {
-    title: 'AI Monitors Reddit 24/7',
-    body: 'We scan matching conversations around the clock and score each one for buying intent, so you only see what matters.',
+    title: 'Join it in your own voice',
+    body: 'Every lead arrives with a drafted reply in your tone. Edit it, post it, and be the useful answer in the thread instead of the ad next to it.',
   },
   {
-    title: 'Reply and Convert',
-    body: 'Get a suggested reply written in your tone for every lead. Review it, edit it, and post without sounding like a bot.',
+    title: 'Track whether AI names you',
+    body: 'We ask the assistants the buying questions your customers ask and record which products get named. As the threads add up, watch your name show up.',
   },
 ];
 
@@ -201,6 +229,65 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
         </span>
         New high-intent lead in r/SaaS
         <span className="ml-auto text-ink-300 text-[10.5px]">just now</span>
+      </div>
+    ),
+  },
+  {
+    title: 'AI Visibility Tracking',
+    body: 'We put your buying questions to the assistants and record which products get named, run after run.',
+    visual: (
+      <div className="space-y-1.5">
+        {[
+          { engine: 'ChatGPT', named: true },
+          { engine: 'Perplexity', named: false },
+        ].map((r) => (
+          <div key={r.engine} className="flex items-center gap-2 text-[11.5px]">
+            <span className="text-ink-600 w-20 shrink-0 text-left">{r.engine}</span>
+            {r.named ? (
+              <span className="chip bg-emerald-50 text-emerald-700">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                Named you
+              </span>
+            ) : (
+              <span className="chip bg-stone-100 text-stone-500">
+                <span className="w-1.5 h-1.5 rounded-full bg-stone-400" />
+                Named 5 others
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    title: 'Competitor Share of Voice',
+    body: 'See which competitors get recommended most often, and on which questions you are missing entirely.',
+    visual: (
+      <div className="space-y-1.5">
+        {[
+          { label: 'Competitor A', w: 'w-4/5' },
+          { label: 'Competitor B', w: 'w-3/5' },
+          { label: 'You', w: 'w-1/12' },
+        ].map((r) => (
+          <div key={r.label} className="flex items-center gap-2">
+            <span className="text-[10.5px] text-ink-400 w-24 shrink-0 truncate text-left">{r.label}</span>
+            <span className="h-1.5 flex-1 rounded-full bg-cream overflow-hidden">
+              <span className={`block h-full ${r.w} rounded-full bg-gradient-to-r from-orange-400 to-orange-600`} />
+            </span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
+    title: 'Gaps Linked to Threads',
+    body: 'Every question you lose comes with the Reddit conversations shaping that answer, so you know where to show up.',
+    visual: (
+      <div className="flex items-center gap-2 rounded-lg bg-cream px-3 py-2 text-[11.5px] text-ink-700">
+        <span className="chip bg-white text-ink-600">Not named</span>
+        <ArrowRight className="h-3.5 w-3.5 text-ink-300 shrink-0" />
+        <span className="chip bg-orange-50 text-orange-700">r/SaaS</span>
+        <span className="text-ink-400 text-[10.5px] hidden sm:inline">3 threads</span>
       </div>
     ),
   },
@@ -334,16 +421,16 @@ export default function LandingPage() {
       <section className="relative bg-white overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-10 text-center">
           <h1 className="text-[40px] sm:text-[60px] font-bold tracking-[-0.03em] text-ink-900 leading-[1.08] mb-6">
-            People on Reddit are{' '}
+            Get recommended where your{' '}
             <em className="font-display font-medium italic tracking-[-0.01em] text-orange-600 whitespace-nowrap">
-              already asking
-            </em>{' '}
-            for your product
+              customers search
+            </em>
           </h1>
 
           <p className="text-lg text-ink-600 mb-9 max-w-xl mx-auto leading-relaxed">
-            Paste your website. SneakyGuy finds those conversations, scores the buying
-            intent, and drafts replies that don&apos;t sound like ads.
+            Your buyers ask Reddit, then they ask ChatGPT. Paste your website. SneakyGuy
+            finds the threads worth joining, drafts the reply in your voice, and tracks
+            whether AI assistants start naming you.
           </p>
 
           <form
@@ -390,6 +477,10 @@ export default function LandingPage() {
             <span className="flex items-center">
               <Check className="h-4 w-4 text-emerald-500 mr-1.5 shrink-0" aria-hidden="true" />
               AI-scored buying intent
+            </span>
+            <span className="flex items-center">
+              <Check className="h-4 w-4 text-emerald-500 mr-1.5 shrink-0" aria-hidden="true" />
+              AI visibility tracking
             </span>
             <span className="flex items-center">
               <Check className="h-4 w-4 text-emerald-500 mr-1.5 shrink-0" aria-hidden="true" />
@@ -527,14 +618,116 @@ export default function LandingPage() {
       {/* ───── SOCIAL PROOF ───── */}
       <SocialProof />
 
+      {/* ───── AI VISIBILITY ───── */}
+      {/* The hook, not a feature list: two real answer cards with our own
+          name missing. Nobody argues with a screenshot of being left out. */}
+      <section className="py-24 bg-paper">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">AI visibility</p>
+            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-ink-900 leading-tight">
+              Ask an AI what solves your problem.{' '}
+              <em className="font-display font-medium italic text-orange-600">Then count the names.</em>
+            </h2>
+            <p className="mt-4 text-base text-ink-600 max-w-2xl mx-auto leading-relaxed">
+              Buyers ask for a shortlist before they ever reach your site, and the answer comes
+              back as product names. We asked the question our own customers ask, on the day we
+              built this check. Here is exactly what came back.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            {AI_ANSWERS.map((answer, i) => (
+              <motion.div
+                key={answer.engine}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
+                className="rounded-2xl bg-white shadow-card overflow-hidden text-left"
+              >
+                <div className={`flex items-center gap-2 px-4 py-2.5 border-b border-[#f0e9dd] ${answer.headerClass}`}>
+                  <span className={`h-2 w-2 rounded-full ${answer.dotClass}`} aria-hidden="true" />
+                  <span className="text-[12.5px] font-semibold text-ink-900">{answer.engine}</span>
+                  <span className="ml-auto chip bg-white text-ink-400">web search on</span>
+                </div>
+
+                <div className="p-4 sm:p-5">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.07em] text-ink-400 mb-1.5">Asked</p>
+                  <p className="text-[13.5px] font-semibold text-ink-900 mb-4">{AI_PROMPT}</p>
+
+                  <p className="text-[10px] font-bold uppercase tracking-[0.07em] text-ink-400 mb-2">Named</p>
+                  <ol className="space-y-1.5 mb-4">
+                    {answer.named.map((brand, n) => (
+                      <li key={brand} className="flex items-center gap-2.5 text-[13px] text-ink-700">
+                        <span
+                          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-cream text-[10.5px] font-bold text-ink-400 tabular-nums"
+                          aria-hidden="true"
+                        >
+                          {n + 1}
+                        </span>
+                        {brand}
+                      </li>
+                    ))}
+                  </ol>
+
+                  <div className="flex items-center gap-2 rounded-lg border border-dashed border-[#d8cfc0] bg-[#fbf8f3] px-3 py-2.5">
+                    <X className="h-3.5 w-3.5 text-ink-300 shrink-0" aria-hidden="true" />
+                    <span className="text-[12.5px] text-ink-400">
+                      SneakyGuy: <span className="font-semibold text-ink-600">not mentioned</span>
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            className="mt-5 rounded-2xl bg-white shadow-card p-6 sm:p-8 text-left"
+          >
+            <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-ink-900 mb-3">
+              Ten product names. Ours was{' '}
+              <em className="font-display font-medium italic text-orange-600">not one of them.</em>
+            </h3>
+            <p className="text-[15px] text-ink-600 leading-relaxed mb-3">
+              If the answer does not say your name, it is saying a competitor&apos;s. Your category has
+              a list like this too, and someone is already on it. SneakyGuy runs your buying questions
+              past the assistants and records who gets named, so you can watch that list change.
+            </p>
+            <p className="text-[15px] text-ink-600 leading-relaxed">
+              Those answers are not random. They lean on Reddit, on comparison threads and on the
+              &quot;what do you actually use&quot; posts written by people who tried everything. That is the
+              same surface SneakyGuy already watches. Join the conversations, then watch the
+              assistants catch up.
+            </p>
+
+            <div className="mt-6 pt-5 border-t border-[#f0e9dd] flex flex-wrap items-center gap-x-4 gap-y-2">
+              <span className="text-[11px] font-bold uppercase tracking-[0.07em] text-ink-400">We check</span>
+              <div className="flex flex-wrap gap-1.5">
+                {AI_ENGINES.map((engine) => (
+                  <span key={engine} className="chip bg-cream text-ink-700">{engine}</span>
+                ))}
+              </div>
+              <p className="text-[12px] text-ink-400 sm:ml-auto">
+                We query the models with web search on, the way a buyer would ask.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ───── HOW IT WORKS ───── */}
       <section id="how-it-works" className="py-24 bg-white scroll-mt-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">How it works</p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-ink-900">
-              From your URL to your first reply,{' '}
-              <em className="font-display font-medium italic text-orange-600">in minutes</em>
+              Find the conversation, join it,{' '}
+              <em className="font-display font-medium italic text-orange-600">then get named</em>
             </h2>
           </div>
 
@@ -568,8 +761,8 @@ export default function LandingPage() {
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-orange-600 mb-3">The toolkit</p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-ink-900">
-              Leads from Reddit,{' '}
-              <em className="font-display font-medium italic text-orange-600">without living on Reddit</em>
+              Show up in the thread,{' '}
+              <em className="font-display font-medium italic text-orange-600">and in the answer</em>
             </h2>
           </div>
 
@@ -631,11 +824,12 @@ export default function LandingPage() {
             aria-hidden="true"
           />
           <h2 className="relative text-3xl sm:text-[40px] font-bold tracking-[-0.025em] text-white leading-tight mb-3">
-            Your next customer posted{' '}
-            <em className="font-display font-medium italic text-orange-400">today</em>
+            Someone is asking about your category{' '}
+            <em className="font-display font-medium italic text-orange-400">right now</em>
           </h2>
           <p className="relative text-[15px] text-white/60 mb-8 max-w-md mx-auto leading-relaxed">
-            Paste your website and see the conversations you&apos;ve been missing.
+            Paste your website. See the threads you have been missing, and who the
+            assistants are naming instead of you.
           </p>
           <form
             onSubmit={(e) => {

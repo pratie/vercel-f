@@ -206,6 +206,104 @@ interface AlertSettings {
     is_active?: boolean;
 }
 
+/* ── AI Visibility ───────────────────────────────────────────────────────── */
+
+export interface VisibilityPrompt {
+    id: number;
+    text: string;
+    is_active: boolean;
+}
+
+export interface VisibilityCompetitor {
+    id: number;
+    name: string;
+}
+
+export interface VisibilitySetupResponse {
+    prompts: VisibilityPrompt[];
+    competitors: VisibilityCompetitor[];
+    /** AI-generated starter questions. Only populated while the brand has no prompts. */
+    suggested_prompts: string[];
+}
+
+export interface VisibilityRunResponse {
+    status: 'started' | 'already_running' | 'cooldown' | 'no_prompts';
+    run_id: number | null;
+    message: string;
+}
+
+export interface VisibilityStatusResponse {
+    status: 'idle' | 'running' | 'completed' | 'failed';
+    progress: number;
+    message: string;
+    run_id: number | null;
+}
+
+export interface VisibilityBrandScore {
+    name: string;
+    visibility_pct: number;
+    mention_count: number;
+    total_checks: number;
+}
+
+export interface VisibilityCompetitorScore {
+    name: string;
+    visibility_pct: number;
+    mention_count: number;
+}
+
+export interface VisibilityEngineScore {
+    engine: string;
+    visibility_pct: number;
+    mentioned: number;
+    total: number;
+}
+
+export interface VisibilityEngineResult {
+    engine: string;
+    brand_mentioned: boolean;
+    brand_rank: number | null;
+    competitors: string[];
+    answer_excerpt: string;
+}
+
+export interface VisibilityPromptResult {
+    id: number;
+    text: string;
+    results: VisibilityEngineResult[];
+}
+
+export interface VisibilityLatestResponse {
+    run_id: number | null;
+    completed_at: string | null;
+    brand: VisibilityBrandScore;
+    competitors: VisibilityCompetitorScore[];
+    by_engine: VisibilityEngineScore[];
+    prompts: VisibilityPromptResult[];
+}
+
+export interface VisibilityTrendPoint {
+    date: string;
+    visibility_pct: number;
+    competitors: Record<string, number>;
+}
+
+export interface VisibilityOpportunityThread {
+    id: number;
+    title: string;
+    url: string;
+    subreddit: string;
+    score: number;
+    num_comments: number;
+}
+
+export interface VisibilityOpportunity {
+    prompt_id: number;
+    prompt_text: string;
+    gap_engines: string[];
+    reddit_mentions: VisibilityOpportunityThread[];
+}
+
 export const api = {
     // Project Management
     async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
@@ -801,6 +899,105 @@ export const api = {
         });
         if (!response.ok) {
             throw await handleApiError(response, 'Failed to start re-scoring');
+        }
+        return response.json();
+    },
+
+    // AI Visibility — tracks whether ChatGPT/Gemini/Perplexity/Claude recommend
+    // the brand for the buying questions its customers actually ask.
+
+    /** Tracked prompts + competitors. `suggested_prompts` is only filled for a brand with none yet. */
+    async getVisibilitySetup(brandId: string | number): Promise<VisibilitySetupResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/setup`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to load visibility setup');
+        }
+        return response.json();
+    },
+
+    async addVisibilityPrompt(brandId: string | number, text: string): Promise<VisibilityPrompt> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/prompts`, {
+            method: 'POST',
+            body: JSON.stringify({ text }),
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to add question');
+        }
+        return response.json();
+    },
+
+    async deleteVisibilityPrompt(promptId: number): Promise<{ status: string }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/prompts/${promptId}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to remove question');
+        }
+        return response.json();
+    },
+
+    async addVisibilityCompetitor(brandId: string | number, name: string): Promise<VisibilityCompetitor> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/competitors`, {
+            method: 'POST',
+            body: JSON.stringify({ name }),
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to add competitor');
+        }
+        return response.json();
+    },
+
+    async deleteVisibilityCompetitor(competitorId: number): Promise<{ status: string }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/competitors/${competitorId}`, {
+            method: 'DELETE',
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to remove competitor');
+        }
+        return response.json();
+    },
+
+    /** Kicks off a background run. Limited to once every 6 hours per brand. */
+    async runVisibilityCheck(brandId: string | number): Promise<VisibilityRunResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/run`, {
+            method: 'POST',
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to start visibility check');
+        }
+        return response.json();
+    },
+
+    async getVisibilityStatus(brandId: string | number): Promise<VisibilityStatusResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/status`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch visibility status');
+        }
+        return response.json();
+    },
+
+    /** Most recent completed run. `run_id` is null when the brand has never run one. */
+    async getVisibilityLatest(brandId: string | number): Promise<VisibilityLatestResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/latest`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch visibility results');
+        }
+        return response.json();
+    },
+
+    async getVisibilityTrend(brandId: string | number, days: number = 30): Promise<VisibilityTrendPoint[]> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/trend?days=${days}`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch visibility trend');
+        }
+        return response.json();
+    },
+
+    /** Prompts the brand is missing on, paired with Reddit threads that already rank for them. */
+    async getVisibilityOpportunities(brandId: string | number): Promise<VisibilityOpportunity[]> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/opportunities`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch visibility opportunities');
         }
         return response.json();
     },

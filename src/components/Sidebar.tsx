@@ -11,6 +11,7 @@ import {
   X,
   ChevronsLeft,
   ChevronsRight,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
@@ -161,27 +162,49 @@ export function Sidebar() {
             <p className="px-3 pb-1.5 text-[10.5px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Your projects</p>
             <div className="space-y-1">
               {projects.slice(0, 8).map((p) => {
-                const active = pathname.startsWith(`/mentions/${p.id}`);
+                // Project ids are plain integers, so a bare startsWith would light up
+                // project 3 while sitting on project 31. Match the id, then the segment
+                // boundary, so sub-routes like /mentions/3/analytics still count.
+                const active = pathname === `/mentions/${p.id}` || pathname.startsWith(`/mentions/${p.id}/`);
+                const visibilityActive = pathname === `/visibility/${p.id}` || pathname.startsWith(`/visibility/${p.id}/`);
                 return (
-                  <Link
-                    key={p.id}
-                    href={`/mentions/${p.id}`}
-                    className={cn(
-                      'relative flex items-center gap-2 px-3 py-1.5 rounded-xl text-[12px] font-medium truncate',
-                      'transition-[color,background-color,box-shadow] duration-200 ease-out',
-                      'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
-                      active
-                        ? 'bg-white text-orange-600 shadow-card'
-                        : 'text-ink-600 hover:text-ink-900 hover:bg-white/60'
-                    )}
-                    aria-current={active ? 'page' : undefined}
-                  >
-                    <span
-                      className={cn('h-2 w-2 rounded-full shrink-0', projectDot(p.name), !active && 'opacity-70')}
-                      aria-hidden="true"
-                    />
-                    <span className="truncate">{p.name}</span>
-                  </Link>
+                  // Leads and AI Visibility are peer destinations for the same project.
+                  <div key={p.id} className="flex items-center gap-1">
+                    <Link
+                      href={`/mentions/${p.id}`}
+                      className={cn(
+                        'relative flex flex-1 min-w-0 items-center gap-2 px-3 py-1.5 rounded-xl text-[12px] font-medium truncate',
+                        'transition-[color,background-color,box-shadow] duration-200 ease-out',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
+                        active
+                          ? 'bg-white text-orange-600 shadow-card'
+                          : 'text-ink-600 hover:text-ink-900 hover:bg-white/60'
+                      )}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <span
+                        className={cn('h-2 w-2 rounded-full shrink-0', projectDot(p.name), !active && 'opacity-70')}
+                        aria-hidden="true"
+                      />
+                      <span className="truncate">{p.name}</span>
+                    </Link>
+                    <Link
+                      href={`/visibility/${p.id}`}
+                      title={`AI Visibility for ${p.name}`}
+                      aria-label={`AI Visibility for ${p.name}`}
+                      className={cn(
+                        'relative shrink-0 p-1.5 rounded-xl',
+                        'transition-[color,background-color,box-shadow] duration-200 ease-out',
+                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
+                        visibilityActive
+                          ? 'bg-white text-orange-600 shadow-card'
+                          : 'text-ink-300 hover:text-ink-900 hover:bg-white/60'
+                      )}
+                      aria-current={visibilityActive ? 'page' : undefined}
+                    >
+                      <Sparkles className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 );
               })}
             </div>

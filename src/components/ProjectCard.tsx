@@ -1,7 +1,8 @@
 // src/components/ProjectCard.tsx
 import { useState } from 'react';
-import { Trash2, Loader2, Edit, ArrowRight } from "lucide-react";
+import { Trash2, Loader2, Edit, ArrowRight, Sparkles } from "lucide-react";
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { api, Project } from '@/lib/api';
 import { toast } from 'sonner';
 import { EditProjectDialog } from './EditProjectDialog';
@@ -143,20 +144,33 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
 
         {/* Footer */}
         <div className="px-5 py-3 border-t border-[#f0e9dd] flex items-center justify-between bg-[#fdfbf8]">
-          <span className="inline-flex items-center gap-1.5 group-hover:gap-2.5 text-[13px] font-semibold text-orange-600 transition-all duration-200">
-            {loading ? (
-              <>
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                Opening…
-              </>
-            ) : (
-              <>
-                View leads
-                <ArrowRight className="h-3.5 w-3.5" />
-              </>
-            )}
-          </span>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-4 min-w-0">
+            <span className="inline-flex items-center gap-1.5 group-hover:gap-2.5 text-[13px] font-semibold text-orange-600 transition-all duration-200">
+              {loading ? (
+                <>
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  Opening…
+                </>
+              ) : (
+                <>
+                  View leads
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </>
+              )}
+            </span>
+            {/* Secondary destination. Stops propagation so it never fires the card's leads action. */}
+            <Link
+              href={`/visibility/${project.id}`}
+              onClick={(e) => e.stopPropagation()}
+              onKeyDown={(e) => e.stopPropagation()}
+              className="inline-flex items-center gap-1.5 rounded-lg text-[13px] font-medium text-ink-400 hover:text-ink-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+              aria-label={`Open AI visibility for ${project.name}`}
+            >
+              <Sparkles className="h-3.5 w-3.5" />
+              AI Visibility
+            </Link>
+          </div>
+          <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={(e) => { e.stopPropagation(); setIsEditOpen(true); }}
               className="p-1.5 rounded-lg text-ink-300 hover:text-ink-600 hover:bg-cream transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
