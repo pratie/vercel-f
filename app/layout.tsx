@@ -25,15 +25,15 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: 'SneakyGuy: Find Reddit Leads While You Sleep',
-  description: 'Every Reddit lead in one place. SneakyGuy watches the subreddits your buyers post in, scores each conversation for buying intent, and drafts the reply, so you get hours back every week.',
+  title: 'SneakyGuy: Get Recommended Where Your Customers Search',
+  description: 'Your buyers ask Reddit, then they ask ChatGPT. SneakyGuy finds the Reddit conversations worth joining, drafts the reply in your voice, and tracks whether ChatGPT, Gemini, Perplexity and Claude start naming you.',
   icons: {
     icon: '/favicon.ico',
   },
   metadataBase: new URL('https://www.sneakyguy.com'),
   openGraph: {
-    title: 'SneakyGuy: Find Reddit Leads While You Sleep',
-    description: 'Every Reddit lead in one place. We watch the subreddits your buyers post in, score each conversation for intent, and draft the reply. Hours back every week.',
+    title: 'SneakyGuy: Get Recommended Where Your Customers Search',
+    description: 'Your buyers ask Reddit, then they ask ChatGPT. Find the conversations worth joining, and track whether AI assistants start recommending you.',
     url: 'https://www.sneakyguy.com',
     siteName: 'SneakyGuy',
     images: [
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: 'https://www.sneakyguy.com/images/og-image-v2.png',
         width: 1200,
         height: 630,
-        alt: 'SneakyGuy: find Reddit leads while you sleep',
+        alt: 'SneakyGuy: get recommended where your customers search',
       },
     ],
     locale: 'en_US',
@@ -51,8 +51,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SneakyGuy: Find Reddit Leads While You Sleep',
-    description: 'Every Reddit lead in one place. We find the conversations worth replying to, and draft the reply for you.',
+    title: 'SneakyGuy: Get Recommended Where Your Customers Search',
+    description: 'Find the Reddit conversations worth joining, then track whether ChatGPT, Gemini, Perplexity and Claude start naming you.',
     images: ['https://www.sneakyguy.com/images/og-image-v2.png'],
     creator: '@snow_stark17',
   },
