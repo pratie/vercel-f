@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Check, ArrowRight, Shield, Sparkles } from 'lucide-react';
+import { Check, ArrowRight, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { api, PricingPlan } from '@/lib/api';
 import { toast } from 'sonner';
@@ -87,7 +87,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
   if (loading) {
     return (
       <div className="flex items-center justify-center py-12">
-        <div className="animate-spin rounded-full h-6 w-6 border-2 border-orange-500 border-t-transparent" />
+        <div className="animate-spin rounded-full h-6 w-6 border-2 border-[#ff4500] border-t-transparent" />
       </div>
     );
   }
@@ -104,36 +104,34 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-full max-w-md"
           >
-            <div className="relative bg-white rounded-2xl shadow-[0px_0px_0px_1px_rgba(0,0,0,0.06),0px_4px_16px_-4px_rgba(0,0,0,0.1),0px_8px_24px_-8px_rgba(0,0,0,0.06)] overflow-hidden">
-              {/* Top accent */}
-              <div className="h-1 bg-gradient-to-r from-orange-500 to-amber-500" />
-
+            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1c1917] shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_18px_40px_-24px_rgba(0,0,0,0.9)]">
               <div className={compact ? 'p-6' : 'p-8'}>
-                {/* Badge */}
+                {/* Badge. Understated on purpose: the price and the button carry
+                    this card, a shouting badge would only compete with them. */}
                 <div className="flex items-center justify-between mb-6">
-                  <span className="text-xs font-semibold text-orange-600 bg-orange-50 px-2.5 py-1 rounded-md border border-orange-100">
+                  <span className="rounded-md border border-white/[0.08] bg-[#292524] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
                     Most Popular
                   </span>
-                  <div className="flex items-center gap-1 text-[10px] text-gray-400 font-medium">
-                    <Shield className="h-3 w-3 text-green-500" />
+                  <div className="flex items-center gap-1.5 text-[10px] font-medium text-[#78716c]">
+                    <Shield className="h-3 w-3 text-[#34d399]" />
                     Secure checkout
                   </div>
                 </div>
 
-                {/* Price */}
+                {/* Price. The hero of the card. */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-5xl font-extrabold text-gray-900 tracking-tight tabular-nums">{plan.price}</span>
-                    <span className="text-sm text-gray-400 font-medium">/ {plan.billing}</span>
+                    <span className="text-5xl font-extrabold tracking-tight tabular-nums text-[#fafaf9]">{plan.price}</span>
+                    <span className="text-sm font-medium text-[#a8a29e]">/ {plan.billing}</span>
                   </div>
-                  <p className="text-xs text-gray-500 mt-1.5">Full {plan.duration} access. No auto-renewal.</p>
+                  <p className="mt-1.5 text-xs text-[#a8a29e]">Full {plan.duration} access. No auto-renewal.</p>
                 </div>
 
-                {/* CTA */}
+                {/* CTA. The single loudest element on whatever page hosts this. */}
                 <Button
                   onClick={() => handlePlanSelect(plan.id)}
                   disabled={checkoutLoading === plan.id}
-                  className="w-full bg-gray-900 hover:bg-gray-800 text-white h-12 rounded-xl text-sm font-semibold transition-[background-color,box-shadow,scale] duration-300 shadow-sm hover:shadow-md group"
+                  className="group h-12 w-full rounded-xl bg-[#ff4500] text-sm font-semibold text-white shadow-none transition-opacity duration-200 hover:bg-[#ff4500] hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1917]"
                 >
                   {checkoutLoading === plan.id ? (
                     <div className="flex items-center gap-2">
@@ -150,15 +148,15 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
 
                 {/* Features */}
                 {!compact && (
-                  <div className="mt-7 pt-7 border-t border-gray-100">
-                    <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">What you get</p>
+                  <div className="mt-7 border-t border-white/[0.08] pt-7">
+                    <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">What you get</p>
                     <ul className="space-y-3">
                       {features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2.5">
-                          <div className="w-4 h-4 rounded-full bg-green-50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                            <Check className="w-2.5 h-2.5 text-green-600" strokeWidth={3} />
-                          </div>
-                          <span className="text-sm text-gray-600">{feature}</span>
+                          <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-[#34d399]/20 bg-[#34d399]/[0.09]">
+                            <Check className="w-2.5 h-2.5 text-[#34d399]" strokeWidth={3} />
+                          </span>
+                          <span className="text-sm leading-relaxed text-[#d6d3d1]">{feature}</span>
                         </li>
                       ))}
                     </ul>
