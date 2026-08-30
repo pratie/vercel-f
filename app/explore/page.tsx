@@ -12,6 +12,7 @@
  */
 
 import { Suspense, useEffect, useRef, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ExploreShell, type ExploreFatal } from '@/components/explore/ExploreShell';
 import { PhaseCompany } from '@/components/explore/PhaseCompany';
@@ -32,6 +33,11 @@ import {
 // A handful of dropped polls is normal on a flaky connection. Give up only once
 // it is clearly not coming back, rather than flashing an error on one blip.
 const MAX_CONSECUTIVE_POLL_FAILURES = 8;
+
+// How long each revealed step holds the canvas before the next one takes it.
+// Long enough to read the card, short enough that five steps stay under a
+// couple of minutes even when the backend finishes early.
+const STEP_DWELL_MS = 3200;
 
 function ExploreFunnel() {
   const router = useRouter();
@@ -174,12 +180,26 @@ function ExploreFunnel() {
     };
   }, [sessionId, fatal]);
 
-  // Once a phase has produced its data the card stays on screen, so the canvas
-  // accumulates rather than swapping. Passing `loading={false}` past a phase is
-  // what stops a genuinely empty result (no threads found, every engine timed
-  // out) from shimmering forever.
-  const phaseIndex = session?.phase_index ?? 0;
-  const done = (index: number) => phaseIndex > index || session?.phase === 'ready';
+  // ---- Paced reveal ------------------------------------------------------
+  //
+  // The backend finishes a run in about a minute and the phase index jumps
+  // ahead in bursts: communities lands almost instantly after research, so
+  // rendering the raw index put the rail on "Ready" while the visitor was
+  // still reading step one. Steps two, three and four never had a moment.
+  //
+  // So the reveal walks forward one step at a time and holds each one, exactly
+  // the way explee does it. The work is already done, the pacing is the show.
+  const rawIndex = session?.phase_index ?? 0;
+  const [displayIndex, setDisplayIndex] = useState(0);
+  // Set once the visitor clicks a step. From then on the rail is theirs and we
+  // stop dragging them forward mid-read.
+  const [manual, setManual] = useState(false);
+
+  useEffect(() => {
+    if (manual || displayIndex >= rawIndex) return;
+    const t = setTimeout(() => setDisplayIndex((i) => Math.min(i + 1, rawIndex)), STEP_DWELL_MS);
+    return () => clearTimeout(t);
+  }, [displayIndex, rawIndex, manual]);
 
   const handleCta = () => {
     try {
@@ -193,12 +213,48 @@ function ExploreFunnel() {
     router.push('/login');
   };
 
+  // Exactly one card owns the canvas. Stacking all five turned the funnel into
+  // a scroll the visitor never scrolled.
+  const card = () => {
+    if (!session) return null;
+    // A failed run is over. Rendering the next phase's skeleton under the error
+    // shimmers as though work is still happening, which is exactly what the
+    // error just said is not true.
+    if (session.phase === 'failed') return null;
+    switch (displayIndex) {
+      case 0:
+        return <PhaseCompany url={session.url || urlParam} company={session.company} />;
+      case 1:
+        return (
+          <PhaseCommunities
+            keywords={session.keywords ?? []}
+            subreddits={session.subreddits ?? []}
+            loading={rawIndex > 1 ? false : undefined}
+          />
+        );
+      case 2:
+        return (
+          <PhaseVisibility
+            visibility={session.visibility}
+            brandName={session.company?.name}
+            loading={rawIndex > 2 ? false : undefined}
+          />
+        );
+      case 3:
+        return (
+          <PhaseThreads threads={session.threads ?? []} loading={rawIndex > 3 ? false : undefined} />
+        );
+      default:
+        return <ReadyPanel session={session} onCta={handleCta} />;
+    }
+  };
+
   return (
-    <ExploreShell session={session} url={urlParam} fatal={fatal}>
+    <ExploreShell session={session} url={urlParam} fatal={fatal} displayIndex={displayIndex}>
       {session ? (
         <div className="space-y-6">
           <OfferBar
-            phaseIndex={phaseIndex}
+            phaseIndex={displayIndex}
             phase={session.phase}
             onCta={handleCta}
             brandName={session.company?.name}
@@ -206,35 +262,71 @@ function ExploreFunnel() {
             subredditCount={session.subreddits?.length ?? 0}
           />
 
-          <PhaseCompany url={session.url || urlParam} company={session.company} />
-
-          {phaseIndex >= 1 && (
-            <PhaseCommunities
-              keywords={session.keywords ?? []}
-              subreddits={session.subreddits ?? []}
-              loading={done(1) ? false : undefined}
-            />
+          {/* Steps already revealed are clickable, so nothing is lost to pacing. */}
+          {session.phase !== 'failed' && (
+          <StepDots
+            count={5}
+            active={displayIndex}
+            reached={rawIndex}
+            onPick={(i) => {
+              setManual(true);
+              setDisplayIndex(i);
+            }}
+          />
           )}
 
-          {phaseIndex >= 2 && (
-            <PhaseVisibility
-              visibility={session.visibility}
-              brandName={session.company?.name}
-              loading={done(2) ? false : undefined}
-            />
-          )}
-
-          {phaseIndex >= 3 && (
-            <PhaseThreads
-              threads={session.threads ?? []}
-              loading={done(3) ? false : undefined}
-            />
-          )}
-
-          {session.phase === 'ready' && <ReadyPanel session={session} onCta={handleCta} />}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={displayIndex}
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.32, ease: [0.16, 1, 0.3, 1] }}
+            >
+              {card()}
+            </motion.div>
+          </AnimatePresence>
         </div>
       ) : null}
     </ExploreShell>
+  );
+}
+
+/** Small dot row under the offer bar: jump back to any step already revealed. */
+function StepDots({
+  count,
+  active,
+  reached,
+  onPick,
+}: {
+  count: number;
+  active: number;
+  reached: number;
+  onPick: (index: number) => void;
+}) {
+  return (
+    <div className="flex items-center justify-center gap-2">
+      {Array.from({ length: count }, (_, i) => {
+        const available = i <= reached;
+        return (
+          <button
+            key={i}
+            type="button"
+            disabled={!available}
+            onClick={() => onPick(i)}
+            aria-label={`Step ${i + 1}`}
+            aria-current={i === active ? 'step' : undefined}
+            className={
+              i === active
+                ? 'h-1.5 w-6 rounded-full bg-[#ff4500] transition-all'
+                : available
+                  ? 'h-1.5 w-1.5 rounded-full bg-white/25 transition-all hover:bg-white/50'
+                  : 'h-1.5 w-1.5 rounded-full bg-white/10'
+            }
+          />
+        );
+      })}
+    </div>
   );
 }
 

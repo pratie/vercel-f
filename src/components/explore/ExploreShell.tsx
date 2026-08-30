@@ -49,13 +49,21 @@ export interface ExploreShellProps {
   findings?: ReactNode;
   /** Main canvas slot, under the step rail. */
   children?: ReactNode;
+  /**
+   * Step the UI is REVEALING, which lags the backend on purpose. The run can
+   * finish in a minute and jump the rail straight to "Ready", so the visitor
+   * never sees steps two through four happen. The page paces the reveal and
+   * passes it here. Falls back to the raw phase index when unset.
+   */
+  displayIndex?: number;
 }
 
-export function ExploreShell({ session, url, fatal, findings, children }: ExploreShellProps) {
+export function ExploreShell({ session, url, fatal, findings, children, displayIndex }: ExploreShellProps) {
   if (fatal) return <ExploreFatalScreen fatal={fatal} />;
 
   const phase = session?.phase ?? 'research_company';
-  const phaseIndex = session?.phase_index ?? 0;
+  const rawIndex = session?.phase_index ?? 0;
+  const phaseIndex = displayIndex ?? rawIndex;
   const log = session?.log ?? [];
   const domain = domainFromUrl(session?.url ?? url ?? '');
   const ready = phase === 'ready';
@@ -95,7 +103,7 @@ export function ExploreShell({ session, url, fatal, findings, children }: Explor
             )}
           </div>
 
-          <StepRail activeIndex={phaseIndex} complete={ready} failed={failed} />
+          <StepRail activeIndex={phaseIndex} complete={ready && phaseIndex >= 4} failed={failed} />
         </div>
 
         <div className="px-5 py-7 sm:px-8 sm:py-9">
