@@ -97,6 +97,9 @@ function QuestionMarqueeRow({ items, reverse }: { items: { sub: string; q: strin
   );
 }
 
+// chatgptNames / perplexityNames are REAL recorded answers, queried through
+// the same engine the product uses. Top three per engine: the tails carried
+// extraction noise. Re-record them if the category shifts.
 // The preview personalizes by what the visitor sells. Belief is specific:
 // a Shopify founder doesn't trust a SaaS example, so let them pick their
 // world and watch the dashboard fill with it.
@@ -104,8 +107,8 @@ const SEGMENTS = [
   {
     key: 'saas',
     askedQ: 'What are the best reddit monitoring tools?',
-    chatgptNames: ['Syften', 'F5Bot', 'GummySearch'],
-    perplexityNames: ['Octolens', 'Brand24', 'Syften'],
+    chatgptNames: ['Linkeddit', 'RedShip', 'MentionDrop'],
+    perplexityNames: ['Syften', 'F5Bot', 'Brand24'],
     label: 'SaaS',
     hotSub: 'r/SaaS',
     hotQ: 'Any tool that finds customers talking about your niche on Reddit?',
@@ -118,8 +121,8 @@ const SEGMENTS = [
   {
     key: 'ecom',
     askedQ: 'What are the best shopify marketing tools?',
-    chatgptNames: ['Klaviyo', 'Triple Whale', 'Postscript'],
-    perplexityNames: ['Klaviyo', 'Yotpo', 'Gorgias'],
+    chatgptNames: ['Triple Whale', 'Klaviyo', 'Omnisend'],
+    perplexityNames: ['Klaviyo', 'Omnisend', 'Shopify Flow'],
     label: 'E-commerce',
     hotSub: 'r/shopify',
     hotQ: 'How do you get sales without burning money on Meta ads?',
@@ -132,8 +135,8 @@ const SEGMENTS = [
   {
     key: 'agency',
     askedQ: 'What are the best agency lead gen tools?',
-    chatgptNames: ['Apollo', 'Clay', 'Instantly'],
-    perplexityNames: ['Clay', 'Lemlist', 'Apollo'],
+    chatgptNames: ['Honeytrail', 'AgencyRadar', 'Leadspicker'],
+    perplexityNames: ['Apollo', 'ZoomInfo', 'Hunter.io'],
     label: 'Agencies',
     hotSub: 'r/smallbusiness',
     hotQ: 'How do I find clients who actually value marketing help?',
@@ -146,8 +149,8 @@ const SEGMENTS = [
   {
     key: 'creator',
     askedQ: 'What are the best course marketing tools?',
-    chatgptNames: ['Kajabi', 'ConvertKit', 'Teachable'],
-    perplexityNames: ['ConvertKit', 'Circle', 'Kajabi'],
+    chatgptNames: ['LearnWorlds', 'Kartra', 'FreshLearn'],
+    perplexityNames: ['Kajabi', 'Thinkific', 'Teachable'],
     label: 'Courses & creators',
     hotSub: 'r/growmybusiness',
     hotQ: 'Is there a way to find people asking about topics I teach?',
