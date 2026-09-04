@@ -36,7 +36,7 @@ const fadeUp = {
 };
 
 const SocialProof: React.FC = () => (
-  <section className="py-16 md:py-28 bg-[#faf8f5]">
+  <section className="py-16 md:py-28 bg-[#ffffff]">
     <div className="max-w-5xl mx-auto px-6">
       <div className="text-center mb-10 md:mb-14">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
@@ -54,7 +54,7 @@ const SocialProof: React.FC = () => (
             viewport={{ once: true, margin: "-40px" }}
             variants={fadeUp}
             transition={{ delay: i * 0.08 }}
-            className="group rounded-2xl bg-[#ffffff] border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] hover:border-black/[0.16] transition-colors duration-300 p-6 flex flex-col justify-between"
+            className="group rounded-2xl bg-[#ffffff] border border-black/[0.09] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] hover:border-black/[0.16] transition-colors duration-300 p-6 flex flex-col justify-between"
           >
             <div>
               <div className="flex gap-0.5 mb-4">
@@ -80,7 +80,7 @@ const SocialProof: React.FC = () => (
               <Link
                 href={t.link}
                 target="_blank"
-                className="w-7 h-7 rounded-md bg-[#f3efe9] border border-black/[0.08] flex items-center justify-center text-[#78716c] hover:text-[#1DA1F2] hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/[0.12] transition-[color,border-color,background-color]"
+                className="w-7 h-7 rounded-md bg-[#f4f1ec] border border-black/[0.08] flex items-center justify-center text-[#78716c] hover:text-[#1DA1F2] hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/[0.12] transition-[color,border-color,background-color]"
               >
                 <Twitter size={12} />
               </Link>
@@ -97,7 +97,7 @@ const SocialProof: React.FC = () => (
         variants={fadeUp}
         className="mt-12 text-center"
       >
-        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#ffffff] border border-black/[0.08]">
+        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#ffffff] border border-black/[0.09]">
           {/* Placeholder avatars, so they stay on the neutral ramp. The old
               stack was bg-orange-500 (which this Tailwind config re-anchors to
               the literal brand #ff4500) plus blue/purple/green, i.e. decorative
@@ -109,7 +109,7 @@ const SocialProof: React.FC = () => (
                 <span className="text-[8px] font-bold text-[#1c1917]">{initials}</span>
               </div>
             ))}
-            <div className="w-6 h-6 rounded-full border-2 border-[#ffffff] bg-[#f3efe9] flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full border-2 border-[#ffffff] bg-[#f4f1ec] flex items-center justify-center">
               <span className="text-[8px] font-bold text-[#78716c]">+</span>
             </div>
           </div>

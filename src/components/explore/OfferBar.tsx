@@ -92,7 +92,7 @@ export function OfferBar({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            'fixed inset-x-0 bottom-0 z-40 border-t border-black/[0.08] bg-[#ffffff]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]',
+            'fixed inset-x-0 bottom-0 z-40 border-t border-black/[0.09] bg-[#ffffff]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]',
             className,
           )}
         >

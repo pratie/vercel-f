@@ -125,7 +125,7 @@ function Column({ label, caption, loading, chipCount, items, empty, renderChip }
                   delay: reduce ? 0 : Math.min(index, MAX_STAGGER_STEPS) * STAGGER,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="rounded-full border border-black/[0.08] bg-[#ffffff] px-3 py-1.5 text-[13px] leading-tight"
+                className="rounded-full border border-black/[0.09] bg-[#ffffff] px-3 py-1.5 text-[13px] leading-tight"
               >
                 {renderChip(item)}
               </motion.li>

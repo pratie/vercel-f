@@ -39,7 +39,7 @@ export function PhaseCompany({ url, company, loading, className }: PhaseCompanyP
   return (
     <section
       className={cn(
-        'mx-auto w-full max-w-xl rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6',
+        'mx-auto w-full max-w-xl rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6',
         className,
       )}
       aria-busy={isLoading}
@@ -99,7 +99,7 @@ function Favicon({ domain }: { domain: string }) {
   const showImage = Boolean(domain) && !failed;
 
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-black/[0.08] bg-[#f3efe9]">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-black/[0.08] bg-[#f4f1ec]">
       {showImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img

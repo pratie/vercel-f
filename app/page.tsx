@@ -38,9 +38,9 @@ const logoHeight = (width: number) => Math.round(width * LOGO_RATIO);
 // literal arbitrary value, deliberately NOT a Tailwind config key, and it is
 // the same set /explore uses:
 //
-//   canvas       #faf8f5   warm paper, never pure white, never cool grey
+//   canvas       #ffffff   warm paper, never pure white, never cool grey
 //   panel        #ffffff   cards
-//   panel-raised #f3efe9   controls, chips and mock UI sitting on a card
+//   panel-raised #f4f1ec   controls, chips and mock UI sitting on a card
 //   border       black/[0.08]
 //   text-hi      #1c1917   headlines, values, names
 //   text         #44403c   body copy a buyer has to read
@@ -88,7 +88,7 @@ function QuestionMarqueeRow({ items, reverse }: { items: { sub: string; q: strin
         {[...items, ...items].map(({ sub, q }, i) => (
           <span
             key={i}
-            className="flex items-center gap-2 shrink-0 bg-[#ffffff] border border-black/[0.08] rounded-full pl-1.5 pr-4 py-1.5"
+            className="flex items-center gap-2 shrink-0 bg-[#ffffff] border border-black/[0.09] rounded-full pl-1.5 pr-4 py-1.5"
           >
             <span className="chip bg-[#ff4500]/[0.12] text-[#d94100]">{sub}</span>
             <span className="text-[12.5px] text-[#44403c] whitespace-nowrap">{q}</span>
@@ -184,13 +184,13 @@ const AI_ANSWERS: {
   {
     engine: 'ChatGPT',
     dotClass: 'bg-[#059669]',
-    headerClass: 'bg-[#f3efe9]',
+    headerClass: 'bg-[#f4f1ec]',
     named: ['Leado', 'Leadline', 'Optareach', 'LeadSnipe', 'Leadmatically'],
   },
   {
     engine: 'Perplexity',
     dotClass: 'bg-[#38bdf8]',
-    headerClass: 'bg-[#f3efe9]',
+    headerClass: 'bg-[#f4f1ec]',
     named: ['Linkeddit', 'CommunityTracker', 'RedReach', 'Buska', 'Syften'],
   },
 ];
@@ -223,9 +223,9 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
     body: 'AI suggests the keywords your buyers actually type, not the ones you wish they did.',
     visual: (
       <div className="flex flex-wrap gap-1.5">
-        <span className="chip bg-[#f3efe9] text-[#44403c]">stripe alternative</span>
-        <span className="chip bg-[#f3efe9] text-[#44403c]">lower fees</span>
-        <span className="chip bg-[#f3efe9] text-[#44403c]">payment setup</span>
+        <span className="chip bg-[#f4f1ec] text-[#44403c]">stripe alternative</span>
+        <span className="chip bg-[#f4f1ec] text-[#44403c]">lower fees</span>
+        <span className="chip bg-[#f4f1ec] text-[#44403c]">payment setup</span>
         <span className="chip bg-transparent text-[#8a827b] border border-dashed border-black/[0.16]">+ add your own</span>
       </div>
     ),
@@ -272,7 +272,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
     title: 'Instant Alerts',
     body: 'Email and Telegram alerts the moment a high-intent conversation appears.',
     visual: (
-      <div className="flex items-center gap-2 rounded-lg bg-[#f3efe9] px-3 py-2 text-[11.5px] text-[#44403c]">
+      <div className="flex items-center gap-2 rounded-lg bg-[#f4f1ec] px-3 py-2 text-[11.5px] text-[#44403c]">
         <span className="relative flex h-1.5 w-1.5 shrink-0">
           <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff4500] opacity-60" />
           <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#ff4500]" />
@@ -321,7 +321,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
         ].map((r) => (
           <div key={r.label} className="flex items-center gap-2">
             <span className="text-[10.5px] text-[#78716c] w-24 shrink-0 truncate text-left">{r.label}</span>
-            <span className="h-1.5 flex-1 rounded-full bg-[#f3efe9] overflow-hidden">
+            <span className="h-1.5 flex-1 rounded-full bg-[#f4f1ec] overflow-hidden">
               <span className={`block h-full ${r.w} rounded-full bg-gradient-to-r from-[#ff7448] to-[#ff4500]`} />
             </span>
           </div>
@@ -333,7 +333,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
     title: 'Gaps Linked to Threads',
     body: 'Every question you lose links to the Reddit threads shaping that answer.',
     visual: (
-      <div className="flex items-center gap-2 rounded-lg bg-[#f3efe9] px-3 py-2 text-[11.5px] text-[#44403c]">
+      <div className="flex items-center gap-2 rounded-lg bg-[#f4f1ec] px-3 py-2 text-[11.5px] text-[#44403c]">
         <span className="chip bg-black/[0.07] text-[#44403c]">Not named</span>
         <ArrowRight className="h-3.5 w-3.5 text-[#8a827b] shrink-0" />
         <span className="chip bg-[#ff4500]/[0.12] text-[#d94100]">r/SaaS</span>
@@ -353,7 +353,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
         ].map((r) => (
           <div key={r.label} className="flex items-center gap-2">
             <span className="text-[10.5px] text-[#78716c] w-24 shrink-0 truncate text-left">{r.label}</span>
-            <span className="h-1.5 flex-1 rounded-full bg-[#f3efe9] overflow-hidden">
+            <span className="h-1.5 flex-1 rounded-full bg-[#f4f1ec] overflow-hidden">
               <span className={`block h-full ${r.w} rounded-full bg-gradient-to-r from-[#ff7448] to-[#ff4500]`} />
             </span>
           </div>
@@ -408,11 +408,11 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#faf8f5]">
+    <main className="min-h-screen bg-[#ffffff]">
       {/* ───── NAVIGATION ───── */}
       {/* Full-width bar: logo anchored left, links centred, CTA anchored right.
           Same translucent-canvas-over-blur treatment as the /explore header. */}
-      <header className="sticky top-0 z-50 bg-[#faf8f5]/[0.88] backdrop-blur-md border-b border-black/[0.06]">
+      <header className="sticky top-0 z-50 bg-[#ffffff]/[0.88] backdrop-blur-md border-b border-black/[0.06]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2" aria-label="SneakyGuy home">
@@ -480,7 +480,7 @@ export default function LandingPage() {
       {/* Single centred column: one message, one action. The URL box IS the
           CTA — pasting a URL is lower-friction than "Get Started", and the
           analysis result (their own keywords) is the aha moment that sells. */}
-      <section className="relative bg-[#faf8f5] overflow-hidden">
+      <section className="relative bg-[#ffffff] overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-24 pb-10 text-center">
           <h1 className="text-[36px] sm:text-[56px] font-bold tracking-[-0.03em] text-[#1c1917] leading-[1.08] mb-5 sm:mb-6">
             Find leads while you sleep.{' '}
@@ -507,7 +507,7 @@ export default function LandingPage() {
                 inside the panel and the focus state is a brand-orange ring on
                 the whole assembly rather than an all-but-invisible shadow. */}
             <div className="flex flex-col sm:flex-row gap-2.5 p-2 bg-[#ffffff] rounded-2xl border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] transition-[border-color,box-shadow] duration-200 focus-within:border-[#ff4500]/70 focus-within:shadow-[0_0_0_3px_rgba(255,69,0,0.22)]">
-              <div className="relative flex-1 rounded-xl bg-[#f3efe9] border border-black/[0.06]">
+              <div className="relative flex-1 rounded-xl bg-[#f4f1ec] border border-black/[0.06]">
                 <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8a827b]" aria-hidden="true" />
                 <input
                   value={heroUrl}
@@ -569,8 +569,8 @@ export default function LandingPage() {
             <QuestionMarqueeRow items={HERO_QUESTIONS.slice(8)} reverse />
           </div>
           {/* edge fades */}
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#faf8f5] to-transparent" />
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#faf8f5] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#ffffff] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#ffffff] to-transparent" />
         </div>
 
         {/* Product preview — a live-styled mock of the actual dashboard, so it
@@ -599,10 +599,10 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-            className="rounded-2xl bg-[#ffffff] border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] overflow-hidden text-left"
+            className="rounded-2xl bg-[#ffffff] border border-black/[0.09] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] overflow-hidden text-left"
           >
             {/* window chrome */}
-            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-black/[0.08] bg-[#f3efe9]">
+            <div className="flex items-center gap-1.5 px-4 py-3 border-b border-black/[0.08] bg-[#f4f1ec]">
               <span className="h-2.5 w-2.5 rounded-full bg-[#f4bf4f]/60" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#e8927c]/60" />
               <span className="h-2.5 w-2.5 rounded-full bg-[#9ec97f]/60" />
@@ -637,7 +637,7 @@ export default function LandingPage() {
                   { engine: 'ChatGPT', names: segment.chatgptNames },
                   { engine: 'Perplexity', names: segment.perplexityNames },
                 ].map((row) => (
-                  <div key={row.engine} className="bg-[#f3efe9] rounded-xl border border-black/[0.06] p-3.5">
+                  <div key={row.engine} className="bg-[#f4f1ec] rounded-xl border border-black/[0.06] p-3.5">
                     <p className="text-[11px] font-semibold text-[#1c1917] mb-2">{row.engine} recommended</p>
                     <div className="flex flex-wrap gap-1.5 mb-2.5">
                       {row.names.map((n: string) => (
@@ -679,7 +679,7 @@ export default function LandingPage() {
       {/* ───── AI VISIBILITY ───── */}
       {/* The hook, not a feature list: two real answer cards with our own
           name missing. Nobody argues with a screenshot of being left out. */}
-      <section className="py-16 sm:py-24 bg-[#faf8f5]">
+      <section className="py-16 sm:py-24 bg-[#ffffff]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">AI visibility</p>
@@ -701,7 +701,7 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
-                className="rounded-2xl bg-[#ffffff] border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] overflow-hidden text-left"
+                className="rounded-2xl bg-[#ffffff] border border-black/[0.09] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] overflow-hidden text-left"
               >
                 <div className={`flex items-center gap-2 px-4 py-2.5 border-b border-black/[0.08] ${answer.headerClass}`}>
                   <span className={`h-2 w-2 rounded-full ${answer.dotClass}`} aria-hidden="true" />
@@ -718,7 +718,7 @@ export default function LandingPage() {
                     {answer.named.map((brand, n) => (
                       <li key={brand} className="flex items-center gap-2.5 text-[13px] text-[#44403c]">
                         <span
-                          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#f3efe9] text-[10.5px] font-bold text-[#78716c] tabular-nums"
+                          className="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#f4f1ec] text-[10.5px] font-bold text-[#78716c] tabular-nums"
                           aria-hidden="true"
                         >
                           {n + 1}
@@ -728,7 +728,7 @@ export default function LandingPage() {
                     ))}
                   </ol>
 
-                  <div className="flex items-center gap-2 rounded-lg border border-dashed border-black/[0.14] bg-[#faf8f5] px-3 py-2.5">
+                  <div className="flex items-center gap-2 rounded-lg border border-dashed border-black/[0.14] bg-[#ffffff] px-3 py-2.5">
                     <X className="h-3.5 w-3.5 text-[#8a827b] shrink-0" aria-hidden="true" />
                     <span className="text-[12.5px] text-[#78716c]">
                       Your product: <span className="font-semibold text-[#44403c]">not mentioned</span>
@@ -744,7 +744,7 @@ export default function LandingPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-5 rounded-2xl bg-[#ffffff] border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-6 sm:p-8 text-left"
+            className="mt-5 rounded-2xl bg-[#ffffff] border border-black/[0.09] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-6 sm:p-8 text-left"
           >
             <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-[#1c1917] mb-3">
               Ten product names. Yours was{' '}
@@ -760,7 +760,7 @@ export default function LandingPage() {
               <span className="text-[11px] font-bold uppercase tracking-[0.07em] text-[#8a827b]">We check</span>
               <div className="flex flex-wrap gap-1.5">
                 {AI_ENGINES.map((engine) => (
-                  <span key={engine} className="chip bg-[#f3efe9] text-[#44403c]">{engine}</span>
+                  <span key={engine} className="chip bg-[#f4f1ec] text-[#44403c]">{engine}</span>
                 ))}
               </div>
               <p className="text-[12px] text-[#78716c] sm:ml-auto">
@@ -772,7 +772,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── HOW IT WORKS ───── */}
-      <section id="how-it-works" className="py-16 sm:py-24 bg-[#faf8f5] scroll-mt-24">
+      <section id="how-it-works" className="py-16 sm:py-24 bg-[#ffffff] scroll-mt-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">How it works</p>
@@ -807,7 +807,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── FEATURES ───── */}
-      <section id="features" className="py-16 sm:py-24 bg-[#faf8f5] scroll-mt-24">
+      <section id="features" className="py-16 sm:py-24 bg-[#ffffff] scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">The toolkit</p>
@@ -835,7 +835,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── PRICING ───── */}
-      <section id="pricing" className="py-16 sm:py-20 bg-[#faf8f5] scroll-mt-16">
+      <section id="pricing" className="py-16 sm:py-20 bg-[#ffffff] scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">Pricing</p>
@@ -870,7 +870,7 @@ export default function LandingPage() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative max-w-4xl mx-auto overflow-hidden rounded-3xl bg-[#ffffff] border border-black/[0.08] px-6 py-14 sm:px-14 sm:py-16 text-center"
+          className="relative max-w-4xl mx-auto overflow-hidden rounded-3xl bg-[#ffffff] border border-black/[0.09] px-6 py-14 sm:px-14 sm:py-16 text-center"
         >
           <div
             className="pointer-events-none absolute inset-x-0 -top-24 h-56 bg-[radial-gradient(ellipse_at_top,rgba(255,69,0,0.22),transparent_65%)]"
@@ -893,7 +893,7 @@ export default function LandingPage() {
             }}
             className="relative max-w-lg mx-auto"
           >
-            <div className="flex flex-col sm:flex-row gap-2 p-1.5 bg-[#f3efe9] rounded-2xl border border-black/[0.08] transition-[border-color,box-shadow] duration-200 focus-within:border-[#ff4500]/70 focus-within:shadow-[0_0_0_3px_rgba(255,69,0,0.22)]">
+            <div className="flex flex-col sm:flex-row gap-2 p-1.5 bg-[#f4f1ec] rounded-2xl border border-black/[0.08] transition-[border-color,box-shadow] duration-200 focus-within:border-[#ff4500]/70 focus-within:shadow-[0_0_0_3px_rgba(255,69,0,0.22)]">
               <input
                 value={heroUrl}
                 onChange={(e) => setHeroUrl(e.target.value)}
@@ -918,7 +918,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── FOOTER ───── */}
-      <footer className="border-t border-black/[0.08] bg-[#faf8f5]">
+      <footer className="border-t border-black/[0.09] bg-[#ffffff]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">

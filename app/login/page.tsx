@@ -139,7 +139,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#faf8f5] px-4">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#ffffff] px-4">
       {/* Back link */}
       <Link
         href="/"
@@ -164,7 +164,7 @@ export default function LoginPage() {
         </div>
 
         {/* Card. A step, not a destination: one panel, no ornament. */}
-        <div className="rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-8">
+        <div className="rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-8">
           <h1 className="mb-1 text-center text-xl font-bold text-[#1c1917]">Welcome back</h1>
           <p className="mb-7 text-center text-sm text-[#78716c]">Sign in to your account to continue</p>
 
@@ -191,7 +191,7 @@ export default function LoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@company.com"
                       required
-                      className="w-full rounded-xl border border-black/[0.08] bg-[#faf8f5] px-3.5 py-2.5 text-sm text-[#1c1917] outline-none transition placeholder:text-[#c9c2b8] focus:border-[#ff4500]/50 focus:ring-2 focus:ring-[#ff4500]/25"
+                      className="w-full rounded-xl border border-black/[0.09] bg-[#ffffff] px-3.5 py-2.5 text-sm text-[#1c1917] outline-none transition placeholder:text-[#c9c2b8] focus:border-[#ff4500]/50 focus:ring-2 focus:ring-[#ff4500]/25"
                     />
                   </div>
                   <button
@@ -224,7 +224,7 @@ export default function LoginPage() {
                 {!showFallbackGoogle ? (
                   <div ref={googleButtonRef} className="flex justify-center" />
                 ) : (
-                  <button className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-black/[0.12] bg-white px-4 py-2.5 text-sm font-medium text-[#1c1917] transition-colors hover:bg-[#f3efe9]">
+                  <button className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-black/[0.12] bg-white px-4 py-2.5 text-sm font-medium text-[#1c1917] transition-colors hover:bg-[#f4f1ec]">
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
                       <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -248,7 +248,7 @@ export default function LoginPage() {
                   the form, which is the action that actually does something. */}
               <button
                 onClick={toggleMagicLinkForm}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/[0.08] bg-[#f3efe9] px-4 py-2.5 text-sm font-semibold text-[#1c1917] transition-[filter,border-color] hover:border-black/20 hover:bg-[#ece7df] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/[0.08] bg-[#f4f1ec] px-4 py-2.5 text-sm font-semibold text-[#1c1917] transition-[filter,border-color] hover:border-black/20 hover:bg-[#ece7df] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
               >
                 <Mail className="h-4 w-4" />
                 Sign in with Magic Link

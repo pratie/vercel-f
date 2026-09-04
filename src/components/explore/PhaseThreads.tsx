@@ -89,11 +89,11 @@ function ThreadRow({ thread }: { thread: OnboardingThread }) {
       href={thread.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-start gap-3 rounded-xl border border-black/[0.08] bg-[#ffffff] p-4 transition-colors duration-200 hover:border-black/[0.14] hover:bg-[#f3efe9] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/25"
+      className="group flex items-start gap-3 rounded-xl border border-black/[0.09] bg-[#ffffff] p-4 transition-colors duration-200 hover:border-black/[0.14] hover:bg-[#f4f1ec] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/25"
     >
       <div className="min-w-0 flex-1">
         {subreddit && (
-          <span className="inline-flex items-center rounded-md border border-black/[0.08] bg-[#f3efe9] px-2 py-0.5 font-mono text-[11px] leading-tight text-[#78716c] transition-colors group-hover:text-[#44403c]">
+          <span className="inline-flex items-center rounded-md border border-black/[0.08] bg-[#f4f1ec] px-2 py-0.5 font-mono text-[11px] leading-tight text-[#78716c] transition-colors group-hover:text-[#44403c]">
             r/{subreddit}
           </span>
         )}
@@ -137,7 +137,7 @@ function ThreadRow({ thread }: { thread: OnboardingThread }) {
  */
 function EmptyThreads() {
   return (
-    <div className="rounded-xl border border-black/[0.08] bg-[#ffffff] p-5">
+    <div className="rounded-xl border border-black/[0.09] bg-[#ffffff] p-5">
       <p className="text-[13.5px] leading-relaxed text-[#78716c]">
         Nothing matched closely enough right now. These subreddits get new posts every day, so the useful thread
         is usually a question that has not been asked yet this week.
@@ -156,7 +156,7 @@ function ThreadsSkeleton() {
   return (
     <div className="space-y-2">
       {titleWidths.map((width, i) => (
-        <div key={i} className="flex items-start gap-3 rounded-xl border border-black/[0.08] bg-[#ffffff] p-4">
+        <div key={i} className="flex items-start gap-3 rounded-xl border border-black/[0.09] bg-[#ffffff] p-4">
           <div className="min-w-0 flex-1">
             <SkeletonBlock tone="raised" className="h-5 w-24 rounded-md" />
             <SkeletonLine tone="raised" width={width} height="h-3.5" className="mt-2.5" />

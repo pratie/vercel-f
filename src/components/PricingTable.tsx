@@ -104,12 +104,12 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-full max-w-md"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_18px_40px_-24px_rgba(0,0,0,0.9)]">
+            <div className="relative overflow-hidden rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_18px_40px_-24px_rgba(0,0,0,0.9)]">
               <div className={compact ? 'p-6' : 'p-8'}>
                 {/* Badge. Understated on purpose: the price and the button carry
                     this card, a shouting badge would only compete with them. */}
                 <div className="flex items-center justify-between mb-6">
-                  <span className="rounded-md border border-black/[0.08] bg-[#f3efe9] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+                  <span className="rounded-md border border-black/[0.08] bg-[#f4f1ec] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
                     Most Popular
                   </span>
                   <div className="flex items-center gap-1.5 text-[10px] font-medium text-[#8a827b]">

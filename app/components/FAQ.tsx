@@ -20,7 +20,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => (
       <span className="text-sm font-semibold text-[#1c1917] group-hover:text-[#d94100] transition-colors pr-4">
         {question}
       </span>
-      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-[background-color,border-color,transform] duration-200 ${isOpen ? 'bg-[#ff4500] border-[#ff4500] rotate-0' : 'bg-[#f3efe9] border-black/[0.10] group-hover:border-black/[0.22]'}`}>
+      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-[background-color,border-color,transform] duration-200 ${isOpen ? 'bg-[#ff4500] border-[#ff4500] rotate-0' : 'bg-[#f4f1ec] border-black/[0.10] group-hover:border-black/[0.22]'}`}>
         {isOpen ? (
           <Minus className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
         ) : (
@@ -77,7 +77,7 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 md:py-28 bg-[#faf8f5]">
+    <section className="py-20 md:py-28 bg-[#ffffff]">
       <div className="max-w-2xl mx-auto px-6">
         <div className="text-center mb-12">
           <p className="text-[12px] font-semibold text-[#d94100] uppercase tracking-[0.15em] mb-3">FAQ</p>

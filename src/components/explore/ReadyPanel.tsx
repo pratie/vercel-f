@@ -119,7 +119,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <Stat value={threadCount} label={threadCount === 1 ? 'thread waiting' : 'threads waiting'} />
       </div>
 
-      <div className="mt-6 rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
+      <div className="mt-6 rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
         {/*
           Phases 2 and 3 are allowed to come back empty without failing the
           session, so this panel can legitimately render with zero threads.

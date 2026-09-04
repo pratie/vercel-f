@@ -70,7 +70,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
   const failed = phase === 'failed';
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-[#44403c] lg:flex">
+    <div className="min-h-screen bg-[#ffffff] text-[#44403c] lg:flex">
       {/* ---- Left rail ------------------------------------------------- */}
       <aside className="hidden border-r border-black/[0.08] lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:shrink-0 lg:flex-col">
         <div className="flex h-16 shrink-0 items-center border-b border-black/[0.08] px-5">
@@ -90,7 +90,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
       {/* ---- Main canvas ------------------------------------------------ */}
       {/* pb clears the fixed OfferBar so the last card and the mobile log never sit under it. */}
       <main className="min-w-0 flex-1 pb-28">
-        <div className="sticky top-0 z-20 border-b border-black/[0.08] bg-[#faf8f5]/[0.92] px-5 py-4 backdrop-blur-md sm:px-8">
+        <div className="sticky top-0 z-20 border-b border-black/[0.09] bg-[#ffffff]/[0.92] px-5 py-4 backdrop-blur-md sm:px-8">
           <div className="mb-3.5 flex items-center gap-2.5 lg:mb-4">
             {/* The logo also has to carry the header below lg, where the rail
                 is gone. */}
@@ -133,10 +133,10 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
  */
 export function ExploreFatalScreen({ fatal }: { fatal: ExploreFatal }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#faf8f5] px-6 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#ffffff] px-6 text-center">
       <Image src="/logo-dark.png" alt="SneakyGuy" width={34} height={21} priority className="h-auto w-[34px] no-outline" />
 
-      <div className="mt-8 flex h-10 w-10 items-center justify-center rounded-full border border-black/[0.08] bg-[#ffffff]">
+      <div className="mt-8 flex h-10 w-10 items-center justify-center rounded-full border border-black/[0.09] bg-[#ffffff]">
         <AlertTriangle className="h-4 w-4 text-[#78716c]" />
       </div>
 
@@ -162,7 +162,7 @@ export function ExploreFatalScreen({ fatal }: { fatal: ExploreFatal }) {
 /** Inline banner for a run that died partway through. */
 function ExploreFailureNote({ message }: { message: string }) {
   return (
-    <div className="mb-6 flex items-start gap-3 rounded-xl border border-black/[0.08] bg-[#ffffff] p-4">
+    <div className="mb-6 flex items-start gap-3 rounded-xl border border-black/[0.09] bg-[#ffffff] p-4">
       <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#78716c]" />
       <div className="min-w-0">
         <p className="text-[13.5px] font-medium text-[#1c1917]">We could not finish this run</p>

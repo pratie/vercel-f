@@ -93,7 +93,7 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
                 <motion.span
                   layoutId="explore-active-step-pill"
                   transition={transition}
-                  className="absolute inset-0 rounded-full border border-black/[0.08] bg-[#ffffff]"
+                  className="absolute inset-0 rounded-full border border-black/[0.09] bg-[#ffffff]"
                 />
               ) : (
                 <span className="absolute inset-0 rounded-full border border-black/[0.08]" aria-hidden />

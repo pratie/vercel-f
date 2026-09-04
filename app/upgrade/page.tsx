@@ -40,16 +40,16 @@ export default function UpgradePage() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#faf8f5]">
+      <div className="flex min-h-screen items-center justify-center bg-[#ffffff]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#ff4500] border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#faf8f5] text-[#44403c]">
+    <div className="min-h-screen bg-[#ffffff] text-[#44403c]">
       {/* Header */}
-      <div className="sticky top-0 z-10 border-b border-black/[0.08] bg-[#faf8f5]/[0.92] backdrop-blur-md">
+      <div className="sticky top-0 z-10 border-b border-black/[0.09] bg-[#ffffff]/[0.92] backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             <button
@@ -87,7 +87,7 @@ export default function UpgradePage() {
           rule is deliberately quiet. A dim dot and grey text, no red, no
           warning icon. Decorating it would make the fact read as a sales trick.
         */}
-        <div className="mb-12 overflow-hidden rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)]">
+        <div className="mb-12 overflow-hidden rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)]">
           <div className="flex items-center gap-2 border-b border-black/[0.08] px-5 py-3.5 sm:px-6">
             <Search className="h-3.5 w-3.5 shrink-0 text-[#8a827b]" />
             <span className="text-[13px] text-[#1c1917]">
@@ -107,7 +107,7 @@ export default function UpgradePage() {
                   {row.named.map((n) => (
                     <span
                       key={n}
-                      className="rounded-md border border-black/[0.08] bg-[#f3efe9] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
+                      className="rounded-md border border-black/[0.08] bg-[#f4f1ec] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
                     >
                       {n}
                     </span>
@@ -123,7 +123,7 @@ export default function UpgradePage() {
           {/* Not a disclosure. This line carries the argument the panel is
               making, so it reads at #78716c rather than the dim disclaimer
               tone, while staying quieter than the recommended names above. */}
-          <p className="border-t border-black/[0.08] bg-[#faf8f5] px-5 py-3 text-[11.5px] leading-relaxed text-[#78716c] sm:px-6">
+          <p className="border-t border-black/[0.09] bg-[#ffffff] px-5 py-3 text-[11.5px] leading-relaxed text-[#78716c] sm:px-6">
             A real check we ran. If the assistants do not say your name, they are saying a competitor&rsquo;s.
           </p>
         </div>
@@ -142,8 +142,8 @@ export default function UpgradePage() {
               body: 'We ask ChatGPT, Gemini, Perplexity and Claude the questions your buyers ask, record who gets recommended, and show you the Reddit threads that would change it.',
             },
           ].map((f) => (
-            <div key={f.title} className="rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
-              <span className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-black/[0.08] bg-[#f3efe9] text-[#78716c]">
+            <div key={f.title} className="rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
+              <span className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-black/[0.08] bg-[#f4f1ec] text-[#78716c]">
                 <f.icon className="h-4 w-4" />
               </span>
               <h3 className="mb-1.5 text-[15px] font-bold tracking-tight text-[#1c1917]">{f.title}</h3>

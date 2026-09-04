@@ -341,7 +341,7 @@ export default function ExplorePage() {
 /** Matches the shell's canvas so the Suspense hand off is not a white flash. */
 function ExploreBooting() {
   return (
-    <div className="min-h-screen bg-[#faf8f5]">
+    <div className="min-h-screen bg-[#ffffff]">
       <div className="flex min-h-screen items-center justify-center">
         <span className="font-mono text-[12.5px] text-[#8a827b]">warming up</span>
       </div>

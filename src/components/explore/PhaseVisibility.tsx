@@ -119,7 +119,7 @@ export function PhaseVisibility({ visibility, brandName, loading, className }: P
           )}
 
           {engines.length === 0 ? (
-            <p className="mt-3 rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 text-[13.5px] leading-relaxed text-[#78716c]">
+            <p className="mt-3 rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 text-[13.5px] leading-relaxed text-[#78716c]">
               {question
                 ? `No model answers came back for this question. That happens when the models time out, and it says nothing either way about where ${brand} stands.`
                 : `We did not get far enough to put a buying question to the models on this run. That says nothing either way about where ${brand} stands.`}
@@ -164,7 +164,7 @@ function EnginePanel({ engine, brand, index }: EnginePanelProps) {
         delay: reduce ? 0 : 0.1 + index * 0.12,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="flex flex-col rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-4 sm:p-5"
+      className="flex flex-col rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-4 sm:p-5"
     >
       <p className="text-[13.5px] font-semibold text-[#1c1917]">{engineLabel(engine.engine)}</p>
 
@@ -187,7 +187,7 @@ function EnginePanel({ engine, brand, index }: EnginePanelProps) {
                   delay: reduce ? 0 : 0.2 + index * 0.12 + Math.min(i, 8) * 0.04,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="rounded-md border border-black/[0.08] bg-[#f3efe9] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
+                className="rounded-md border border-black/[0.08] bg-[#f4f1ec] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
               >
                 {competitor}
               </motion.li>
@@ -227,7 +227,7 @@ function VisibilitySkeleton() {
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {[0, 1].map((i) => (
-          <div key={i} className="rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-4 sm:p-5">
+          <div key={i} className="rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-4 sm:p-5">
             <SkeletonLine tone="raised" width="w-24" height="h-3.5" />
             <SkeletonChipRow tone="raised" count={4} className="mt-6" />
             <div className="mt-4 border-t border-black/[0.08] pt-3.5">

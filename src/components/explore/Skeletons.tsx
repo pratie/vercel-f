@@ -9,8 +9,8 @@
  * productive instead of empty.
  *
  * Two tones, because the same bar has to read on two different surfaces:
- *   base   #ffffff  sits on the page canvas (#faf8f5)
- *   raised #f3efe9  sits inside a panel that is already #ffffff
+ *   base   #ffffff  sits on the page canvas (#ffffff)
+ *   raised #f4f1ec  sits inside a panel that is already #ffffff
  * Picking the wrong tone makes the placeholder invisible, so every skeleton
  * that lives inside a panel passes tone="raised".
  *
@@ -26,7 +26,7 @@ export type SkeletonTone = 'base' | 'raised';
 
 const TONE_CLASS: Record<SkeletonTone, string> = {
   base: 'bg-[#ffffff]',
-  raised: 'bg-[#f3efe9]',
+  raised: 'bg-[#f4f1ec]',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -121,7 +121,7 @@ export function SkeletonCard({ lines = 3, header = true, className }: SkeletonCa
   return (
     <div
       aria-hidden
-      className={cn('rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6', className)}
+      className={cn('rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6', className)}
     >
       {header && (
         <div className="mb-5 flex items-center gap-3">
