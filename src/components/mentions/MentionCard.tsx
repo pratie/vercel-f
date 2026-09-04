@@ -1,15 +1,14 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import {
-  ArrowUpRight, Calendar, CheckCircle, Copy, Edit3, Loader2,
-  MessageSquare, Sparkles, X, ArrowBigUp, Zap,
+  ArrowUpRight, Copy, Edit3, Loader2, Sparkles, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
 import {
-  Mention, highlightKeywordsSafe, intentLabel, intentTone,
-  isHighIntent, isUnscored, relativeTime, scoreTier,
+  Mention, highlightKeywordsSafe, intentLabel,
+  isHighIntent, isUnscored, relativeTime,
 } from '@/lib/mentions';
 
 interface MentionCardProps {
@@ -21,17 +20,31 @@ interface MentionCardProps {
   onPublished: (id: number, commentUrl: string) => void;
 }
 
+/** Match + intent collapsed into one quiet string: "78% · Solution seeking". */
+function signal(mention: Mention): string | null {
+  const parts: string[] = [];
+  if (!isUnscored(mention) && mention.relevance_score != null) parts.push(`${mention.relevance_score}% match`);
+  if (mention.intent) parts.push(intentLabel(mention.intent));
+  if (parts.length === 0 && isUnscored(mention)) return 'Not scored';
+  return parts.length ? parts.join(' · ') : null;
+}
+
+/**
+ * One lead, as a row in a list rather than a card. Everything that isn't
+ * needed to triage (the AI explanation, the reply flow) lives behind an
+ * expand so the list stays scannable.
+ */
 export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished }: MentionCardProps) {
   const [reply, setReply] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [showWhy, setShowWhy] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const panelId = useId();
 
   const unscored = isUnscored(mention);
   const highIntent = isHighIntent(mention);
-  const tone = intentTone(mention.intent);
-  const tier = scoreTier(mention);
+  const meta = signal(mention);
   const exactDate = new Date(mention.created_utc * 1000).toLocaleString('en-US', {
     year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit',
   });
@@ -71,170 +84,168 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
   };
 
   return (
-    <div
-      className={`bg-white rounded-2xl overflow-hidden transition-[box-shadow,transform,opacity] duration-300 ease-out
-        ${highIntent ? 'shadow-[0_1px_3px_rgba(255,69,0,0.12),0_0_0_1px_rgba(255,69,0,0.14),0_8px_20px_-8px_rgba(255,69,0,0.12)]' : 'shadow-card'}
-        ${viewed && !publishedUrl ? 'opacity-60 hover:opacity-100' : ''}
-        hover:shadow-card-hover hover:-translate-y-px`}
+    <article
+      className={`group relative border-b border-black/[0.06] transition-colors duration-200
+        ${expanded ? 'bg-[#fcfbf9]' : 'hover:bg-[#fcfbf9]'}
+        ${viewed && !publishedUrl && !expanded ? 'opacity-65 hover:opacity-100 focus-within:opacity-100' : ''}`}
     >
-      {highIntent && <div className="h-1 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-300" />}
+      {/* Hot lead: one thin rule, nothing louder */}
+      {highIntent && (
+        <span
+          aria-hidden="true"
+          className="absolute left-0 top-0 bottom-0 w-px bg-[#ff4500]"
+        />
+      )}
 
-      <div className="p-4 sm:p-5">
-        {/* Chips row */}
-        <div className="flex items-center gap-1.5 mb-3 flex-wrap">
-          <span className="chip bg-orange-50 text-orange-700">
-            r/{mention.subreddit}
-          </span>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        aria-expanded={expanded}
+        aria-controls={panelId}
+        className="w-full text-left pl-4 pr-[76px] sm:pr-24 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25 rounded-sm"
+      >
+        <h3
+          className="text-[15px] font-medium text-ink-900 leading-[1.45] tracking-[-0.011em]"
+          style={{ textWrap: 'pretty' } as React.CSSProperties}
+          dangerouslySetInnerHTML={{ __html: highlightKeywordsSafe(mention.title, mention.matching_keywords) }}
+        />
 
-          {highIntent && (
-            <span className="chip bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-[0_2px_6px_-1px_rgba(255,69,0,0.4)]" title="Strong buying or solution-seeking signal. Reply to this one first">
-              <Zap className="h-3 w-3 fill-current" />
-              Hot lead
-            </span>
-          )}
-
-          <span
-            className={`chip tabular-nums ${tier.chip}`}
-            title={unscored ? 'This lead hasn’t been AI-scored yet. Use “Score leads” above to fix that.' : 'How closely this conversation matches your product, scored by AI'}
-          >
-            <span className={`w-1.5 h-1.5 rounded-full ${tier.dot}`} />
-            {unscored ? tier.label : `${mention.relevance_score}% · ${tier.label}`}
-          </span>
-
-          {mention.intent && (
-            <span className={`chip border ${tone.chip}`}>
-              {intentLabel(mention.intent)}
-            </span>
-          )}
-
-          {publishedUrl && (
-            <a
-              href={publishedUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="chip bg-emerald-50 text-emerald-700 hover:bg-emerald-100 transition-colors"
-            >
-              <CheckCircle className="h-3 w-3" />
-              Replied
-            </a>
-          )}
-
-          <a
-            href={mention.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => onViewed(mention.id)}
-            className="ml-auto inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold text-ink-600 bg-cream hover:bg-orange-50 hover:text-orange-700 transition-colors min-hit-area"
-          >
-            {viewed ? 'Viewed' : 'Open'}
-            <ArrowUpRight className="h-3 w-3" />
-          </a>
-        </div>
-
-        {/* Title */}
-        <h3 className="text-[15px] font-semibold text-ink-900 leading-snug mb-1.5 tracking-[-0.01em]" style={{ textWrap: 'pretty' } as React.CSSProperties}>
-          <a
-            href={mention.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={() => onViewed(mention.id)}
-            className="hover:text-orange-700 transition-colors"
-            dangerouslySetInnerHTML={{ __html: highlightKeywordsSafe(mention.title, mention.matching_keywords) }}
-          />
-        </h3>
-
-        {/* Post body preview */}
         {mention.content && (
-          <p className="text-[13px] text-ink-600 leading-relaxed line-clamp-2 mb-2.5">
+          <p className="mt-1 text-[13px] text-ink-400 leading-relaxed line-clamp-1">
             {mention.content}
           </p>
         )}
 
-        {/* Meta row */}
-        <div className="flex flex-wrap items-center gap-3 text-[11.5px] text-ink-400 mb-3">
-          <span className="flex items-center gap-1" title={exactDate}>
-            <Calendar className="h-3 w-3" />
-            {relativeTime(mention.created_utc)}
-          </span>
-          <span className="flex items-center gap-1 tabular-nums" title="Upvotes">
-            <ArrowBigUp className="h-3.5 w-3.5" />
-            {mention.score}
-          </span>
-          <span className="flex items-center gap-1 tabular-nums" title="Comments">
-            <MessageSquare className="h-3 w-3" />
-            {mention.num_comments}
-          </span>
-          {mention.matching_keywords.length > 0 && (
-            <span className="flex flex-wrap items-center gap-1">
-              {mention.matching_keywords.map((k) => (
-                <span key={k} className="px-1.5 py-px rounded bg-cream text-ink-600 text-[10.5px] font-medium">
-                  {k}
-                </span>
-              ))}
+        <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] text-ink-400 tabular-nums">
+          {highIntent && (
+            <span className="inline-flex items-center gap-1.5 text-[#d94100]">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#ff4500]" />
+              High intent
             </span>
           )}
-        </div>
+          {highIntent && <span aria-hidden="true" className="text-ink-300">·</span>}
+          <span className="text-ink-600">r/{mention.subreddit}</span>
+          <span aria-hidden="true" className="text-ink-300">·</span>
+          <time title={exactDate}>{relativeTime(mention.created_utc)}</time>
+          <span aria-hidden="true" className="text-ink-300">·</span>
+          <span>{mention.num_comments} comments</span>
+          <span aria-hidden="true" className="text-ink-300">·</span>
+          <span>{mention.score} upvotes</span>
+          {meta && (
+            <>
+              <span aria-hidden="true" className="text-ink-300">·</span>
+              <span className={unscored ? 'text-ink-300' : 'text-ink-600'}>{meta}</span>
+            </>
+          )}
+          {publishedUrl && (
+            <>
+              <span aria-hidden="true" className="text-ink-300">·</span>
+              <span className="text-emerald-700">Replied</span>
+            </>
+          )}
+        </p>
+      </button>
 
-        {/* Why this matters (AI explanation) */}
+      {/* Open on Reddit. Quiet until the row is hovered or focused. */}
+      <a
+        href={mention.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => onViewed(mention.id)}
+        className="absolute right-3 top-3.5 inline-flex items-center gap-1 rounded-md px-2 py-1 text-[11.5px] font-medium text-ink-400
+          transition-opacity duration-200 hover:text-[#d94100] focus:opacity-100
+          sm:opacity-0 sm:group-hover:opacity-100
+          focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+      >
+        {viewed ? 'Viewed' : 'Open'}
+        <ArrowUpRight className="h-3 w-3" />
+      </a>
+
+      <div id={panelId} hidden={!expanded} className="pl-4 pr-4 pb-5 -mt-1">
         {mention.explanation && (
-          <div className="mb-3 rounded-xl bg-[#fdf9f3] border border-[#f3ead9] px-3.5 py-2.5 text-[12.5px] text-ink-700 leading-relaxed">
-            <span className="font-semibold text-orange-700/80 mr-1">
-              <Sparkles className="h-3 w-3 inline -mt-px mr-1" />
-              Why this lead:
-            </span>
-            {showWhy || mention.explanation.length <= 140
-              ? mention.explanation
-              : `${mention.explanation.substring(0, 140)}…`}
-            {mention.explanation.length > 140 && (
-              <button onClick={() => setShowWhy(!showWhy)} className="text-orange-600 hover:text-orange-700 ml-1 font-semibold">
-                {showWhy ? 'less' : 'more'}
-              </button>
-            )}
-          </div>
+          <p className="max-w-[62ch] text-[13px] text-ink-600 leading-[1.7]">
+            <span className="text-ink-400">Why this lead. </span>
+            {mention.explanation}
+          </p>
         )}
 
-        {/* Reply flow */}
+        {mention.matching_keywords.length > 0 && (
+          <p className="mt-2 text-[11.5px] text-ink-400">
+            Matched {mention.matching_keywords.join(', ')}
+          </p>
+        )}
+
         {reply === null ? (
-          <button
-            onClick={handleGenerate}
-            disabled={generating}
-            className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-orange-50 text-[12.5px] font-semibold text-orange-700 hover:bg-orange-100 transition-colors disabled:opacity-50"
-          >
-            {generating ? (
-              <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Drafting…</>
-            ) : (
-              <><Sparkles className="h-3.5 w-3.5" /> Draft a reply</>
+          <div className="mt-4 flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleGenerate}
+              disabled={generating}
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[#ff4500] text-[12.5px] font-medium text-white
+                transition-opacity hover:opacity-90 disabled:opacity-50
+                focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/30 focus-visible:ring-offset-2"
+            >
+              {generating ? (
+                <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Drafting</>
+              ) : (
+                <><Sparkles className="h-3.5 w-3.5" /> Draft a reply</>
+              )}
+            </button>
+            <a
+              href={mention.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => onViewed(mention.id)}
+              className="inline-flex items-center gap-1 h-9 px-3 rounded-lg text-[12.5px] font-medium text-ink-600 hover:text-ink-900 transition-colors"
+            >
+              Open on Reddit
+              <ArrowUpRight className="h-3 w-3" />
+            </a>
+            {publishedUrl && (
+              <a
+                href={publishedUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 h-9 px-2 text-[12.5px] font-medium text-emerald-700 hover:text-emerald-800 transition-colors"
+              >
+                View your reply
+                <ArrowUpRight className="h-3 w-3" />
+              </a>
             )}
-          </button>
+          </div>
         ) : (
-          <div className="mt-3 rounded-xl overflow-hidden bg-[#fffaf6] shadow-[0_0_0_1px_rgba(255,110,40,0.14),0_1px_3px_rgba(120,60,20,0.05)]">
-            <div className="px-4 py-2.5 border-b border-orange-100/70 flex items-center justify-between">
-              <span className="text-[11px] font-bold text-orange-700/70 uppercase tracking-wider">Your reply</span>
-              <button className="text-ink-400 hover:text-ink-700 p-0.5 min-hit-area" onClick={() => { setReply(null); setEditing(false); }} aria-label="Discard reply">
+          <div className="mt-4 max-w-[62ch] rounded-xl bg-white shadow-[0_0_0_1px_rgba(0,0,0,0.06)]">
+            <div className="flex items-center justify-between px-4 h-10 border-b border-black/[0.06]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.09em] text-ink-400">Your reply</span>
+              <button
+                className="text-ink-400 hover:text-ink-900 transition-colors min-hit-area"
+                onClick={() => { setReply(null); setEditing(false); }}
+                aria-label="Discard reply"
+              >
                 <X className="h-3.5 w-3.5" />
               </button>
             </div>
 
             <div className="p-4">
               {editing ? (
-                <div className="space-y-2">
+                <div className="space-y-2.5">
                   <textarea
                     autoFocus
-                    className="w-full border border-orange-200/60 rounded-xl p-3 text-[13px] text-ink-700 bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/15 focus:border-orange-300 transition-[border-color,box-shadow] resize-none leading-relaxed"
-                    rows={4}
+                    className="w-full rounded-lg bg-[#fcfbf9] p-3 text-[13px] leading-relaxed text-ink-700 shadow-[0_0_0_1px_rgba(0,0,0,0.07)]
+                      resize-none focus:outline-none focus:shadow-[0_0_0_1px_rgba(255,69,0,0.4)] transition-shadow"
+                    rows={5}
                     value={draft}
                     onChange={(e) => setDraft(e.target.value)}
                   />
                   <div className="flex justify-end gap-2">
                     <button
                       onClick={() => { setDraft(reply); setEditing(false); }}
-                      className="text-xs h-8 px-3.5 rounded-lg bg-white text-ink-600 shadow-card hover:bg-cream transition-colors font-medium"
+                      className="h-8 px-3 rounded-lg text-xs font-medium text-ink-600 hover:text-ink-900 transition-colors"
                     >
                       Cancel
                     </button>
                     <button
                       onClick={() => { setReply(draft || reply); setEditing(false); }}
-                      className="text-xs h-8 px-3.5 rounded-lg bg-orange-500 hover:bg-orange-600 text-white font-semibold shadow-orange transition-colors"
+                      className="h-8 px-3.5 rounded-lg bg-[#ff4500] text-xs font-medium text-white hover:opacity-90 transition-opacity"
                     >
                       Save
                     </button>
@@ -242,7 +253,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
                 </div>
               ) : (
                 <p
-                  className="text-[13px] text-ink-700 leading-relaxed whitespace-pre-wrap cursor-text hover:bg-white rounded-lg p-1.5 -m-1.5 transition-colors"
+                  className="text-[13px] text-ink-700 leading-[1.7] whitespace-pre-wrap cursor-text rounded-lg p-1.5 -m-1.5 hover:bg-[#fcfbf9] transition-colors"
                   onClick={() => { setDraft(reply); setEditing(true); }}
                   title="Click to edit"
                 >
@@ -252,17 +263,17 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
             </div>
 
             {!editing && (
-              <div className="px-4 py-2.5 border-t border-orange-100/70 flex items-center gap-2 flex-wrap">
+              <div className="flex flex-wrap items-center gap-1 px-3 h-11 border-t border-black/[0.06]">
                 <button
                   onClick={copyAndOpen}
-                  className="flex items-center gap-1.5 px-3 h-8 rounded-lg bg-white text-[11.5px] font-semibold text-ink-600 shadow-card hover:bg-cream transition-colors"
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium text-ink-600 hover:text-ink-900 hover:bg-[#f6f3ee] transition-colors"
                 >
                   <Copy className="h-3 w-3" />
-                  Copy & Open
+                  Copy and open
                 </button>
                 <button
                   onClick={() => { setDraft(reply); setEditing(true); }}
-                  className="flex items-center gap-1.5 px-3 h-8 rounded-lg bg-white text-[11.5px] font-semibold text-ink-600 shadow-card hover:bg-cream transition-colors"
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium text-ink-600 hover:text-ink-900 hover:bg-[#f6f3ee] transition-colors"
                 >
                   <Edit3 className="h-3 w-3" />
                   Edit
@@ -273,14 +284,13 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
                     toast.success('Marked as replied');
                   }}
                   disabled={!!publishedUrl}
-                  className={`flex items-center gap-1.5 px-3.5 h-8 rounded-lg text-[11.5px] font-bold transition-colors ${
+                  className={`inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium transition-colors ${
                     publishedUrl
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                      ? 'text-emerald-700'
+                      : 'text-ink-600 hover:text-ink-900 hover:bg-[#f6f3ee]'
                   }`}
                   title="Posted it on Reddit? Mark it done so it moves to your Replied tab"
                 >
-                  <CheckCircle className="h-3 w-3" />
                   {publishedUrl ? 'Replied' : 'Mark as replied'}
                 </button>
               </div>
@@ -288,6 +298,6 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
           </div>
         )}
       </div>
-    </div>
+    </article>
   );
 }

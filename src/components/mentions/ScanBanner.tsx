@@ -1,29 +1,33 @@
 'use client';
 
-import { RefreshCw } from 'lucide-react';
-
 interface ScanBannerProps {
   progress: number;
   message: string;
 }
 
+/** A hairline progress rule with one line of status. No box, no icon tile. */
 export function ScanBanner({ progress, message }: ScanBannerProps) {
   return (
-    <div className="mb-6 p-4 bg-white rounded-2xl shadow-[0_1px_3px_rgba(255,69,0,0.08),0_0_0_1px_rgba(255,69,0,0.1)]">
-      <div className="flex items-center justify-between mb-3">
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-orange-50 rounded-xl">
-            <RefreshCw className="h-4 w-4 text-orange-600 animate-spin" />
-          </div>
-          <div>
-            <p className="text-sm font-semibold text-ink-900">Scanning Reddit…</p>
-            <p className="text-xs text-ink-400">{message || 'Finding conversations that match your keywords'}</p>
-          </div>
-        </div>
-        <span className="text-sm font-bold text-orange-600 tabular-nums">{progress}%</span>
+    <div className="mb-6">
+      <div className="flex items-baseline justify-between gap-4 mb-2">
+        <p className="text-[12.5px] text-ink-600 truncate">
+          <span className="text-ink-900">Scanning Reddit.</span>{' '}
+          <span className="text-ink-400">{message || 'Finding conversations that match your keywords'}</span>
+        </p>
+        <span className="text-[12.5px] text-ink-400 tabular-nums shrink-0">{progress}%</span>
       </div>
-      <div className="h-2 w-full bg-cream rounded-full overflow-hidden" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
-        <div className="h-full bg-gradient-to-r from-orange-400 to-orange-600 rounded-full transition-[width] duration-500" style={{ width: `${progress}%` }} />
+      <div
+        className="h-px w-full bg-black/[0.08] overflow-hidden"
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label="Scan progress"
+      >
+        <div
+          className="h-full bg-[#ff4500] transition-[width] duration-500"
+          style={{ width: `${progress}%` }}
+        />
       </div>
     </div>
   );

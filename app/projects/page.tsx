@@ -215,19 +215,24 @@ export default function ProjectsPage() {
 
   return (
     <div className="relative">
-      <div className="max-w-6xl mx-auto py-2">
+      <div className="max-w-6xl mx-auto py-6 sm:py-10">
         {/* Header */}
         {hasPaid && paymentStatusChecked && !isLoading && hasProjects && (
           <div className="mb-6">
             <div className="flex items-end justify-between gap-3">
               <div>
-                <h1 className="text-2xl font-bold text-ink-900 tracking-tight">Projects</h1>
-                <p className="text-sm text-ink-400 mt-0.5">
-                  {projects.length === 1 ? 'One product being monitored' : `${projects.length} products being monitored`}
+                <h1 className="text-[30px] sm:text-[36px] font-semibold text-ink-900 tracking-[-0.028em] leading-[1.1]">Projects</h1>
+                <p className="mt-1.5 text-[13.5px] text-ink-400">
+                  {projects.length === 1
+                    ? <>One product being <span className="font-display italic text-ink-600">monitored</span></>
+                    : <><span className="tabular-nums text-ink-600">{projects.length}</span> products being <span className="font-display italic text-ink-600">monitored</span></>}
                 </p>
               </div>
-              <button onClick={handleNewProject} className="btn-primary h-10 px-4 text-[13px] shrink-0">
-                <Plus className="h-4 w-4" />
+              <button
+                onClick={handleNewProject}
+                className="inline-flex shrink-0 items-center gap-1.5 h-9 px-4 rounded-lg bg-[#ff4500] text-[12.5px] font-medium text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/30 focus-visible:ring-offset-2"
+              >
+                <Plus className="h-3.5 w-3.5" />
                 New project
               </button>
             </div>
@@ -239,30 +244,30 @@ export default function ProjectsPage() {
                   <input
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
-                    placeholder="Search projects..."
-                    className="w-full pl-9 pr-3 h-9 rounded-xl border border-[#e9e1d4] bg-white text-xs text-ink-900 placeholder:text-ink-400 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
+                    placeholder="Search projects"
+                    className="w-full pl-9 pr-3 h-9 bg-transparent text-[13px] text-ink-900 placeholder:text-ink-300 border-b border-black/[0.06] focus:outline-none focus:border-ink-300 transition-colors"
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'recent' | 'name')}
-                    className="h-9 px-3 rounded-xl border border-[#e9e1d4] bg-white text-xs text-ink-600 focus:outline-none focus:ring-2 focus:ring-orange-400/30"
+                    className="h-9 px-2.5 rounded-lg bg-transparent text-[12.5px] font-medium text-ink-400 cursor-pointer transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
                   >
                     <option value="recent">Recent</option>
                     <option value="name">Name</option>
                   </select>
-                  <div className="inline-flex rounded-xl border border-[#e9e1d4] bg-white p-0.5">
+                  <div className="inline-flex rounded-lg bg-[#f2ede6] p-0.5">
                     <button
                       onClick={() => setView('grid')}
-                      className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'grid' ? 'bg-cream text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                      className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'grid' ? 'bg-white text-ink-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)]' : 'text-ink-400 hover:text-ink-600'}`}
                       aria-label="Grid view"
                     >
                       <LayoutGrid className="h-3.5 w-3.5" />
                     </button>
                     <button
                       onClick={() => setView('list')}
-                      className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'list' ? 'bg-cream text-ink-900' : 'text-ink-400 hover:text-ink-600'}`}
+                      className={`p-1.5 rounded-lg transition-colors duration-150 ${view === 'list' ? 'bg-white text-ink-900 shadow-[0_1px_2px_rgba(0,0,0,0.06)]' : 'text-ink-400 hover:text-ink-600'}`}
                       aria-label="List view"
                     >
                       <Rows className="h-3.5 w-3.5" />
@@ -297,7 +302,7 @@ export default function ProjectsPage() {
           </div>
         ) : filtered.length === 0 && projects.length === 0 ? (
           <div className="flex flex-col items-center justify-center min-h-[55vh] text-center px-6">
-            <h1 className="text-[26px] font-bold text-ink-900 tracking-tight mb-2">
+            <h1 className="text-[30px] sm:text-[34px] font-semibold text-ink-900 tracking-[-0.026em] leading-[1.1] mb-3">
               Where does your product live?
             </h1>
             <p className="text-[15px] text-ink-600 max-w-md leading-relaxed mb-7">

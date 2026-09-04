@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import {
-  ArrowLeft, BarChart3, Download, RefreshCw, Search,
+  ArrowLeft, BarChart3, Download, RefreshCw,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
@@ -313,43 +313,45 @@ export default function MentionsPage() {
 
   return (
     <PaymentGuard>
-      <div className="max-w-5xl mx-auto px-4 py-4">
-        {/* Top bar */}
-        <div className="mb-6">
+      <div className="max-w-[940px] mx-auto px-5 sm:px-6 py-6 sm:py-10">
+        {/* Header */}
+        <header className="mb-8">
           <button
             onClick={() => router.push('/projects')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-ink-400 hover:text-ink-700 transition-colors group mb-1.5"
+            className="group -ml-1 mb-5 inline-flex items-center gap-1.5 rounded-md px-1 py-0.5 text-[11.5px] font-medium uppercase tracking-[0.09em] text-ink-400 transition-colors hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
           >
-            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
             Projects
           </button>
-          <div className="flex items-end justify-between gap-3 flex-wrap">
+
+          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
             <div className="min-w-0">
-              <h1 className="text-[22px] font-bold text-ink-900 tracking-tight truncate leading-tight">
+              <h1 className="text-[30px] sm:text-[36px] font-semibold text-ink-900 tracking-[-0.028em] leading-[1.1] truncate">
                 {project ? project.name : ' '}
               </h1>
               {allMentions.length > 0 && (
-                <p className="text-[12.5px] text-ink-400 mt-0.5">
-                  <span className="font-semibold text-ink-600 tabular-nums">{allMentions.length}</span> conversations found across{' '}
-                  <span className="font-semibold text-ink-600 tabular-nums">{availableSubreddits.length}</span> communities
+                <p className="mt-1.5 text-[13.5px] text-ink-400">
+                  Reddit <span className="font-display italic text-ink-600">leads</span> across{' '}
+                  <span className="tabular-nums text-ink-600">{availableSubreddits.length}</span>{' '}
+                  {availableSubreddits.length === 1 ? 'community' : 'communities'}
                 </p>
               )}
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-0.5 -mr-2">
               <button
                 onClick={() => startScan()}
                 disabled={scanStatus === 'scanning'}
-                className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
               >
-                <RefreshCw className={`h-3 w-3 ${scanStatus === 'scanning' ? 'animate-spin text-orange-500' : ''}`} />
-                {scanStatus === 'scanning' ? 'Scanning…' : 'Scan now'}
+                <RefreshCw className={`h-3.5 w-3.5 ${scanStatus === 'scanning' ? 'animate-spin text-[#ff4500]' : ''}`} />
+                {scanStatus === 'scanning' ? 'Scanning' : 'Scan now'}
               </button>
               <button
                 onClick={() => router.push(`/mentions/${projectId}/analytics`)}
-                className="hidden sm:flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color]"
+                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
               >
-                <BarChart3 className="h-3 w-3" />
+                <BarChart3 className="h-3.5 w-3.5" />
                 Analytics
               </button>
               <button
@@ -358,14 +360,14 @@ export default function MentionsPage() {
                   toast.success(`Exported ${filteredAll.length} leads`);
                 }}
                 disabled={filteredAll.length === 0}
-                className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-40"
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
               >
-                <Download className="h-3 w-3" />
+                <Download className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Export</span>
               </button>
             </div>
           </div>
-        </div>
+        </header>
 
         {scanStatus === 'scanning' && <ScanBanner progress={scanProgress} message={scanMessage} />}
 
@@ -392,72 +394,75 @@ export default function MentionsPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="space-y-3" aria-busy="true" aria-label="Loading leads">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-card p-5 animate-pulse">
-                <div className="flex gap-2 mb-3">
-                  <div className="h-5 w-20 bg-cream rounded-full" />
-                  <div className="h-5 w-24 bg-cream rounded-full" />
-                </div>
-                <div className="h-4 w-3/4 bg-cream rounded mb-2" />
-                <div className="h-3 w-1/2 bg-cream rounded" />
+          <div className="border-t border-black/[0.06]" aria-busy="true" aria-label="Loading leads">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="border-b border-black/[0.06] py-4 pl-4 pr-4 animate-pulse">
+                <div className="h-[15px] bg-[#f0ece5] rounded" style={{ width: `${[72, 58, 66, 80, 54, 63][i]}%` }} />
+                <div className="mt-2.5 h-[11px] w-1/2 bg-[#f5f2ec] rounded" />
+                <div className="mt-3 h-[9px] w-40 bg-[#f5f2ec] rounded" />
               </div>
             ))}
           </div>
         ) : loadError ? (
-          <div className="text-center py-16 bg-white rounded-2xl shadow-card">
-            <p className="text-sm font-semibold text-ink-900 mb-1">Couldn&apos;t load this project</p>
-            <p className="text-xs text-ink-400 mb-4">{loadError}</p>
+          <div className="py-20 text-center">
+            <p className="text-[15px] font-medium text-ink-900">Could not load this project</p>
+            <p className="mt-1.5 text-[13px] text-ink-400">{loadError}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 h-9 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-orange transition-colors"
+              className="mt-5 inline-flex h-9 items-center rounded-lg bg-[#ff4500] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
             >
               Try again
             </button>
           </div>
         ) : allMentions.length === 0 ? (
-          <div className="text-center py-16 bg-white rounded-2xl shadow-card px-6">
-            <div className="w-12 h-12 rounded-2xl bg-orange-50 flex items-center justify-center mx-auto mb-3 text-orange-500">
-              <Search className="h-5 w-5" />
-            </div>
-            <p className="text-[15px] font-semibold text-ink-900 mb-1">
+          <div className="py-16 max-w-[52ch]">
+            <h2 className="text-[20px] font-semibold text-ink-900 tracking-[-0.02em]">
               {scanStatus === 'scanning' ? 'Your first scan is running' : 'No leads yet'}
-            </p>
-            <p className="text-[12.5px] text-ink-400 mb-4 max-w-sm mx-auto leading-relaxed">
+            </h2>
+            <p className="mt-2 text-[13.5px] text-ink-400 leading-[1.7]">
               {scanStatus === 'scanning'
-                ? 'We’re combing your subreddits for conversations that match your keywords. This usually takes a minute or two.'
+                ? 'We are reading your subreddits for conversations that match your keywords. This usually takes a minute or two.'
                 : 'Scan Reddit to find conversations that match your keywords.'}
             </p>
             {project && project.keywords.length > 0 && (
-              <div className="flex flex-wrap justify-center gap-1.5 mb-5 max-w-md mx-auto">
-                {project.keywords.slice(0, 8).map((k) => (
-                  <span key={k} className="chip bg-cream text-ink-600">{k}</span>
-                ))}
-              </div>
+              <p className="mt-5 text-[12.5px] text-ink-400 leading-[1.9]">
+                <span className="uppercase tracking-[0.09em] text-[11px] text-ink-300">Watching</span>{' '}
+                <span className="text-ink-600">{project.keywords.slice(0, 8).join(', ')}</span>
+              </p>
             )}
             {scanStatus !== 'scanning' && (
               <button
                 onClick={() => startScan()}
-                className="btn-primary text-xs"
+                className="mt-6 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#ff4500] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Scan Reddit now
               </button>
             )}
+            {scanStatus === 'scanning' && (
+              <div className="mt-8 border-t border-black/[0.06]">
+                {Array.from({ length: 3 }).map((_, i) => (
+                  <div key={i} className="border-b border-black/[0.06] py-4 animate-pulse">
+                    <div className="h-[15px] bg-[#f0ece5] rounded" style={{ width: `${[70, 55, 64][i]}%` }} />
+                    <div className="mt-2.5 h-[11px] w-1/2 bg-[#f5f2ec] rounded" />
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         ) : displayMentions.length === 0 ? (
-          <div className="text-center py-12 bg-white rounded-2xl shadow-card">
-            <p className="text-sm text-ink-600 mb-3">No leads match your filters.</p>
+          <div className="py-16 border-t border-black/[0.06]">
+            <p className="text-[13.5px] text-ink-600">No leads match your filters.</p>
             <button
               onClick={() => updateFilters({ ...DEFAULT_FILTERS })}
-              className="text-xs font-semibold text-orange-600 hover:text-orange-700"
+              className="mt-2 text-[12.5px] font-medium text-[#d94100] hover:text-ink-900 transition-colors"
             >
               Clear all filters
             </button>
           </div>
         ) : (
           <>
-            <div className="space-y-3">
+            <div className="border-t border-black/[0.06]">
               {displayMentions.map((mention) => (
                 <MentionCard
                   key={mention.id}
@@ -471,10 +476,10 @@ export default function MentionsPage() {
             </div>
 
             {visibleCount < filteredAll.length && (
-              <div className="mt-6 flex justify-center pb-8">
+              <div className="mt-8 mb-10 flex justify-center">
                 <button
                   onClick={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
-                  className="flex items-center gap-2 px-6 h-10 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color]"
+                  className="h-9 px-4 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
                 >
                   Show {Math.min(MENTIONS_PER_PAGE, filteredAll.length - visibleCount)} more
                 </button>
