@@ -394,7 +394,7 @@ export default function MentionsPage() {
 
         {/* Content */}
         {isLoading ? (
-          <div className="border-t border-black/[0.06]" aria-busy="true" aria-label="Loading leads">
+          <div className="-ml-4 border-t border-black/[0.06]" aria-busy="true" aria-label="Loading leads">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="border-b border-black/[0.06] py-4 pl-4 pr-4 animate-pulse">
                 <div className="h-[15px] bg-[#f0efed] rounded" style={{ width: `${[72, 58, 66, 80, 54, 63][i]}%` }} />
@@ -462,7 +462,7 @@ export default function MentionsPage() {
           </div>
         ) : (
           <>
-            <div className="border-t border-black/[0.06]">
+            <div className="-ml-4 border-t border-black/[0.06]">
               {displayMentions.map((mention) => (
                 <MentionCard
                   key={mention.id}

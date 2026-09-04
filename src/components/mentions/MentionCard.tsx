@@ -85,24 +85,30 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
 
   return (
     <article
-      className={`group relative border-b border-black/[0.06] transition-colors duration-200
+      className={`group relative border-b border-black/[0.06] pl-4 transition-colors duration-200
         ${expanded ? 'bg-[#fcfbf9]' : 'hover:bg-[#fcfbf9]'}
         ${viewed && !publishedUrl && !expanded ? 'opacity-65 hover:opacity-100 focus-within:opacity-100' : ''}`}
     >
-      {/* Hot lead: one thin rule, nothing louder */}
-      {highIntent && (
-        <span
-          aria-hidden="true"
-          className="absolute left-0 top-0 bottom-0 w-px bg-emerald-500"
-        />
-      )}
+      {/*
+        The rail. Every row draws its own segment at the far left of the list,
+        outside the text column, so together they read as one continuous line
+        running down the page: faint by default, emerald where the lead is
+        high intent. It used to sit inside the row and push every title 16px
+        right, whether or not that row had anything to mark. Out here it costs
+        the text nothing and doubles as an at-a-glance index of where the good
+        leads are.
+      */}
+      <span
+        aria-hidden="true"
+        className={`absolute left-0 top-0 bottom-0 w-0.5 ${highIntent ? 'bg-emerald-500' : 'bg-black/[0.06]'}`}
+      />
 
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
         aria-expanded={expanded}
         aria-controls={panelId}
-        className="w-full text-left pl-4 pr-[76px] sm:pr-24 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25 rounded-sm"
+        className="w-full text-left pr-[76px] sm:pr-24 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25 rounded-sm"
       >
         <h3
           className="text-[15px] font-medium text-ink-900 leading-[1.45] tracking-[-0.011em]"
@@ -161,7 +167,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
         <ArrowUpRight className="h-3 w-3" />
       </a>
 
-      <div id={panelId} hidden={!expanded} className="pl-4 pr-4 pb-5 -mt-1">
+      <div id={panelId} hidden={!expanded} className="pr-4 pb-5 -mt-1">
         {mention.explanation && (
           <p className="max-w-[62ch] text-[13px] text-ink-600 leading-[1.7]">
             <span className="text-ink-400">Why this lead. </span>
