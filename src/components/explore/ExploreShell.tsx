@@ -75,7 +75,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
       <aside className="hidden border-r border-white/[0.08] lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:shrink-0 lg:flex-col">
         <div className="flex h-16 shrink-0 items-center border-b border-white/[0.08] px-5">
           <Link href="/" className="flex items-center gap-2.5">
-            <Image src="/logo.png" alt="" width={28} height={18} priority className="h-auto w-[28px]" />
+            <Image src="/logo-dark.png" alt="" width={34} height={21} priority className="h-auto w-[34px] no-outline" />
             <span className="text-[14px] font-semibold tracking-tight text-[#fafaf9]">SneakyGuy</span>
           </Link>
         </div>
@@ -88,13 +88,14 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
       </aside>
 
       {/* ---- Main canvas ------------------------------------------------ */}
-      <main className="min-w-0 flex-1">
+      {/* pb clears the fixed OfferBar so the last card and the mobile log never sit under it. */}
+      <main className="min-w-0 flex-1 pb-28">
         <div className="sticky top-0 z-20 border-b border-white/[0.08] bg-[#0c0a09]/[0.92] px-5 py-4 backdrop-blur-md sm:px-8">
           <div className="mb-3.5 flex items-center gap-2.5 lg:mb-4">
             {/* The logo also has to carry the header below lg, where the rail
                 is gone. */}
             <Link href="/" className="flex items-center gap-2 lg:hidden">
-              <Image src="/logo.png" alt="SneakyGuy" width={24} height={15} priority className="h-auto w-[24px]" />
+              <Image src="/logo-dark.png" alt="SneakyGuy" width={30} height={19} priority className="h-auto w-[30px] no-outline" />
             </Link>
             {domain && (
               <p className="min-w-0 truncate font-mono text-[12px] text-[#78716c]">
@@ -133,7 +134,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
 export function ExploreFatalScreen({ fatal }: { fatal: ExploreFatal }) {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#0c0a09] px-6 text-center">
-      <Image src="/logo.png" alt="SneakyGuy" width={34} height={21} priority className="h-auto w-[34px]" />
+      <Image src="/logo-dark.png" alt="SneakyGuy" width={34} height={21} priority className="h-auto w-[34px] no-outline" />
 
       <div className="mt-8 flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-[#1c1917]">
         <AlertTriangle className="h-4 w-4 text-[#a8a29e]" />

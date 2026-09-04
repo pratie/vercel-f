@@ -83,7 +83,11 @@ export function AgentLog({ log, phaseIndex, phase, maxLines, hideHeader = false,
 
   const step = Math.min(phaseIndex + 1, ONBOARDING_STEP_COUNT);
   const failed = phase === 'failed';
-  const ready = phase === 'ready';
+  // phaseIndex is the step the page is REVEALING, which lags the backend on
+  // purpose. The backend can be "ready" while the canvas still shows step one,
+  // and a header saying "finished all 5 steps" next to a rail on step 1 reads
+  // as a bug. So "done" needs both: the run finished AND the reveal caught up.
+  const ready = phase === 'ready' && phaseIndex >= ONBOARDING_STEP_COUNT - 1;
 
   return (
     <div className={cn('font-mono', className)}>

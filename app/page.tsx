@@ -17,11 +17,14 @@ import SocialProof from '@/components/SocialProof';
 import { PricingTable } from '@/components/PricingTable';
 import { FAQ } from './components/FAQ';
 
-// The logo is a 544x336 transparent PNG of the guy peeking over an edge.
-// Keep this ratio wherever it renders -- forcing it into a square crushes him
-// and loses the "peeking over the page" effect. The peach fill and the heavy
-// black outlines were composited to read on warm near-black, which is exactly
-// the canvas this page now uses, so the asset is unchanged.
+// The logo is a 544x336 PNG of the guy peeking over a ledge. Keep this ratio
+// wherever it renders -- forcing it into a square crushes him and loses the
+// "peeking over the page" effect.
+// /logo.png has an OPAQUE WHITE ledge, which is fine on the light app pages
+// but draws a white rectangle on this dark canvas. /logo-dark.png is the same
+// art with the white knocked out to transparent, so on dark surfaces he peeks
+// over the canvas itself. Use -dark on every dark page (landing, /explore,
+// /login) and the original on the light ones (blog, sidebar).
 // It also needs the `no-outline` class: globals.css puts a 1px outline on every
 // img, which draws a visible rectangle around the transparent areas.
 const LOGO_RATIO = 336 / 544;
@@ -199,15 +202,15 @@ const AI_ENGINES = ['ChatGPT', 'Perplexity', 'Gemini', 'Claude'];
 const STEPS = [
   {
     title: 'Find the conversation',
-    body: 'Paste your website. We draft the keywords and subreddits worth watching in about 20 seconds, then scan those subreddits and score every thread for buying intent.',
+    body: 'Paste your website. We draft your keywords and subreddits in about 20 seconds, then score every new thread for buying intent.',
   },
   {
     title: 'Join it in your own voice',
-    body: 'Every lead arrives with a drafted reply in your tone. Edit it, post it, and be the useful answer in the thread instead of the ad next to it.',
+    body: 'Every lead comes with a reply drafted in your tone. Edit it, post it, and be the useful answer instead of the ad.',
   },
   {
     title: 'Track whether AI names you',
-    body: 'We ask the assistants the buying questions your customers ask and record which products get named. As the threads add up, watch your name show up.',
+    body: 'We ask the assistants your buyers\' questions every week and record which products get named. Watch your name show up.',
   },
 ];
 
@@ -242,7 +245,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
   },
   {
     title: 'Relevancy Scoring',
-    body: 'Every mention is scored for buying intent, so low-value noise never reaches your dashboard.',
+    body: 'Every thread is scored for buying intent. Noise never reaches your dashboard.',
     visual: (
       <div className="flex flex-wrap gap-1.5">
         <span className="chip bg-[#34d399]/[0.12] text-[#34d399]">
@@ -258,7 +261,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
   },
   {
     title: 'AI Reply Generation',
-    body: 'Context-aware replies that read like a helpful human, matched to your chosen tone.',
+    body: 'Replies that read like a helpful human, in the tone you set once.',
     visual: (
       <div className="rounded-lg bg-[#ff4500]/[0.07] border border-[#ff4500]/20 px-3 py-2 text-[11.5px] text-[#d6d3d1] text-left">
         <span className="font-bold text-[#ff4500] text-[10px] uppercase tracking-wider mr-1.5">Drafted reply</span>
@@ -282,7 +285,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
   },
   {
     title: 'AI Visibility Tracking',
-    body: 'We put your buying questions to the assistants and record which products get named, run after run.',
+    body: 'We ask the assistants your buying questions weekly and record who gets named.',
     visual: (
       <div className="space-y-1.5">
         {[
@@ -329,7 +332,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
   },
   {
     title: 'Gaps Linked to Threads',
-    body: 'Every question you lose comes with the Reddit conversations shaping that answer, so you know where to show up.',
+    body: 'Every question you lose links to the Reddit threads shaping that answer.',
     visual: (
       <div className="flex items-center gap-2 rounded-lg bg-[#292524] px-3 py-2 text-[11.5px] text-[#d6d3d1]">
         <span className="chip bg-white/[0.07] text-[#d6d3d1]">Not named</span>
@@ -341,7 +344,7 @@ const FEATURES: { title: string; body: string; visual: React.ReactNode }[] = [
   },
   {
     title: 'Analytics',
-    body: 'Track mentions, keyword performance and engagement over time in one place.',
+    body: 'Mentions, keyword performance and engagement over time, in one place.',
     visual: (
       <div className="space-y-1.5">
         {[
@@ -415,12 +418,12 @@ export default function LandingPage() {
           <div className="relative flex justify-between items-center h-16">
             <Link href="/" className="flex items-center gap-2" aria-label="SneakyGuy home">
               <Image
-                src="/logo.png"
+                src="/logo-dark.png"
                 alt=""
-                width={44}
-                height={logoHeight(44)}
+                width={52}
+                height={logoHeight(52)}
                 priority
-                className="h-auto w-11 no-outline"
+                className="h-auto w-[52px] no-outline"
               />
               <span className="font-bold text-xl text-[#fafaf9] tracking-tight">SneakyGuy</span>
             </Link>
@@ -479,18 +482,17 @@ export default function LandingPage() {
           CTA — pasting a URL is lower-friction than "Get Started", and the
           analysis result (their own keywords) is the aha moment that sells. */}
       <section className="relative bg-[#0c0a09] overflow-hidden">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-16 sm:pt-24 pb-10 text-center">
-          <h1 className="text-[40px] sm:text-[60px] font-bold tracking-[-0.03em] text-[#fafaf9] leading-[1.08] mb-6">
+        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-24 pb-10 text-center">
+          <h1 className="text-[36px] sm:text-[60px] font-bold tracking-[-0.03em] text-[#fafaf9] leading-[1.08] mb-5 sm:mb-6">
             Get recommended where your{' '}
-            <em className="font-display font-medium italic tracking-[-0.01em] text-[#ff4500] whitespace-nowrap">
+            <em className="font-display font-medium italic tracking-[-0.01em] text-[#ff4500] sm:whitespace-nowrap">
               customers search
             </em>
           </h1>
 
-          <p className="text-lg text-[#d6d3d1] mb-9 max-w-xl mx-auto leading-relaxed">
-            Your buyers ask Reddit, then they ask ChatGPT. Paste your website. SneakyGuy
-            finds the threads worth joining, drafts the reply in your voice, and tracks
-            whether AI assistants start naming you.
+          <p className="text-[17px] sm:text-lg text-[#d6d3d1] mb-8 sm:mb-9 max-w-xl mx-auto leading-relaxed">
+            Paste your website. SneakyGuy finds the Reddit threads where your buyers are
+            asking, drafts your reply, and tracks whether ChatGPT and Perplexity recommend you.
           </p>
 
           <form
@@ -533,18 +535,14 @@ export default function LandingPage() {
             </div>
           </form>
 
-          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-[13px] text-[#a8a29e] justify-center">
+          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#a8a29e] justify-center">
             <span className="flex items-center">
               <Check className="h-4 w-4 text-[#34d399] mr-1.5 shrink-0" aria-hidden="true" />
-              Free keyword &amp; community analysis
+              Free analysis, no signup
             </span>
             <span className="flex items-center">
               <Check className="h-4 w-4 text-[#34d399] mr-1.5 shrink-0" aria-hidden="true" />
-              AI-scored buying intent
-            </span>
-            <span className="flex items-center">
-              <Check className="h-4 w-4 text-[#34d399] mr-1.5 shrink-0" aria-hidden="true" />
-              AI visibility tracking
+              Scored for buying intent
             </span>
             <span className="flex items-center">
               <Check className="h-4 w-4 text-[#34d399] mr-1.5 shrink-0" aria-hidden="true" />
@@ -681,7 +679,7 @@ export default function LandingPage() {
       {/* ───── AI VISIBILITY ───── */}
       {/* The hook, not a feature list: two real answer cards with our own
           name missing. Nobody argues with a screenshot of being left out. */}
-      <section className="py-24 bg-[#0c0a09]">
+      <section className="py-16 sm:py-24 bg-[#0c0a09]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#ff4500] mb-3">AI visibility</p>
@@ -690,9 +688,8 @@ export default function LandingPage() {
               <em className="font-display font-medium italic text-[#ff4500]">Then count the names.</em>
             </h2>
             <p className="mt-4 text-base text-[#d6d3d1] max-w-2xl mx-auto leading-relaxed">
-              Buyers ask for a shortlist before they ever reach your site, and the answer comes
-              back as product names. We asked the question our own customers ask, on the day we
-              built this check. Here is exactly what came back.
+              Buyers ask AI for a shortlist before they visit anyone&apos;s site. We asked the
+              question our own customers ask. This is what came back.
             </p>
           </div>
 
@@ -753,16 +750,10 @@ export default function LandingPage() {
               Ten product names. Yours was{' '}
               <em className="font-display font-medium italic text-[#ff4500]">not one of them.</em>
             </h3>
-            <p className="text-[15px] text-[#d6d3d1] leading-relaxed mb-3">
-              If the answer does not say your name, it is saying a competitor&apos;s. Your category has
-              a list like this too, and someone is already on it. SneakyGuy runs your buying questions
-              past the assistants and records who gets named, so you can watch that list change.
-            </p>
             <p className="text-[15px] text-[#d6d3d1] leading-relaxed">
-              Those answers are not random. They lean on Reddit, on comparison threads and on the
-              &quot;what do you actually use&quot; posts written by people who tried everything. That is the
-              same surface SneakyGuy already watches. Join the conversations, then watch the
-              assistants catch up.
+              If the answer does not say your name, it says a competitor&apos;s. Those answers lean
+              on Reddit threads, the same threads SneakyGuy watches. Join them, and we track
+              whether the assistants start naming you.
             </p>
 
             <div className="mt-6 pt-5 border-t border-white/[0.08] flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -773,7 +764,7 @@ export default function LandingPage() {
                 ))}
               </div>
               <p className="text-[12px] text-[#a8a29e] sm:ml-auto">
-                We query the models with web search on, the way a buyer would ask.
+                Web search on, asked the way a buyer would.
               </p>
             </div>
           </motion.div>
@@ -781,7 +772,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── HOW IT WORKS ───── */}
-      <section id="how-it-works" className="py-24 bg-[#0c0a09] scroll-mt-24">
+      <section id="how-it-works" className="py-16 sm:py-24 bg-[#0c0a09] scroll-mt-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#ff4500] mb-3">How it works</p>
@@ -816,7 +807,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── FEATURES ───── */}
-      <section id="features" className="py-24 bg-[#0c0a09] scroll-mt-24">
+      <section id="features" className="py-16 sm:py-24 bg-[#0c0a09] scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#ff4500] mb-3">The toolkit</p>
@@ -844,7 +835,7 @@ export default function LandingPage() {
       </section>
 
       {/* ───── PRICING ───── */}
-      <section id="pricing" className="py-20 bg-[#0c0a09] scroll-mt-16">
+      <section id="pricing" className="py-16 sm:py-20 bg-[#0c0a09] scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#ff4500] mb-3">Pricing</p>
@@ -892,8 +883,8 @@ export default function LandingPage() {
           {/* Closing pitch, so it gets body colour like the hero subhead and the
               AI-visibility summary, not the secondary-label tone. */}
           <p className="relative text-[15px] text-[#d6d3d1] mb-8 max-w-md mx-auto leading-relaxed">
-            Paste your website. See the threads you have been missing, and who the
-            assistants are naming instead of you.
+            Paste your website. See the threads you are missing, and who the assistants
+            name instead of you.
           </p>
           <form
             onSubmit={(e) => {
@@ -932,11 +923,11 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-2">
               <Image
-                src="/logo.png"
+                src="/logo-dark.png"
                 alt=""
-                width={28}
-                height={logoHeight(28)}
-                className="h-auto w-7 no-outline"
+                width={32}
+                height={logoHeight(32)}
+                className="h-auto w-8 no-outline"
               />
               <span className="font-bold text-[#fafaf9]">SneakyGuy</span>
             </div>

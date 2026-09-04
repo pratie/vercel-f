@@ -158,7 +158,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
-            <Image src="/logo.png" alt="" width={36} height={22} className="h-auto w-9 no-outline" />
+            <Image src="/logo-dark.png" alt="" width={36} height={22} className="h-auto w-9 no-outline" />
             <span className="text-lg font-bold text-[#fafaf9]">SneakyGuy</span>
           </Link>
         </div>

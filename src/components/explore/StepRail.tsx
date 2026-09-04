@@ -9,7 +9,7 @@
  * slides and resizes from step to step instead of popping.
  */
 
-import { Fragment } from 'react';
+import { Fragment, useEffect, useRef } from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LiveDot } from './AgentLog';
@@ -48,8 +48,23 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
     ? { duration: 0 }
     : { type: 'spring' as const, stiffness: 420, damping: 38, mass: 0.9 };
 
+  // Five pills overflow a phone and the row scrolls. Without this the active
+  // pill walks off the right edge around step three and the visitor is left
+  // looking at "1 2" while the run is on "4". Scrolled by hand rather than
+  // scrollIntoView, which would also nudge the page vertically.
+  const navRef = useRef<HTMLElement | null>(null);
+  const activeRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    const nav = navRef.current;
+    const el = activeRef.current;
+    if (!nav || !el || nav.scrollWidth <= nav.clientWidth) return;
+    const left = el.offsetLeft - (nav.clientWidth - el.offsetWidth) / 2;
+    nav.scrollTo({ left: Math.max(0, left), behavior: reduce ? 'auto' : 'smooth' });
+  }, [active, reduce]);
+
   return (
     <nav
+      ref={navRef}
       className={cn(
         // Five pills do not fit a phone. Let the row scroll rather than wrap,
         // the active step is what matters and it is always in view on desktop.
@@ -65,6 +80,7 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
             {index > 0 && <span className="h-px w-4 shrink-0 bg-white/[0.08] sm:w-7" aria-hidden />}
 
             <motion.div
+              ref={isActive ? activeRef : undefined}
               layout={!reduce}
               transition={transition}
               aria-current={isActive ? 'step' : undefined}

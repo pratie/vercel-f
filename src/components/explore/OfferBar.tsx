@@ -20,9 +20,11 @@
  * would sit above the error screen asking for money to keep everything we are
  * "finding", which is the one thing this component must never do.
  *
- * Placement: render this above <ExploreShell> in the page flow. It sticks at
- * top-0 with a higher z-index than the shell's own sticky header, so it always
- * wins the top of the viewport. Pass `className` if a page needs to nudge it.
+ * Placement: fixed to the BOTTOM of the viewport. It used to be sticky top-0,
+ * which fought the shell's own sticky header (domain + step rail): both pinned
+ * to the top and the bar, with the higher z-index, sat on top of the rail the
+ * moment a phone scrolled. The shell pads its main column so nothing hides
+ * under the bar. Pass `className` if a page needs to nudge it.
  */
 
 import { useEffect, useState } from 'react';
@@ -86,20 +88,22 @@ export function OfferBar({
       {shown && !failed && (
         <motion.div
           key="offer-bar"
-          initial={reduce ? false : { y: -64, opacity: 0 }}
+          initial={reduce ? false : { y: 64, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            'sticky top-0 z-40 border-b border-white/[0.08] bg-[#1c1917]/95 backdrop-blur-md',
+            'fixed inset-x-0 bottom-0 z-40 border-t border-white/[0.08] bg-[#1c1917]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]',
             className,
           )}
         >
-          <div className="mx-auto flex w-full max-w-5xl flex-col gap-3 px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-8">
+          <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:gap-6 sm:px-8 sm:py-3.5">
             <div className="min-w-0">
-              <p className="text-[14px] font-semibold tracking-tight text-[#fafaf9] sm:text-[15px]">
-                Keep everything we are finding, {PRICE_LABEL} for one month
+              <p className="text-[13.5px] font-semibold leading-snug tracking-tight text-[#fafaf9] sm:text-[15px]">
+                <span className="sm:hidden">Keep all of this, {PRICE_LABEL} for a month</span>
+                <span className="hidden sm:inline">Keep everything we are finding, {PRICE_LABEL} for one month</span>
               </p>
-              <p className="mt-0.5 text-[12.5px] leading-relaxed text-[#a8a29e]">
+              {/* One line on a phone. The detail is on the ready panel anyway. */}
+              <p className="mt-0.5 hidden text-[12.5px] leading-relaxed text-[#a8a29e] sm:block">
                 {detailLine({ brandName, keywordCount, subredditCount })}
               </p>
             </div>

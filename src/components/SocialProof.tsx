@@ -36,13 +36,12 @@ const fadeUp = {
 };
 
 const SocialProof: React.FC = () => (
-  <section className="py-20 md:py-28 bg-[#0c0a09]">
+  <section className="py-16 md:py-28 bg-[#0c0a09]">
     <div className="max-w-5xl mx-auto px-6">
-      <div className="text-center mb-14">
+      <div className="text-center mb-10 md:mb-14">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
           <p className="text-[12px] font-semibold text-[#ff4500] uppercase tracking-[0.15em] mb-3">Testimonials</p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#fafaf9] mb-4">Loved by founders</h2>
-          <p className="text-base text-[#a8a29e]">Real feedback from real users building real businesses.</p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#fafaf9]">Loved by founders</h2>
         </motion.div>
       </div>
 
