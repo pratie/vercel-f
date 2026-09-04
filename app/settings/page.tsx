@@ -463,7 +463,7 @@ export default function SettingsPage() {
                         'flex items-start gap-2.5 rounded-xl border p-3.5 cursor-pointer transition-colors',
                         settings.tone === value
                           ? 'border-orange-500 bg-orange-50/50'
-                          : 'border-[#e9e1d4] hover:border-orange-300'
+                          : 'border-[#eeecea] hover:border-orange-300'
                       )}
                     >
                       <RadioGroupItem value={value} id={value} className="mt-0.5" />

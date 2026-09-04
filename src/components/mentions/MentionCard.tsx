@@ -93,7 +93,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
       {highIntent && (
         <span
           aria-hidden="true"
-          className="absolute left-0 top-0 bottom-0 w-px bg-[#ff4500]"
+          className="absolute left-0 top-0 bottom-0 w-px bg-emerald-500"
         />
       )}
 
@@ -118,8 +118,8 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
 
         <p className="mt-2 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[11.5px] text-ink-400 tabular-nums">
           {highIntent && (
-            <span className="inline-flex items-center gap-1.5 text-[#d94100]">
-              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#ff4500]" />
+            <span className="inline-flex items-center gap-1.5 text-emerald-700">
+              <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
               High intent
             </span>
           )}
@@ -266,14 +266,14 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
               <div className="flex flex-wrap items-center gap-1 px-3 h-11 border-t border-black/[0.06]">
                 <button
                   onClick={copyAndOpen}
-                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium text-ink-600 hover:text-ink-900 hover:bg-[#f6f3ee] transition-colors"
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium text-ink-600 hover:text-ink-900 hover:bg-[#f7f6f4] transition-colors"
                 >
                   <Copy className="h-3 w-3" />
                   Copy and open
                 </button>
                 <button
                   onClick={() => { setDraft(reply); setEditing(true); }}
-                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium text-ink-600 hover:text-ink-900 hover:bg-[#f6f3ee] transition-colors"
+                  className="inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium text-ink-600 hover:text-ink-900 hover:bg-[#f7f6f4] transition-colors"
                 >
                   <Edit3 className="h-3 w-3" />
                   Edit
@@ -287,7 +287,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
                   className={`inline-flex items-center gap-1.5 h-8 px-2.5 rounded-lg text-[12px] font-medium transition-colors ${
                     publishedUrl
                       ? 'text-emerald-700'
-                      : 'text-ink-600 hover:text-ink-900 hover:bg-[#f6f3ee]'
+                      : 'text-ink-600 hover:text-ink-900 hover:bg-[#f7f6f4]'
                   }`}
                   title="Posted it on Reddit? Mark it done so it moves to your Replied tab"
                 >

@@ -67,10 +67,12 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // Warm neutrals for the app shell. `paper` is the page background,
-        // `ink` the text ramp — both slightly warm so white cards get depth.
-        paper: '#faf8f4',
-        cream: '#f4efe7',
+        // The app shell is white, like the marketing pages. `cream` is the
+        // one step down, used for the sidebar and hover tints; it keeps a
+        // trace of warmth so the greys never read blue. `ink` is the text
+        // ramp, still warm, so type on white has depth without going black.
+        paper: '#ffffff',
+        cream: '#f7f6f4',
         ink: {
           900: '#241d15',
           700: '#453c31',

@@ -252,7 +252,7 @@ export default function ProjectsPage() {
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'recent' | 'name')}
-                    className="h-9 px-2.5 rounded-lg bg-transparent text-[12.5px] font-medium text-ink-400 cursor-pointer transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                    className="h-9 px-2.5 rounded-lg bg-transparent text-[12.5px] font-medium text-ink-400 cursor-pointer transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
                   >
                     <option value="recent">Recent</option>
                     <option value="name">Name</option>

@@ -18,10 +18,17 @@ interface StatsStripProps {
   rescoring: boolean;
 }
 
-function Figure({ value, label }: { value: string; label: string }) {
+/**
+ * One number and its label. `tone="good"` colours the number green, which is
+ * reserved for the figure a user actually wants to go up: high intent leads.
+ * Everything else stays ink, so the one green number carries real meaning.
+ */
+function Figure({ value, label, tone = 'plain' }: { value: string; label: string; tone?: 'plain' | 'good' }) {
   return (
     <span className="whitespace-nowrap">
-      <span className="font-semibold text-ink-900 tabular-nums">{value}</span>
+      <span className={`font-semibold tabular-nums ${tone === 'good' ? 'text-emerald-600' : 'text-ink-900'}`}>
+        {value}
+      </span>
       <span className="text-ink-400"> {label}</span>
     </span>
   );
@@ -45,7 +52,7 @@ export function StatsStrip({ stats, onOpenAnalytics, onRescore, rescoring }: Sta
       >
         <Figure value={String(stats.total)} label={stats.total === 1 ? 'lead' : 'leads'} />
         {dot}
-        <Figure value={String(stats.highIntent)} label="high intent" />
+        <Figure value={String(stats.highIntent)} label="high intent" tone="good" />
         {dot}
         <Figure value={stats.avgRelevance === null ? '—' : `${stats.avgRelevance}%`} label="avg match" />
         {stats.topSubreddit && (
@@ -71,7 +78,7 @@ export function StatsStrip({ stats, onOpenAnalytics, onRescore, rescoring }: Sta
           disabled={rescoring}
           title={`${stats.unscored} leads have not been AI-scored yet, so they cannot be ranked by relevance`}
           className="ml-auto inline-flex items-center gap-1.5 h-7 px-2.5 rounded-lg text-[12px] font-medium text-ink-600
-            hover:text-ink-900 hover:bg-[#f6f3ee] transition-colors disabled:opacity-50
+            hover:text-ink-900 hover:bg-[#f7f6f4] transition-colors disabled:opacity-50
             focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
         >
           {rescoring ? <Loader2 className="h-3 w-3 animate-spin" /> : null}

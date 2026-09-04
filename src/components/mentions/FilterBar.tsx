@@ -52,7 +52,7 @@ function QuietSelect({
         onChange={(e) => onChange(e.target.value)}
         aria-label={label}
         className={`appearance-none h-8 pl-2.5 pr-7 rounded-lg bg-transparent text-[12.5px] font-medium cursor-pointer
-          transition-colors hover:bg-[#f6f3ee] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25
+          transition-colors hover:bg-[#f7f6f4] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25
           ${active ? 'text-ink-900 bg-[#f2ede6]' : 'text-ink-400'}`}
       >
         {children}

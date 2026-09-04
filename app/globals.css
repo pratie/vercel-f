@@ -10,8 +10,8 @@ html {
 
 @layer base {
   :root {
-    /* Warm paper palette — the app should feel like good stationery, not a spreadsheet */
-    --background: 36 33% 97%;
+    /* White page, warm ink. Surfaces separate with hairlines, not fills. */
+    --background: 0 0% 100%;
     --foreground: 30 22% 10%;
 
     --card: 0 0% 100%;
@@ -23,10 +23,10 @@ html {
     --primary: 16 100% 50%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 35 30% 93%;
+    --secondary: 40 14% 96%;
     --secondary-foreground: 30 22% 12%;
 
-    --muted: 35 30% 93%;
+    --muted: 40 14% 96%;
     --muted-foreground: 30 7% 46%;
 
     --accent: 22 100% 95%;
@@ -35,7 +35,7 @@ html {
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 36 24% 89%;
+    --border: 40 12% 92%;
     --input: 36 24% 86%;
     --ring: 16 100% 50%;
 

@@ -204,7 +204,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                     onKeyDown={(e) => e.key === 'Enter' && handleAnalyzeUrl()}
                     placeholder="https://yourproduct.com"
                     autoFocus
-                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
+                    className="w-full h-11 pl-10 pr-4 rounded-xl border border-[#eeecea] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                   />
                 </div>
               </div>
@@ -242,7 +242,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       value={name}
                       onChange={(e) => setName(e.target.value)}
                       placeholder="e.g., Sneakyguy AI"
-                      className="w-full h-10 px-3 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
+                      className="w-full h-10 px-3 rounded-xl border border-[#eeecea] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                     />
                   </div>
                   <div className="space-y-1.5">
@@ -252,7 +252,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       onChange={(e) => setDescription(e.target.value)}
                       placeholder="Describe what your product does and who it's for..."
                       rows={3}
-                      className="w-full px-3 py-2.5 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200 resize-none"
+                      className="w-full px-3 py-2.5 rounded-xl border border-[#eeecea] bg-white text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200 resize-none"
                     />
                   </div>
                   <button
@@ -284,7 +284,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                   <li key={label} className="flex items-center gap-2.5 text-xs">
                     <span
                       className={`h-1.5 w-1.5 rounded-full shrink-0 transition-colors ${
-                        done ? 'bg-orange-500' : active ? 'bg-orange-500 animate-pulse' : 'bg-[#e9e1d4]'
+                        done ? 'bg-orange-500' : active ? 'bg-orange-500 animate-pulse' : 'bg-[#eeecea]'
                       }`}
                       aria-hidden="true"
                     />
@@ -322,7 +322,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                       <input
                         value={name}
                         onChange={(e) => setName(e.target.value)}
-                        className="w-full h-9 px-3 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
+                        className="w-full h-9 px-3 rounded-xl border border-[#eeecea] bg-white text-sm text-ink-900 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200"
                       />
                     </div>
                     <div className="space-y-1.5">
@@ -331,7 +331,7 @@ export function CreateProjectDialog({ open, onOpenChange, onSubmit, initialUrl }
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
                         rows={2}
-                        className="w-full px-3 py-2 rounded-xl border border-[#e9e1d4] bg-white text-sm text-ink-900 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200 resize-none"
+                        className="w-full px-3 py-2 rounded-xl border border-[#eeecea] bg-white text-sm text-ink-900 focus:outline-none focus:ring-2 focus:ring-orange-400/30 focus:border-orange-300 transition-[border-color,box-shadow] duration-200 resize-none"
                       />
                     </div>
                     <button

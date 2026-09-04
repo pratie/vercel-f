@@ -93,7 +93,7 @@ export function Sidebar() {
       <>
         {/* Logo + collapse toggle */}
         <div className={cn(
-          'h-14 flex items-center border-b border-[#e9e1d4]/70 shrink-0',
+          'h-14 flex items-center border-b border-[#eeecea]/70 shrink-0',
           showLabels ? 'px-5 justify-between' : 'px-0 justify-center'
         )}>
           <Link href="/projects" className="flex items-center gap-2 min-w-0">
@@ -112,7 +112,7 @@ export function Sidebar() {
           {!isDrawer && showLabels && (
             <button
               onClick={toggleCollapse}
-              className="p-1 rounded-lg text-ink-300 hover:text-ink-600 hover:bg-white/60 transition-colors duration-150"
+              className="p-1 rounded-lg text-ink-300 hover:text-ink-600 hover:bg-black/[0.035] transition-colors duration-150"
               aria-label="Collapse sidebar"
             >
               <ChevronsLeft className="h-4 w-4" />
@@ -124,7 +124,7 @@ export function Sidebar() {
           <div className="px-2 pt-2">
             <button
               onClick={toggleCollapse}
-              className="w-full p-2 rounded-xl text-ink-300 hover:text-ink-600 hover:bg-white/60 transition-colors duration-150 flex items-center justify-center"
+              className="w-full p-2 rounded-xl text-ink-300 hover:text-ink-600 hover:bg-black/[0.035] transition-colors duration-150 flex items-center justify-center"
               aria-label="Expand sidebar"
             >
               <ChevronsRight className="h-4 w-4" />
@@ -145,8 +145,8 @@ export function Sidebar() {
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
                 showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5',
                 item.active
-                  ? 'bg-white text-orange-600 shadow-card'
-                  : 'text-ink-600 hover:text-ink-900 hover:bg-white/60'
+                  ? 'bg-white text-[#d94100] shadow-card'
+                  : 'text-ink-600 hover:text-ink-900 hover:bg-black/[0.035]'
               )}
               aria-current={item.active ? 'page' : undefined}
             >
@@ -177,8 +177,8 @@ export function Sidebar() {
                         'transition-[color,background-color,box-shadow] duration-200 ease-out',
                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
                         active
-                          ? 'bg-white text-orange-600 shadow-card'
-                          : 'text-ink-600 hover:text-ink-900 hover:bg-white/60'
+                          ? 'bg-white text-[#d94100] shadow-card'
+                          : 'text-ink-600 hover:text-ink-900 hover:bg-black/[0.035]'
                       )}
                       aria-current={active ? 'page' : undefined}
                     >
@@ -197,8 +197,8 @@ export function Sidebar() {
                         'transition-[color,background-color,box-shadow] duration-200 ease-out',
                         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
                         visibilityActive
-                          ? 'bg-white text-orange-600 shadow-card'
-                          : 'text-ink-300 hover:text-ink-900 hover:bg-white/60'
+                          ? 'bg-white text-[#d94100] shadow-card'
+                          : 'text-ink-300 hover:text-ink-900 hover:bg-black/[0.035]'
                       )}
                       aria-current={visibilityActive ? 'page' : undefined}
                     >
@@ -213,7 +213,7 @@ export function Sidebar() {
         {!showLabels && <div className="flex-1" />}
 
         {/* Bottom */}
-        <div className="mt-auto border-t border-[#e9e1d4]/70 shrink-0">
+        <div className="mt-auto border-t border-[#eeecea]/70 shrink-0">
           <div className={cn(showLabels ? 'px-3 pb-3' : 'px-2 pb-3')}>
             {user && showLabels && (
               <div className="px-3 py-1.5 mb-2">
@@ -224,7 +224,7 @@ export function Sidebar() {
               onClick={logout}
               title={!showLabels ? 'Sign out' : undefined}
               className={cn(
-                'w-full flex items-center rounded-lg text-[13px] font-medium text-ink-400 hover:text-ink-700 hover:bg-white/60 transition-colors duration-150',
+                'w-full flex items-center rounded-lg text-[13px] font-medium text-ink-400 hover:text-ink-700 hover:bg-black/[0.035] transition-colors duration-150',
                 'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
                 showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5'
               )}
@@ -241,10 +241,10 @@ export function Sidebar() {
   return (
     <>
       {/* ---- Mobile: sticky top bar (in normal flow, so it never overlaps page content) ---- */}
-      <header className="md:hidden sticky top-0 z-40 h-12 flex items-center gap-3 px-4 bg-[#f6f1e9]/95 backdrop-blur border-b border-[#e9e1d4]">
+      <header className="md:hidden sticky top-0 z-40 h-12 flex items-center gap-3 px-4 bg-[#fbfaf9]/95 backdrop-blur border-b border-[#eeecea]">
         <button
           onClick={() => setDrawerOpen(true)}
-          className="p-1.5 -ml-1.5 rounded-xl text-ink-600 hover:bg-white/60 transition-colors duration-150"
+          className="p-1.5 -ml-1.5 rounded-xl text-ink-600 hover:bg-black/[0.035] transition-colors duration-150"
           aria-label="Open menu"
         >
           <Menu className="h-5 w-5" />
@@ -266,7 +266,7 @@ export function Sidebar() {
       />
       <aside
         className={cn(
-          'md:hidden fixed inset-y-0 left-0 z-50 w-[260px] bg-[#f6f1e9] flex flex-col shadow-xl',
+          'md:hidden fixed inset-y-0 left-0 z-50 w-[260px] bg-[#fbfaf9] flex flex-col shadow-xl',
           'transition-transform duration-200 ease-out',
           drawerOpen ? 'translate-x-0' : '-translate-x-full'
         )}
@@ -275,7 +275,7 @@ export function Sidebar() {
       >
         <button
           onClick={() => setDrawerOpen(false)}
-          className="absolute top-3.5 right-3 p-1.5 rounded-xl text-ink-400 hover:text-ink-600 hover:bg-white/60 transition-colors duration-150"
+          className="absolute top-3.5 right-3 p-1.5 rounded-xl text-ink-400 hover:text-ink-600 hover:bg-black/[0.035] transition-colors duration-150"
           aria-label="Close menu"
         >
           <X className="h-4 w-4" />
@@ -286,7 +286,7 @@ export function Sidebar() {
       {/* ---- Desktop: sticky rail ---- */}
       <aside
         className={cn(
-          'hidden md:flex sticky top-0 h-screen flex-col bg-[#f6f1e9] border-r border-[#e9e1d4] shrink-0',
+          'hidden md:flex sticky top-0 h-screen flex-col bg-[#fbfaf9] border-r border-[#eeecea] shrink-0',
           'transition-[width] duration-200 ease-out',
           collapsed ? 'w-[64px]' : 'w-[230px]'
         )}

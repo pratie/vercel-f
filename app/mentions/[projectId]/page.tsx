@@ -342,14 +342,14 @@ export default function MentionsPage() {
               <button
                 onClick={() => startScan()}
                 disabled={scanStatus === 'scanning'}
-                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
               >
                 <RefreshCw className={`h-3.5 w-3.5 ${scanStatus === 'scanning' ? 'animate-spin text-[#ff4500]' : ''}`} />
                 {scanStatus === 'scanning' ? 'Scanning' : 'Scan now'}
               </button>
               <button
                 onClick={() => router.push(`/mentions/${projectId}/analytics`)}
-                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
               >
                 <BarChart3 className="h-3.5 w-3.5" />
                 Analytics
@@ -360,7 +360,7 @@ export default function MentionsPage() {
                   toast.success(`Exported ${filteredAll.length} leads`);
                 }}
                 disabled={filteredAll.length === 0}
-                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
               >
                 <Download className="h-3.5 w-3.5" />
                 <span className="hidden sm:inline">Export</span>
@@ -397,9 +397,9 @@ export default function MentionsPage() {
           <div className="border-t border-black/[0.06]" aria-busy="true" aria-label="Loading leads">
             {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="border-b border-black/[0.06] py-4 pl-4 pr-4 animate-pulse">
-                <div className="h-[15px] bg-[#f0ece5] rounded" style={{ width: `${[72, 58, 66, 80, 54, 63][i]}%` }} />
-                <div className="mt-2.5 h-[11px] w-1/2 bg-[#f5f2ec] rounded" />
-                <div className="mt-3 h-[9px] w-40 bg-[#f5f2ec] rounded" />
+                <div className="h-[15px] bg-[#f0efed] rounded" style={{ width: `${[72, 58, 66, 80, 54, 63][i]}%` }} />
+                <div className="mt-2.5 h-[11px] w-1/2 bg-[#f6f5f3] rounded" />
+                <div className="mt-3 h-[9px] w-40 bg-[#f6f5f3] rounded" />
               </div>
             ))}
           </div>
@@ -443,8 +443,8 @@ export default function MentionsPage() {
               <div className="mt-8 border-t border-black/[0.06]">
                 {Array.from({ length: 3 }).map((_, i) => (
                   <div key={i} className="border-b border-black/[0.06] py-4 animate-pulse">
-                    <div className="h-[15px] bg-[#f0ece5] rounded" style={{ width: `${[70, 55, 64][i]}%` }} />
-                    <div className="mt-2.5 h-[11px] w-1/2 bg-[#f5f2ec] rounded" />
+                    <div className="h-[15px] bg-[#f0efed] rounded" style={{ width: `${[70, 55, 64][i]}%` }} />
+                    <div className="mt-2.5 h-[11px] w-1/2 bg-[#f6f5f3] rounded" />
                   </div>
                 ))}
               </div>
@@ -479,7 +479,7 @@ export default function MentionsPage() {
               <div className="mt-8 mb-10 flex justify-center">
                 <button
                   onClick={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
-                  className="h-9 px-4 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f6f3ee] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                  className="h-9 px-4 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
                 >
                   Show {Math.min(MENTIONS_PER_PAGE, filteredAll.length - visibleCount)} more
                 </button>
