@@ -9,8 +9,8 @@
  * productive instead of empty.
  *
  * Two tones, because the same bar has to read on two different surfaces:
- *   base   #1c1917  sits on the page canvas (#0c0a09)
- *   raised #292524  sits inside a panel that is already #1c1917
+ *   base   #ffffff  sits on the page canvas (#faf8f5)
+ *   raised #f3efe9  sits inside a panel that is already #ffffff
  * Picking the wrong tone makes the placeholder invisible, so every skeleton
  * that lives inside a panel passes tone="raised".
  *
@@ -25,8 +25,8 @@ import { cn } from '@/lib/utils';
 export type SkeletonTone = 'base' | 'raised';
 
 const TONE_CLASS: Record<SkeletonTone, string> = {
-  base: 'bg-[#1c1917]',
-  raised: 'bg-[#292524]',
+  base: 'bg-[#ffffff]',
+  raised: 'bg-[#f3efe9]',
 };
 
 /* -------------------------------------------------------------------------- */
@@ -46,7 +46,7 @@ function Sheen() {
   return (
     <motion.span
       aria-hidden
-      className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-white/[0.055] to-transparent"
+      className="pointer-events-none absolute inset-y-0 -left-1/2 w-1/2 bg-gradient-to-r from-transparent via-black/[0.055] to-transparent"
       animate={{ x: ['0%', '400%'] }}
       transition={{ duration: 1.5, repeat: Infinity, ease: 'linear', repeatDelay: 0.3 }}
     />
@@ -62,7 +62,7 @@ export interface SkeletonLineProps {
   width?: string;
   /** Height utility. Bump it for headings. */
   height?: string;
-  /** Surface this sits on. 'raised' when inside a #1c1917 panel. */
+  /** Surface this sits on. 'raised' when inside a #ffffff panel. */
   tone?: SkeletonTone;
   className?: string;
 }
@@ -121,7 +121,7 @@ export function SkeletonCard({ lines = 3, header = true, className }: SkeletonCa
   return (
     <div
       aria-hidden
-      className={cn('rounded-2xl border border-white/[0.08] bg-[#1c1917] p-5 sm:p-6', className)}
+      className={cn('rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6', className)}
     >
       {header && (
         <div className="mb-5 flex items-center gap-3">

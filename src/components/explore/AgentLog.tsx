@@ -24,7 +24,7 @@ import { ONBOARDING_STEP_COUNT, type OnboardingLogEntry, type OnboardingPhase } 
 export interface LiveDotProps {
   /** Emit the expanding ring. Off for terminal states so the screen goes calm. */
   pulse?: boolean;
-  /** Tailwind colour class for the dot, e.g. 'bg-[#34d399]'. */
+  /** Tailwind colour class for the dot, e.g. 'bg-[#059669]'. */
   className?: string;
 }
 
@@ -39,12 +39,12 @@ export function LiveDot({ pulse = true, className }: LiveDotProps) {
     <span className="relative inline-flex h-1.5 w-1.5 shrink-0" aria-hidden>
       {pulse && !reduce && (
         <motion.span
-          className={cn('absolute inset-0 rounded-full bg-[#34d399]', className)}
+          className={cn('absolute inset-0 rounded-full bg-[#059669]', className)}
           animate={{ opacity: [0.55, 0, 0.55], scale: [1, 2.6, 1] }}
           transition={{ duration: 1.9, repeat: Infinity, ease: 'easeOut' }}
         />
       )}
-      <span className={cn('relative h-1.5 w-1.5 rounded-full bg-[#34d399]', className)} />
+      <span className={cn('relative h-1.5 w-1.5 rounded-full bg-[#059669]', className)} />
     </span>
   );
 }
@@ -94,11 +94,11 @@ export function AgentLog({ log, phaseIndex, phase, maxLines, hideHeader = false,
       {!hideHeader && (
         <div className="mb-3 flex items-center gap-2 text-[11px] leading-[1.4]">
           {failed ? (
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#78716c]" aria-hidden />
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a827b]" aria-hidden />
           ) : (
             <LiveDot pulse={!ready} />
           )}
-          <span className={failed ? 'text-[#a8a29e]' : 'text-[#d6d3d1]'}>
+          <span className={failed ? 'text-[#78716c]' : 'text-[#44403c]'}>
             {failed
               ? 'SneakyGuy stopped early'
               : ready
@@ -131,13 +131,13 @@ export function AgentLog({ log, phaseIndex, phase, maxLines, hideHeader = false,
               >
                 <span className="mt-[3px] flex h-3 w-3 shrink-0 items-center justify-center" aria-hidden>
                   {entry.done ? (
-                    <Check className="h-3 w-3 text-[#34d399]/55" strokeWidth={2.5} />
+                    <Check className="h-3 w-3 text-[#059669]/55" strokeWidth={2.5} />
                   ) : (
-                    <span className="h-1 w-1 rounded-full bg-[#78716c]" />
+                    <span className="h-1 w-1 rounded-full bg-[#8a827b]" />
                   )}
                 </span>
 
-                <span className={cn('min-w-0 break-words', entry.done ? 'text-[#78716c]' : 'text-[#d6d3d1]')}>
+                <span className={cn('min-w-0 break-words', entry.done ? 'text-[#8a827b]' : 'text-[#44403c]')}>
                   {entry.text}
                   {!entry.done && <BlinkingCursor />}
                 </span>
@@ -159,12 +159,12 @@ export function AgentLog({ log, phaseIndex, phase, maxLines, hideHeader = false,
 function BlinkingCursor() {
   const reduce = useReducedMotion();
   if (reduce) {
-    return <span aria-hidden className="ml-[3px] inline-block h-[1em] w-[1ch] translate-y-[2px] bg-[#d6d3d1] opacity-50" />;
+    return <span aria-hidden className="ml-[3px] inline-block h-[1em] w-[1ch] translate-y-[2px] bg-[#44403c] opacity-50" />;
   }
   return (
     <motion.span
       aria-hidden
-      className="ml-[3px] inline-block h-[1em] w-[1ch] translate-y-[2px] bg-[#d6d3d1]"
+      className="ml-[3px] inline-block h-[1em] w-[1ch] translate-y-[2px] bg-[#44403c]"
       animate={{ opacity: [1, 0, 1] }}
       transition={{ duration: 1, repeat: Infinity, ease: 'linear', times: [0, 0.5, 1] }}
     />

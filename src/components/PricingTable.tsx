@@ -104,16 +104,16 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
             transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="relative w-full max-w-md"
           >
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1c1917] shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_18px_40px_-24px_rgba(0,0,0,0.9)]">
+            <div className="relative overflow-hidden rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] shadow-[0_1px_0_0_rgba(255,255,255,0.04)_inset,0_18px_40px_-24px_rgba(0,0,0,0.9)]">
               <div className={compact ? 'p-6' : 'p-8'}>
                 {/* Badge. Understated on purpose: the price and the button carry
                     this card, a shouting badge would only compete with them. */}
                 <div className="flex items-center justify-between mb-6">
-                  <span className="rounded-md border border-white/[0.08] bg-[#292524] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#a8a29e]">
+                  <span className="rounded-md border border-black/[0.08] bg-[#f3efe9] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
                     Most Popular
                   </span>
-                  <div className="flex items-center gap-1.5 text-[10px] font-medium text-[#78716c]">
-                    <Shield className="h-3 w-3 text-[#34d399]" />
+                  <div className="flex items-center gap-1.5 text-[10px] font-medium text-[#8a827b]">
+                    <Shield className="h-3 w-3 text-[#059669]" />
                     Secure checkout
                   </div>
                 </div>
@@ -121,17 +121,17 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 {/* Price. The hero of the card. */}
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1.5">
-                    <span className="text-5xl font-extrabold tracking-tight tabular-nums text-[#fafaf9]">{plan.price}</span>
-                    <span className="text-sm font-medium text-[#a8a29e]">/ {plan.billing}</span>
+                    <span className="text-5xl font-extrabold tracking-tight tabular-nums text-[#1c1917]">{plan.price}</span>
+                    <span className="text-sm font-medium text-[#78716c]">/ {plan.billing}</span>
                   </div>
-                  <p className="mt-1.5 text-xs text-[#a8a29e]">Full {plan.duration} access. No auto-renewal.</p>
+                  <p className="mt-1.5 text-xs text-[#78716c]">Full {plan.duration} access. No auto-renewal.</p>
                 </div>
 
                 {/* CTA. The single loudest element on whatever page hosts this. */}
                 <Button
                   onClick={() => handlePlanSelect(plan.id)}
                   disabled={checkoutLoading === plan.id}
-                  className="group h-12 w-full rounded-xl bg-[#ff4500] text-sm font-semibold text-white shadow-none transition-opacity duration-200 hover:bg-[#ff4500] hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1917]"
+                  className="group h-12 w-full rounded-xl bg-[#ff4500] text-sm font-semibold text-white shadow-none transition-opacity duration-200 hover:bg-[#ff4500] hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]"
                 >
                   {checkoutLoading === plan.id ? (
                     <div className="flex items-center gap-2">
@@ -148,15 +148,15 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
 
                 {/* Features */}
                 {!compact && (
-                  <div className="mt-7 border-t border-white/[0.08] pt-7">
-                    <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">What you get</p>
+                  <div className="mt-7 border-t border-black/[0.08] pt-7">
+                    <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]">What you get</p>
                     <ul className="space-y-3">
                       {features.map((feature, idx) => (
                         <li key={idx} className="flex items-start gap-2.5">
-                          <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-[#34d399]/20 bg-[#34d399]/[0.09]">
-                            <Check className="w-2.5 h-2.5 text-[#34d399]" strokeWidth={3} />
+                          <span className="mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border border-[#059669]/20 bg-[#059669]/[0.09]">
+                            <Check className="w-2.5 h-2.5 text-[#059669]" strokeWidth={3} />
                           </span>
-                          <span className="text-sm leading-relaxed text-[#d6d3d1]">{feature}</span>
+                          <span className="text-sm leading-relaxed text-[#44403c]">{feature}</span>
                         </li>
                       ))}
                     </ul>

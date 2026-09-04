@@ -23,7 +23,7 @@ import { cn } from '@/lib/utils';
 import { SkeletonChipRow } from './Skeletons';
 
 /** The uppercase micro-label used across every /explore card. */
-const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]';
+const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]';
 
 /** Roughly 40ms apart, capped so a 20 chip list does not crawl. */
 const STAGGER = 0.04;
@@ -65,7 +65,7 @@ export function PhaseCommunities({ keywords, subreddits, loading, className }: P
         chipCount={6}
         items={keywordItems}
         empty="No buying-intent keywords came back for this site. That usually means the page copy is very broad."
-        renderChip={(keyword) => <span className="text-[#d6d3d1]">{keyword}</span>}
+        renderChip={(keyword) => <span className="text-[#44403c]">{keyword}</span>}
       />
 
       <Column
@@ -77,8 +77,8 @@ export function PhaseCommunities({ keywords, subreddits, loading, className }: P
         empty="No subreddits matched closely enough to recommend yet."
         renderChip={(subreddit) => (
           <>
-            <span className="text-[#78716c]">r/</span>
-            <span className="text-[#d6d3d1]">{subreddit}</span>
+            <span className="text-[#8a827b]">r/</span>
+            <span className="text-[#44403c]">{subreddit}</span>
           </>
         )}
       />
@@ -106,13 +106,13 @@ function Column({ label, caption, loading, chipCount, items, empty, renderChip }
   return (
     <div>
       <p className={MICRO_LABEL}>{label}</p>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-[#a8a29e]">{caption}</p>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-[#78716c]">{caption}</p>
 
       <div className="mt-4">
         {loading ? (
           <SkeletonChipRow count={chipCount} />
         ) : items.length === 0 ? (
-          <p className="text-[13px] leading-relaxed text-[#78716c]">{empty}</p>
+          <p className="text-[13px] leading-relaxed text-[#8a827b]">{empty}</p>
         ) : (
           <ul className="flex flex-wrap gap-2">
             {items.map((item, index) => (
@@ -125,7 +125,7 @@ function Column({ label, caption, loading, chipCount, items, empty, renderChip }
                   delay: reduce ? 0 : Math.min(index, MAX_STAGGER_STEPS) * STAGGER,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="rounded-full border border-white/[0.08] bg-[#1c1917] px-3 py-1.5 text-[13px] leading-tight"
+                className="rounded-full border border-black/[0.08] bg-[#ffffff] px-3 py-1.5 text-[13px] leading-tight"
               >
                 {renderChip(item)}
               </motion.li>

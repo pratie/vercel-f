@@ -70,17 +70,17 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
   const failed = phase === 'failed';
 
   return (
-    <div className="min-h-screen bg-[#0c0a09] text-[#d6d3d1] lg:flex">
+    <div className="min-h-screen bg-[#faf8f5] text-[#44403c] lg:flex">
       {/* ---- Left rail ------------------------------------------------- */}
-      <aside className="hidden border-r border-white/[0.08] lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:shrink-0 lg:flex-col">
-        <div className="flex h-16 shrink-0 items-center border-b border-white/[0.08] px-5">
+      <aside className="hidden border-r border-black/[0.08] lg:sticky lg:top-0 lg:flex lg:h-screen lg:w-[300px] lg:shrink-0 lg:flex-col">
+        <div className="flex h-16 shrink-0 items-center border-b border-black/[0.08] px-5">
           <Link href="/" className="flex items-center gap-2.5">
             <Image src="/logo-dark.png" alt="" width={34} height={21} priority className="h-auto w-[34px] no-outline" />
-            <span className="text-[14px] font-semibold tracking-tight text-[#fafaf9]">SneakyGuy</span>
+            <span className="text-[14px] font-semibold tracking-tight text-[#1c1917]">SneakyGuy</span>
           </Link>
         </div>
 
-        <div className="shrink-0 border-b border-white/[0.08] px-5 py-5">
+        <div className="shrink-0 border-b border-black/[0.08] px-5 py-5">
           <AgentLog log={log} phase={phase} phaseIndex={phaseIndex} />
         </div>
 
@@ -90,7 +90,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
       {/* ---- Main canvas ------------------------------------------------ */}
       {/* pb clears the fixed OfferBar so the last card and the mobile log never sit under it. */}
       <main className="min-w-0 flex-1 pb-28">
-        <div className="sticky top-0 z-20 border-b border-white/[0.08] bg-[#0c0a09]/[0.92] px-5 py-4 backdrop-blur-md sm:px-8">
+        <div className="sticky top-0 z-20 border-b border-black/[0.08] bg-[#faf8f5]/[0.92] px-5 py-4 backdrop-blur-md sm:px-8">
           <div className="mb-3.5 flex items-center gap-2.5 lg:mb-4">
             {/* The logo also has to carry the header below lg, where the rail
                 is gone. */}
@@ -98,8 +98,8 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
               <Image src="/logo-dark.png" alt="SneakyGuy" width={30} height={19} priority className="h-auto w-[30px] no-outline" />
             </Link>
             {domain && (
-              <p className="min-w-0 truncate font-mono text-[12px] text-[#78716c]">
-                <span className="text-[#a8a29e]">{domain}</span>
+              <p className="min-w-0 truncate font-mono text-[12px] text-[#8a827b]">
+                <span className="text-[#78716c]">{domain}</span>
               </p>
             )}
           </div>
@@ -114,7 +114,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
 
         {/* Below lg the rail is hidden, so the narration and the findings have
             to live in the canvas or mobile visitors watch a blank screen. */}
-        <div className="border-t border-white/[0.08] px-5 py-6 sm:px-8 lg:hidden">
+        <div className="border-t border-black/[0.08] px-5 py-6 sm:px-8 lg:hidden">
           <AgentLog log={log} phase={phase} phaseIndex={phaseIndex} maxLines={4} />
           {findings && <div className="mt-6">{findings}</div>}
         </div>
@@ -133,17 +133,17 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
  */
 export function ExploreFatalScreen({ fatal }: { fatal: ExploreFatal }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0c0a09] px-6 text-center">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#faf8f5] px-6 text-center">
       <Image src="/logo-dark.png" alt="SneakyGuy" width={34} height={21} priority className="h-auto w-[34px] no-outline" />
 
-      <div className="mt-8 flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.08] bg-[#1c1917]">
-        <AlertTriangle className="h-4 w-4 text-[#a8a29e]" />
+      <div className="mt-8 flex h-10 w-10 items-center justify-center rounded-full border border-black/[0.08] bg-[#ffffff]">
+        <AlertTriangle className="h-4 w-4 text-[#78716c]" />
       </div>
 
-      <h1 className="mt-5 max-w-md text-[20px] font-semibold tracking-tight text-[#fafaf9] sm:text-[22px]">
+      <h1 className="mt-5 max-w-md text-[20px] font-semibold tracking-tight text-[#1c1917] sm:text-[22px]">
         {fatal.title}
       </h1>
-      <p className="mt-2.5 max-w-md text-[14px] leading-relaxed text-[#a8a29e]">{fatal.message}</p>
+      <p className="mt-2.5 max-w-md text-[14px] leading-relaxed text-[#78716c]">{fatal.message}</p>
 
       <div className="mt-7">
         {fatal.action ?? (
@@ -162,11 +162,11 @@ export function ExploreFatalScreen({ fatal }: { fatal: ExploreFatal }) {
 /** Inline banner for a run that died partway through. */
 function ExploreFailureNote({ message }: { message: string }) {
   return (
-    <div className="mb-6 flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#1c1917] p-4">
-      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#a8a29e]" />
+    <div className="mb-6 flex items-start gap-3 rounded-xl border border-black/[0.08] bg-[#ffffff] p-4">
+      <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[#78716c]" />
       <div className="min-w-0">
-        <p className="text-[13.5px] font-medium text-[#fafaf9]">We could not finish this run</p>
-        <p className="mt-1 text-[13px] leading-relaxed text-[#a8a29e]">{message}</p>
+        <p className="text-[13.5px] font-medium text-[#1c1917]">We could not finish this run</p>
+        <p className="mt-1 text-[13px] leading-relaxed text-[#78716c]">{message}</p>
       </div>
     </div>
   );
@@ -191,10 +191,10 @@ function ExploreCanvasWaiting({
   return (
     <div className="flex min-h-[40vh] flex-col items-center justify-center text-center">
       {!failed && <LiveDot pulse={!ready} />}
-      <p className="mt-4 font-mono text-[12.5px] text-[#78716c]">
+      <p className="mt-4 font-mono text-[12.5px] text-[#8a827b]">
         {failed ? 'stopped' : ready ? 'all done' : `step ${Math.min(phaseIndex + 1, ONBOARDING_STEP_COUNT)} of ${ONBOARDING_STEP_COUNT}`}
       </p>
-      <p className={cn('mt-1.5 text-[17px] font-medium tracking-tight text-[#d6d3d1]')}>{label}</p>
+      <p className={cn('mt-1.5 text-[17px] font-medium tracking-tight text-[#44403c]')}>{label}</p>
     </div>
   );
 }

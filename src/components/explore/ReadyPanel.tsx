@@ -27,7 +27,7 @@ import { ArrowRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { OnboardingSession } from '@/lib/onboarding';
 
-const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]';
+const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]';
 
 /** The only price this flow may ever show. One month, no auto renewal. */
 const PRICE_LABEL = '$19';
@@ -89,15 +89,15 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
     >
       <p className={MICRO_LABEL}>Your analysis is done</p>
 
-      <h2 className="mt-3 text-[22px] font-semibold leading-tight tracking-tight text-[#fafaf9] sm:text-[26px]">
+      <h2 className="mt-3 text-[22px] font-semibold leading-tight tracking-tight text-[#1c1917] sm:text-[26px]">
         Here is what we found for {brand}
       </h2>
 
       {description && (
-        <p className="mt-2.5 text-[14px] leading-relaxed text-[#a8a29e]">{description}</p>
+        <p className="mt-2.5 text-[14px] leading-relaxed text-[#78716c]">{description}</p>
       )}
 
-      <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.08] sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/[0.08] bg-black/[0.08] sm:grid-cols-4">
         <Stat value={keywordCount} label={keywordCount === 1 ? 'buying intent keyword' : 'buying intent keywords'} />
         <Stat value={subredditCount} label={subredditCount === 1 ? 'subreddit to watch' : 'subreddits to watch'} />
         {/*
@@ -119,17 +119,17 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <Stat value={threadCount} label={threadCount === 1 ? 'thread waiting' : 'threads waiting'} />
       </div>
 
-      <div className="mt-6 rounded-2xl border border-white/[0.08] bg-[#1c1917] p-5 sm:p-6">
+      <div className="mt-6 rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
         {/*
           Phases 2 and 3 are allowed to come back empty without failing the
           session, so this panel can legitimately render with zero threads.
           The heading has to survive that: pointing at "these threads" when
           there are none is the kind of small lie that loses the sale.
         */}
-        <p className="text-[15px] font-semibold tracking-tight text-[#fafaf9] sm:text-[16px]">
+        <p className="text-[15px] font-semibold tracking-tight text-[#1c1917] sm:text-[16px]">
           {threadCount > 0 ? 'Start replying to these threads' : 'Start catching these conversations'}
         </p>
-        <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#a8a29e]">
+        <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#78716c]">
           {PRICE_LABEL} for one month, no auto renewal. We keep watching{' '}
           {subredditCount > 0 ? `those ${subredditCount} subreddits` : 'your subreddits'}, surface new threads as they
           appear, draft the reply in your voice, and track whether the assistants start naming {brand}.
@@ -138,7 +138,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <button
           type="button"
           onClick={handleCta}
-          className="group mt-5 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-[#ff4500] px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1917] sm:w-auto"
+          className="group mt-5 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-[#ff4500] px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff] sm:w-auto"
         >
           Get started for {PRICE_LABEL}
           <ArrowRight
@@ -147,7 +147,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
           />
         </button>
 
-        <p className="mt-3 text-[12px] leading-relaxed text-[#78716c]">
+        <p className="mt-3 text-[12px] leading-relaxed text-[#8a827b]">
           You will create your account on the next screen. Nothing is charged until you choose to pay.
         </p>
       </div>
@@ -157,7 +157,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <button
           type="button"
           onClick={handleStartOver}
-          className="text-[13px] text-[#78716c] underline underline-offset-4 transition-colors hover:text-[#a8a29e] focus:outline-none focus-visible:text-[#a8a29e]"
+          className="text-[13px] text-[#8a827b] underline underline-offset-4 transition-colors hover:text-[#78716c] focus:outline-none focus-visible:text-[#78716c]"
         >
           Not right now, run this on a different website
         </button>
@@ -180,16 +180,16 @@ function Stat({
   highlight?: boolean;
 }) {
   return (
-    <div className="bg-[#1c1917] px-4 py-4">
+    <div className="bg-[#ffffff] px-4 py-4">
       <p
         className={cn(
           'font-mono text-[22px] leading-none tabular-nums',
-          highlight ? 'text-[#fafaf9]' : 'text-[#d6d3d1]',
+          highlight ? 'text-[#1c1917]' : 'text-[#44403c]',
         )}
       >
         {value}
       </p>
-      <p className="mt-2 text-[11.5px] leading-snug text-[#78716c]">{label}</p>
+      <p className="mt-2 text-[11.5px] leading-snug text-[#8a827b]">{label}</p>
     </div>
   );
 }

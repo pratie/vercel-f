@@ -77,7 +77,7 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
         const isActive = index === active;
         return (
           <Fragment key={label}>
-            {index > 0 && <span className="h-px w-4 shrink-0 bg-white/[0.08] sm:w-7" aria-hidden />}
+            {index > 0 && <span className="h-px w-4 shrink-0 bg-black/[0.08] sm:w-7" aria-hidden />}
 
             <motion.div
               ref={isActive ? activeRef : undefined}
@@ -93,16 +93,16 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
                 <motion.span
                   layoutId="explore-active-step-pill"
                   transition={transition}
-                  className="absolute inset-0 rounded-full border border-white/[0.08] bg-[#1c1917]"
+                  className="absolute inset-0 rounded-full border border-black/[0.08] bg-[#ffffff]"
                 />
               ) : (
-                <span className="absolute inset-0 rounded-full border border-white/[0.08]" aria-hidden />
+                <span className="absolute inset-0 rounded-full border border-black/[0.08]" aria-hidden />
               )}
 
               {isActive && (
                 <span className="relative z-10 flex items-center">
                   {failed ? (
-                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#78716c]" aria-hidden />
+                    <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#8a827b]" aria-hidden />
                   ) : (
                     <LiveDot pulse={!complete} />
                   )}
@@ -112,7 +112,7 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
               <span
                 className={cn(
                   'relative z-10 font-mono text-[12px] tabular-nums',
-                  isActive ? 'text-[#fafaf9]' : 'text-[#78716c]',
+                  isActive ? 'text-[#1c1917]' : 'text-[#8a827b]',
                 )}
               >
                 {index + 1}
@@ -128,7 +128,7 @@ export function StepRail({ activeIndex, complete = false, failed = false, classN
                   initial={reduce ? false : { opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ duration: reduce ? 0 : 0.2, delay: reduce ? 0 : 0.06 }}
-                  className="relative z-10 whitespace-nowrap text-[13px] font-medium text-[#fafaf9]"
+                  className="relative z-10 whitespace-nowrap text-[13px] font-medium text-[#1c1917]"
                 >
                   {label}
                 </motion.span>

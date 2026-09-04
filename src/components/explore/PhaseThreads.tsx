@@ -17,7 +17,7 @@ import { cn } from '@/lib/utils';
 import type { OnboardingThread } from '@/lib/onboarding';
 import { SkeletonBlock, SkeletonLine } from './Skeletons';
 
-const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]';
+const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]';
 
 export interface PhaseThreadsProps {
   /** threads off the poll response. Empty until phase 3 finishes. */
@@ -41,7 +41,7 @@ export function PhaseThreads({ threads, loading, className }: PhaseThreadsProps)
   return (
     <section className={cn('mx-auto w-full max-w-3xl', className)} aria-busy={isLoading}>
       <p className={MICRO_LABEL}>Threads to join</p>
-      <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#a8a29e]">
+      <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#78716c]">
         These are the conversations that would change the answer above. A useful reply here is what gets a brand
         named the next time someone asks.
       </p>
@@ -89,23 +89,23 @@ function ThreadRow({ thread }: { thread: OnboardingThread }) {
       href={thread.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#1c1917] p-4 transition-colors duration-200 hover:border-white/[0.14] hover:bg-[#292524] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-white/25"
+      className="group flex items-start gap-3 rounded-xl border border-black/[0.08] bg-[#ffffff] p-4 transition-colors duration-200 hover:border-black/[0.14] hover:bg-[#f3efe9] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-black/25"
     >
       <div className="min-w-0 flex-1">
         {subreddit && (
-          <span className="inline-flex items-center rounded-md border border-white/[0.08] bg-[#292524] px-2 py-0.5 font-mono text-[11px] leading-tight text-[#a8a29e] transition-colors group-hover:text-[#d6d3d1]">
+          <span className="inline-flex items-center rounded-md border border-black/[0.08] bg-[#f3efe9] px-2 py-0.5 font-mono text-[11px] leading-tight text-[#78716c] transition-colors group-hover:text-[#44403c]">
             r/{subreddit}
           </span>
         )}
 
         <p className={cn(
-          'text-[14px] leading-snug text-[#d6d3d1] transition-colors group-hover:text-[#fafaf9]',
+          'text-[14px] leading-snug text-[#44403c] transition-colors group-hover:text-[#1c1917]',
           subreddit && 'mt-2',
         )}>
           {title || 'Untitled thread'}
         </p>
 
-        <div className="mt-2.5 flex items-center gap-4 font-mono text-[11.5px] tabular-nums text-[#78716c]">
+        <div className="mt-2.5 flex items-center gap-4 font-mono text-[11.5px] tabular-nums text-[#8a827b]">
           <span className="inline-flex items-center gap-1">
             <ArrowBigUp className="h-3.5 w-3.5" aria-hidden />
             {formatCount(thread.score)}
@@ -119,7 +119,7 @@ function ThreadRow({ thread }: { thread: OnboardingThread }) {
         </div>
       </div>
 
-      <span className="flex shrink-0 items-center gap-1.5 pt-0.5 text-[11.5px] text-[#78716c] transition-colors group-hover:text-[#fafaf9]">
+      <span className="flex shrink-0 items-center gap-1.5 pt-0.5 text-[11.5px] text-[#8a827b] transition-colors group-hover:text-[#1c1917]">
         <span className="hidden sm:inline">Open on Reddit</span>
         <ArrowUpRight className="h-4 w-4" aria-hidden />
       </span>
@@ -137,8 +137,8 @@ function ThreadRow({ thread }: { thread: OnboardingThread }) {
  */
 function EmptyThreads() {
   return (
-    <div className="rounded-xl border border-white/[0.08] bg-[#1c1917] p-5">
-      <p className="text-[13.5px] leading-relaxed text-[#a8a29e]">
+    <div className="rounded-xl border border-black/[0.08] bg-[#ffffff] p-5">
+      <p className="text-[13.5px] leading-relaxed text-[#78716c]">
         Nothing matched closely enough right now. These subreddits get new posts every day, so the useful thread
         is usually a question that has not been asked yet this week.
       </p>
@@ -156,7 +156,7 @@ function ThreadsSkeleton() {
   return (
     <div className="space-y-2">
       {titleWidths.map((width, i) => (
-        <div key={i} className="flex items-start gap-3 rounded-xl border border-white/[0.08] bg-[#1c1917] p-4">
+        <div key={i} className="flex items-start gap-3 rounded-xl border border-black/[0.08] bg-[#ffffff] p-4">
           <div className="min-w-0 flex-1">
             <SkeletonBlock tone="raised" className="h-5 w-24 rounded-md" />
             <SkeletonLine tone="raised" width={width} height="h-3.5" className="mt-2.5" />

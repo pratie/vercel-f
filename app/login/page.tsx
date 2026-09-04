@@ -139,11 +139,11 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#0c0a09] px-4">
+    <div className="relative flex min-h-screen flex-col items-center justify-center bg-[#faf8f5] px-4">
       {/* Back link */}
       <Link
         href="/"
-        className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-medium text-[#78716c] transition-colors hover:text-[#d6d3d1]"
+        className="absolute top-6 left-6 flex items-center gap-1.5 text-xs font-medium text-[#8a827b] transition-colors hover:text-[#44403c]"
       >
         <ArrowLeft className="h-3.5 w-3.5" />
         Back
@@ -159,29 +159,29 @@ export default function LoginPage() {
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
             <Image src="/logo-dark.png" alt="" width={36} height={22} className="h-auto w-9 no-outline" />
-            <span className="text-lg font-bold text-[#fafaf9]">SneakyGuy</span>
+            <span className="text-lg font-bold text-[#1c1917]">SneakyGuy</span>
           </Link>
         </div>
 
         {/* Card. A step, not a destination: one panel, no ornament. */}
-        <div className="rounded-2xl border border-white/[0.08] bg-[#1c1917] p-8">
-          <h1 className="mb-1 text-center text-xl font-bold text-[#fafaf9]">Welcome back</h1>
-          <p className="mb-7 text-center text-sm text-[#a8a29e]">Sign in to your account to continue</p>
+        <div className="rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-8">
+          <h1 className="mb-1 text-center text-xl font-bold text-[#1c1917]">Welcome back</h1>
+          <p className="mb-7 text-center text-sm text-[#78716c]">Sign in to your account to continue</p>
 
           {showMagicLinkForm ? (
             <div>
               {magicLinkSent ? (
-                <div className="rounded-xl border border-[#34d399]/20 bg-[#34d399]/[0.09] px-3 py-4 text-center">
-                  <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#34d399]/[0.14]">
-                    <Mail className="h-5 w-5 text-[#34d399]" />
+                <div className="rounded-xl border border-[#059669]/20 bg-[#059669]/[0.09] px-3 py-4 text-center">
+                  <div className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-[#059669]/[0.14]">
+                    <Mail className="h-5 w-5 text-[#059669]" />
                   </div>
-                  <p className="mb-1 text-sm font-semibold text-[#fafaf9]">Check your inbox</p>
-                  <p className="text-xs text-[#a8a29e]">We sent a login link to your email.</p>
+                  <p className="mb-1 text-sm font-semibold text-[#1c1917]">Check your inbox</p>
+                  <p className="text-xs text-[#78716c]">We sent a login link to your email.</p>
                 </div>
               ) : (
                 <form onSubmit={handleMagicLinkRequest} className="space-y-3">
                   <div>
-                    <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-[#a8a29e]">
+                    <label htmlFor="email" className="mb-1.5 block text-xs font-medium text-[#78716c]">
                       Email address
                     </label>
                     <input
@@ -191,13 +191,13 @@ export default function LoginPage() {
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="you@company.com"
                       required
-                      className="w-full rounded-xl border border-white/[0.08] bg-[#0c0a09] px-3.5 py-2.5 text-sm text-[#fafaf9] outline-none transition placeholder:text-[#57534e] focus:border-[#ff4500]/50 focus:ring-2 focus:ring-[#ff4500]/25"
+                      className="w-full rounded-xl border border-black/[0.08] bg-[#faf8f5] px-3.5 py-2.5 text-sm text-[#1c1917] outline-none transition placeholder:text-[#c9c2b8] focus:border-[#ff4500]/50 focus:ring-2 focus:ring-[#ff4500]/25"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isRequestingMagicLink}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ff4500] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1917] disabled:opacity-60"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ff4500] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff] disabled:opacity-60"
                   >
                     {isRequestingMagicLink ? (
                       <>
@@ -212,7 +212,7 @@ export default function LoginPage() {
               )}
               <button
                 onClick={toggleMagicLinkForm}
-                className="mt-4 w-full text-center text-xs font-medium text-[#78716c] transition-colors hover:text-[#d6d3d1]"
+                className="mt-4 w-full text-center text-xs font-medium text-[#8a827b] transition-colors hover:text-[#44403c]"
               >
                 Back to sign in options
               </button>
@@ -224,7 +224,7 @@ export default function LoginPage() {
                 {!showFallbackGoogle ? (
                   <div ref={googleButtonRef} className="flex justify-center" />
                 ) : (
-                  <button className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-white/[0.08] bg-[#fafaf9] px-4 py-2.5 text-sm font-medium text-[#1c1917] transition-colors hover:bg-white">
+                  <button className="flex w-full items-center justify-center gap-2.5 rounded-xl border border-black/[0.12] bg-white px-4 py-2.5 text-sm font-medium text-[#1c1917] transition-colors hover:bg-[#f3efe9]">
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
                       <path fill="#4285f4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                       <path fill="#34a853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -238,9 +238,9 @@ export default function LoginPage() {
 
               {/* Divider */}
               <div className="my-5 flex items-center gap-3">
-                <div className="h-px flex-1 bg-white/[0.08]" />
-                <span className="text-[11px] font-medium uppercase tracking-wider text-[#78716c]">or</span>
-                <div className="h-px flex-1 bg-white/[0.08]" />
+                <div className="h-px flex-1 bg-black/[0.08]" />
+                <span className="text-[11px] font-medium uppercase tracking-wider text-[#8a827b]">or</span>
+                <div className="h-px flex-1 bg-black/[0.08]" />
               </div>
 
               {/* Magic Link. A mode switch, not the commitment, so it stays a
@@ -248,7 +248,7 @@ export default function LoginPage() {
                   the form, which is the action that actually does something. */}
               <button
                 onClick={toggleMagicLinkForm}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-[#292524] px-4 py-2.5 text-sm font-semibold text-[#fafaf9] transition-[filter,border-color] hover:border-white/20 hover:brightness-125 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/20"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-black/[0.08] bg-[#f3efe9] px-4 py-2.5 text-sm font-semibold text-[#1c1917] transition-[filter,border-color] hover:border-black/20 hover:bg-[#ece7df] focus:outline-none focus-visible:ring-2 focus-visible:ring-black/20"
               >
                 <Mail className="h-4 w-4" />
                 Sign in with Magic Link
@@ -257,11 +257,11 @@ export default function LoginPage() {
           )}
         </div>
 
-        <p className="mt-5 text-center text-[11px] text-[#78716c]">
+        <p className="mt-5 text-center text-[11px] text-[#8a827b]">
           By signing in, you agree to our{' '}
-          <Link href="/terms" className="text-[#a8a29e] transition-colors hover:text-[#fafaf9]">Terms</Link>
+          <Link href="/terms" className="text-[#78716c] transition-colors hover:text-[#1c1917]">Terms</Link>
           {' '}&{' '}
-          <Link href="/privacy" className="text-[#a8a29e] transition-colors hover:text-[#fafaf9]">Privacy Policy</Link>
+          <Link href="/privacy" className="text-[#78716c] transition-colors hover:text-[#1c1917]">Privacy Policy</Link>
         </p>
       </motion.div>
 

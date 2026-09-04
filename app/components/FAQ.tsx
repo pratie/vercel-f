@@ -12,19 +12,19 @@ interface FAQItemProps {
 }
 
 const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => (
-  <div className="border-b border-white/[0.08] last:border-0">
+  <div className="border-b border-black/[0.08] last:border-0">
     <button
       onClick={onClick}
       className="w-full py-5 flex items-center justify-between text-left group"
     >
-      <span className="text-sm font-semibold text-[#fafaf9] group-hover:text-[#ff4500] transition-colors pr-4">
+      <span className="text-sm font-semibold text-[#1c1917] group-hover:text-[#d94100] transition-colors pr-4">
         {question}
       </span>
-      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-[background-color,border-color,transform] duration-200 ${isOpen ? 'bg-[#ff4500] border-[#ff4500] rotate-0' : 'bg-[#292524] border-white/[0.10] group-hover:border-white/[0.22]'}`}>
+      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-[background-color,border-color,transform] duration-200 ${isOpen ? 'bg-[#ff4500] border-[#ff4500] rotate-0' : 'bg-[#f3efe9] border-black/[0.10] group-hover:border-black/[0.22]'}`}>
         {isOpen ? (
           <Minus className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
         ) : (
-          <Plus className="h-3.5 w-3.5 text-[#a8a29e]" strokeWidth={2.5} />
+          <Plus className="h-3.5 w-3.5 text-[#78716c]" strokeWidth={2.5} />
         )}
       </div>
     </button>
@@ -37,7 +37,7 @@ const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => (
           transition={{ duration: 0.25, ease: 'easeInOut' }}
           className="overflow-hidden"
         >
-          <p className="pb-5 text-sm text-[#d6d3d1] leading-relaxed max-w-2xl">
+          <p className="pb-5 text-sm text-[#44403c] leading-relaxed max-w-2xl">
             {answer}
           </p>
         </motion.div>
@@ -77,17 +77,17 @@ export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 md:py-28 bg-[#0c0a09]">
+    <section className="py-20 md:py-28 bg-[#faf8f5]">
       <div className="max-w-2xl mx-auto px-6">
         <div className="text-center mb-12">
-          <p className="text-[12px] font-semibold text-[#ff4500] uppercase tracking-[0.15em] mb-3">FAQ</p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#fafaf9] mb-4">Common questions</h2>
-          <p className="text-base text-[#a8a29e]">
-            Can&apos;t find your answer? <a href="mailto:support@sneakyguy.com" className="text-[#ff4500] hover:text-[#ff7448] font-medium transition-colors">Contact us</a>
+          <p className="text-[12px] font-semibold text-[#d94100] uppercase tracking-[0.15em] mb-3">FAQ</p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1c1917] mb-4">Common questions</h2>
+          <p className="text-base text-[#78716c]">
+            Can&apos;t find your answer? <a href="mailto:support@sneakyguy.com" className="text-[#d94100] hover:text-[#ff4500] font-medium transition-colors">Contact us</a>
           </p>
         </div>
 
-        <div className="bg-[#1c1917] rounded-2xl border border-white/[0.08] p-6">
+        <div className="bg-[#ffffff] rounded-2xl border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-6">
           {faqs.map((faq, index) => (
             <FAQItem
               key={index}

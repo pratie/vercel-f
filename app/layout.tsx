@@ -25,14 +25,14 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: 'SneakyGuy: Get Recommended Where Your Customers Search',
+  title: 'SneakyGuy: Find Leads on Reddit. Get Recommended by ChatGPT.',
   description: 'Your buyers ask Reddit, then they ask ChatGPT. SneakyGuy finds the Reddit conversations worth joining, drafts the reply in your voice, and tracks whether ChatGPT, Gemini, Perplexity and Claude start naming you.',
   icons: {
     icon: '/favicon.ico',
   },
   metadataBase: new URL('https://www.sneakyguy.com'),
   openGraph: {
-    title: 'SneakyGuy: Get Recommended Where Your Customers Search',
+    title: 'SneakyGuy: Find Leads on Reddit. Get Recommended by ChatGPT.',
     description: 'Your buyers ask Reddit, then they ask ChatGPT. Find the conversations worth joining, and track whether AI assistants start recommending you.',
     url: 'https://www.sneakyguy.com',
     siteName: 'SneakyGuy',
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
         url: 'https://www.sneakyguy.com/images/og-image-v2.png',
         width: 1200,
         height: 630,
-        alt: 'SneakyGuy: get recommended where your customers search',
+        alt: 'SneakyGuy: find leads on Reddit, get recommended by ChatGPT',
       },
     ],
     locale: 'en_US',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SneakyGuy: Get Recommended Where Your Customers Search',
+    title: 'SneakyGuy: Find Leads on Reddit. Get Recommended by ChatGPT.',
     description: 'Find the Reddit conversations worth joining, then track whether ChatGPT, Gemini, Perplexity and Claude start naming you.',
     images: ['https://www.sneakyguy.com/images/og-image-v2.png'],
     creator: '@snow_stark17',

@@ -39,7 +39,7 @@ export function PhaseCompany({ url, company, loading, className }: PhaseCompanyP
   return (
     <section
       className={cn(
-        'mx-auto w-full max-w-xl rounded-2xl border border-white/[0.08] bg-[#1c1917] p-5 sm:p-6',
+        'mx-auto w-full max-w-xl rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6',
         className,
       )}
       aria-busy={isLoading}
@@ -58,22 +58,22 @@ export function PhaseCompany({ url, company, loading, className }: PhaseCompanyP
             <Favicon key={domain} domain={domain} />
 
             <div className="min-w-0 flex-1">
-              <h3 className="truncate text-[16px] font-semibold leading-tight text-[#fafaf9]">
+              <h3 className="truncate text-[16px] font-semibold leading-tight text-[#1c1917]">
                 {company?.name?.trim() || domain || 'Your site'}
               </h3>
               {domain && (
-                <p className="mt-1 truncate font-mono text-[12px] text-[#78716c]">{domain}</p>
+                <p className="mt-1 truncate font-mono text-[12px] text-[#8a827b]">{domain}</p>
               )}
             </div>
 
             <FoundPill />
           </div>
 
-          <div className="mt-5 border-t border-white/[0.08] pt-5">
+          <div className="mt-5 border-t border-black/[0.08] pt-5">
             {company?.description?.trim() ? (
-              <p className="text-[14.5px] leading-relaxed text-[#d6d3d1]">{company.description}</p>
+              <p className="text-[14.5px] leading-relaxed text-[#44403c]">{company.description}</p>
             ) : (
-              <p className="text-[14px] leading-relaxed text-[#a8a29e]">
+              <p className="text-[14px] leading-relaxed text-[#78716c]">
                 We could not pull a clear description off this page. The run keeps going on the page copy we did
                 read, so the rest may be broader than usual.
               </p>
@@ -99,7 +99,7 @@ function Favicon({ domain }: { domain: string }) {
   const showImage = Boolean(domain) && !failed;
 
   return (
-    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-white/[0.08] bg-[#292524]">
+    <div className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg border border-black/[0.08] bg-[#f3efe9]">
       {showImage ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -112,7 +112,7 @@ function Favicon({ domain }: { domain: string }) {
           onError={() => setFailed(true)}
         />
       ) : (
-        <Globe className="h-[18px] w-[18px] text-[#78716c]" aria-hidden />
+        <Globe className="h-[18px] w-[18px] text-[#8a827b]" aria-hidden />
       )}
     </div>
   );
@@ -124,7 +124,7 @@ function Favicon({ domain }: { domain: string }) {
 
 function FoundPill() {
   return (
-    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#34d399]/20 bg-[#34d399]/[0.09] px-2.5 py-1 text-[11px] font-medium text-[#34d399]">
+    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-[#059669]/20 bg-[#059669]/[0.09] px-2.5 py-1 text-[11px] font-medium text-[#059669]">
       <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
       Found
     </span>
@@ -147,7 +147,7 @@ function CompanySkeleton() {
         <SkeletonBlock tone="raised" className="h-6 w-16 rounded-full" />
       </div>
 
-      <div className="mt-5 space-y-2.5 border-t border-white/[0.08] pt-5">
+      <div className="mt-5 space-y-2.5 border-t border-black/[0.08] pt-5">
         <SkeletonLine tone="raised" width="w-full" />
         <SkeletonLine tone="raised" width="w-11/12" />
         <SkeletonLine tone="raised" width="w-3/5" />

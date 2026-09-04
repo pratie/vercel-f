@@ -36,12 +36,12 @@ const fadeUp = {
 };
 
 const SocialProof: React.FC = () => (
-  <section className="py-16 md:py-28 bg-[#0c0a09]">
+  <section className="py-16 md:py-28 bg-[#faf8f5]">
     <div className="max-w-5xl mx-auto px-6">
       <div className="text-center mb-10 md:mb-14">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
-          <p className="text-[12px] font-semibold text-[#ff4500] uppercase tracking-[0.15em] mb-3">Testimonials</p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#fafaf9]">Loved by founders</h2>
+          <p className="text-[12px] font-semibold text-[#d94100] uppercase tracking-[0.15em] mb-3">Testimonials</p>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1c1917]">Loved by founders</h2>
         </motion.div>
       </div>
 
@@ -54,7 +54,7 @@ const SocialProof: React.FC = () => (
             viewport={{ once: true, margin: "-40px" }}
             variants={fadeUp}
             transition={{ delay: i * 0.08 }}
-            className="group rounded-2xl bg-[#1c1917] border border-white/[0.08] hover:border-white/[0.16] transition-colors duration-300 p-6 flex flex-col justify-between"
+            className="group rounded-2xl bg-[#ffffff] border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] hover:border-black/[0.16] transition-colors duration-300 p-6 flex flex-col justify-between"
           >
             <div>
               <div className="flex gap-0.5 mb-4">
@@ -62,25 +62,25 @@ const SocialProof: React.FC = () => (
                   <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-sm text-[#d6d3d1] leading-relaxed mb-6">
+              <p className="text-sm text-[#44403c] leading-relaxed mb-6">
                 &ldquo;{t.quote}&rdquo;
               </p>
             </div>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/[0.12]">
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-black/[0.12]">
                   <Image src={t.avatar} alt={t.name} width={32} height={32} className="object-cover" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#fafaf9]">{t.name}</p>
-                  <p className="text-[11px] text-[#78716c]">{t.handle}</p>
+                  <p className="text-xs font-semibold text-[#1c1917]">{t.name}</p>
+                  <p className="text-[11px] text-[#8a827b]">{t.handle}</p>
                 </div>
               </div>
               <Link
                 href={t.link}
                 target="_blank"
-                className="w-7 h-7 rounded-md bg-[#292524] border border-white/[0.08] flex items-center justify-center text-[#a8a29e] hover:text-[#1DA1F2] hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/[0.12] transition-[color,border-color,background-color]"
+                className="w-7 h-7 rounded-md bg-[#f3efe9] border border-black/[0.08] flex items-center justify-center text-[#78716c] hover:text-[#1DA1F2] hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/[0.12] transition-[color,border-color,background-color]"
               >
                 <Twitter size={12} />
               </Link>
@@ -97,7 +97,7 @@ const SocialProof: React.FC = () => (
         variants={fadeUp}
         className="mt-12 text-center"
       >
-        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#1c1917] border border-white/[0.08]">
+        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#ffffff] border border-black/[0.08]">
           {/* Placeholder avatars, so they stay on the neutral ramp. The old
               stack was bg-orange-500 (which this Tailwind config re-anchors to
               the literal brand #ff4500) plus blue/purple/green, i.e. decorative
@@ -105,16 +105,16 @@ const SocialProof: React.FC = () => (
               canvas. The overlap borders already read as separate people. */}
           <div className="flex -space-x-1.5">
             {['JD', 'TK', 'AM', 'RJ'].map((initials, i) => (
-              <div key={i} className="w-6 h-6 rounded-full border-2 border-[#1c1917] bg-[#57534e] flex items-center justify-center">
-                <span className="text-[8px] font-bold text-[#fafaf9]">{initials}</span>
+              <div key={i} className="w-6 h-6 rounded-full border-2 border-[#ffffff] bg-[#c9c2b8] flex items-center justify-center">
+                <span className="text-[8px] font-bold text-[#1c1917]">{initials}</span>
               </div>
             ))}
-            <div className="w-6 h-6 rounded-full border-2 border-[#1c1917] bg-[#292524] flex items-center justify-center">
-              <span className="text-[8px] font-bold text-[#a8a29e]">+</span>
+            <div className="w-6 h-6 rounded-full border-2 border-[#ffffff] bg-[#f3efe9] flex items-center justify-center">
+              <span className="text-[8px] font-bold text-[#78716c]">+</span>
             </div>
           </div>
-          <span className="text-xs text-[#a8a29e] font-medium">
-            Join <span className="font-bold text-[#fafaf9]">100+</span> happy customers
+          <span className="text-xs text-[#78716c] font-medium">
+            Join <span className="font-bold text-[#1c1917]">100+</span> happy customers
           </span>
         </div>
       </motion.div>

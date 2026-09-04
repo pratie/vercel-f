@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 import type { OnboardingVisibility, OnboardingVisibilityEngine } from '@/lib/onboarding';
 import { SkeletonBlock, SkeletonChipRow, SkeletonLine } from './Skeletons';
 
-const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]';
+const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]';
 
 /**
  * The API sends internal slugs ("chatgpt", "perplexity"), not display names.
@@ -103,15 +103,15 @@ export function PhaseVisibility({ visibility, brandName, loading, className }: P
           transition={{ duration: reduce ? 0 : 0.45, ease: [0.22, 1, 0.36, 1] }}
         >
           {question && (
-            <blockquote className="mt-3 text-[17px] leading-snug text-[#fafaf9] sm:text-[19px]">
+            <blockquote className="mt-3 text-[17px] leading-snug text-[#1c1917] sm:text-[19px]">
               &ldquo;{question}&rdquo;
             </blockquote>
           )}
 
           {settled && engines.length > 0 && (
-            <p className="mt-3 text-[13px] text-[#a8a29e]">
+            <p className="mt-3 text-[13px] text-[#78716c]">
               {brand} was named in{' '}
-              <span className="font-mono tabular-nums text-[#d6d3d1]">
+              <span className="font-mono tabular-nums text-[#44403c]">
                 {checkNamed} of {checkTotal}
               </span>{' '}
               {checkTotal === 1 ? 'answer' : 'answers'}.
@@ -119,7 +119,7 @@ export function PhaseVisibility({ visibility, brandName, loading, className }: P
           )}
 
           {engines.length === 0 ? (
-            <p className="mt-3 rounded-2xl border border-white/[0.08] bg-[#1c1917] p-5 text-[13.5px] leading-relaxed text-[#a8a29e]">
+            <p className="mt-3 rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 text-[13.5px] leading-relaxed text-[#78716c]">
               {question
                 ? `No model answers came back for this question. That happens when the models time out, and it says nothing either way about where ${brand} stands.`
                 : `We did not get far enough to put a buying question to the models on this run. That says nothing either way about where ${brand} stands.`}
@@ -132,7 +132,7 @@ export function PhaseVisibility({ visibility, brandName, loading, className }: P
             </div>
           )}
 
-          <p className="mt-4 text-[11.5px] leading-relaxed text-[#78716c]">{DISCLOSURE}</p>
+          <p className="mt-4 text-[11.5px] leading-relaxed text-[#8a827b]">{DISCLOSURE}</p>
         </motion.div>
       )}
     </section>
@@ -164,15 +164,15 @@ function EnginePanel({ engine, brand, index }: EnginePanelProps) {
         delay: reduce ? 0 : 0.1 + index * 0.12,
         ease: [0.22, 1, 0.36, 1],
       }}
-      className="flex flex-col rounded-2xl border border-white/[0.08] bg-[#1c1917] p-4 sm:p-5"
+      className="flex flex-col rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-4 sm:p-5"
     >
-      <p className="text-[13.5px] font-semibold text-[#fafaf9]">{engineLabel(engine.engine)}</p>
+      <p className="text-[13.5px] font-semibold text-[#1c1917]">{engineLabel(engine.engine)}</p>
 
       <p className={cn(MICRO_LABEL, 'mt-4')}>Recommended</p>
 
       <div className="mt-2.5 flex-1">
         {competitors.length === 0 ? (
-          <p className="text-[13px] leading-relaxed text-[#78716c]">
+          <p className="text-[13px] leading-relaxed text-[#8a827b]">
             This model did not name any specific tools.
           </p>
         ) : (
@@ -187,7 +187,7 @@ function EnginePanel({ engine, brand, index }: EnginePanelProps) {
                   delay: reduce ? 0 : 0.2 + index * 0.12 + Math.min(i, 8) * 0.04,
                   ease: [0.22, 1, 0.36, 1],
                 }}
-                className="rounded-md border border-white/[0.08] bg-[#292524] px-2.5 py-1 text-[12.5px] leading-tight text-[#d6d3d1]"
+                className="rounded-md border border-black/[0.08] bg-[#f3efe9] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
               >
                 {competitor}
               </motion.li>
@@ -197,15 +197,15 @@ function EnginePanel({ engine, brand, index }: EnginePanelProps) {
       </div>
 
       {/* The separated verdict. Everything above is context, this is the point. */}
-      <div className="mt-4 flex items-center gap-2 border-t border-white/[0.08] pt-3.5">
+      <div className="mt-4 flex items-center gap-2 border-t border-black/[0.08] pt-3.5">
         <span
           aria-hidden
           className={cn(
             'h-1.5 w-1.5 shrink-0 rounded-full',
-            engine.brand_mentioned ? 'bg-[#34d399]' : 'bg-[#57534e]',
+            engine.brand_mentioned ? 'bg-[#059669]' : 'bg-[#c9c2b8]',
           )}
         />
-        <span className={cn('text-[13px]', engine.brand_mentioned ? 'text-[#d6d3d1]' : 'text-[#78716c]')}>
+        <span className={cn('text-[13px]', engine.brand_mentioned ? 'text-[#44403c]' : 'text-[#8a827b]')}>
           {brand}, {engine.brand_mentioned ? 'mentioned' : 'not mentioned'}
         </span>
       </div>
@@ -227,17 +227,17 @@ function VisibilitySkeleton() {
 
       <div className="mt-5 grid gap-3 sm:grid-cols-2">
         {[0, 1].map((i) => (
-          <div key={i} className="rounded-2xl border border-white/[0.08] bg-[#1c1917] p-4 sm:p-5">
+          <div key={i} className="rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-4 sm:p-5">
             <SkeletonLine tone="raised" width="w-24" height="h-3.5" />
             <SkeletonChipRow tone="raised" count={4} className="mt-6" />
-            <div className="mt-4 border-t border-white/[0.08] pt-3.5">
+            <div className="mt-4 border-t border-black/[0.08] pt-3.5">
               <SkeletonBlock tone="raised" className="h-3 w-2/5 rounded-md" />
             </div>
           </div>
         ))}
       </div>
 
-      <p className="mt-4 text-[11.5px] leading-relaxed text-[#78716c]">{DISCLOSURE}</p>
+      <p className="mt-4 text-[11.5px] leading-relaxed text-[#8a827b]">{DISCLOSURE}</p>
     </div>
   );
 }

@@ -92,18 +92,18 @@ export function OfferBar({
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: reduce ? 0 : 0.5, ease: [0.22, 1, 0.36, 1] }}
           className={cn(
-            'fixed inset-x-0 bottom-0 z-40 border-t border-white/[0.08] bg-[#1c1917]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]',
+            'fixed inset-x-0 bottom-0 z-40 border-t border-black/[0.08] bg-[#ffffff]/95 backdrop-blur-md pb-[env(safe-area-inset-bottom)]',
             className,
           )}
         >
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:gap-6 sm:px-8 sm:py-3.5">
             <div className="min-w-0">
-              <p className="text-[13.5px] font-semibold leading-snug tracking-tight text-[#fafaf9] sm:text-[15px]">
+              <p className="text-[13.5px] font-semibold leading-snug tracking-tight text-[#1c1917] sm:text-[15px]">
                 <span className="sm:hidden">Keep all of this, {PRICE_LABEL} for a month</span>
                 <span className="hidden sm:inline">Keep everything we are finding, {PRICE_LABEL} for one month</span>
               </p>
               {/* One line on a phone. The detail is on the ready panel anyway. */}
-              <p className="mt-0.5 hidden text-[12.5px] leading-relaxed text-[#a8a29e] sm:block">
+              <p className="mt-0.5 hidden text-[12.5px] leading-relaxed text-[#78716c] sm:block">
                 {detailLine({ brandName, keywordCount, subredditCount })}
               </p>
             </div>
@@ -111,7 +111,7 @@ export function OfferBar({
             <button
               type="button"
               onClick={onCta}
-              className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#ff4500] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#1c1917]"
+              className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#ff4500] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]"
             >
               Get started
               <ArrowRight

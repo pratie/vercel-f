@@ -320,8 +320,8 @@ function StepDots({
               i === active
                 ? 'h-1.5 w-6 rounded-full bg-[#ff4500] transition-all'
                 : available
-                  ? 'h-1.5 w-1.5 rounded-full bg-white/25 transition-all hover:bg-white/50'
-                  : 'h-1.5 w-1.5 rounded-full bg-white/10'
+                  ? 'h-1.5 w-1.5 rounded-full bg-black/25 transition-all hover:bg-black/50'
+                  : 'h-1.5 w-1.5 rounded-full bg-black/10'
             }
           />
         );
@@ -341,9 +341,9 @@ export default function ExplorePage() {
 /** Matches the shell's canvas so the Suspense hand off is not a white flash. */
 function ExploreBooting() {
   return (
-    <div className="min-h-screen bg-[#0c0a09]">
+    <div className="min-h-screen bg-[#faf8f5]">
       <div className="flex min-h-screen items-center justify-center">
-        <span className="font-mono text-[12.5px] text-[#78716c]">warming up</span>
+        <span className="font-mono text-[12.5px] text-[#8a827b]">warming up</span>
       </div>
     </div>
   );

@@ -40,28 +40,28 @@ export default function UpgradePage() {
 
   if (!user) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0c0a09]">
+      <div className="flex min-h-screen items-center justify-center bg-[#faf8f5]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#ff4500] border-t-transparent"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0c0a09] text-[#d6d3d1]">
+    <div className="min-h-screen bg-[#faf8f5] text-[#44403c]">
       {/* Header */}
-      <div className="sticky top-0 z-10 border-b border-white/[0.08] bg-[#0c0a09]/[0.92] backdrop-blur-md">
+      <div className="sticky top-0 z-10 border-b border-black/[0.08] bg-[#faf8f5]/[0.92] backdrop-blur-md">
         <div className="max-w-5xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between h-16">
             <button
               onClick={() => router.back()}
-              className="flex items-center gap-1.5 text-[13px] font-medium text-[#a8a29e] transition-colors hover:text-[#fafaf9]"
+              className="flex items-center gap-1.5 text-[13px] font-medium text-[#78716c] transition-colors hover:text-[#1c1917]"
             >
               <ArrowLeft className="h-4 w-4" />
               Back
             </button>
             {/* The offer itself. It states the price and the terms, so it is
                 body text, not a muted micro label. */}
-            <span className="text-[13px] font-semibold text-[#d6d3d1]">$19, one month, no auto renewal</span>
+            <span className="text-[13px] font-semibold text-[#44403c]">$19, one month, no auto renewal</span>
           </div>
         </div>
       </div>
@@ -70,11 +70,11 @@ export default function UpgradePage() {
 
         {/* The hook: the product demonstrated on the buyer's own problem. */}
         <div className="text-center max-w-2xl mx-auto mb-12">
-          <h1 className="text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-[#fafaf9] leading-[1.1] mb-4">
+          <h1 className="text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-[#1c1917] leading-[1.1] mb-4">
             Right now, AI is answering{' '}
-            <em className="font-display font-medium italic text-[#ff4500]">without you</em>
+            <em className="font-display font-medium italic text-[#d94100]">without you</em>
           </h1>
-          <p className="text-[17px] leading-relaxed text-[#d6d3d1]">
+          <p className="text-[17px] leading-relaxed text-[#44403c]">
             Your buyers ask Reddit, then they ask ChatGPT. SneakyGuy finds the conversations
             worth joining and tracks whether the assistants start naming you.
           </p>
@@ -87,43 +87,43 @@ export default function UpgradePage() {
           rule is deliberately quiet. A dim dot and grey text, no red, no
           warning icon. Decorating it would make the fact read as a sales trick.
         */}
-        <div className="mb-12 overflow-hidden rounded-2xl border border-white/[0.08] bg-[#1c1917]">
-          <div className="flex items-center gap-2 border-b border-white/[0.08] px-5 py-3.5 sm:px-6">
-            <Search className="h-3.5 w-3.5 shrink-0 text-[#78716c]" />
-            <span className="text-[13px] text-[#fafaf9]">
+        <div className="mb-12 overflow-hidden rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)]">
+          <div className="flex items-center gap-2 border-b border-black/[0.08] px-5 py-3.5 sm:px-6">
+            <Search className="h-3.5 w-3.5 shrink-0 text-[#8a827b]" />
+            <span className="text-[13px] text-[#1c1917]">
               &ldquo;What are the best tools to find leads on Reddit?&rdquo;
             </span>
           </div>
-          <div className="grid divide-y divide-white/[0.08] sm:grid-cols-2 sm:divide-y-0 sm:divide-x">
+          <div className="grid divide-y divide-black/[0.08] sm:grid-cols-2 sm:divide-y-0 sm:divide-x">
             {[
               { engine: 'ChatGPT', named: ['Leado', 'Leadline', 'Optareach', 'LeadSnipe', 'Leadmatically'] },
               { engine: 'Perplexity', named: ['Linkeddit', 'CommunityTracker', 'RedReach', 'Buska', 'Syften'] },
             ].map((row) => (
               <div key={row.engine} className="p-5 sm:p-6">
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#78716c]">
+                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]">
                   {row.engine} recommended
                 </p>
                 <div className="mb-4 flex flex-wrap gap-1.5">
                   {row.named.map((n) => (
                     <span
                       key={n}
-                      className="rounded-md border border-white/[0.08] bg-[#292524] px-2.5 py-1 text-[12.5px] leading-tight text-[#d6d3d1]"
+                      className="rounded-md border border-black/[0.08] bg-[#f3efe9] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
                     >
                       {n}
                     </span>
                   ))}
                 </div>
-                <div className="flex items-center gap-2 border-t border-white/[0.08] pt-3.5">
-                  <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#57534e]" />
-                  <span className="text-[13px] text-[#78716c]">Your product, not mentioned</span>
+                <div className="flex items-center gap-2 border-t border-black/[0.08] pt-3.5">
+                  <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9c2b8]" />
+                  <span className="text-[13px] text-[#8a827b]">Your product, not mentioned</span>
                 </div>
               </div>
             ))}
           </div>
           {/* Not a disclosure. This line carries the argument the panel is
-              making, so it reads at #a8a29e rather than the dim disclaimer
+              making, so it reads at #78716c rather than the dim disclaimer
               tone, while staying quieter than the recommended names above. */}
-          <p className="border-t border-white/[0.08] bg-[#0c0a09] px-5 py-3 text-[11.5px] leading-relaxed text-[#a8a29e] sm:px-6">
+          <p className="border-t border-black/[0.08] bg-[#faf8f5] px-5 py-3 text-[11.5px] leading-relaxed text-[#78716c] sm:px-6">
             A real check we ran. If the assistants do not say your name, they are saying a competitor&rsquo;s.
           </p>
         </div>
@@ -142,12 +142,12 @@ export default function UpgradePage() {
               body: 'We ask ChatGPT, Gemini, Perplexity and Claude the questions your buyers ask, record who gets recommended, and show you the Reddit threads that would change it.',
             },
           ].map((f) => (
-            <div key={f.title} className="rounded-2xl border border-white/[0.08] bg-[#1c1917] p-5 sm:p-6">
-              <span className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-[#292524] text-[#a8a29e]">
+            <div key={f.title} className="rounded-2xl border border-black/[0.08] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
+              <span className="mb-4 flex h-9 w-9 items-center justify-center rounded-xl border border-black/[0.08] bg-[#f3efe9] text-[#78716c]">
                 <f.icon className="h-4 w-4" />
               </span>
-              <h3 className="mb-1.5 text-[15px] font-bold tracking-tight text-[#fafaf9]">{f.title}</h3>
-              <p className="text-[13.5px] leading-relaxed text-[#d6d3d1]">{f.body}</p>
+              <h3 className="mb-1.5 text-[15px] font-bold tracking-tight text-[#1c1917]">{f.title}</h3>
+              <p className="text-[13.5px] leading-relaxed text-[#44403c]">{f.body}</p>
             </div>
           ))}
         </div>
@@ -155,11 +155,11 @@ export default function UpgradePage() {
         <PricingTable onPlanSelect={handlePlanSelect} showHeader={false} />
 
         <div className="mt-12 text-center">
-          <p className="text-[13px] text-[#78716c]">
+          <p className="text-[13px] text-[#8a827b]">
             Questions?{' '}
             <a
               href="mailto:support@sneakyguy.com"
-              className="font-medium text-[#a8a29e] underline underline-offset-4 transition-colors hover:text-[#fafaf9]"
+              className="font-medium text-[#78716c] underline underline-offset-4 transition-colors hover:text-[#1c1917]"
             >
               Email support
             </a>
