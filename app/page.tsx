@@ -482,12 +482,15 @@ export default function LandingPage() {
           analysis result (their own keywords) is the aha moment that sells. */}
       <section className="relative bg-[#ffffff] overflow-hidden">
         <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-24 pb-10 text-center">
-          <h1 className="text-[36px] sm:text-[56px] font-bold tracking-[-0.03em] text-[#1c1917] leading-[1.08] mb-5 sm:mb-6">
-            Find leads while you sleep.{' '}
+          {/* One sentence. The AI-visibility half of the pitch used to live up
+              here as a second sentence, which made the reader hold two ideas
+              before reaching the URL box. It says the same thing in plainer
+              words one line down, and gets a whole section further on. */}
+          <h1 className="text-[40px] sm:text-[64px] font-bold tracking-[-0.03em] text-[#1c1917] leading-[1.06] mb-5 sm:mb-6">
+            Find leads{' '}
             <em className="font-display font-medium italic tracking-[-0.01em] text-[#d94100]">
-              Get recommended
-            </em>{' '}
-            while they search.
+              while you sleep
+            </em>
           </h1>
 
           <p className="text-[17px] sm:text-lg text-[#44403c] mb-8 sm:mb-9 max-w-xl mx-auto leading-relaxed">
