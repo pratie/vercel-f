@@ -55,6 +55,7 @@ const features = [
 
 export function PricingTable({ onPlanSelect, showHeader = false, compact = false }: PricingTableProps) {
   const [plans, setPlans] = useState<PricingPlan[]>(fallbackPlans);
+  const [trialDays, setTrialDays] = useState(7);
   const [loading, setLoading] = useState(false);
   const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
@@ -65,6 +66,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
         const response = await api.getPricingPlans();
         if (response.plans && response.plans.length > 0) {
           setPlans(response.plans);
+          if (typeof response.trial_days === 'number') setTrialDays(response.trial_days);
         }
       } catch (error) {
         console.error('Failed to fetch pricing plans, using fallback:', error);
@@ -138,7 +140,9 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                   <p className="mt-1.5 text-xs text-[#78716c]">
                     {plan.kind === 'one_time' || plan.billing === 'one-time'
                       ? 'One payment, no renewal. Full refund within 7 days.'
-                      : 'Billed monthly. Cancel from Settings.'}
+                      : trialDays > 0
+                        ? `${trialDays} days free, then ${plan.price} a month. Cancel anytime.`
+                        : 'Billed monthly. Cancel from Settings.'}
                   </p>
                 </div>
 
@@ -155,7 +159,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                     </div>
                   ) : (
                     <>
-                      Start {plan.name}
+                      {trialDays > 0 && plan.kind !== 'one_time' ? `Start ${trialDays}-day free trial` : `Start ${plan.name}`}
                       <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                     </>
                   )}

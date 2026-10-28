@@ -190,6 +190,8 @@ export interface PricingPlan {
 export interface PricingPlansResponse {
     plans: PricingPlan[];
     note?: string;
+    /** Free trial length for first-time subscribers; 0 = no trial. */
+    trial_days?: number;
 }
 
 interface GenerateReplyRequest {
