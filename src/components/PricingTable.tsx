@@ -139,12 +139,12 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 <div className="mb-6">
                   <div className="flex items-baseline gap-1.5">
                     <span className="text-5xl font-extrabold tracking-tight tabular-nums text-[#1c1917]">{plan.price}</span>
-                    <span className="text-sm font-medium text-[#78716c]">/ {plan.billing}</span>
+                    <span className="text-sm font-medium text-[#78716c]">/ {plan.billing.replace(/^per /, '')}</span>
                   </div>
                   <p className="mt-1.5 text-xs text-[#78716c]">
                     {plan.kind === 'one_time' || plan.billing === 'one-time'
                       ? 'One payment, no renewal. Full refund within 7 days.'
-                      : 'Cancel anytime. Full refund within 7 days of your first payment.'}
+                      : 'Billed monthly. Cancel from Settings.'}
                   </p>
                 </div>
 

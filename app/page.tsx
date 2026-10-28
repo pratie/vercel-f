@@ -853,7 +853,7 @@ export default function LandingPage() {
               <em className="font-display font-medium italic text-[#d94100]">Cancel anytime.</em>
             </h2>
             <p className="mt-3 text-base text-[#44403c] max-w-2xl mx-auto">
-              Cancel anytime. Full refund within 7 days of your first payment.
+              Full refund within 7 days of your first payment.
             </p>
           </div>
 
