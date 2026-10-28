@@ -105,6 +105,8 @@ module.exports = {
         inter: ['var(--font-inter)', 'sans-serif'],
         heading: ['var(--font-jakarta)', 'system-ui', 'sans-serif'],
         display: ['var(--font-display)', 'Georgia', 'serif'],
+        // Playful display face for the v2 landing. Characterful at heavy weights.
+        play: ['var(--font-play)', 'var(--font-jakarta)', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
         // The layered "shadow border" cards use everywhere. Tokenised so the

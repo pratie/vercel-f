@@ -17,6 +17,8 @@ import SocialProof from '@/components/SocialProof';
 import { PricingTable } from '@/components/PricingTable';
 import { FAQ } from './components/FAQ';
 import StepAnimation from '@/components/landing/StepAnimation';
+import LurkingThreads from '@/components/landing/LurkingThreads';
+import SneakyPeek from '@/components/landing/SneakyPeek';
 
 // The logo is a 544x336 PNG of the guy peeking over a ledge. Keep this ratio
 // wherever it renders -- forcing it into a square crushes him and loses the
@@ -482,90 +484,65 @@ export default function LandingPage() {
           CTA — pasting a URL is lower-friction than "Get Started", and the
           analysis result (their own keywords) is the aha moment that sells. */}
       <section className="relative bg-[#ffffff] overflow-hidden">
-        <div className="relative max-w-3xl mx-auto px-4 sm:px-6 pt-12 sm:pt-24 pb-10 text-center">
-          {/* One sentence. The AI-visibility half of the pitch used to live up
-              here as a second sentence, which made the reader hold two ideas
-              before reaching the URL box. It says the same thing in plainer
-              words one line down, and gets a whole section further on. */}
-          <h1 className="text-[40px] sm:text-[64px] font-bold tracking-[-0.03em] text-[#1c1917] leading-[1.06] mb-5 sm:mb-6">
-            Find leads{' '}
-            <em className="font-display font-medium italic tracking-[-0.01em] text-[#d94100]">
-              while you sleep
-            </em>
-          </h1>
+        {/* Asymmetric hero. Left: the promise and the one action. Right: the
+            mascot actually doing the job, lurking over a Reddit feed and
+            pointing at the thread that is a buyer. */}
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 sm:pt-16 pb-10 sm:pb-14 grid lg:grid-cols-[1.05fr_1fr] gap-12 lg:gap-10 items-center">
+          <div>
+            <h1 className="font-play text-[48px] sm:text-[76px] font-extrabold leading-[0.95] tracking-[-0.035em] text-[#1c1917]">
+              Find leads while you sleep.
+            </h1>
 
-          <p className="text-[17px] sm:text-lg text-[#44403c] mb-8 sm:mb-9 max-w-xl mx-auto leading-relaxed">
-            Paste your website. SneakyGuy watches Reddit for people asking for what you sell,
-            drafts your reply, and checks whether ChatGPT and Perplexity name you.
-          </p>
+            <p className="mt-6 max-w-[34rem] text-[17px] sm:text-[19px] leading-relaxed text-[#44403c]">
+              Paste your site. SneakyGuy lurks on Reddit for people asking for what you sell,
+              drafts a reply that says you built it, and checks whether ChatGPT names you.
+            </p>
 
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleHeroAnalyze();
-            }}
-            className="max-w-xl mx-auto"
-          >
-            {/* The single most important control on the site. On dark it has to
-                announce itself as typeable, so the field is a raised surface
-                inside the panel and the focus state is a brand-orange ring on
-                the whole assembly rather than an all-but-invisible shadow. */}
-            <div className="flex flex-col sm:flex-row gap-2.5 p-2 bg-[#ffffff] rounded-2xl border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] transition-[border-color,box-shadow] duration-200 focus-within:border-[#ff4500]/70 focus-within:shadow-[0_0_0_3px_rgba(255,69,0,0.22)]">
-              <div className="relative flex-1 rounded-xl bg-[#f4f1ec] border border-black/[0.06]">
-                <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#8a827b]" aria-hidden="true" />
-                <input
-                  value={heroUrl}
-                  onChange={(e) => setHeroUrl(e.target.value)}
-                  placeholder="yourwebsite.com"
-                  inputMode="url"
-                  autoComplete="url"
-                  aria-label="Your website URL"
-                  className="w-full h-12 pl-10 pr-10 rounded-xl text-[15px] text-[#1c1917] placeholder:text-[#8a827b] focus:outline-none bg-transparent"
-                />
-                <kbd
-                  className="hidden sm:block absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-[#8a827b] border border-black/[0.12] rounded-md px-1.5 py-0.5"
-                  aria-hidden="true"
-                >
-                  ⏎
-                </kbd>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleHeroAnalyze();
+              }}
+              className="mt-8 max-w-[34rem]"
+            >
+              <div className="flex flex-col sm:flex-row gap-2.5 rounded-2xl border-2 border-[#1c1917] bg-[#fff] p-2 shadow-[5px_5px_0_#1c1917] transition-shadow focus-within:shadow-[5px_5px_0_#ff4500]">
+                <div className="relative flex-1">
+                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-[#78716c]" aria-hidden="true" />
+                  <input
+                    value={heroUrl}
+                    onChange={(e) => setHeroUrl(e.target.value)}
+                    placeholder="yourwebsite.com"
+                    inputMode="url"
+                    autoComplete="url"
+                    aria-label="Your website URL"
+                    className="w-full h-12 pl-10 pr-3 rounded-xl text-[16px] text-[#1c1917] placeholder:text-[#78716c] focus:outline-none bg-transparent"
+                  />
+                </div>
+                <button type="submit" className="btn-primary h-12 px-6 text-[15px] shrink-0">
+                  Show me my leads
+                </button>
               </div>
-              <button
-                type="submit"
-                className="btn-primary h-12 px-6 text-[15px] shrink-0"
-              >
-                Show me my leads
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          </form>
+            </form>
 
-          <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-[#78716c] justify-center">
-            <span className="flex items-center">
-              <Check className="h-4 w-4 text-[#059669] mr-1.5 shrink-0" aria-hidden="true" />
-              Free check, no signup
-            </span>
-            <span className="flex items-center">
-              <Check className="h-4 w-4 text-[#059669] mr-1.5 shrink-0" aria-hidden="true" />
-              Results in about a minute
-            </span>
-            <span className="flex items-center">
-              <Check className="h-4 w-4 text-[#059669] mr-1.5 shrink-0" aria-hidden="true" />
-              Full refund within 7 days
-            </span>
+            <p className="mt-4 text-[13.5px] text-[#78716c]">
+              Free check, no signup. Takes about a minute.
+            </p>
           </div>
+
+          <LurkingThreads />
         </div>
 
         {/* Question drift — the threads this product exists for. Edge-faded,
             slow, pauses on hover. Decorative for screen readers. The fades run
             to the canvas colour, not to white. */}
         <div className="relative mt-10 mb-2 marquee-paused" aria-hidden="true">
-          <p className="text-center text-[11px] font-bold uppercase tracking-[0.12em] text-[#8a827b] mb-4">
+          <p className="text-center text-[14px] font-semibold text-[#44403c] mb-4">
             <span className="inline-flex items-center gap-1.5">
               <span className="relative flex h-1.5 w-1.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#ff4500] opacity-60" />
                 <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#ff4500]" />
               </span>
-              Asked on Reddit every hour
+              Asked on Reddit this week
             </span>
           </p>
           <div className="space-y-3">
@@ -686,10 +663,9 @@ export default function LandingPage() {
       <section className="py-16 sm:py-24 bg-[#ffffff]">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">AI visibility</p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-[#1c1917] leading-tight">
+            <h2 className="font-play text-[34px] sm:text-[48px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1c1917] leading-tight">
               We asked ChatGPT for the best tools.{' '}
-              <em className="font-display font-medium italic text-[#d94100]">Here is who it named.</em>
+              Here is who it named.
             </h2>
             <p className="mt-4 text-base text-[#44403c] max-w-2xl mx-auto leading-relaxed">
               Buyers ask AI for a shortlist before they visit anyone&apos;s site. If you are not
@@ -752,7 +728,7 @@ export default function LandingPage() {
           >
             <h3 className="text-xl sm:text-2xl font-bold tracking-[-0.02em] text-[#1c1917] mb-3">
               Ten product names. Yours was{' '}
-              <em className="font-display font-medium italic text-[#d94100]">not one of them.</em>
+              not one of them.
             </h3>
             <p className="text-[15px] text-[#44403c] leading-relaxed">
               If the answer does not say your name, it says a competitor&apos;s. Those answers lean
@@ -779,10 +755,9 @@ export default function LandingPage() {
       <section id="how-it-works" className="py-16 sm:py-24 bg-[#ffffff] scroll-mt-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">How it works</p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-[#1c1917]">
+            <h2 className="font-play text-[34px] sm:text-[48px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1c1917]">
               Three steps.{' '}
-              <em className="font-display font-medium italic text-[#d94100]">About a minute.</em>
+              About a minute.
             </h2>
           </div>
 
@@ -819,10 +794,9 @@ export default function LandingPage() {
       <section id="features" className="py-16 sm:py-24 bg-[#ffffff] scroll-mt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">The toolkit</p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-[#1c1917]">
+            <h2 className="font-play text-[34px] sm:text-[48px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1c1917]">
               Show up in the thread,{' '}
-              <em className="font-display font-medium italic text-[#d94100]">and in the answer</em>
+              and in the answer
             </h2>
           </div>
 
@@ -847,10 +821,9 @@ export default function LandingPage() {
       <section id="pricing" className="py-16 sm:py-20 bg-[#ffffff] scroll-mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">Pricing</p>
-            <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-[#1c1917]">
+            <h2 className="font-play text-[34px] sm:text-[48px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1c1917]">
               Two plans.{' '}
-              <em className="font-display font-medium italic text-[#d94100]">Cancel anytime.</em>
+              Cancel anytime.
             </h2>
             <p className="mt-3 text-base text-[#44403c] max-w-2xl mx-auto">
               Full refund within 7 days of your first payment.
@@ -869,61 +842,46 @@ export default function LandingPage() {
       <FAQ />
 
       {/* ───── FINAL CTA ───── */}
-      {/* The page's one moment of drama. On a light page this was a deep ink
-          panel; on the dark canvas the drama has to come from the raised panel
-          plus the orange bloom, so the glow is a little stronger and the panel
-          carries the same border as every other card. */}
+      {/* The mascot's second appearance: bigger, peeking over the whole
+          closing panel. The panel is the ledge. */}
       <section className="py-16 sm:py-24 px-4 sm:px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className="relative max-w-4xl mx-auto overflow-hidden rounded-3xl bg-[#ffffff] border border-black/[0.09] px-6 py-14 sm:px-14 sm:py-16 text-center"
-        >
-          <div
-            className="pointer-events-none absolute inset-x-0 -top-24 h-56 bg-[radial-gradient(ellipse_at_top,rgba(255,69,0,0.22),transparent_65%)]"
-            aria-hidden="true"
-          />
-          <h2 className="relative text-3xl sm:text-[40px] font-bold tracking-[-0.025em] text-[#1c1917] leading-tight mb-3">
-            Someone is asking about your category{' '}
-            <em className="font-display font-medium italic text-[#d94100]">right now</em>
-          </h2>
-          {/* Closing pitch, so it gets body colour like the hero subhead and the
-              AI-visibility summary, not the secondary-label tone. */}
-          <p className="relative text-[15px] text-[#44403c] mb-8 max-w-md mx-auto leading-relaxed">
-            Paste your website. See the threads you are missing, and who the assistants
-            name instead of you.
-          </p>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              handleHeroAnalyze();
-            }}
-            className="relative max-w-lg mx-auto"
-          >
-            <div className="flex flex-col sm:flex-row gap-2 p-1.5 bg-[#f4f1ec] rounded-2xl border border-black/[0.08] transition-[border-color,box-shadow] duration-200 focus-within:border-[#ff4500]/70 focus-within:shadow-[0_0_0_3px_rgba(255,69,0,0.22)]">
-              <input
-                value={heroUrl}
-                onChange={(e) => setHeroUrl(e.target.value)}
-                placeholder="yourwebsite.com"
-                inputMode="url"
-                aria-label="Your website URL"
-                className="flex-1 h-12 px-4 rounded-xl text-[15px] text-[#1c1917] placeholder:text-[#8a827b] focus:outline-none bg-transparent"
-              />
-              <button type="submit" className="btn-primary h-12 px-6 text-[15px] shrink-0">
-                Show me my leads
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
-          </form>
-          {/* Risk reversal, not a footnote. #8a827b lands at 3.6:1 on this
-              panel, so the guarantee would be the dimmest thing in the section
-              a buyer actually needs to read. Muted is the floor here. */}
-          <p className="relative text-[11.5px] text-[#78716c] mt-4">
-            Free analysis · Cancel anytime · Full refund within 7 days
-          </p>
-        </motion.div>
+        <div className="relative max-w-4xl mx-auto pt-[156px] sm:pt-[196px]">
+          <div className="absolute left-1/2 top-0 z-20 w-[270px] sm:w-[340px] -translate-x-1/2">
+            <SneakyPeek delay={0.1} />
+          </div>
+          <div className="relative rounded-[28px] border-2 border-[#1c1917] bg-[#d13800] px-6 py-14 sm:px-14 sm:py-16 text-center shadow-[7px_7px_0_#1c1917]">
+            <h2 className="font-play text-[34px] sm:text-[52px] font-extrabold leading-[1.0] tracking-[-0.03em] text-white">
+              Someone is asking for you right now.
+            </h2>
+            <p className="mx-auto mt-4 mb-8 max-w-md text-[16px] leading-relaxed text-white/90">
+              Paste your website. See the threads you are missing, and who the assistants name instead of you.
+            </p>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleHeroAnalyze();
+              }}
+              className="mx-auto max-w-lg"
+            >
+              <div className="flex flex-col sm:flex-row gap-2 rounded-2xl border-2 border-[#1c1917] bg-white p-1.5">
+                <input
+                  value={heroUrl}
+                  onChange={(e) => setHeroUrl(e.target.value)}
+                  placeholder="yourwebsite.com"
+                  inputMode="url"
+                  aria-label="Your website URL"
+                  className="flex-1 h-12 px-4 rounded-xl text-[16px] text-[#1c1917] placeholder:text-[#78716c] focus:outline-none bg-transparent"
+                />
+                <button type="submit" className="h-12 shrink-0 rounded-xl bg-[#1c1917] px-6 text-[15px] font-semibold text-white transition-colors hover:bg-[#3a3532] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+                  Show me my leads
+                </button>
+              </div>
+            </form>
+            <p className="mt-4 text-[13px] text-white/90">
+              Free check, no signup. Paid plans have a full refund within 7 days.
+            </p>
+          </div>
+        </div>
       </section>
 
       {/* ───── FOOTER ───── */}

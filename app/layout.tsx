@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Plus_Jakarta_Sans, Fraunces } from 'next/font/google';
+import { Plus_Jakarta_Sans, Fraunces, Bricolage_Grotesque } from 'next/font/google';
 import './globals.css';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 import { Providers } from './providers';
@@ -16,6 +16,13 @@ const jakartaSans = Plus_Jakarta_Sans({
 
 // Editorial accent for headlines only. One serif word in a sans headline is
 // the difference between "template" and "brand" — use sparingly.
+const bricolage = Bricolage_Grotesque({
+  subsets: ['latin'],
+  weight: ['400', '600', '700', '800'],
+  variable: '--font-play',
+  display: 'swap',
+});
+
 const fraunces = Fraunces({
   subsets: ['latin'],
   style: ['normal', 'italic'],
@@ -67,7 +74,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${jakartaSans.variable} ${fraunces.variable} font-sans`}>
+    <html lang="en" className={`${jakartaSans.variable} ${fraunces.variable} ${bricolage.variable} font-sans`}>
       <head>
         <GoogleAnalytics />
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
