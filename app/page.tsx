@@ -16,6 +16,7 @@ import Link from 'next/link';
 import SocialProof from '@/components/SocialProof';
 import { PricingTable } from '@/components/PricingTable';
 import { FAQ } from './components/FAQ';
+import StepAnimation from '@/components/landing/StepAnimation';
 
 // The logo is a 544x336 PNG of the guy peeking over a ledge. Keep this ratio
 // wherever it renders -- forcing it into a square crushes him and loses the
@@ -201,11 +202,11 @@ const AI_ENGINES = ['ChatGPT', 'Perplexity', 'Gemini', 'Claude'];
 const STEPS = [
   {
     title: 'Paste your site',
-    body: 'Paste your website. We draft your keywords and subreddits in about 20 seconds, then score every new thread for buying intent.',
+    body: 'We read your site and draft your keywords and subreddits in about 20 seconds, then score every new thread for buying intent.',
   },
   {
     title: 'Reply where it counts',
-    body: 'Every lead comes with a reply drafted in your tone. Edit it, post it, and be the useful answer instead of the ad.',
+    body: 'Every lead arrives with a reply drafted in your tone. Edit it, post it, and be the useful answer instead of the ad.',
   },
   {
     title: 'Watch the AI catch up',
@@ -549,7 +550,7 @@ export default function LandingPage() {
             </span>
             <span className="flex items-center">
               <Check className="h-4 w-4 text-[#059669] mr-1.5 shrink-0" aria-hidden="true" />
-              $19 a month, no subscription
+              $19 for 30 days, no subscription
             </span>
           </div>
         </div>
@@ -795,13 +796,18 @@ export default function LandingPage() {
                 transition={{ duration: 0.5, delay: i * 0.12, ease: [0.16, 1, 0.3, 1] }}
                 className="relative bg-[#ffffff] rounded-2xl border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-6 text-left"
               >
-                <span
-                  className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-[#ff4500]/[0.14] text-[#d94100] text-[12px] font-bold tabular-nums mb-4"
-                  aria-hidden="true"
-                >
-                  {i + 1}
-                </span>
-                <h3 className="text-[16px] font-semibold text-[#1c1917] mb-1.5">{step.title}</h3>
+                {/* The drawing carries the card. The old numbered circle badge
+                    competed with it, so the step number is now a quiet label
+                    beside the title. */}
+                <div className="mb-5 pb-5 border-b border-black/[0.06]">
+                  <StepAnimation index={i} delay={i * 0.18} />
+                </div>
+                <div className="flex items-baseline gap-2 mb-1.5">
+                  <span className="text-[11px] font-bold tabular-nums text-[#8a827b]" aria-hidden="true">
+                    0{i + 1}
+                  </span>
+                  <h3 className="text-[16px] font-semibold text-[#1c1917]">{step.title}</h3>
+                </div>
                 <p className="text-[14px] text-[#44403c] leading-relaxed">{step.body}</p>
               </motion.li>
             ))}

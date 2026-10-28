@@ -409,7 +409,7 @@ export default function MentionsPage() {
             <p className="mt-1.5 text-[13px] text-ink-400">{loadError}</p>
             <button
               onClick={() => window.location.reload()}
-              className="mt-5 inline-flex h-9 items-center rounded-lg bg-[#ff4500] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
+              className="mt-5 inline-flex h-9 items-center rounded-lg bg-[#d13800] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
             >
               Try again
             </button>
@@ -433,7 +433,7 @@ export default function MentionsPage() {
             {scanStatus !== 'scanning' && (
               <button
                 onClick={() => startScan()}
-                className="mt-6 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#ff4500] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
+                className="mt-6 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#d13800] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
                 Scan Reddit now

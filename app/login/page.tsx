@@ -197,7 +197,7 @@ export default function LoginPage() {
                   <button
                     type="submit"
                     disabled={isRequestingMagicLink}
-                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#ff4500] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff] disabled:opacity-60"
+                    className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#d13800] px-4 py-2.5 text-sm font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff] disabled:opacity-60"
                   >
                     {isRequestingMagicLink ? (
                       <>

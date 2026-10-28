@@ -149,7 +149,7 @@ export function ExploreFatalScreen({ fatal }: { fatal: ExploreFatal }) {
         {fatal.action ?? (
           <Link
             href="/"
-            className="inline-flex h-10 items-center rounded-full bg-[#ff4500] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90"
+            className="inline-flex h-10 items-center rounded-full bg-[#d13800] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90"
           >
             Back to SneakyGuy
           </Link>

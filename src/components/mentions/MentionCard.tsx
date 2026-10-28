@@ -186,7 +186,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
             <button
               onClick={handleGenerate}
               disabled={generating}
-              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[#ff4500] text-[12.5px] font-medium text-white
+              className="inline-flex items-center gap-1.5 h-9 px-3.5 rounded-lg bg-[#d13800] text-[12.5px] font-medium text-white
                 transition-opacity hover:opacity-90 disabled:opacity-50
                 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/30 focus-visible:ring-offset-2"
             >
@@ -251,7 +251,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
                     </button>
                     <button
                       onClick={() => { setReply(draft || reply); setEditing(false); }}
-                      className="h-8 px-3.5 rounded-lg bg-[#ff4500] text-xs font-medium text-white hover:opacity-90 transition-opacity"
+                      className="h-8 px-3.5 rounded-lg bg-[#d13800] text-xs font-medium text-white hover:opacity-90 transition-opacity"
                     >
                       Save
                     </button>

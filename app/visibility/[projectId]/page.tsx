@@ -362,7 +362,7 @@ export default function VisibilityPage() {
             <p className="text-xs text-ink-400 mb-4">{loadError}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-4 h-9 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-xs font-bold shadow-orange transition-colors"
+              className="px-4 h-9 rounded-xl bg-[#d13800] hover:bg-[#b83200] text-white text-xs font-bold shadow-orange transition-colors"
             >
               Try again
             </button>

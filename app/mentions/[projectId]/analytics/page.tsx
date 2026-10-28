@@ -141,7 +141,7 @@ export default function AnalyticsPage() {
             </p>
             <Link
               href={`/mentions/${projectId}`}
-              className="inline-flex items-center gap-1.5 px-3.5 h-8 rounded-xl bg-orange-500 text-white text-xs font-semibold shadow-orange hover:bg-orange-600 transition-all duration-200"
+              className="inline-flex items-center gap-1.5 px-3.5 h-8 rounded-xl bg-[#d13800] text-white text-xs font-semibold shadow-orange hover:bg-[#b83200] transition-all duration-200"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Back to leads

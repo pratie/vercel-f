@@ -158,7 +158,7 @@ function ExploreFunnel() {
               <button
                 type="button"
                 onClick={() => window.location.reload()}
-                className="inline-flex h-10 items-center rounded-full bg-[#ff4500] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90"
+                className="inline-flex h-10 items-center rounded-full bg-[#d13800] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90"
               >
                 Refresh
               </button>

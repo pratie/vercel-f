@@ -418,9 +418,8 @@ export default function SettingsPage() {
                 {alertSettings.enable_email_alerts ? (
                   <div className="flex items-center gap-2 rounded-lg bg-orange-50 px-3 py-2.5 text-xs text-orange-700">
                     <Mail className="h-3.5 w-3.5 shrink-0" />
-                    {alertSettings.alert_frequency === 'weekly'
-                      ? 'Weekly summary lands in your inbox every Monday morning'
-                      : 'Daily digest lands in your inbox each morning'}
+                    {/* Nothing sends digests yet. Say so instead of promising an email. */}
+                    Saved. Email digests switch on in the next update, and this setting carries over.
                   </div>
                 ) : (
                   <div className="flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2.5 text-xs text-amber-700">
@@ -502,7 +501,7 @@ export default function SettingsPage() {
             <Button
               onClick={handleSavePreferences}
               disabled={isSaving || isPrefsLoading}
-              className="w-full bg-orange-500 hover:bg-orange-600 text-white"
+              className="w-full bg-[#d13800] hover:bg-[#b83200] text-white"
             >
               {isSaving ? 'Saving...' : 'Save Brand Settings'}
             </Button>

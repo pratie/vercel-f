@@ -172,7 +172,7 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
                     <span
                       aria-hidden="true"
                       className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[11.5px] font-bold tabular-nums ${
-                        isNext ? 'bg-orange-500 text-white shadow-orange' : 'bg-cream text-ink-400'
+                        isNext ? 'bg-[#d13800] text-white shadow-orange' : 'bg-cream text-ink-400'
                       }`}
                     >
                       {index + 1}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
-import { api } from '@/lib/api';
+import { api, hasActiveAccess } from '@/lib/api';
 import { toast } from 'sonner';
 
 interface PaymentGuardProps {
@@ -41,9 +41,10 @@ export function PaymentGuard({ children }: PaymentGuardProps) {
     api.getPaymentStatus()
       .then((status) => {
         if (cancelled) return;
-        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ hasPaid: status.has_paid, at: Date.now() }));
-        setHasPaid(status.has_paid);
-        if (!status.has_paid) {
+        const active = hasActiveAccess(status);
+        sessionStorage.setItem(CACHE_KEY, JSON.stringify({ hasPaid: active, at: Date.now() }));
+        setHasPaid(active);
+        if (!active) {
           toast.error('Upgrade your account to access this feature');
           router.push('/upgrade');
         }

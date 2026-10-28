@@ -53,15 +53,15 @@ const faqs = [
   },
   {
     question: "Will using SneakyGuy get my Reddit account banned?",
-    answer: "No. Unlike bots that spam subreddits, SneakyGuy helps you find relevant conversations where your product is a legitimate solution. We recommend reviewing AI responses and posting them naturally to maintain a high-quality reputation."
+    answer: "Nobody can promise that, and you should distrust anyone who does. SneakyGuy never posts for you. It finds threads where your product is a real answer and drafts a reply that says you built it. You read it, edit it, and post it yourself. Accounts get banned for spammy, undisclosed promotion, so post where it genuinely helps and follow each subreddit's rules."
   },
   {
     question: "How does the AI relevancy scoring work?",
-    answer: "Our AI analyzes the context, intent, and sentiment of every post. It doesn't just look for keywords - it understands if a user is asking for a recommendation (high intent) versus just mentioning a topic in passing (low intent)."
+    answer: "Every matching post gets a relevance score from 20 to 100 and an intent label, such as asking for a recommendation, comparing tools, or complaining about a current one. Keywords only get a post into the list. The score decides whether it is worth your time."
   },
   {
     question: "Can I customize the tone of AI responses?",
-    answer: "Absolutely. You can set your brand's tone (Professional, Technical, Friendly, etc.) and update Custom Instructions. The AI adapts its writing style to match how you want your brand to be perceived."
+    answer: "Absolutely. You can set your brand's tone (Professional, Technical, Friendly, etc.) and add your own style notes. The AI adapts its writing style to match how you want your brand to be perceived."
   },
   {
     question: "What happens after my one-month access expires?",

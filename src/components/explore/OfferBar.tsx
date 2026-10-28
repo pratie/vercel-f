@@ -111,7 +111,7 @@ export function OfferBar({
             <button
               type="button"
               onClick={onCta}
-              className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#ff4500] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]"
+              className="group inline-flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-[#d13800] px-5 text-[14px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]"
             >
               Get started
               <ArrowRight

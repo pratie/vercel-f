@@ -340,7 +340,7 @@ export default async function BlogPost({ params }: Props) {
                         </p>
                         <Link
                             href="/login"
-                            className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-orange-500 px-7 text-[13.5px] font-bold text-white shadow-orange transition-colors hover:bg-orange-600"
+                            className="mt-7 inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#d13800] px-7 text-[13.5px] font-bold text-white shadow-orange transition-colors hover:bg-[#b83200]"
                         >
                             Find my first leads
                             <ArrowRight className="h-4 w-4" />

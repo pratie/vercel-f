@@ -57,7 +57,7 @@ export default function PaymentSuccessPage() {
             </p>
             <button
               onClick={() => router.push('/projects')}
-              className="w-full h-11 rounded-xl bg-orange-500 hover:bg-orange-600 text-white text-sm font-semibold shadow-[0_4px_16px_-2px_rgba(255,69,0,0.35)] transition-colors flex items-center justify-center gap-2"
+              className="w-full h-11 rounded-xl bg-[#d13800] hover:bg-[#b83200] text-white text-sm font-semibold shadow-[0_4px_16px_-2px_rgba(255,69,0,0.35)] transition-colors flex items-center justify-center gap-2"
             >
               Set up your first project
               <ArrowRight className="h-4 w-4" />

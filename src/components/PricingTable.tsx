@@ -131,7 +131,7 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 <Button
                   onClick={() => handlePlanSelect(plan.id)}
                   disabled={checkoutLoading === plan.id}
-                  className="group h-12 w-full rounded-xl bg-[#ff4500] text-sm font-semibold text-white shadow-none transition-opacity duration-200 hover:bg-[#ff4500] hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]"
+                  className="group h-12 w-full rounded-xl bg-[#d13800] text-sm font-semibold text-white shadow-none transition-opacity duration-200 hover:bg-[#d13800] hover:opacity-90 focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff]"
                 >
                   {checkoutLoading === plan.id ? (
                     <div className="flex items-center gap-2">

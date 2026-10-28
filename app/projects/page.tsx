@@ -6,7 +6,7 @@ import { Plus, Loader2, ArrowRight, Search, LayoutGrid, Rows, Globe, Sparkles } 
 import { ProjectCard } from '@/components/ProjectCard';
 import { CreateProjectDialog } from '@/components/CreateProjectDialog';
 import { toast } from 'sonner';
-import { api, Project } from '@/lib/api';
+import { api, Project, hasActiveAccess } from '@/lib/api';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FreeAccessMessage } from '../components/FreeAccessMessage';
@@ -63,7 +63,7 @@ export default function ProjectsPage() {
           toast.success('Payment successful! You can now create projects.');
         } catch (error) {
           console.error('Error updating payment status:', error);
-          toast.error('Error processing payment. Please contact support.');
+          toast.error('Still confirming your payment. It activates automatically within a few minutes.');
         } finally {
           setIsProcessingPayment(false);
         }
@@ -89,7 +89,7 @@ export default function ProjectsPage() {
   const checkPaymentStatus = async () => {
     try {
       const status = await api.getPaymentStatus();
-      setHasPaid(status.has_paid);
+      setHasPaid(hasActiveAccess(status));
       setPaymentStatusChecked(true);
     } catch (error) {
       console.error('Failed to check payment status:', error);
@@ -230,7 +230,7 @@ export default function ProjectsPage() {
               </div>
               <button
                 onClick={handleNewProject}
-                className="inline-flex shrink-0 items-center gap-1.5 h-9 px-4 rounded-lg bg-[#ff4500] text-[12.5px] font-medium text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/30 focus-visible:ring-offset-2"
+                className="inline-flex shrink-0 items-center gap-1.5 h-9 px-4 rounded-lg bg-[#d13800] text-[12.5px] font-medium text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/30 focus-visible:ring-offset-2"
               >
                 <Plus className="h-3.5 w-3.5" />
                 New project

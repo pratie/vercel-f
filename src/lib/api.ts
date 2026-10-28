@@ -163,6 +163,13 @@ export interface PaymentStatus {
     payment_link: string | null;
     subscription_plan?: string;
     plan_expires_at?: string;
+    /** What paid routes enforce: paid AND not expired. has_paid stays true after expiry. */
+    access_active?: boolean;
+}
+
+/** Paid and not expired. Falls back to has_paid for a backend that predates access_active. */
+export function hasActiveAccess(status: PaymentStatus): boolean {
+    return typeof status.access_active === 'boolean' ? status.access_active : status.has_paid;
 }
 
 export interface PricingPlan {

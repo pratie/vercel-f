@@ -20,7 +20,7 @@ html {
     --popover: 0 0% 100%;
     --popover-foreground: 30 22% 10%;
 
-    --primary: 16 100% 50%;
+    --primary: 16 100% 41%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 40 14% 96%;
@@ -52,7 +52,7 @@ html {
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 16 100% 50%;
+    --primary: 16 100% 41%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 240 3.7% 15.9%;
@@ -113,14 +113,15 @@ html {
   @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold leading-none;
 }
 
-/* Primary action — the same deep orange as headline accents (orange-600) */
+/* Primary action. #d13800 keeps white text above 4.5:1 contrast; the brighter
+   #ff4500 stays for icons, accents and the brand bar in charts. */
 .btn-primary {
   @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition-all;
-  background-image: linear-gradient(180deg, #f24d10 0%, #e63e00 100%);
+  background-image: linear-gradient(180deg, #d93c00 0%, #c43400 100%);
   box-shadow: var(--shadow-orange);
 }
 .btn-primary:hover {
-  background-image: linear-gradient(180deg, #e64509 0%, #d13800 100%);
+  background-image: linear-gradient(180deg, #c43400 0%, #b83200 100%);
   transform: translateY(-1px);
 }
 .btn-primary:active {
