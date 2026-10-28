@@ -8,7 +8,7 @@ interface ScanBannerProps {
 /** A hairline progress rule with one line of status. No box, no icon tile. */
 export function ScanBanner({ progress, message }: ScanBannerProps) {
   return (
-    <div className="mb-6">
+    <div className="mb-4">
       <div className="flex items-baseline justify-between gap-4 mb-2">
         <p className="text-[12.5px] text-ink-600 truncate">
           <span className="text-ink-900">Scanning Reddit.</span>{' '}
@@ -17,7 +17,7 @@ export function ScanBanner({ progress, message }: ScanBannerProps) {
         <span className="text-[12.5px] text-ink-400 tabular-nums shrink-0">{progress}%</span>
       </div>
       <div
-        className="h-px w-full bg-black/[0.08] overflow-hidden"
+        className="h-1 w-full overflow-hidden rounded-full bg-black/[0.08]"
         role="progressbar"
         aria-valuenow={progress}
         aria-valuemin={0}

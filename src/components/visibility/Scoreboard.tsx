@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { VisibilityBrandScore, VisibilityCompetitorScore } from '@/lib/api';
-import { formatRunDate } from './engines';
+import { STICKER_PANEL } from '@/components/ui/sticker';
 
 interface ScoreboardProps {
   brand: VisibilityBrandScore;
@@ -40,12 +40,13 @@ const SMALL_SAMPLE = 20;
 /** Past this, one tick per answer stops being countable and becomes texture. */
 const MAX_TALLY_TICKS = 40;
 
-export function Scoreboard({ brand, competitors, completedAt }: ScoreboardProps) {
+// `completedAt` stays in the props so the page contract is unchanged; the page
+// header now prints the run time, so the card no longer repeats it.
+export function Scoreboard({ brand, competitors }: ScoreboardProps) {
   const [expanded, setExpanded] = useState(false);
 
   const brandName = brand.name || 'You';
   const totalChecks = brand.total_checks;
-  const checkedAt = formatRunDate(completedAt);
 
   /**
    * Every entity shares one denominator: the backend scores competitors against
@@ -130,19 +131,19 @@ export function Scoreboard({ brand, competitors, completedAt }: ScoreboardProps)
     brand.mention_count > 0 ? Math.round(totalChecks / brand.mention_count) : 0;
 
   return (
-    <div className="bg-white rounded-2xl shadow-card p-6 sm:p-7 transition-shadow hover:shadow-card-hover">
+    <div className={`${STICKER_PANEL} p-5 sm:p-7`}>
       <div className="grid gap-8 lg:grid-cols-[minmax(0,268px)_minmax(0,1fr)] lg:gap-11">
         {/* ── Hero: the number, its denominator, and one line of meaning ── */}
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.07em] text-ink-400">
+          <h2 className="text-[13px] font-semibold text-ink-600">
             Share of AI answers
-          </p>
+          </h2>
 
           <div className="mt-2 flex items-baseline gap-1 text-ink-900">
-            <span className="text-[64px] font-bold leading-none tracking-tight tabular-nums">
+            <span className="font-play text-[64px] font-extrabold leading-none tracking-[-0.03em] tabular-nums">
               {brand.visibility_pct}
             </span>
-            <span className="text-[30px] font-bold leading-none text-ink-300">%</span>
+            <span className="font-play text-[30px] font-bold leading-none text-ink-400">%</span>
           </div>
 
           {/* The denominator is bound to the number, never a footnote. */}
@@ -201,18 +202,15 @@ export function Scoreboard({ brand, competitors, completedAt }: ScoreboardProps)
             )}
           </p>
 
-          {checkedAt && (
-            <p className="mt-3 text-[11.5px] text-ink-400">Checked {checkedAt}</p>
-          )}
         </div>
 
         {/* ── Leaderboard: bars measured in answers, not in percent ── */}
         <div>
           <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1.5">
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.07em] text-ink-400">
+              <h2 className="text-[13px] font-semibold text-ink-600">
                 Who gets named
-              </p>
+              </h2>
               {hasChecks && (
                 <p className="mt-1 text-[11.5px] text-ink-400">
                   Bar length is answers named, out of{' '}
@@ -237,7 +235,7 @@ export function Scoreboard({ brand, competitors, completedAt }: ScoreboardProps)
           </div>
 
           {competitors.length === 0 ? (
-            <div className="mt-4 rounded-xl bg-paper px-4 py-5">
+            <div className="mt-4 rounded-xl bg-cream px-4 py-5">
               <p className="text-[13px] font-semibold text-ink-700">
                 No competitors tracked yet
               </p>
@@ -276,7 +274,7 @@ export function Scoreboard({ brand, competitors, completedAt }: ScoreboardProps)
                           {run.rank}
                         </span>
                         {run.tieSize > 1 && (
-                          <span className="mt-px text-[8.5px] font-bold uppercase tracking-[0.06em] text-ink-400">
+                          <span className="mt-px text-[9.5px] font-semibold text-ink-400">
                             tied
                           </span>
                         )}
@@ -320,7 +318,7 @@ export function Scoreboard({ brand, competitors, completedAt }: ScoreboardProps)
                 <button
                   type="button"
                   onClick={() => setExpanded((v) => !v)}
-                  className="mt-3.5 inline-flex items-center gap-1 rounded-lg px-1.5 py-1 -ml-1.5 text-[12px] font-semibold text-ink-600 transition-colors hover:bg-paper hover:text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-500"
+                  className="mt-3.5 inline-flex items-center gap-1 rounded-lg px-1.5 py-1 -ml-1.5 text-[12px] font-semibold text-ink-600 transition-colors hover:bg-paper hover:text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4500]"
                 >
                   {expanded ? 'Show fewer' : `Show all ${allRows.length}`}
                   <ChevronDown
@@ -394,7 +392,7 @@ function LeaderRow({ row, totalChecks }: { row: Row; totalChecks: number }) {
   return (
     <div
       tabIndex={0}
-      className="group relative -mx-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 rounded-lg px-1.5 py-[3px] transition-colors hover:bg-paper focus-visible:bg-paper focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-orange-500 sm:grid-cols-[minmax(0,140px)_minmax(0,1fr)_auto]"
+      className="group relative -mx-1.5 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1.5 rounded-lg px-1.5 py-[3px] transition-colors hover:bg-cream focus-visible:bg-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-[#ff4500] sm:grid-cols-[minmax(0,140px)_minmax(0,1fr)_auto]"
     >
       {/* Hover and focus read the same. The values are also printed below. */}
       <div className="pointer-events-none absolute bottom-full left-1 z-20 mb-1 w-max max-w-[240px] rounded-lg bg-ink-900 px-2.5 py-1.5 opacity-0 shadow-card-hover transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100 motion-reduce:transition-none">
@@ -423,8 +421,8 @@ function LeaderRow({ row, totalChecks }: { row: Row; totalChecks: number }) {
       >
         {row.name}
         {row.isBrand && (
-          <span className="ml-1.5 text-[10.5px] font-bold uppercase tracking-[0.05em] text-orange-600">
-            you
+          <span className="ml-1.5 rounded bg-[#ff4500]/[0.12] px-1 py-px text-[10.5px] font-semibold text-[#b83200]">
+            You
           </span>
         )}
       </span>

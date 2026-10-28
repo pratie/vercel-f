@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useParams, useSearchParams } from 'next/navigation';
-import {
-  ArrowLeft, BarChart3, Download, RefreshCw,
-} from 'lucide-react';
+import { BarChart3, Download, Loader2, RefreshCw } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
 import { api, Project } from '@/lib/api';
@@ -15,7 +13,7 @@ import {
 import { MentionCard } from '@/components/mentions/MentionCard';
 import { LeadInbox } from '@/components/mentions/LeadInbox';
 import { ScanBanner } from '@/components/mentions/ScanBanner';
-import { StatsStrip, MentionStats } from '@/components/mentions/StatsStrip';
+import { BTN_PRIMARY, BTN_QUIET, BTN_SECONDARY } from '@/components/ui/sticker';
 import { FilterBar, MentionFilters, DEFAULT_FILTERS, SortKey, TriageTab } from '@/components/mentions/FilterBar';
 
 const MENTIONS_PER_PAGE = 25;
@@ -292,171 +290,151 @@ export default function MentionsPage() {
 
   const displayMentions = filteredAll.slice(0, visibleCount);
 
-  const stats: MentionStats = useMemo(() => {
-    const scored = allMentions.filter((m) => !isUnscored(m));
+  const stats = useMemo(() => {
     const dayAgo = Date.now() / 1000 - 86_400;
-    const bySubreddit = allMentions.reduce((acc, m) => {
-      acc[m.subreddit] = (acc[m.subreddit] || 0) + 1;
-      return acc;
-    }, {} as Record<string, number>);
-    const top = Object.entries(bySubreddit).sort((a, b) => b[1] - a[1])[0];
     return {
       total: allMentions.length,
       newLast24h: allMentions.filter((m) => m.created_utc > dayAgo).length,
-      avgRelevance: scored.length
-        ? Math.round(scored.reduce((acc, m) => acc + (m.relevance_score || 0), 0) / scored.length)
-        : null,
       highIntent: allMentions.filter(isHighIntent).length,
-      topSubreddit: top ? top[0] : null,
       unscored: allMentions.filter(isUnscored).length,
     };
   }, [allMentions]);
 
+  const remaining = filteredAll.length - displayMentions.length;
+  const dot = <span aria-hidden="true" className="text-ink-300">·</span>;
+
   return (
     <PaymentGuard>
-      <div className="max-w-[940px] lg:max-w-[1240px] mx-auto px-5 sm:px-6 py-6 sm:py-10">
-        {/* Header */}
-        <header className="mb-8">
-          <button
-            onClick={() => router.push('/projects')}
-            className="group -ml-1 mb-4 inline-flex items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium text-ink-400 transition-colors hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
-          >
-            <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-            All projects
-          </button>
+      <div className="mx-auto max-w-[1280px]">
+        {/* Header: what this is, the numbers that matter, and the actions. */}
+        <header className="mb-4 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-semibold text-ink-400">{project ? project.name : ' '}</p>
+            <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">
+              Leads
+            </h1>
+            {allMentions.length > 0 && (
+              <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-400">
+                <span><span className="font-semibold tabular-nums text-ink-900">{stats.total}</span> leads</span>
+                {dot}
+                <span><span className="font-semibold tabular-nums text-[#047857]">{stats.highIntent}</span> high intent</span>
+                {stats.newLast24h > 0 && (
+                  <>
+                    {dot}
+                    <span className="inline-flex items-center gap-1.5 font-medium text-[#b83200]">
+                      <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#ff4500]" />
+                      <span className="tabular-nums">{stats.newLast24h} new today</span>
+                    </span>
+                  </>
+                )}
+                {stats.unscored > 3 && (
+                  <>
+                    {dot}
+                    <span className="tabular-nums">{stats.unscored} not scored yet</span>
+                    <button
+                      onClick={handleRescore}
+                      disabled={rescoring}
+                      className="inline-flex items-center gap-1 font-semibold text-ink-900 underline decoration-ink-300 underline-offset-2 transition-colors hover:decoration-ink-900 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40 rounded"
+                    >
+                      {rescoring && <Loader2 className="h-3 w-3 animate-spin" aria-hidden="true" />}
+                      {rescoring ? 'Scoring' : 'Score them'}
+                    </button>
+                  </>
+                )}
+              </p>
+            )}
+          </div>
 
-          <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
-            <div className="min-w-0">
-              <h1 className="font-play text-[34px] sm:text-[44px] font-extrabold text-ink-900 tracking-[-0.03em] leading-[1.05] truncate">
-                {project ? project.name : ' '}
-              </h1>
-              {allMentions.length > 0 && (
-                <p className="mt-1.5 text-[13.5px] text-ink-400">
-                  Reddit leads across{' '}
-                  <span className="tabular-nums text-ink-600">{availableSubreddits.length}</span>{' '}
-                  {availableSubreddits.length === 1 ? 'community' : 'communities'}
-                </p>
-              )}
-            </div>
-
-            <div className="flex items-center gap-0.5 -mr-2">
-              <button
-                onClick={() => startScan()}
-                disabled={scanStatus === 'scanning'}
-                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 disabled:opacity-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
-              >
-                <RefreshCw className={`h-3.5 w-3.5 ${scanStatus === 'scanning' ? 'animate-spin text-[#ff4500]' : ''}`} />
-                {scanStatus === 'scanning' ? 'Scanning' : 'Scan now'}
-              </button>
-              <button
-                onClick={() => router.push(`/mentions/${projectId}/analytics`)}
-                className="hidden sm:inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
-              >
-                <BarChart3 className="h-3.5 w-3.5" />
-                Analytics
-              </button>
-              <button
-                onClick={() => {
-                  exportMentionsToCSV(filteredAll, project ? project.name.replace(/\s+/g, '_').toLowerCase() : 'sneakyguy_leads');
-                  toast.success(`Exported ${filteredAll.length} leads`);
-                }}
-                disabled={filteredAll.length === 0}
-                className="inline-flex items-center gap-1.5 h-9 px-2.5 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 disabled:opacity-40 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
-              >
-                <Download className="h-3.5 w-3.5" />
-                <span className="hidden sm:inline">Export</span>
-              </button>
-            </div>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => router.push(`/mentions/${projectId}/analytics`)}
+              className={`${BTN_QUIET} hidden sm:inline-flex`}
+            >
+              <BarChart3 className="h-3.5 w-3.5" aria-hidden="true" />
+              Analytics
+            </button>
+            <button
+              onClick={() => {
+                exportMentionsToCSV(filteredAll, project ? project.name.replace(/\s+/g, '_').toLowerCase() : 'sneakyguy_leads');
+                toast.success(`Exported ${filteredAll.length} leads`);
+              }}
+              disabled={filteredAll.length === 0}
+              className={BTN_QUIET}
+            >
+              <Download className="h-3.5 w-3.5" aria-hidden="true" />
+              Export
+            </button>
+            <button
+              onClick={() => startScan()}
+              disabled={scanStatus === 'scanning'}
+              className={`${BTN_SECONDARY} ml-1`}
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${scanStatus === 'scanning' ? 'animate-spin text-[#ff4500]' : ''}`} aria-hidden="true" />
+              {scanStatus === 'scanning' ? 'Scanning' : 'Scan now'}
+            </button>
           </div>
         </header>
 
         {scanStatus === 'scanning' && <ScanBanner progress={scanProgress} message={scanMessage} />}
 
         {!isLoading && allMentions.length > 0 && (
-          <StatsStrip
-            stats={stats}
-            onOpenAnalytics={() => router.push(`/mentions/${projectId}/analytics`)}
-            onRescore={handleRescore}
-            rescoring={rescoring}
-          />
-        )}
-
-        {!isLoading && allMentions.length > 0 && (
-          <FilterBar
-            filters={filters}
-            onChange={updateFilters}
-            subreddits={availableSubreddits}
-            intents={availableIntents}
-            counts={triageCounts}
-            shown={displayMentions.length}
-            matched={filteredAll.length}
-          />
+          <div className="mb-4">
+            <FilterBar
+              filters={filters}
+              onChange={updateFilters}
+              subreddits={availableSubreddits}
+              intents={availableIntents}
+              counts={triageCounts}
+            />
+          </div>
         )}
 
         {/* Content */}
         {isLoading ? (
-          <div className="-ml-4 border-t border-black/[0.06]" aria-busy="true" aria-label="Loading leads">
+          <div className="border-t-2 border-[#1c1917]/[0.08]" aria-busy="true" aria-label="Loading leads">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="border-b border-black/[0.06] py-4 pl-4 pr-4 animate-pulse">
-                <div className="h-[15px] bg-[#f0efed] rounded" style={{ width: `${[72, 58, 66, 80, 54, 63][i]}%` }} />
-                <div className="mt-2.5 h-[11px] w-1/2 bg-[#f6f5f3] rounded" />
-                <div className="mt-3 h-[9px] w-40 bg-[#f6f5f3] rounded" />
+              <div key={i} className="animate-pulse border-b border-black/[0.06] py-4">
+                <div className="h-[15px] rounded bg-[#f0efed]" style={{ width: `${[72, 58, 66, 80, 54, 63][i]}%` }} />
+                <div className="mt-2.5 h-[11px] w-1/2 rounded bg-[#f6f5f3]" />
               </div>
             ))}
           </div>
         ) : loadError ? (
           <div className="py-20 text-center">
-            <p className="text-[15px] font-medium text-ink-900">Could not load this project</p>
+            <p className="text-[15px] font-semibold text-ink-900">Could not load this project</p>
             <p className="mt-1.5 text-[13px] text-ink-400">{loadError}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-5 inline-flex h-9 items-center rounded-lg bg-[#d13800] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
-            >
+            <button onClick={() => window.location.reload()} className={`${BTN_PRIMARY} mt-5`}>
               Try again
             </button>
           </div>
         ) : allMentions.length === 0 ? (
-          <div className="py-16 max-w-[52ch]">
-            <h2 className="text-[20px] font-semibold text-ink-900 tracking-[-0.02em]">
+          <div className="max-w-[52ch] py-12">
+            <h2 className="font-play text-[24px] font-bold tracking-[-0.02em] text-ink-900">
               {scanStatus === 'scanning' ? 'Your first scan is running' : 'No leads yet'}
             </h2>
-            <p className="mt-2 text-[13.5px] text-ink-400 leading-[1.7]">
+            <p className="mt-2 text-[14px] leading-[1.7] text-ink-600">
               {scanStatus === 'scanning'
                 ? 'We are reading your subreddits for conversations that match your keywords. This usually takes a minute or two.'
                 : 'Scan Reddit to find conversations that match your keywords.'}
             </p>
             {project && project.keywords.length > 0 && (
-              <p className="mt-5 text-[12.5px] text-ink-400 leading-[1.9]">
-                <span className="uppercase tracking-[0.09em] text-[11px] text-ink-300">Watching</span>{' '}
-                <span className="text-ink-600">{project.keywords.slice(0, 8).join(', ')}</span>
+              <p className="mt-4 text-[13px] leading-[1.8] text-ink-400">
+                Watching <span className="text-ink-600">{project.keywords.slice(0, 8).join(', ')}</span>
               </p>
             )}
             {scanStatus !== 'scanning' && (
-              <button
-                onClick={() => startScan()}
-                className="mt-6 inline-flex h-9 items-center gap-1.5 rounded-lg bg-[#d13800] px-4 text-[12.5px] font-medium text-white transition-opacity hover:opacity-90"
-              >
-                <RefreshCw className="h-3.5 w-3.5" />
+              <button onClick={() => startScan()} className={`${BTN_PRIMARY} mt-6`}>
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
                 Scan Reddit now
               </button>
             )}
-            {scanStatus === 'scanning' && (
-              <div className="mt-8 border-t border-black/[0.06]">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="border-b border-black/[0.06] py-4 animate-pulse">
-                    <div className="h-[15px] bg-[#f0efed] rounded" style={{ width: `${[70, 55, 64][i]}%` }} />
-                    <div className="mt-2.5 h-[11px] w-1/2 bg-[#f6f5f3] rounded" />
-                  </div>
-                ))}
-              </div>
-            )}
           </div>
         ) : displayMentions.length === 0 ? (
-          <div className="py-16 border-t border-black/[0.06]">
-            <p className="text-[13.5px] text-ink-600">No leads match your filters.</p>
+          <div className="py-16">
+            <p className="text-[14px] text-ink-600">No leads match your filters.</p>
             <button
               onClick={() => updateFilters({ ...DEFAULT_FILTERS })}
-              className="mt-2 text-[12.5px] font-medium text-[#d94100] hover:text-ink-900 transition-colors"
+              className="mt-2 text-[13px] font-semibold text-[#b83200] underline decoration-[#ff4500]/40 underline-offset-2 hover:decoration-[#b83200]"
             >
               Clear all filters
             </button>
@@ -471,11 +449,11 @@ export default function MentionsPage() {
                 published={publishedComments}
                 onViewed={markViewed}
                 onPublished={markPublished}
-                hasMore={visibleCount < filteredAll.length}
+                remaining={remaining}
                 onLoadMore={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
               />
             </div>
-            <div className="lg:hidden -ml-4 border-t border-black/[0.06]">
+            <div className="-ml-4 border-t border-black/[0.06] lg:hidden">
               {displayMentions.map((mention) => (
                 <MentionCard
                   key={mention.id}
@@ -488,13 +466,14 @@ export default function MentionsPage() {
               ))}
             </div>
 
-            {visibleCount < filteredAll.length && (
-              <div className="lg:hidden mt-8 mb-10 flex justify-center">
+            {remaining > 0 && (
+              <div className="mb-6 mt-6 lg:hidden">
                 <button
                   onClick={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
-                  className="h-9 px-4 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                  className="h-10 w-full rounded-xl border-2 border-dashed border-ink-300 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                 >
-                  Show {Math.min(MENTIONS_PER_PAGE, filteredAll.length - visibleCount)} more
+                  Show {Math.min(MENTIONS_PER_PAGE, remaining)} more
+                  <span className="font-normal text-ink-400"> ({remaining} left)</span>
                 </button>
               </div>
             )}

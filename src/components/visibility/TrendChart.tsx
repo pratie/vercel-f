@@ -4,9 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts';
-import { TrendingUp } from 'lucide-react';
 import { VisibilityTrendPoint } from '@/lib/api';
 import { BRAND_COLOR, CHART_GRID, CHART_TICK, COMPETITOR_COLORS } from './engines';
+import { PANEL } from '@/components/ui/sticker';
 
 interface TrendChartProps {
   data: VisibilityTrendPoint[];
@@ -61,7 +61,7 @@ export function TrendChart({ data, brandName }: TrendChartProps) {
   const TrendTooltip = ({ active, payload, label }: any) => {
     if (!active || !payload?.length) return null;
     return (
-      <div className="bg-white rounded-xl px-3.5 py-2.5 shadow-card text-xs">
+      <div className="rounded-xl border-2 border-[#1c1917] bg-white px-3.5 py-2.5 text-xs shadow-[3px_3px_0_#1c1917]">
         <p className="font-medium text-ink-400 mb-1">{label}</p>
         {payload.map((entry: any) => {
           const match = series.find((s) => s.key === entry.dataKey);
@@ -83,15 +83,14 @@ export function TrendChart({ data, brandName }: TrendChartProps) {
   };
 
   return (
-    <section className="bg-white rounded-2xl shadow-card p-6">
-      <div className="flex items-center gap-2.5 mb-5">
-        <span className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 bg-orange-50 text-orange-500">
-          <TrendingUp className="h-3.5 w-3.5" />
-        </span>
-        <h2 className="text-xs uppercase tracking-wider text-ink-400 font-semibold">
-          Visibility over time
+    <section aria-labelledby="trend-heading">
+      <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+        <h2 id="trend-heading" className="font-play text-[18px] font-bold tracking-[-0.01em] text-ink-900">
+          Over time
         </h2>
+        <p className="text-[12px] text-ink-400">Share of AI answers, last 30 days</p>
       </div>
+      <div className={`${PANEL} p-5`}>
 
       {mounted && (
         <div className="h-[220px]">
@@ -134,16 +133,17 @@ export function TrendChart({ data, brandName }: TrendChartProps) {
       )}
 
       <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5">
-        <span className="flex items-center gap-1.5 text-[11.5px] font-semibold text-ink-700">
+        <span className="flex items-center gap-1.5 text-[12px] font-semibold text-ink-900">
           <span className="w-2.5 h-0.5 rounded-full" style={{ backgroundColor: BRAND_COLOR }} />
           {brandName || 'You'}
         </span>
         {series.map((s) => (
-          <span key={s.key} className="flex items-center gap-1.5 text-[11.5px] text-ink-400">
+          <span key={s.key} className="flex items-center gap-1.5 text-[12px] text-ink-400">
             <span className="w-2.5 h-0.5 rounded-full" style={{ backgroundColor: s.color }} />
             {s.name}
           </span>
         ))}
+      </div>
       </div>
     </section>
   );

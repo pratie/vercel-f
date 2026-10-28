@@ -19,6 +19,7 @@ import { useAuth } from './AuthContext';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { api, Project, hasActiveAccess } from '@/lib/api';
+import { BTN_PRIMARY } from '@/components/ui/sticker';
 
 const PROJECTS_CACHE_KEY = 'sidebar-projects-v1';
 
@@ -134,10 +135,10 @@ export function Sidebar() {
         {/* Projects: the real navigation */}
         <div className={cn('flex-1 min-h-0 overflow-y-auto pb-3', showLabels ? 'px-3' : 'px-2')}>
           {showLabels && (
-            <div className="flex items-center justify-between px-1 pt-1 pb-2">
+            <div className="flex items-center justify-between px-2 pt-1 pb-1.5">
               <Link
                 href="/projects"
-                className={cn('text-[13px] font-semibold transition-colors', pathname === '/projects' ? 'text-ink-900' : 'text-ink-400 hover:text-ink-900')}
+                className={cn('rounded text-[12.5px] font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40', pathname === '/projects' ? 'text-ink-900' : 'text-ink-400 hover:text-ink-900')}
               >
                 Projects
               </Link>
@@ -145,7 +146,7 @@ export function Sidebar() {
             </div>
           )}
 
-          <div className="space-y-2">
+          <div className="space-y-1">
             {projects.slice(0, 12).map((p) => {
               const leadsActive = pathname === `/mentions/${p.id}`;
               const analyticsActive = pathname.startsWith(`/mentions/${p.id}/`);
@@ -159,7 +160,7 @@ export function Sidebar() {
                     key={p.id}
                     href={`/mentions/${p.id}`}
                     title={p.name}
-                    className={cn('mx-auto flex h-10 w-10 items-center justify-center rounded-xl font-play text-[15px] font-extrabold text-white', projectDot(p.name), open ? 'ring-2 ring-[#1c1917] ring-offset-2' : 'opacity-80 hover:opacity-100')}
+                    className={cn('mx-auto flex h-9 w-9 items-center justify-center rounded-lg font-play text-[14px] font-extrabold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50', projectDot(p.name), open ? 'ring-2 ring-[#1c1917] ring-offset-2' : 'opacity-80 hover:opacity-100')}
                   >
                     {initial}
                   </Link>
@@ -167,19 +168,19 @@ export function Sidebar() {
               }
 
               return (
-                <div key={p.id} className={cn('rounded-2xl transition-[box-shadow,border-color]', open ? STICKER : 'border-2 border-transparent')}>
+                <div key={p.id} className={cn('rounded-xl transition-[box-shadow,border-color] motion-reduce:transition-none', open ? STICKER : 'border-2 border-transparent')}>
                   <Link
                     href={`/mentions/${p.id}`}
-                    className="flex items-center gap-2.5 rounded-2xl px-2 py-2 hover:bg-black/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+                    className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-black/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                     aria-current={leadsActive ? 'page' : undefined}
                   >
-                    <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-play text-[14px] font-extrabold text-white', projectDot(p.name))}>
+                    <span className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md font-play text-[13px] font-extrabold text-white', projectDot(p.name))}>
                       {initial}
                     </span>
-                    <span className="min-w-0 truncate text-[13.5px] font-semibold text-ink-900">{p.name}</span>
+                    <span className={cn('min-w-0 truncate text-[13.5px] text-ink-900', open ? 'font-bold' : 'font-semibold')}>{p.name}</span>
                   </Link>
                   {open && (
-                    <div className="px-2 pb-2 pt-0.5 space-y-0.5">
+                    <div className="px-1.5 pb-1.5 space-y-0.5">
                       {[
                         { label: 'Leads', href: `/mentions/${p.id}`, icon: Inbox, active: leadsActive },
                         { label: 'AI visibility', href: `/visibility/${p.id}`, icon: Sparkles, active: visibilityActive },
@@ -190,8 +191,8 @@ export function Sidebar() {
                           href={item.href}
                           aria-current={item.active ? 'page' : undefined}
                           className={cn(
-                            'flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium transition-colors',
-                            item.active ? 'bg-[#ff4500]/[0.1] text-[#b83200]' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
+                            'flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',
+                            item.active ? 'bg-[#ff4500]/[0.12] font-semibold text-[#b83200]' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
                           )}
                         >
                           <item.icon className="h-3.5 w-3.5 shrink-0" />
@@ -209,8 +210,8 @@ export function Sidebar() {
             href="/projects?new=1"
             title={!showLabels ? 'New project' : undefined}
             className={cn(
-              'mt-3 flex items-center rounded-2xl border-2 border-dashed border-ink-300 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900',
-              showLabels ? 'gap-2 px-3 py-2.5' : 'mx-auto h-10 w-10 justify-center'
+              'mt-2 flex items-center rounded-xl border-2 border-dashed border-ink-300 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',
+              showLabels ? 'gap-2 px-3 py-2' : 'mx-auto h-9 w-9 justify-center'
             )}
           >
             <Plus className="h-4 w-4 shrink-0" />
@@ -222,19 +223,19 @@ export function Sidebar() {
         <div className={cn('shrink-0 border-t-2 border-[#1c1917]/[0.08] py-3 space-y-1', showLabels ? 'px-3' : 'px-2')}>
           {showLabels && (
             planLabel ? (
-              <div className="mb-2 flex items-center justify-between rounded-xl bg-[#059669]/[0.1] px-3 py-2">
+              <div className="mb-2 flex items-center justify-between rounded-lg bg-[#059669]/[0.1] px-3 py-2">
                 <span className="text-[12.5px] font-semibold text-[#047857]">{planLabel}</span>
-                <Link href="/settings" className="text-[12px] font-medium text-[#047857] underline-offset-2 hover:underline">Billing</Link>
+                <Link href="/settings" className="rounded text-[12px] font-medium text-[#047857] underline-offset-2 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40">Billing</Link>
               </div>
             ) : plan === null ? null : (
-              <Link href="/upgrade" className="btn-primary mb-2 w-full h-9 text-[13px]">Upgrade</Link>
+              <Link href="/upgrade" className={cn(BTN_PRIMARY, 'mb-2 w-full')}>Upgrade</Link>
             )
           )}
           <Link
             href="/settings"
             title={!showLabels ? 'Settings' : undefined}
             className={cn(
-              'flex items-center rounded-xl text-[13px] font-medium transition-colors',
+              'flex items-center rounded-lg text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',
               showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5',
               pathname.startsWith('/settings') ? 'bg-black/[0.05] text-ink-900' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
             )}
@@ -244,14 +245,14 @@ export function Sidebar() {
           </Link>
           <button
             onClick={logout}
-            title={!showLabels ? 'Sign out' : undefined}
+            title={user ? `Sign out ${user.email}` : 'Sign out'}
             className={cn(
-              'w-full flex items-center rounded-xl text-[13px] font-medium text-ink-400 hover:bg-black/[0.04] hover:text-ink-900 transition-colors',
+              'w-full flex items-center rounded-lg text-[13px] font-medium text-ink-400 hover:bg-black/[0.04] hover:text-ink-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',
               showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5'
             )}
           >
             <LogOut className="h-4 w-4 shrink-0" />
-            {showLabels && <span className="truncate">Sign out{user ? ` ${user.email}` : ''}</span>}
+            {showLabels && <span className="truncate">Sign out</span>}
           </button>
         </div>
       </>

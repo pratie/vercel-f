@@ -4,6 +4,7 @@ import { useMemo, useState } from 'react';
 import { Check, ChevronDown, Minus } from 'lucide-react';
 import { VisibilityEngineResult, VisibilityPromptResult } from '@/lib/api';
 import { engineLabel } from './engines';
+import { PANEL } from '@/components/ui/sticker';
 
 interface PromptListProps {
   prompts: VisibilityPromptResult[];
@@ -27,11 +28,11 @@ function AnswerCell({ label, result }: { label: string; result: VisibilityEngine
   let description: string;
 
   if (!result) {
-    badge = 'bg-paper text-ink-300';
+    badge = 'bg-white text-ink-300';
     content = <span className="h-1 w-1 rounded-full bg-ink-300" aria-hidden="true" />;
     description = `${label} was not asked this question in the last run`;
   } else if (result.brand_mentioned) {
-    badge = 'bg-emerald-50 text-emerald-700';
+    badge = 'bg-[#059669]/[0.12] text-[#047857]';
     content = result.brand_rank != null
       ? <span className="text-[11px] font-bold leading-none tabular-nums">#{result.brand_rank}</span>
       : <Check className="h-3.5 w-3.5" aria-hidden="true" />;
@@ -53,7 +54,7 @@ function AnswerCell({ label, result }: { label: string; result: VisibilityEngine
         {content}
         <span className="sr-only">{description}</span>
       </span>
-      <span className="max-w-full truncate text-[9.5px] font-semibold leading-none text-ink-400 sm:hidden">
+      <span className="max-w-full truncate text-[10px] font-semibold leading-none text-ink-400 sm:hidden">
         {label}
       </span>
     </span>
@@ -104,21 +105,21 @@ export function PromptList({ prompts }: PromptListProps) {
       <div className="mb-2.5 flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2
           id="questions-heading"
-          className="text-[11px] font-bold uppercase tracking-[0.07em] text-ink-400"
+          className="font-play text-[18px] font-bold tracking-[-0.01em] text-ink-900"
         >
           Every question we asked
         </h2>
-        <p className="text-[11.5px] text-ink-400 tabular-nums">
+        <p className="text-[12px] text-ink-400 tabular-nums">
           {prompts.length} question{prompts.length === 1 ? '' : 's'} × {columns.length} assistant
           {columns.length === 1 ? '' : 's'}, {hits} of {answers} answers named you ({pct}%)
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-2xl bg-white shadow-card">
+      <div className={`${PANEL} overflow-hidden`}>
         {/* Column header. Below sm the cells carry their own labels instead, so
             the grid still reads when it wraps under the question. */}
-        <div className="hidden items-center gap-x-3 border-b border-cream px-5 pb-2 pt-3.5 sm:flex">
-          <span className="min-w-0 flex-1 text-[10.5px] font-bold uppercase tracking-[0.06em] text-ink-300">
+        <div className="hidden items-center gap-x-3 border-b-2 border-[#1c1917]/[0.08] px-5 pb-2 pt-3 sm:flex">
+          <span className="min-w-0 flex-1 text-[12px] font-semibold text-ink-400">
             Question
           </span>
           <span className="flex shrink-0 items-center gap-x-3">
@@ -127,20 +128,20 @@ export function PromptList({ prompts }: PromptListProps) {
                 <span
                   key={label}
                   title={label}
-                  className={`truncate px-0.5 text-center text-[10.5px] font-semibold text-ink-400 ${CELL}`}
+                  className={`truncate px-0.5 text-center text-[11.5px] font-semibold text-ink-400 ${CELL}`}
                 >
                   {label}
                 </span>
               ))}
             </span>
-            <span className="w-[46px] text-right text-[10.5px] font-bold uppercase tracking-[0.06em] text-ink-300">
+            <span className="w-[46px] text-right text-[12px] font-semibold text-ink-400">
               Named
             </span>
             <span className="w-4 shrink-0" aria-hidden="true" />
           </span>
         </div>
 
-        <ul className="divide-y divide-cream">
+        <ul className="divide-y divide-[#1c1917]/[0.08]">
           {prompts.map((prompt) => {
             const isOpen = expanded.has(prompt.id);
             const named = prompt.results.filter((r) => r.brand_mentioned).length;
@@ -158,7 +159,7 @@ export function PromptList({ prompts }: PromptListProps) {
                 <button
                   onClick={() => toggle(prompt.id)}
                   aria-expanded={isOpen}
-                  className="flex w-full flex-wrap items-center gap-x-3 gap-y-2.5 px-4 py-3 text-left transition-colors hover:bg-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-orange-500/40 sm:px-5"
+                  className="flex w-full flex-wrap items-center gap-x-3 gap-y-2.5 px-4 py-3 text-left transition-colors hover:bg-cream focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#ff4500]/40 sm:px-5"
                 >
                   <span className="min-w-[180px] flex-1 text-[13px] font-semibold leading-snug tracking-[-0.01em] text-ink-900">
                     {prompt.text}
@@ -190,7 +191,7 @@ export function PromptList({ prompts }: PromptListProps) {
 
                     <ChevronDown
                       aria-hidden="true"
-                      className={`h-4 w-4 shrink-0 text-ink-300 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`}
+                      className={`h-4 w-4 shrink-0 text-ink-400 transition-transform duration-200 motion-reduce:transition-none ${isOpen ? 'rotate-180' : ''}`}
                     />
                   </span>
                 </button>
@@ -200,7 +201,7 @@ export function PromptList({ prompts }: PromptListProps) {
                     {prompt.results.map((result) => (
                       <div key={`detail-${prompt.id}-${result.engine}`} className="rounded-xl bg-cream/60 px-3.5 py-3">
                         <div className="mb-1.5 flex items-center gap-2">
-                          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${result.brand_mentioned ? 'bg-emerald-600' : 'bg-ink-300'}`} />
+                          <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${result.brand_mentioned ? 'bg-[#059669]' : 'bg-ink-300'}`} />
                           <span className="text-[12px] font-bold text-ink-900">{engineLabel(result.engine)}</span>
                           <span className="text-[11.5px] text-ink-400">
                             {result.brand_mentioned
@@ -223,7 +224,7 @@ export function PromptList({ prompts }: PromptListProps) {
                               {result.brand_mentioned ? 'Also named:' : 'Recommended instead:'}
                             </span>
                             {result.competitors.map((name) => (
-                              <span key={`${result.engine}-${name}`} className="chip bg-white text-ink-600 shadow-card">
+                              <span key={`${result.engine}-${name}`} className="chip border border-[#1c1917]/[0.12] bg-white text-ink-600">
                                 {name}
                               </span>
                             ))}
@@ -240,9 +241,9 @@ export function PromptList({ prompts }: PromptListProps) {
       </div>
 
       {/* The cells are never colour alone, but the shorthand still needs saying once. */}
-      <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11.5px] text-ink-400">
+      <p className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-ink-400">
         <span className="flex items-center gap-1.5">
-          <span className="flex h-4 w-5 items-center justify-center rounded bg-emerald-50 text-emerald-700">
+          <span className="flex h-4 w-5 items-center justify-center rounded bg-[#059669]/[0.12] text-[#047857]">
             <Check className="h-3 w-3" aria-hidden="true" />
           </span>
           names you

@@ -2,9 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import {
-  ArrowLeft, ChevronDown, Info, Loader2, MessageSquare, Sparkles,
-} from 'lucide-react';
+import { ChevronDown, Info, Loader2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { useAuth } from '@/components/AuthContext';
 import {
@@ -19,6 +17,8 @@ import { Opportunities } from '@/components/visibility/Opportunities';
 import { EngineCards } from '@/components/visibility/EngineCards';
 import { TrendChart } from '@/components/visibility/TrendChart';
 import { PromptList } from '@/components/visibility/PromptList';
+import { BTN_PRIMARY, BTN_QUIET } from '@/components/ui/sticker';
+import { formatRunDate } from '@/components/visibility/engines';
 
 const RUN_POLL_MS = 3000;
 const TREND_DAYS = 30;
@@ -295,75 +295,54 @@ export default function VisibilityPage() {
 
   return (
     <PaymentGuard>
-      <div className="max-w-5xl mx-auto px-4 py-4">
-        {/* Top bar */}
-        <div className="mb-6">
-          <button
-            onClick={() => router.push('/projects')}
-            className="flex items-center gap-1.5 text-xs font-semibold text-ink-400 hover:text-ink-700 transition-colors group mb-1.5"
-          >
-            <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform" />
-            Projects
-          </button>
-          <div className="flex items-end justify-between gap-3 flex-wrap">
-            <div className="min-w-0">
-              <h1 className="text-[22px] font-bold text-ink-900 tracking-tight truncate leading-tight">
-                AI visibility{project ? ` · ${project.name}` : ''}
-              </h1>
-              <p className="text-[12.5px] text-ink-400 mt-0.5">
-                Whether ChatGPT, Gemini, Perplexity and Claude recommend you when buyers ask.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                onClick={() => router.push(`/mentions/${projectId}`)}
-                className="hidden sm:flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color]"
-              >
-                <MessageSquare className="h-3 w-3" />
-                Reddit leads
-              </button>
-              {hasResults && (
-                <button
-                  onClick={startRun}
-                  disabled={running}
-                  className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-50"
-                >
-                  {running
-                    ? <Loader2 className="h-3 w-3 animate-spin text-orange-500" />
-                    : <Sparkles className="h-3 w-3" />}
-                  {running ? 'Checking…' : 'Check AI visibility'}
-                </button>
+      <div className="mx-auto max-w-[1100px]">
+        {/* Header: what this is, when it was last checked, and the one action. */}
+        <header className="mb-5 flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
+          <div className="min-w-0">
+            <p className="truncate text-[13px] font-semibold text-ink-400">{project ? project.name : '\u00a0'}</p>
+            <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">
+              AI visibility
+            </h1>
+            <p className="mt-1.5 text-[13px] text-ink-400">
+              Whether ChatGPT, Gemini, Perplexity and Claude recommend you when buyers ask.
+              {hasResults && latest?.completed_at && (
+                <> Last checked <span className="text-ink-600">{formatRunDate(latest.completed_at)}</span>.</>
               )}
-            </div>
+            </p>
           </div>
-        </div>
+
+          {hasResults && (
+            <button onClick={startRun} disabled={running} className={BTN_PRIMARY}>
+              {running
+                ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                : <Sparkles className="h-4 w-4" aria-hidden="true" />}
+              {running ? 'Checking' : 'Check again'}
+            </button>
+          )}
+        </header>
 
         {running && <RunBanner progress={runProgress} message={runMessage} />}
 
         {/* Content */}
         {isLoading ? (
-          <div className="space-y-3" aria-busy="true" aria-label="Loading AI visibility">
-            <div className="bg-white rounded-2xl shadow-card p-6 animate-pulse">
-              <div className="h-3 w-32 bg-cream rounded mb-4" />
-              <div className="h-12 w-40 bg-cream rounded-xl mb-4" />
-              <div className="h-3 w-2/3 bg-cream rounded" />
+          <div className="space-y-4" aria-busy="true" aria-label="Loading AI visibility">
+            <div className="animate-pulse rounded-2xl border-2 border-[#1c1917]/[0.08] bg-white p-6">
+              <div className="mb-4 h-3 w-32 rounded bg-cream" />
+              <div className="mb-4 h-12 w-40 rounded-xl bg-cream" />
+              <div className="h-3 w-2/3 rounded bg-cream" />
             </div>
             {Array.from({ length: 2 }).map((_, i) => (
-              <div key={i} className="bg-white rounded-2xl shadow-card p-5 animate-pulse">
-                <div className="h-4 w-3/4 bg-cream rounded mb-3" />
-                <div className="h-3 w-1/2 bg-cream rounded" />
+              <div key={i} className="animate-pulse rounded-2xl border-2 border-[#1c1917]/[0.08] bg-white p-5">
+                <div className="mb-3 h-4 w-3/4 rounded bg-cream" />
+                <div className="h-3 w-1/2 rounded bg-cream" />
               </div>
             ))}
           </div>
         ) : loadError ? (
-          <div className="text-center py-16 bg-white rounded-2xl shadow-card">
-            <p className="text-sm font-semibold text-ink-900 mb-1">Couldn&apos;t load AI visibility</p>
-            <p className="text-xs text-ink-400 mb-4">{loadError}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="px-4 h-9 rounded-xl bg-[#d13800] hover:bg-[#b83200] text-white text-xs font-bold shadow-orange transition-colors"
-            >
+          <div className="py-20 text-center">
+            <p className="text-[15px] font-semibold text-ink-900">Could not load AI visibility</p>
+            <p className="mt-1.5 text-[13px] text-ink-400">{loadError}</p>
+            <button onClick={() => window.location.reload()} className={`${BTN_PRIMARY} mt-5`}>
               Try again
             </button>
           </div>
@@ -382,7 +361,7 @@ export default function VisibilityPage() {
             />
 
             {showSampleNote && (
-              <p className="mt-3 flex items-start gap-2 px-1 text-[11.5px] leading-snug text-ink-400">
+              <p className="mt-3 flex items-start gap-2 px-1 text-[12px] leading-snug text-ink-400">
                 <Info className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                 <span>
                   This run asked{' '}
@@ -405,7 +384,7 @@ export default function VisibilityPage() {
                  same surface step the app already uses for cream, so the band
                  reads as a panel and its contents keep their own surfaces. ── */}
             {showAction && (
-              <div className="-mx-4 mt-7 bg-orange-100/60 px-4 py-6 ring-1 ring-inset ring-orange-500/10 sm:mx-0 sm:mt-8 sm:rounded-3xl sm:px-6 sm:py-7">
+              <div className="mt-8 rounded-2xl border-2 border-[#1c1917]/[0.12] bg-[#fff4f0] p-4 sm:p-6">
                 <Opportunities
                   items={opportunities}
                   hasGaps={hasGaps}
@@ -416,23 +395,23 @@ export default function VisibilityPage() {
 
             {/* ── The measurement behind the number. Compact, and paired into one
                  band when there is a trend worth showing. ── */}
-            <div className={`mt-8 grid items-start gap-5 sm:mt-10 ${hasTrend && hasEngines ? 'lg:grid-cols-2' : ''}`}>
+            <div className={`mt-8 grid items-start gap-5 ${hasTrend && hasEngines ? 'lg:grid-cols-2' : ''}`}>
               <EngineCards byEngine={latest!.by_engine} />
               <TrendChart data={trend} brandName={brandName} />
             </div>
 
-            <div className="mt-6">
+            <div className="mt-8">
               <PromptList prompts={latest!.prompts} />
             </div>
 
             {/* Editing questions and competitors stays available, just out of the way. */}
-            <div className="mt-6">
+            <div className="mt-8">
               <button
                 onClick={() => setShowManage((v) => !v)}
                 aria-expanded={showManage}
-                className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color]"
+                className={`${BTN_QUIET} -ml-2.5`}
               >
-                <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${showManage ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 motion-reduce:transition-none ${showManage ? 'rotate-180' : ''}`} aria-hidden="true" />
                 {showManage ? 'Hide setup' : 'Edit questions and competitors'}
               </button>
               {showManage && (

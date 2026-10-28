@@ -1,6 +1,6 @@
 // src/components/ProjectCard.tsx
 import { useState } from 'react';
-import { Trash2, Loader2, Edit, ArrowRight, Sparkles } from "lucide-react";
+import { Trash2, Loader2, Pencil, ArrowRight, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api, Project } from '@/lib/api';
@@ -98,22 +98,24 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
         aria-label={`Open leads for ${project.name}`}
         onClick={handleViewMentions}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleViewMentions(); } }}
-        className="w-full overflow-hidden cursor-pointer rounded-[20px] border-2 border-[#1c1917] bg-white shadow-[4px_4px_0_#1c1917] transition-[transform,box-shadow] duration-150 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_#1c1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+        className="w-full cursor-pointer overflow-hidden rounded-2xl border-2 border-[#1c1917] bg-white shadow-[4px_4px_0_#1c1917] transition-[transform,box-shadow] duration-150 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_#1c1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50 focus-visible:ring-offset-2 motion-reduce:transition-none"
       >
         <div className="p-5">
           {/* Identity row */}
           <div className="flex items-center gap-2.5 min-w-0">
-            <span className={`h-2.5 w-2.5 rounded-full shrink-0 ${projectDot(project.name)}`} aria-hidden="true" />
-            <h3 className="font-play text-[18px] font-bold text-ink-900 tracking-[-0.015em] truncate flex-1">
+            <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-play text-[14px] font-extrabold text-white ${projectDot(project.name)}`} aria-hidden="true">
+              {(project.name.trim()[0] || '?').toUpperCase()}
+            </span>
+            <h3 className="min-w-0 flex-1 truncate font-play text-[18px] font-bold tracking-[-0.015em] text-ink-900">
               {project.name}
             </h3>
             {project.analysis_status === 'scanning' ? (
-              <span className="flex items-center gap-1.5 text-orange-600 shrink-0">
+              <span className="flex shrink-0 items-center gap-1.5 text-[#b83200]">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75" />
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500" />
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#ff4500] opacity-75 motion-reduce:animate-none" />
+                  <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-[#ff4500]" />
                 </span>
-                <span className="text-[10px] font-semibold uppercase tracking-wider">
+                <span className="text-[11.5px] font-semibold">
                   Scanning <span className="tabular-nums">{project.analysis_progress}%</span>
                 </span>
               </span>
@@ -123,33 +125,33 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
           </div>
 
           {project.description && (
-            <p className="text-[13px] text-ink-600 mt-2 line-clamp-1 leading-relaxed">{project.description}</p>
+            <p className="mt-2 text-[13px] leading-relaxed text-ink-600 line-clamp-2">{project.description}</p>
           )}
 
           {/* Where it's watching */}
           <div className="mt-3.5 flex flex-wrap items-center gap-1.5">
             {shownSubreddits.map((subreddit) => (
-              <span key={subreddit} className="chip bg-orange-50 text-orange-700 text-[11px]">
+              <span key={subreddit} className="chip bg-[#ff4500]/[0.1] text-[11.5px] text-[#b83200]">
                 r/{subreddit}
               </span>
             ))}
             {moreSubreddits > 0 && (
-              <span className="chip bg-cream text-ink-400 text-[11px]">+{moreSubreddits}</span>
+              <span className="chip bg-cream text-[11.5px] text-ink-600">+{moreSubreddits}</span>
             )}
-            <span className="text-[11px] text-ink-400 ml-1">
-              · {project.keywords.length} keywords
+            <span className="ml-1 text-[12px] text-ink-400">
+              {project.keywords.length} keywords
             </span>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="px-5 py-3 border-t border-[#f0e9dd] flex items-center justify-between bg-[#fdfbf8]">
-          <div className="flex items-center gap-4 min-w-0">
-            <span className="inline-flex items-center gap-1.5 group-hover:gap-2.5 text-[13px] font-semibold text-orange-600 transition-all duration-200">
+        <div className="flex items-center justify-between border-t-2 border-[#1c1917]/[0.08] bg-[#fcfbf9] px-5 py-3">
+          <div className="flex min-w-0 items-center gap-4">
+            <span className="inline-flex items-center gap-1.5 text-[13px] font-semibold text-[#b83200] transition-[gap] duration-200 group-hover:gap-2.5 motion-reduce:transition-none">
               {loading ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  Opening…
+                  Opening
                 </>
               ) : (
                 <>
@@ -163,27 +165,27 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
               href={`/visibility/${project.id}`}
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
-              className="inline-flex items-center gap-1.5 rounded-lg text-[13px] font-medium text-ink-400 hover:text-ink-700 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+              className="inline-flex items-center gap-1.5 rounded-lg text-[13px] font-medium text-ink-600 transition-colors duration-150 hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50"
               aria-label={`Open AI visibility for ${project.name}`}
             >
-              <Sparkles className="h-3.5 w-3.5" />
-              AI Visibility
+              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+              AI visibility
             </Link>
           </div>
           <div className="flex items-center gap-1 shrink-0">
             <button
               onClick={(e) => { e.stopPropagation(); setIsEditOpen(true); }}
-              className="p-1.5 rounded-lg text-ink-300 hover:text-ink-600 hover:bg-cream transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+              className="rounded-lg p-2 text-ink-400 transition-colors duration-150 hover:bg-cream hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50"
               aria-label={`Edit ${project.name}`}
             >
-              <Edit className="h-3.5 w-3.5" />
+              <Pencil className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); handleDelete(); }}
-              className="p-1.5 rounded-lg text-ink-300 hover:text-rose-600 hover:bg-rose-50 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+              className="rounded-lg p-2 text-ink-400 transition-colors duration-150 hover:bg-rose-50 hover:text-rose-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50"
               aria-label={`Delete ${project.name}`}
             >
-              <Trash2 className="h-3.5 w-3.5" />
+              <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
             </button>
           </div>
         </div>

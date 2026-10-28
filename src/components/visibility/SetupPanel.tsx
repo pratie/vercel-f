@@ -5,6 +5,7 @@ import {
   Bot, Loader2, MessageSquare, Plus, Search, Sparkles, Swords, X,
 } from 'lucide-react';
 import { VisibilityCompetitor, VisibilityPrompt } from '@/lib/api';
+import { BTN_PRIMARY, BTN_SECONDARY, FIELD, PANEL, STICKER_PANEL } from '@/components/ui/sticker';
 
 interface SetupPanelProps {
   /** `onboarding` shows the full pitch. `manage` is the compact editor used once results exist. */
@@ -29,16 +30,16 @@ function StepHeading({ step, icon: Icon, title, sub }: {
   sub: string;
 }) {
   return (
-    <div className="flex items-start gap-3 mb-3.5">
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
-        <Icon className="h-4 w-4" />
+    <div className="mb-3.5 flex items-start gap-3">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#ff4500]/[0.12] text-[#b83200]">
+        <Icon className="h-4 w-4" aria-hidden="true" />
       </span>
       <div className="min-w-0">
-        <p className="text-[13.5px] font-bold text-ink-900 leading-tight">
-          {step && <span className="text-orange-600 mr-1.5">{step}</span>}
+        <h3 className="font-play text-[17px] font-bold leading-tight tracking-[-0.01em] text-ink-900">
+          {step && <span className="mr-1.5 text-[#b83200]">{step}</span>}
           {title}
-        </p>
-        <p className="text-[12px] text-ink-400 leading-snug mt-0.5">{sub}</p>
+        </h3>
+        <p className="mt-0.5 text-[12.5px] leading-snug text-ink-400">{sub}</p>
       </div>
     </div>
   );
@@ -106,19 +107,13 @@ export function SetupPanel({
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-card overflow-hidden">
-      {onboarding && <div className="h-1 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-300" />}
-
+    <div className={onboarding ? STICKER_PANEL : PANEL}>
       <div className={onboarding ? 'p-6 sm:p-8' : 'p-5'}>
         {onboarding && (
           <div className="mb-7 max-w-2xl">
-            <span className="chip bg-orange-50 text-orange-700">
-              <Sparkles className="h-3 w-3" />
-              AI Visibility
-            </span>
-            <h2 className="mt-3 text-[24px] sm:text-[28px] font-bold text-ink-900 tracking-tight leading-[1.15]">
+            <h2 className="font-play text-[26px] font-extrabold leading-[1.1] tracking-[-0.02em] text-ink-900 sm:text-[30px]">
               When a buyer asks AI which tool to use, does it say{' '}
-              <span className="text-orange-600">{brandName || 'your product'}</span>?
+              <span className="text-[#d13800]">{brandName || 'your product'}</span>?
             </h2>
             <p className="mt-2.5 text-[13.5px] text-ink-600 leading-relaxed">
               This measures how often ChatGPT, Gemini, Perplexity and Claude name you instead of a competitor,
@@ -131,10 +126,10 @@ export function SetupPanel({
                 { icon: Bot, title: 'Across four models', body: 'Every question, every assistant, scored the same way each run.' },
                 { icon: Search, title: 'Then close the gap', body: 'We surface the Reddit threads those models read, so you can join them.' },
               ].map((item) => (
-                <div key={item.title} className="rounded-xl bg-[#fdf9f3] px-3.5 py-3">
-                  <item.icon className="h-3.5 w-3.5 text-orange-600 mb-1.5" />
-                  <p className="text-[12.5px] font-semibold text-ink-900 leading-snug">{item.title}</p>
-                  <p className="text-[11.5px] text-ink-400 leading-snug mt-0.5">{item.body}</p>
+                <div key={item.title} className="rounded-xl bg-cream px-3.5 py-3">
+                  <item.icon className="mb-1.5 h-3.5 w-3.5 text-[#b83200]" aria-hidden="true" />
+                  <p className="text-[13px] font-semibold leading-snug text-ink-900">{item.title}</p>
+                  <p className="mt-0.5 text-[12px] leading-snug text-ink-600">{item.body}</p>
                 </div>
               ))}
             </div>
@@ -163,7 +158,7 @@ export function SetupPanel({
             {prompts.map((prompt) => (
               <li
                 key={prompt.id}
-                className="flex items-start gap-2.5 rounded-xl bg-cream/70 px-3.5 py-2.5"
+                className="flex items-start gap-2.5 rounded-xl bg-cream px-3.5 py-2.5"
               >
                 <MessageSquare className="h-3.5 w-3.5 text-ink-400 shrink-0 mt-px" />
                 <span className="flex-1 text-[13px] text-ink-700 leading-snug">{prompt.text}</span>
@@ -184,7 +179,7 @@ export function SetupPanel({
 
         {unusedSuggestions.length > 0 && (
           <div className="mb-3.5">
-            <p className="text-[11px] font-bold uppercase tracking-[0.07em] text-ink-400 mb-2">
+            <p className="mb-2 text-[12.5px] font-semibold text-ink-600">
               Suggested for {brandName || 'your product'}
             </p>
             <div className="flex flex-wrap gap-1.5">
@@ -193,7 +188,7 @@ export function SetupPanel({
                   key={suggestion}
                   onClick={() => submitSuggestion(suggestion)}
                   disabled={pendingSuggestion !== null}
-                  className="inline-flex items-start gap-1.5 max-w-full rounded-full bg-cream px-3 py-1.5 text-left text-[12.5px] font-medium leading-snug text-ink-700 hover:bg-orange-50 hover:text-orange-700 transition-colors disabled:opacity-50"
+                  className="inline-flex max-w-full items-start gap-1.5 rounded-full border-2 border-[#1c1917]/[0.12] bg-white px-3 py-1.5 text-left text-[12.5px] font-medium leading-snug text-ink-700 transition-colors hover:border-[#1c1917] hover:text-ink-900 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                 >
                   {pendingSuggestion === suggestion
                     ? <Loader2 className="h-3 w-3 animate-spin shrink-0 mt-0.5" />
@@ -211,12 +206,13 @@ export function SetupPanel({
             onChange={(e) => setPromptDraft(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitPrompt(); } }}
             placeholder="e.g. best tool for tracking Reddit mentions"
-            className="flex-1 min-w-0 h-10 rounded-xl bg-white px-3.5 text-[13px] text-ink-700 placeholder:text-ink-300 shadow-card focus:outline-none focus:ring-2 focus:ring-orange-500/15 transition-shadow"
+            aria-label="Add a question"
+            className={`${FIELD} min-w-0 flex-1`}
           />
           <button
             onClick={submitPrompt}
             disabled={!promptDraft.trim() || addingPrompt}
-            className="flex items-center gap-1.5 px-3.5 h-10 shrink-0 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-40"
+            className={`${BTN_SECONDARY} shrink-0`}
           >
             {addingPrompt ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
             Add
@@ -235,7 +231,7 @@ export function SetupPanel({
           {competitors.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mb-3.5">
               {competitors.map((competitor) => (
-                <span key={competitor.id} className="chip bg-cream text-ink-700">
+                <span key={competitor.id} className="chip border-2 border-[#1c1917]/[0.12] bg-white text-ink-700">
                   {competitor.name}
                   <button
                     onClick={() => removeCompetitor(competitor.id)}
@@ -258,12 +254,13 @@ export function SetupPanel({
               onChange={(e) => setCompetitorDraft(e.target.value)}
               onKeyDown={(e) => { if (e.key === 'Enter') { e.preventDefault(); submitCompetitor(); } }}
               placeholder="Competitor name"
-              className="flex-1 min-w-0 h-10 rounded-xl bg-white px-3.5 text-[13px] text-ink-700 placeholder:text-ink-300 shadow-card focus:outline-none focus:ring-2 focus:ring-orange-500/15 transition-shadow"
+              aria-label="Add a competitor"
+              className={`${FIELD} min-w-0 flex-1`}
             />
             <button
               onClick={submitCompetitor}
               disabled={!competitorDraft.trim() || addingCompetitor}
-              className="flex items-center gap-1.5 px-3.5 h-10 shrink-0 rounded-xl bg-white text-xs font-semibold text-ink-600 shadow-card hover:shadow-card-hover hover:text-ink-900 transition-[box-shadow,color] disabled:opacity-40"
+              className={`${BTN_SECONDARY} shrink-0`}
             >
               {addingCompetitor ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Plus className="h-3.5 w-3.5" />}
               Add
@@ -272,12 +269,12 @@ export function SetupPanel({
         </div>
 
         {onboarding && (
-          <div className="mt-7 pt-6 border-t border-cream flex flex-wrap items-center gap-3">
-            <button onClick={onRun} disabled={prompts.length === 0 || running} className="btn-primary text-[13px]">
-              {running ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
-              {running ? 'Checking…' : 'Check AI visibility'}
+          <div className="mt-7 flex flex-wrap items-center gap-3 border-t-2 border-[#1c1917]/[0.08] pt-6">
+            <button onClick={onRun} disabled={prompts.length === 0 || running} className={BTN_PRIMARY}>
+              {running ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Sparkles className="h-4 w-4" aria-hidden="true" />}
+              {running ? 'Checking' : 'Check AI visibility'}
             </button>
-            <p className="text-[12px] text-ink-400 leading-snug">
+            <p className="text-[12.5px] leading-snug text-ink-600">
               {prompts.length === 0
                 ? 'Add at least one question to run your first check.'
                 : `We will ask ${prompts.length} question${prompts.length === 1 ? '' : 's'} across 4 assistants. Takes about a minute.`}

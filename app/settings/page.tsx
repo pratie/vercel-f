@@ -1,16 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
-import { CheckCircle2, AlertTriangle, Mail, User, Bell, SlidersHorizontal } from 'lucide-react';
+import { CheckCircle2, AlertTriangle, Mail, Loader2 } from 'lucide-react';
 import { api, PaymentStatus } from '@/lib/api';
 import { getUserEmail } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { PaymentGuard } from '@/components/PaymentGuard';
+import { BTN_PRIMARY, BTN_SECONDARY, PANEL } from '@/components/ui/sticker';
 
 type Tone = 'friendly' | 'professional' | 'technical';
 
@@ -29,18 +29,10 @@ interface AlertSettings {
   is_active?: boolean;
 }
 
-type TabId = 'account' | 'notifications' | 'preferences';
-
-const TABS: { id: TabId; label: string; icon: typeof User }[] = [
-  { id: 'account', label: 'Account', icon: User },
-  { id: 'notifications', label: 'Notifications', icon: Bell },
-  { id: 'preferences', label: 'Preferences', icon: SlidersHorizontal },
-];
-
 const TONE_OPTIONS: { value: Tone; title: string; body: string }[] = [
-  { value: 'friendly', title: 'Friendly & Casual', body: 'Warm, approachable style' },
-  { value: 'professional', title: 'Professional', body: 'Business-oriented approach' },
-  { value: 'technical', title: 'Technical', body: 'Detailed, technical style' },
+  { value: 'friendly', title: 'Friendly', body: 'Warm and casual, like a founder in the thread' },
+  { value: 'professional', title: 'Professional', body: 'Clear and businesslike' },
+  { value: 'technical', title: 'Technical', body: 'Detailed, for developer audiences' },
 ];
 
 /** Normalize an alert-settings API payload into UI state. */
@@ -61,24 +53,25 @@ function Skeleton({ className }: { className?: string }) {
   return <div className={cn('animate-pulse rounded-md bg-cream', className)} />;
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <p className="text-[10px] uppercase tracking-wider text-ink-400 font-semibold">
-      {children}
-    </p>
-  );
-}
-
-function SettingsCard({
-  className,
+/** One settings section: a heading, one line of context, then the controls. */
+function SettingsSection({
+  id,
+  title,
+  sub,
   children,
 }: {
-  className?: string;
+  id: string;
+  title: string;
+  sub?: React.ReactNode;
   children: React.ReactNode;
 }) {
   return (
-    <section className={cn('bg-white rounded-2xl shadow-card p-6', className)}>
-      {children}
+    <section aria-labelledby={`${id}-heading`} className={cn(PANEL, 'p-5 sm:p-6')}>
+      <h2 id={`${id}-heading`} className="font-play text-[20px] font-bold tracking-[-0.015em] text-ink-900">
+        {title}
+      </h2>
+      {sub && <p className="mt-1 text-[13px] text-ink-400">{sub}</p>}
+      <div className="mt-5">{children}</div>
     </section>
   );
 }
@@ -104,9 +97,9 @@ function Toggle({
       onClick={() => onCheckedChange(!checked)}
       className={cn(
         'relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors',
-        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500 focus-visible:ring-offset-2',
+        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50 focus-visible:ring-offset-2',
         'disabled:cursor-not-allowed disabled:opacity-50',
-        checked ? 'bg-orange-500' : 'bg-[#e2d9c9]'
+        checked ? 'bg-[#059669]' : 'bg-ink-300'
       )}
     >
       <span
@@ -136,7 +129,6 @@ export default function SettingsPage() {
   const [isPrefsLoading, setIsPrefsLoading] = useState(true);
   const [isAlertsLoading, setIsAlertsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabId>('account');
   const [payment, setPayment] = useState<PaymentStatus | null>(null);
 
   // Load settings when the page loads
@@ -176,22 +168,8 @@ export default function SettingsPage() {
     loadSettings();
     loadAlertSettings();
     api.getPaymentStatus().then(setPayment).catch(() => setPayment(null));
-
-    // Restore active tab from the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const tabParam = urlParams.get('tab');
-    if (tabParam === 'account' || tabParam === 'notifications' || tabParam === 'preferences') {
-      setActiveTab(tabParam);
-    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const selectTab = (tab: TabId) => {
-    setActiveTab(tab);
-    const params = new URLSearchParams(window.location.search);
-    params.set('tab', tab);
-    window.history.replaceState({}, '', `${window.location.pathname}?${params.toString()}`);
-  };
 
   // Optimistic save: state is applied immediately by the caller, we confirm or roll back.
   const saveAlertSettings = async (updated: AlertSettings, previous: AlertSettings) => {
@@ -245,67 +223,50 @@ export default function SettingsPage() {
     }
   };
 
+  const planName =
+    payment?.subscription_plan === 'growth_monthly' ? 'Growth'
+      : payment?.subscription_plan === 'starter_monthly' ? 'Starter'
+        : 'Pro';
+  const frequency =
+    alertSettings.alert_frequency === 'realtime' || !alertSettings.alert_frequency
+      ? 'daily'
+      : alertSettings.alert_frequency;
+
   return (
     <PaymentGuard>
-      <div className="max-w-3xl mx-auto px-4 py-8">
-        <SectionLabel>Workspace</SectionLabel>
-        <h1 className="text-2xl font-bold text-ink-900 mt-1 mb-6">Settings</h1>
+      <div className="mx-auto max-w-[760px]">
+        <header className="mb-6">
+          <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">
+            Settings
+          </h1>
+          <p className="mt-1.5 text-[13px] text-ink-400">
+            Signed in as <span className="text-ink-600">{getUserEmail() || '…'}</span>
+          </p>
+        </header>
 
-        {/* Pill tabs, synced to ?tab= */}
-        <div
-          role="tablist"
-          aria-label="Settings sections"
-          className="flex gap-1 p-1 bg-cream rounded-full w-full sm:w-fit mb-6"
-        >
-          {TABS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              role="tab"
-              aria-selected={activeTab === id}
-              onClick={() => selectTab(id)}
-              className={cn(
-                'flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-md text-[13px] font-medium transition-colors',
-                activeTab === id
-                  ? 'bg-white shadow-sm text-ink-900'
-                  : 'text-ink-400 hover:text-ink-700'
-              )}
-            >
-              <Icon className="h-3.5 w-3.5" />
-              {label}
-            </button>
-          ))}
-        </div>
-
-        {/* ── Account ── */}
-        {activeTab === 'account' && (
-          <SettingsCard>
-            <SectionLabel>Account</SectionLabel>
-            <h2 className="text-sm font-semibold text-ink-900 mt-1">Your plan</h2>
-            <p className="text-[13px] text-ink-400 mt-1 mb-5">
-              Signed in as <span className="font-medium text-ink-600">{getUserEmail() || '…'}</span>
-            </p>
-
-            <div className="flex items-center justify-between gap-4 rounded-xl border border-[#efe8dc] bg-[#faf6ef] px-4 py-3.5">
+        <div className="space-y-5">
+          {/* ── Plan ── */}
+          <SettingsSection id="plan" title="Plan and billing">
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-cream px-4 py-3.5">
               {payment === null ? (
-                <span className="text-[13px] text-ink-400">Loading plan…</span>
+                <span className="text-[13px] text-ink-400">Loading plan</span>
               ) : payment.has_paid ? (
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-                  <span className="text-[13px] text-ink-700">
-                    <span className="font-semibold text-ink-900">
-                      {payment.subscription_plan === 'growth_monthly' ? 'Growth' : payment.subscription_plan === 'starter_monthly' ? 'Starter' : 'Pro'}
-                    </span>
+                <div className="flex min-w-0 items-center gap-2.5">
+                  <CheckCircle2 className="h-4 w-4 shrink-0 text-[#059669]" aria-hidden="true" />
+                  <span className="text-[13.5px] text-ink-700">
+                    <span className="font-semibold text-ink-900">{planName} plan</span>
                     {payment.plan_expires_at && (
                       <span className="text-ink-400">
-                        {' '}· {payment.has_subscription && payment.subscription_status === 'active' ? 'renews' : 'access until'} {new Date(payment.plan_expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {' '}· {payment.has_subscription && payment.subscription_status === 'active' ? 'renews' : 'access until'}{' '}
+                        {new Date(payment.plan_expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     )}
                   </span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2.5">
-                  <span className="h-2 w-2 rounded-full bg-stone-300 shrink-0" />
-                  <span className="text-[13px] text-ink-700">
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-ink-300" aria-hidden="true" />
+                  <span className="text-[13.5px] text-ink-700">
                     <span className="font-semibold text-ink-900">Free</span>
                     <span className="text-ink-400"> · analysis only</span>
                   </span>
@@ -313,7 +274,7 @@ export default function SettingsPage() {
               )}
 
               {payment !== null && !payment.has_paid && (
-                <a href="/upgrade" className="btn-primary h-9 px-4 text-xs shrink-0">
+                <a href="/upgrade" className={BTN_PRIMARY}>
                   Upgrade
                 </a>
               )}
@@ -327,29 +288,95 @@ export default function SettingsPage() {
                       toast.error('Could not open billing. Please try again.');
                     }
                   }}
-                  className="h-9 shrink-0 rounded-lg border border-black/[0.1] bg-white px-3.5 text-xs font-semibold text-ink-900 hover:bg-[#faf6ef]"
+                  className={BTN_SECONDARY}
                 >
                   Manage billing
                 </button>
               )}
             </div>
-
-            <div className="text-xs text-ink-400 mt-4 space-y-1">
-              <p>SneakyGuy drafts replies for you; you review and post them yourself on Reddit.</p>
-              <p>Posting manually from your own account keeps it safe and in good standing.</p>
-            </div>
-          </SettingsCard>
-        )}
-
-        {/* ── Notifications ── */}
-        {activeTab === 'notifications' && (
-          <SettingsCard>
-            <SectionLabel>Alerts</SectionLabel>
-            <h2 className="text-sm font-semibold text-ink-900 mt-1">Email Notifications</h2>
-            <p className="text-[13px] text-ink-400 mt-1 mb-5">
-              Configure how you receive email notifications for new Reddit mentions.
+            <p className="mt-3 text-[12.5px] leading-relaxed text-ink-400">
+              SneakyGuy drafts replies for you; you review and post them yourself from your own Reddit account, which keeps it in good standing.
             </p>
+          </SettingsSection>
 
+          {/* ── Reply voice ── */}
+          <SettingsSection
+            id="voice"
+            title="Reply voice"
+            sub="How drafted replies should sound. Applies to every project."
+          >
+            {isPrefsLoading ? (
+              <div className="space-y-4">
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <Skeleton className="h-20 rounded-xl" />
+                  <Skeleton className="h-20 rounded-xl" />
+                  <Skeleton className="h-20 rounded-xl" />
+                </div>
+                <Skeleton className="h-[100px] w-full rounded-xl" />
+              </div>
+            ) : (
+              <div className="space-y-5">
+                <div>
+                  <p className="mb-2 text-[13px] font-semibold text-ink-900">Tone</p>
+                  <RadioGroup
+                    value={settings.tone}
+                    onValueChange={(value: Tone) => setSettings({ ...settings, tone: value })}
+                    className="grid grid-cols-1 gap-2.5 sm:grid-cols-3"
+                  >
+                    {TONE_OPTIONS.map(({ value, title, body }) => (
+                      <Label
+                        key={value}
+                        htmlFor={value}
+                        className={cn(
+                          'flex cursor-pointer items-start gap-2.5 rounded-xl border-2 p-3.5 transition-[border-color,box-shadow] motion-reduce:transition-none',
+                          settings.tone === value
+                            ? 'border-[#1c1917] bg-white shadow-[3px_3px_0_#1c1917]'
+                            : 'border-[#1c1917]/[0.12] hover:border-[#1c1917]/40'
+                        )}
+                      >
+                        <RadioGroupItem value={value} id={value} className="mt-0.5" />
+                        <span className="block">
+                          <span className="block text-[13.5px] font-semibold text-ink-900">{title}</span>
+                          <span className="mt-0.5 block text-[12px] font-normal leading-snug text-ink-400">{body}</span>
+                        </span>
+                      </Label>
+                    ))}
+                  </RadioGroup>
+                </div>
+
+                <div>
+                  <Label htmlFor="response-style" className="mb-2 block text-[13px] font-semibold text-ink-900">
+                    Anything else the draft should always do
+                  </Label>
+                  <Textarea
+                    id="response-style"
+                    placeholder="Example: open with a question back, mention the free plan, never use bullet points."
+                    value={settings.response_style || ''}
+                    onChange={(e) =>
+                      setSettings({ ...settings, response_style: e.target.value || null })
+                    }
+                    className="min-h-[96px] rounded-xl border-2 border-[#1c1917]/[0.12] text-[13.5px] focus-visible:border-[#1c1917] focus-visible:ring-0"
+                  />
+                </div>
+
+                <button
+                  onClick={handleSavePreferences}
+                  disabled={isSaving || isPrefsLoading}
+                  className={BTN_PRIMARY}
+                >
+                  {isSaving && <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />}
+                  {isSaving ? 'Saving' : 'Save reply voice'}
+                </button>
+              </div>
+            )}
+          </SettingsSection>
+
+          {/* ── Alerts ── */}
+          <SettingsSection
+            id="alerts"
+            title="Email alerts"
+            sub="A digest of new leads, sent to your sign-in address."
+          >
             {isAlertsLoading ? (
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -360,19 +387,16 @@ export default function SettingsPage() {
                   <Skeleton className="h-6 w-11 rounded-full" />
                 </div>
                 <Skeleton className="h-9 w-64 rounded-lg" />
-                <Skeleton className="h-10 w-full rounded-lg" />
               </div>
             ) : (
               <div className="space-y-5">
                 <div className="flex items-center justify-between gap-4">
                   <div>
-                    <p className="text-[13px] font-medium text-ink-900">
-                      Enable Email Notifications
-                    </p>
-                    <p className="text-xs text-ink-400 mt-0.5">Receive alerts via email</p>
+                    <p className="text-[13.5px] font-semibold text-ink-900">Send me new leads by email</p>
+                    <p className="mt-0.5 text-[12.5px] text-ink-400">Saved as soon as you switch it.</p>
                   </div>
                   <Toggle
-                    label="Enable email notifications"
+                    label="Send new leads by email"
                     checked={alertSettings.enable_email_alerts}
                     onCheckedChange={(checked) => {
                       updateAlerts({
@@ -384,146 +408,56 @@ export default function SettingsPage() {
                   />
                 </div>
 
-                <div>
-                  <p className="text-[10px] uppercase tracking-wider text-ink-400 font-semibold mb-2">
-                    Frequency
-                  </p>
+                <div className={cn(!alertSettings.enable_email_alerts && 'opacity-50')}>
+                  <p className="mb-2 text-[13px] font-semibold text-ink-900">How often</p>
                   <div
-                    className={cn(
-                      'flex gap-1 p-1 bg-cream rounded-full w-fit',
-                      !alertSettings.enable_email_alerts && 'opacity-50 pointer-events-none'
-                    )}
+                    className="inline-flex gap-1 rounded-xl border-2 border-[#1c1917]/[0.12] p-1"
                     role="radiogroup"
-                    aria-label="Notification frequency"
+                    aria-label="Alert frequency"
                   >
                     {(
                       [
-                        { value: 'daily', label: 'Daily Digest' },
-                        { value: 'weekly', label: 'Weekly Summary' },
+                        { value: 'daily', label: 'Daily' },
+                        { value: 'weekly', label: 'Weekly' },
                       ] as const
-                    ).map(({ value, label }) => {
-                      const current =
-                        alertSettings.alert_frequency === 'realtime' ||
-                        !alertSettings.alert_frequency
-                          ? 'daily'
-                          : alertSettings.alert_frequency;
-                      return (
-                        <button
-                          key={value}
-                          role="radio"
-                          aria-checked={current === value}
-                          disabled={!alertSettings.enable_email_alerts}
-                          onClick={() => {
-                            if (current !== value) {
-                              updateAlerts({ alert_frequency: value });
-                            }
-                          }}
-                          className={cn(
-                            'px-3.5 py-1.5 rounded-md text-xs font-medium transition-colors',
-                            current === value
-                              ? 'bg-white shadow-sm text-ink-900'
-                              : 'text-ink-400 hover:text-ink-700'
-                          )}
-                        >
-                          {label}
-                        </button>
-                      );
-                    })}
+                    ).map(({ value, label }) => (
+                      <button
+                        key={value}
+                        role="radio"
+                        aria-checked={frequency === value}
+                        disabled={!alertSettings.enable_email_alerts}
+                        onClick={() => {
+                          if (frequency !== value) updateAlerts({ alert_frequency: value });
+                        }}
+                        className={cn(
+                          'h-8 rounded-lg px-3.5 text-[13px] font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40 disabled:cursor-not-allowed',
+                          frequency === value
+                            ? 'bg-[#1c1917] text-white'
+                            : 'text-ink-600 hover:bg-cream hover:text-ink-900'
+                        )}
+                      >
+                        {label}
+                      </button>
+                    ))}
                   </div>
                 </div>
 
                 {alertSettings.enable_email_alerts ? (
-                  <div className="flex items-center gap-2 rounded-lg bg-orange-50 px-3 py-2.5 text-xs text-orange-700">
-                    <Mail className="h-3.5 w-3.5 shrink-0" />
+                  <p className="flex items-start gap-2 rounded-xl bg-[#ff4500]/[0.08] px-3.5 py-3 text-[12.5px] leading-snug text-[#b83200]">
+                    <Mail className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
                     {/* Nothing sends digests yet. Say so instead of promising an email. */}
                     Saved. Email digests switch on in the next update, and this setting carries over.
-                  </div>
+                  </p>
                 ) : (
-                  <div className="flex items-start gap-2 rounded-lg bg-amber-50 px-3 py-2.5 text-xs text-amber-700">
-                    <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
-                    <span>
-                      Email notifications are disabled. Enable them to receive updates when new
-                      Reddit mentions are found.
-                    </span>
-                  </div>
+                  <p className="flex items-start gap-2 rounded-xl bg-cream px-3.5 py-3 text-[12.5px] leading-snug text-ink-600">
+                    <AlertTriangle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    Alerts are off. Switch them on to hear about new leads without opening the app.
+                  </p>
                 )}
               </div>
             )}
-          </SettingsCard>
-        )}
-
-        {/* ── Preferences ── */}
-        {activeTab === 'preferences' && (
-          <div className="space-y-5">
-            <SettingsCard>
-              <SectionLabel>Reply voice</SectionLabel>
-              <h2 className="text-sm font-semibold text-ink-900 mt-1 mb-4">Brand Tone</h2>
-
-              {isPrefsLoading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <Skeleton className="h-20 rounded-xl" />
-                  <Skeleton className="h-20 rounded-xl" />
-                  <Skeleton className="h-20 rounded-xl" />
-                </div>
-              ) : (
-                <RadioGroup
-                  value={settings.tone}
-                  onValueChange={(value: Tone) => setSettings({ ...settings, tone: value })}
-                  className="grid grid-cols-1 sm:grid-cols-3 gap-3"
-                >
-                  {TONE_OPTIONS.map(({ value, title, body }) => (
-                    <Label
-                      key={value}
-                      htmlFor={value}
-                      className={cn(
-                        'flex items-start gap-2.5 rounded-xl border p-3.5 cursor-pointer transition-colors',
-                        settings.tone === value
-                          ? 'border-orange-500 bg-orange-50/50'
-                          : 'border-[#eeecea] hover:border-orange-300'
-                      )}
-                    >
-                      <RadioGroupItem value={value} id={value} className="mt-0.5" />
-                      <span className="block">
-                        <span className="block text-[13px] font-semibold text-ink-900">
-                          {title}
-                        </span>
-                        <span className="block text-xs text-ink-400 mt-0.5 font-normal">
-                          {body}
-                        </span>
-                      </span>
-                    </Label>
-                  ))}
-                </RadioGroup>
-              )}
-            </SettingsCard>
-
-            <SettingsCard>
-              <SectionLabel>Reply structure</SectionLabel>
-              <h2 className="text-sm font-semibold text-ink-900 mt-1 mb-4">Response Style</h2>
-
-              {isPrefsLoading ? (
-                <Skeleton className="h-[100px] w-full rounded-lg" />
-              ) : (
-                <Textarea
-                  placeholder="Example: Always start with a greeting, address the main point, and end with a call to action..."
-                  value={settings.response_style || ''}
-                  onChange={(e) =>
-                    setSettings({ ...settings, response_style: e.target.value || null })
-                  }
-                  className="min-h-[100px] text-[13px]"
-                />
-              )}
-            </SettingsCard>
-
-            <Button
-              onClick={handleSavePreferences}
-              disabled={isSaving || isPrefsLoading}
-              className="w-full bg-[#d13800] hover:bg-[#b83200] text-white"
-            >
-              {isSaving ? 'Saving...' : 'Save Brand Settings'}
-            </Button>
-          </div>
-        )}
+          </SettingsSection>
+        </div>
       </div>
     </PaymentGuard>
   );

@@ -1,8 +1,10 @@
 'use client';
 
-import { ArrowBigUp, ArrowUpRight, MessageSquare, Minus, Search, Target } from 'lucide-react';
+import { useState } from 'react';
+import { ArrowBigUp, ArrowUpRight, MessageSquare, Minus } from 'lucide-react';
 import { VisibilityOpportunity, VisibilityOpportunityThread } from '@/lib/api';
 import { engineLabel, joinEngineNames } from './engines';
+import { BTN_SECONDARY } from '@/components/ui/sticker';
 
 interface OpportunitiesProps {
   items: VisibilityOpportunity[];
@@ -58,7 +60,11 @@ function uniqueEngineLabels(engines: string[]): string[] {
   return out;
 }
 
+/** Threads shown per question before the rest fold behind a toggle. */
+const THREADS_SHOWN = 3;
+
 export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProps) {
+  const [openAll, setOpenAll] = useState<Set<number>>(new Set());
   if (items.length === 0 && !hasGaps) return null;
 
   // Prepared once so ordering, the header total and the cross-question badge
@@ -110,18 +116,15 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
 
   return (
     <section aria-labelledby="opportunities-heading">
-      <div className="flex items-start gap-3 mb-3.5">
-        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-600">
-          <Target className="h-4 w-4" aria-hidden="true" />
-        </span>
+      <div className="mb-4">
         <div className="min-w-0">
           <h2
             id="opportunities-heading"
-            className="text-[15px] font-bold text-ink-900 leading-tight tracking-tight"
+            className="font-play text-[22px] font-bold leading-tight tracking-[-0.015em] text-ink-900"
           >
             Where to reply next
           </h2>
-          <p className="text-[12.5px] text-ink-400 leading-snug mt-0.5">
+          <p className="mt-1 text-[13px] leading-snug text-ink-600">
             {totalThreads > 0
               ? `${plural(totalThreads, 'Reddit conversation')} shaping the answers you are missing from.${orderingNote}`
               : `Where the assistants skip you, and what to do about it.${orderingNote}`}
@@ -130,20 +133,14 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
       </div>
 
       {ranked.length === 0 ? (
-        <div className="bg-white rounded-2xl shadow-card p-5 flex flex-wrap items-center gap-3">
-          <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-cream text-ink-400">
-            <Search className="h-3.5 w-3.5" aria-hidden="true" />
-          </span>
-          <p className="flex-1 min-w-[220px] text-[12.5px] text-ink-600 leading-snug">
+        <div className="flex flex-wrap items-center gap-3 rounded-2xl border-2 border-[#1c1917]/[0.12] bg-white p-5">
+          <p className="min-w-[220px] flex-1 text-[13px] leading-snug text-ink-600">
             The assistants are skipping you on some questions, but none of your saved Reddit threads match
             those questions yet. Scan Reddit to pull in conversations worth joining.
           </p>
-          <button
-            onClick={onOpenLeads}
-            className="flex items-center gap-1.5 px-3.5 h-9 rounded-xl bg-orange-50 text-xs font-semibold text-orange-700 hover:bg-orange-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
-          >
+          <button onClick={onOpenLeads} className={BTN_SECONDARY}>
             Scan Reddit
-            <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           </button>
         </div>
       ) : (
@@ -159,20 +156,19 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
             return (
               <li
                 key={item.prompt_id}
-                className={`bg-white rounded-2xl overflow-hidden transition-shadow duration-300 hover:shadow-card-hover ${
+                className={`overflow-hidden rounded-2xl bg-white ${
                   isNext
-                    ? 'shadow-[0_1px_3px_rgba(255,69,0,0.09),0_0_0_1px_rgba(255,69,0,0.13),0_8px_20px_-10px_rgba(255,69,0,0.12)]'
-                    : 'shadow-card'
+                    ? 'border-2 border-[#1c1917] shadow-[4px_4px_0_#1c1917]'
+                    : 'border-2 border-[#1c1917]/[0.12]'
                 }`}
               >
-                {isNext && <div className="h-1 bg-gradient-to-r from-orange-500 via-amber-400 to-orange-300" />}
 
                 <div className="p-4 sm:p-5">
                   <div className="flex items-start gap-3">
                     <span
                       aria-hidden="true"
-                      className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-[11.5px] font-bold tabular-nums ${
-                        isNext ? 'bg-[#d13800] text-white shadow-orange' : 'bg-cream text-ink-400'
+                      className={`mt-px flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-play text-[12px] font-extrabold tabular-nums ${
+                        isNext ? 'bg-[#d13800] text-white' : 'bg-cream text-ink-600'
                       }`}
                     >
                       {index + 1}
@@ -191,7 +187,7 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
                           className="mt-2 flex flex-wrap items-center gap-1.5"
                           title={`${joinEngineNames(engines)} did not name you in the latest run.`}
                         >
-                          <span className="text-[11.5px] font-semibold text-ink-400">Not named by</span>
+                          <span className="text-[12px] font-medium text-ink-400">Not named by</span>
                           {engines.map((label) => (
                             <span key={label} className="chip bg-cream text-ink-600">
                               <Minus className="h-3 w-3 text-ink-300" aria-hidden="true" />
@@ -205,17 +201,23 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
 
                   {threads.length > 0 ? (
                     <div className="mt-3.5 sm:pl-9">
-                      <p className="mb-1.5 text-[11px] font-bold uppercase tracking-[0.06em] text-ink-400 tabular-nums">
+                      {(() => {
+                        const showAll = openAll.has(item.prompt_id);
+                        const shown = showAll ? threads : threads.slice(0, THREADS_SHOWN);
+                        const hidden = threads.length - shown.length;
+                        return (
+                          <>
+                      <p className="mb-1.5 text-[12px] font-semibold text-ink-600 tabular-nums">
                         {plural(threads.length, 'thread')} ranking for this question
                       </p>
 
                       <ul className="space-y-1.5">
-                        {threads.map((thread) => {
+                        {shown.map((thread) => {
                           const alsoCovers = (questionsPerThread.get(thread.id) ?? 1) - 1;
                           return (
                             <li
                               key={thread.id}
-                              className="rounded-xl bg-cream/70 px-3.5 py-3 transition-colors hover:bg-cream"
+                              className="rounded-xl bg-cream px-3.5 py-3"
                             >
                               <div className="flex items-start gap-3">
                                 <div className="min-w-0 flex-1">
@@ -223,13 +225,13 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
                                     href={thread.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="block text-[13px] font-medium text-ink-900 leading-snug line-clamp-2 hover:text-orange-700 transition-colors rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                                    className="block rounded text-[13.5px] font-semibold leading-snug text-ink-900 transition-colors line-clamp-2 hover:text-[#b83200] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                                   >
                                     {thread.title}
                                   </a>
 
                                   <div className="mt-1.5 flex flex-wrap items-center gap-x-2.5 gap-y-1.5 text-[11.5px] text-ink-400">
-                                    <span className="chip bg-white text-ink-600 shadow-card">
+                                    <span className="font-medium text-ink-600">
                                       r/{thread.subreddit}
                                     </span>
                                     <span
@@ -259,9 +261,9 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
                                   target="_blank"
                                   rel="noopener noreferrer"
                                   aria-label={`Join thread on Reddit: ${thread.title}`}
-                                  className="shrink-0 inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-orange-50 text-[11.5px] font-semibold text-orange-700 whitespace-nowrap hover:bg-orange-100 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                                  className="inline-flex h-8 shrink-0 items-center gap-1 whitespace-nowrap rounded-lg px-2 text-[12.5px] font-semibold text-[#b83200] transition-colors hover:bg-white hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50"
                                 >
-                                  Join thread
+                                  Join
                                   <ArrowUpRight className="h-3 w-3" aria-hidden="true" />
                                 </a>
                               </div>
@@ -269,15 +271,27 @@ export function Opportunities({ items, hasGaps, onOpenLeads }: OpportunitiesProp
                           );
                         })}
                       </ul>
+                      {hidden > 0 && (
+                        <button
+                          type="button"
+                          onClick={() => setOpenAll((prev) => new Set(prev).add(item.prompt_id))}
+                          className="mt-2 inline-flex h-9 items-center rounded-lg px-2 text-[12.5px] font-semibold text-ink-600 transition-colors hover:bg-cream hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+                        >
+                          Show {plural(hidden, 'more thread')}
+                        </button>
+                      )}
+                          </>
+                        );
+                      })()}
                     </div>
                   ) : (
                     <div className="mt-3.5 sm:pl-9 flex flex-wrap items-center gap-2">
-                      <p className="flex-1 min-w-[200px] text-[12px] text-ink-600 leading-snug">
+                      <p className="min-w-[200px] flex-1 text-[12.5px] leading-snug text-ink-600">
                         No saved Reddit thread matches this question yet. Scan Reddit to find one.
                       </p>
                       <button
                         onClick={onOpenLeads}
-                        className="inline-flex items-center gap-1.5 h-8 px-3 rounded-lg bg-white text-[11.5px] font-semibold text-ink-600 shadow-card hover:text-ink-900 hover:shadow-card-hover transition-[box-shadow,color] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-500/40"
+                        className="inline-flex h-9 items-center gap-1.5 rounded-lg px-2.5 text-[12.5px] font-semibold text-ink-600 transition-colors hover:bg-cream hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                       >
                         Scan Reddit
                         <ArrowUpRight className="h-3 w-3" aria-hidden="true" />

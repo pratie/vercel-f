@@ -1,8 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Plus, Loader2, ArrowRight, Search, LayoutGrid, Rows, Globe, Sparkles } from 'lucide-react';
+import { Plus, Loader2, Search, LayoutGrid, Rows, Globe, Sparkles } from 'lucide-react';
 import { ProjectCard } from '@/components/ProjectCard';
 import { CreateProjectDialog } from '@/components/CreateProjectDialog';
 import { toast } from 'sonner';
@@ -10,6 +9,7 @@ import { api, Project, hasActiveAccess } from '@/lib/api';
 import { useAuth } from '@/components/AuthContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { FreeAccessMessage } from '../components/FreeAccessMessage';
+import { BTN_PRIMARY, STICKER_PANEL } from '@/components/ui/sticker';
 
 
 export default function ProjectsPage() {
@@ -220,24 +220,21 @@ export default function ProjectsPage() {
 
   return (
     <div className="relative">
-      <div className="max-w-6xl mx-auto py-6 sm:py-10">
+      <div className="mx-auto max-w-[1280px]">
         {/* Header */}
         {hasPaid && paymentStatusChecked && !isLoading && hasProjects && (
           <div className="mb-6">
-            <div className="flex items-end justify-between gap-3">
+            <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
               <div>
-                <h1 className="font-play text-[34px] sm:text-[44px] font-extrabold text-ink-900 tracking-[-0.03em] leading-[1.05]">Projects</h1>
-                <p className="mt-1.5 text-[13.5px] text-ink-400">
+                <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">Projects</h1>
+                <p className="mt-1.5 text-[13px] text-ink-400">
                   {projects.length === 1
-                    ? <>One product being watched on Reddit</>
-                    : <><span className="tabular-nums text-ink-600">{projects.length}</span> products being watched on Reddit</>}
+                    ? <>One product watched on Reddit and in AI answers</>
+                    : <><span className="font-semibold tabular-nums text-ink-900">{projects.length}</span> products watched on Reddit and in AI answers</>}
                 </p>
               </div>
-              <button
-                onClick={handleNewProject}
-                className="inline-flex shrink-0 items-center gap-1.5 h-9 px-4 rounded-lg bg-[#d13800] text-[12.5px] font-medium text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/30 focus-visible:ring-offset-2"
-              >
-                <Plus className="h-3.5 w-3.5" />
+              <button onClick={handleNewProject} className={BTN_PRIMARY}>
+                <Plus className="h-4 w-4" aria-hidden="true" />
                 New project
               </button>
             </div>
@@ -250,14 +247,16 @@ export default function ProjectsPage() {
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     placeholder="Search projects"
-                    className="w-full pl-9 pr-3 h-9 bg-transparent text-[13px] text-ink-900 placeholder:text-ink-300 border-b border-black/[0.06] focus:outline-none focus:border-ink-300 transition-colors"
+                    aria-label="Search projects"
+                    className="h-9 w-full rounded-lg border-2 border-[#1c1917]/[0.12] bg-white pl-9 pr-3 text-[13px] text-ink-900 placeholder:text-ink-400 transition-colors focus:border-[#1c1917] focus:outline-none"
                   />
                 </div>
                 <div className="flex items-center gap-2">
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value as 'recent' | 'name')}
-                    className="h-9 px-2.5 rounded-lg bg-transparent text-[12.5px] font-medium text-ink-400 cursor-pointer transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+                    aria-label="Sort projects"
+                    className="h-9 px-2.5 rounded-lg bg-transparent text-[13px] font-medium text-ink-600 cursor-pointer transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                   >
                     <option value="recent">Recent</option>
                     <option value="name">Name</option>
@@ -292,10 +291,10 @@ export default function ProjectsPage() {
             </div>
             <div className={`grid ${view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-4`}>
               {Array.from({ length: view === 'grid' ? 6 : 3 }).map((_, i) => (
-                <div key={i} className="rounded-2xl bg-white p-5 animate-pulse shadow-card">
-                  <div className="h-4 w-32 bg-cream rounded-full mb-3" />
-                  <div className="h-3 w-full bg-paper rounded-full mb-2" />
-                  <div className="h-3 w-2/3 bg-paper rounded-full" />
+                <div key={i} className="animate-pulse rounded-2xl border-2 border-[#1c1917]/[0.08] bg-white p-5">
+                  <div className="mb-3 h-4 w-32 rounded-full bg-cream" />
+                  <div className="mb-2 h-3 w-full rounded-full bg-cream" />
+                  <div className="h-3 w-2/3 rounded-full bg-cream" />
                 </div>
               ))}
             </div>
@@ -306,39 +305,40 @@ export default function ProjectsPage() {
             <p className="ml-2 text-sm text-ink-600">Redirecting...</p>
           </div>
         ) : filtered.length === 0 && projects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[55vh] text-center px-6">
-            <h1 className="text-[30px] sm:text-[34px] font-semibold text-ink-900 tracking-[-0.026em] leading-[1.1] mb-3">
+          <div className="flex min-h-[60vh] flex-col items-center justify-center px-2 text-center">
+            <h1 className="font-play text-[32px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[40px]">
               Where does your product live?
             </h1>
-            <p className="text-[15px] text-ink-600 max-w-md leading-relaxed mb-7">
-              Paste your website. We&apos;ll read it, work out what you sell, and find the
+            <p className="mt-3 max-w-md text-[15px] leading-relaxed text-ink-600">
+              Paste your website. We read it, work out what you sell, and find the
               Reddit communities already talking about it.
             </p>
-            <div className="w-full max-w-lg">
-              <div className="flex gap-2 p-1.5 bg-white rounded-2xl shadow-[0_0_0_1px_rgba(62,44,24,0.08),0_8px_30px_-8px_rgba(62,44,24,0.15)]">
-                <div className="relative flex-1">
-                  <Globe className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-ink-300" />
+            <div className="mt-7 w-full max-w-lg">
+              <div className={`${STICKER_PANEL} flex flex-col gap-2 p-2 sm:flex-row`}>
+                <label className="relative flex-1">
+                  <Globe aria-hidden="true" className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-ink-400" />
                   <input
                     value={urlInput}
                     onChange={(e) => setUrlInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && handleUrlSubmit()}
                     placeholder="yourproduct.com"
+                    aria-label="Your website"
                     autoFocus
-                    className="w-full h-11 pl-10 pr-3 rounded-xl text-sm text-ink-900 placeholder:text-ink-300 focus:outline-none bg-transparent"
+                    className="h-11 w-full rounded-xl bg-transparent pl-10 pr-3 text-[15px] text-ink-900 placeholder:text-ink-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
                   />
-                </div>
+                </label>
                 <button
                   onClick={handleUrlSubmit}
                   disabled={!urlInput.trim()}
-                  className="btn-primary h-11 px-5 disabled:cursor-not-allowed shrink-0"
+                  className={`${BTN_PRIMARY} h-11 shrink-0`}
                 >
-                  <Sparkles className="h-4 w-4" />
+                  <Sparkles className="h-4 w-4" aria-hidden="true" />
                   Analyze
                 </button>
               </div>
-              <p className="text-[11px] text-ink-400 mt-3">
+              <p className="mt-3 text-[12.5px] text-ink-400">
                 Takes about 20 seconds, and you can edit everything before it saves. Or{' '}
-                <button onClick={handleNewProject} className="underline decoration-ink-300 underline-offset-2 hover:text-ink-600">
+                <button onClick={handleNewProject} className="rounded font-medium text-ink-600 underline decoration-ink-300 underline-offset-2 hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40">
                   enter details manually
                 </button>
                 .
@@ -346,12 +346,14 @@ export default function ProjectsPage() {
             </div>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center min-h-[200px] text-center">
-            <div className="w-10 h-10 rounded-xl bg-cream flex items-center justify-center text-ink-400 mb-3">
-              <Search className="h-5 w-5" />
-            </div>
-            <h2 className="text-sm font-semibold text-ink-900 mb-1">No results</h2>
-            <p className="text-xs text-ink-400 max-w-xs">Try a different search term.</p>
+          <div className="py-16">
+            <p className="text-[14px] text-ink-600">No projects match your search.</p>
+            <button
+              onClick={() => setQuery('')}
+              className="mt-2 text-[13px] font-semibold text-[#b83200] underline decoration-[#ff4500]/40 underline-offset-2 hover:decoration-[#b83200]"
+            >
+              Clear search
+            </button>
           </div>
         ) : (
           <div className={`grid ${view === 'grid' ? 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3' : 'grid-cols-1'} gap-4`}>
