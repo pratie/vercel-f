@@ -155,6 +155,40 @@ export interface RedditMention {
     created_utc: number;
     matching_keywords: string[];
     intent?: string;
+    author?: string | null;
+    draft_reply?: string | null;
+}
+
+/** One stored lead that names the brand or a competitor. */
+export interface BrandSignal {
+    id: number;
+    title: string;
+    content: string;
+    url: string;
+    subreddit: string;
+    author: string | null;
+    created_utc: number;
+    score: number;
+    num_comments: number;
+    relevance_score: number | null;
+    /** "mentions_you" or "mentions_competitor:<name>" */
+    label: string;
+    competitors: string[];
+    alternative_ask: boolean;
+}
+
+export interface BrandSignalsResponse {
+    brand: string;
+    competitors: string[];
+    items: BrandSignal[];
+}
+
+export interface AutopilotStatus {
+    enabled: boolean;
+    interval_hours: number;
+    last_scan_at: string | null;
+    next_scan_at: string | null;
+    drafted_last_7d: number;
 }
 
 export interface PaymentStatus {
@@ -320,6 +354,22 @@ export interface VisibilityOpportunity {
     reddit_mentions: VisibilityOpportunityThread[];
 }
 
+/** What /analyze/url drafts from a landing page, for the /projects/new wizard. */
+export interface ProductAnalysis {
+    name: string;
+    description: string;
+    keywords: string[];
+    subreddits: string[];
+    competitors: string[];
+    source_url?: string;
+}
+
+export interface SubredditInfo {
+    name: string;
+    subscribers: number;
+    exists: boolean;
+}
+
 export const api = {
     // Project Management
     async createProject(projectData: Omit<Project, 'id'>): Promise<Project> {
@@ -447,6 +497,46 @@ export const api = {
             }
             throw new Error('Network error while analyzing URL');
         }
+    },
+
+    /**
+     * Same call as analyzeUrl, typed for the /projects/new wizard: the
+     * response also carries up to six competitor product names.
+     */
+    async analyzeProductUrl(url: string): Promise<ProductAnalysis> {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/analyze/url`, {
+            method: 'POST',
+            body: JSON.stringify({ url }),
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'We could not read that website.');
+        }
+        const data = await response.json();
+        return {
+            name: data.name || '',
+            description: data.description || '',
+            keywords: Array.isArray(data.keywords) ? data.keywords : [],
+            subreddits: Array.isArray(data.subreddits) ? data.subreddits.map((s: string) => s.replace(/^r\//, '')) : [],
+            competitors: Array.isArray(data.competitors) ? data.competitors : [],
+            source_url: data.source_url,
+        };
+    },
+
+    /** Member counts for up to 20 subreddits. Unknown names come back with exists=false. */
+    async getSubredditInfo(names: string[]): Promise<SubredditInfo[]> {
+        const cleaned = Array.from(new Set(names.map(n => n.replace(/^\/?r\//, '').trim()).filter(Boolean))).slice(0, 20);
+        if (cleaned.length === 0) return [];
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(
+            `${baseUrl}/api/reddit/subreddit-info?names=${encodeURIComponent(cleaned.join(','))}`,
+            { method: 'GET' },
+        );
+        if (!response.ok) {
+            throw await handleApiError(response, 'Could not look up those subreddits.');
+        }
+        const data = await response.json();
+        return Array.isArray(data.subreddits) ? data.subreddits : [];
     },
 
     // Initial Analysis
@@ -831,6 +921,28 @@ export const api = {
         const baseUrl = getApiBaseUrl();
         const response = await fetchWithAuth(`${baseUrl}/mentions/item/${mentionId}/dm-draft`, { method: 'POST' });
         if (!response.ok) throw await handleApiError(response, 'Could not draft a message');
+        return response.json();
+    },
+
+    /** Stored leads that name the brand or one of its competitors. */
+    async getSignals(brandId: string | number): Promise<BrandSignalsResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/signals/${brandId}`);
+        if (!response.ok) throw await handleApiError(response, 'Could not load brand signals');
+        return response.json();
+    },
+
+    async getAutopilot(brandId: string | number): Promise<AutopilotStatus> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/autopilot/${brandId}`);
+        if (!response.ok) throw await handleApiError(response, 'Could not load autopilot status');
+        return response.json();
+    },
+
+    async setAutopilot(brandId: string | number, enabled: boolean): Promise<AutopilotStatus> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/autopilot/${brandId}`, {
+            method: 'PUT',
+            body: JSON.stringify({ enabled }),
+        });
+        if (!response.ok) throw await handleApiError(response, 'Could not update autopilot');
         return response.json();
     },
 

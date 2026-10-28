@@ -9,8 +9,8 @@
 //
 // Below lg the page keeps the single-column MentionCard list instead.
 
-import { useEffect, useMemo, useState } from 'react';
-import { Check, MessageCircle } from 'lucide-react';
+import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { Check, MessageCircle, Send } from 'lucide-react';
 import { MentionCard } from './MentionCard';
 import { Mention, intentLabel, isHighIntent, isUnscored, relativeTime } from '@/lib/mentions';
 import { STICKER_PANEL } from '@/components/ui/sticker';
@@ -24,6 +24,14 @@ interface LeadInboxProps {
   /** How many leads match the filters beyond the ones in `mentions`. */
   remaining: number;
   onLoadMore: () => void;
+  /** Queue pages: which flow the reading pane leads with. Default is the reply flow. */
+  cardFocus?: 'reply' | 'dm';
+  dmSent?: Record<number, number>;
+  onDmSent?: (id: number) => void;
+  /** Rendered under the reading pane: the queue's own action row. */
+  footer?: (selected: Mention, position: { index: number; total: number }) => ReactNode;
+  /** Open on this lead when the list first renders (from a deep link). */
+  initialSelectedId?: number | null;
 }
 
 /** Height of both panes: the viewport minus the page header and toolbar. */
@@ -57,15 +65,26 @@ function ScoreBadge({ mention }: { mention: Mention }) {
   );
 }
 
-export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, remaining, onLoadMore }: LeadInboxProps) {
-  const [selectedId, setSelectedId] = useState<number | null>(mentions[0]?.id ?? null);
+export function LeadInbox({
+  mentions, viewed, published, onViewed, onPublished, remaining, onLoadMore,
+  cardFocus = 'reply', dmSent = {}, onDmSent, footer, initialSelectedId,
+}: LeadInboxProps) {
+  const [selectedId, setSelectedId] = useState<number | null>(
+    (initialSelectedId && mentions.some((m) => m.id === initialSelectedId) ? initialSelectedId : null) ?? mentions[0]?.id ?? null
+  );
+  // Where the selection was last seen, so when a lead leaves the list (marked
+  // posted, sent) the queue moves on to the next one instead of back to the top.
+  const lastIndex = useRef(0);
 
-  // Keep a valid selection when filters change the list underneath it.
+  // Keep a valid selection when the list changes underneath it.
   useEffect(() => {
-    if (!mentions.some((m) => m.id === selectedId)) setSelectedId(mentions[0]?.id ?? null);
+    if (mentions.some((m) => m.id === selectedId)) return;
+    const next = mentions[Math.min(lastIndex.current, mentions.length - 1)];
+    setSelectedId(next?.id ?? null);
   }, [mentions, selectedId]);
 
   const index = useMemo(() => mentions.findIndex((m) => m.id === selectedId), [mentions, selectedId]);
+  useEffect(() => { if (index >= 0) lastIndex.current = index; }, [index]);
   const selected = index >= 0 ? mentions[index] : null;
 
   useEffect(() => {
@@ -96,6 +115,7 @@ export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, 
           {mentions.map((m) => {
             const active = m.id === selectedId;
             const replied = !!published[m.id];
+            const messaged = !!dmSent[m.id];
             const seen = viewed.has(m.id);
             return (
               <li key={m.id}>
@@ -123,7 +143,7 @@ export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, 
                       <span aria-hidden="true">·</span>
                       <span className="inline-flex items-center gap-1"><MessageCircle className="h-3 w-3" aria-hidden="true" />{m.num_comments}</span>
                     </span>
-                    {(m.intent || replied || m.draft_reply) && (
+                    {(m.intent || replied || m.draft_reply || messaged) && (
                       <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[12px] text-ink-400">
                         {m.intent && (
                           <span className={isHighIntent(m) ? 'font-semibold text-[#047857]' : ''}>{intentLabel(m.intent)}</span>
@@ -136,6 +156,12 @@ export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, 
                           <>
                             {m.intent && <span aria-hidden="true">·</span>}
                             <span className="font-semibold text-[#b83200]">Reply ready</span>
+                          </>
+                        )}
+                        {messaged && (
+                          <>
+                            {(m.intent || replied || m.draft_reply) && <span aria-hidden="true">·</span>}
+                            <span className="inline-flex items-center gap-1 font-semibold text-[#047857]"><Send className="h-3 w-3" aria-hidden="true" />Messaged</span>
                           </>
                         )}
                       </span>
@@ -166,16 +192,26 @@ export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, 
 
       {/* Reading pane */}
       {selected ? (
-        <div className={`${STICKER_PANEL} ${PANE_HEIGHT} overflow-y-auto p-6`}>
-          <MentionCard
-            key={selected.id}
-            variant="detail"
-            mention={selected}
-            viewed={viewed.has(selected.id)}
-            publishedUrl={published[selected.id]}
-            onViewed={onViewed}
-            onPublished={onPublished}
-          />
+        <div className={`${STICKER_PANEL} ${PANE_HEIGHT} flex flex-col overflow-hidden`}>
+          <div className="min-h-0 flex-1 overflow-y-auto p-6">
+            <MentionCard
+              key={selected.id}
+              variant="detail"
+              focus={cardFocus}
+              mention={selected}
+              viewed={viewed.has(selected.id)}
+              publishedUrl={published[selected.id]}
+              dmSentAt={dmSent[selected.id]}
+              onViewed={onViewed}
+              onPublished={onPublished}
+              onDmSent={onDmSent}
+            />
+          </div>
+          {footer && (
+            <div className="shrink-0 border-t-2 border-[#1c1917] bg-[#fcfbf9] px-4 py-3">
+              {footer(selected, { index, total: mentions.length })}
+            </div>
+          )}
         </div>
       ) : (
         <div className="rounded-2xl border-2 border-dashed border-ink-300 p-10 text-center text-[14px] text-ink-400">

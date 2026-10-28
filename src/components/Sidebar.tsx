@@ -14,6 +14,11 @@ import {
   ChevronsLeft,
   ChevronsRight,
   Sparkles,
+  LayoutDashboard,
+  Radio,
+  MessageSquare,
+  Send,
+  Zap,
 } from 'lucide-react';
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
@@ -22,6 +27,40 @@ import { api, Project, hasActiveAccess } from '@/lib/api';
 import { BTN_PRIMARY } from '@/components/ui/sticker';
 
 const PROJECTS_CACHE_KEY = 'sidebar-projects-v1';
+
+type NavItem = { label: string; href: string; icon: typeof Inbox; active: boolean };
+type NavGroup = { label: string | null; items: NavItem[] };
+
+/** The per-project navigation, grouped by what the user is doing. */
+function projectNav(id: string, pathname: string): NavGroup[] {
+  const base = `/mentions/${id}`;
+  const is = (href: string) => pathname === href;
+  return [
+    { label: null, items: [{ label: 'Overview', href: `${base}/overview`, icon: LayoutDashboard, active: is(`${base}/overview`) }] },
+    {
+      label: 'Find',
+      items: [
+        { label: 'Opportunities', href: base, icon: Inbox, active: is(base) },
+        { label: 'Brand signals', href: `${base}/signals`, icon: Radio, active: is(`${base}/signals`) },
+      ],
+    },
+    {
+      label: 'Act',
+      items: [
+        { label: 'Reply queue', href: `${base}/replies`, icon: MessageSquare, active: is(`${base}/replies`) },
+        { label: 'DM queue', href: `${base}/dms`, icon: Send, active: is(`${base}/dms`) },
+      ],
+    },
+    { label: 'Automate', items: [{ label: 'Autopilot', href: `${base}/autopilot`, icon: Zap, active: is(`${base}/autopilot`) }] },
+    {
+      label: 'More',
+      items: [
+        { label: 'AI visibility', href: `/visibility/${id}`, icon: Sparkles, active: pathname.startsWith(`/visibility/${id}`) },
+        { label: 'Analytics', href: `${base}/analytics`, icon: BarChart3, active: is(`${base}/analytics`) },
+      ],
+    },
+  ];
+}
 
 // Deterministic warm-palette dot per project, keyed off the name so the hue
 // is stable across sessions without storing anything.
@@ -67,6 +106,23 @@ export function Sidebar() {
 
   // Close the drawer on navigation.
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
+
+  // Autopilot on/off for the open project, shown as a pill next to the nav item.
+  const openProjectId = (pathname.match(/^\/(?:mentions|visibility)\/(\d+)/) || [])[1];
+  const [autopilot, setAutopilot] = useState<Record<string, boolean>>({});
+  useEffect(() => {
+    if (!user || !openProjectId) return;
+    let cancelled = false;
+    api.getAutopilot(openProjectId)
+      .then((s) => { if (!cancelled) setAutopilot((prev) => ({ ...prev, [openProjectId]: s.enabled })); })
+      .catch(() => { /* the pill is optional */ });
+    const onUpdate = (e: Event) => {
+      const d = (e as CustomEvent<{ projectId: string; enabled: boolean }>).detail;
+      if (d && d.projectId) setAutopilot((prev) => ({ ...prev, [d.projectId]: d.enabled }));
+    };
+    window.addEventListener('sneakyguy:autopilot-updated', onUpdate);
+    return () => { cancelled = true; window.removeEventListener('sneakyguy:autopilot-updated', onUpdate); };
+  }, [user, openProjectId]);
 
   useEffect(() => {
     if (!user) return;
@@ -148,17 +204,15 @@ export function Sidebar() {
 
           <div className="space-y-1">
             {projects.slice(0, 12).map((p) => {
-              const leadsActive = pathname === `/mentions/${p.id}`;
-              const analyticsActive = pathname.startsWith(`/mentions/${p.id}/`);
-              const visibilityActive = pathname.startsWith(`/visibility/${p.id}`);
-              const open = leadsActive || analyticsActive || visibilityActive;
+              const open = new RegExp(`^/(mentions|visibility)/${p.id}(/|$)`).test(pathname);
+              const home = `/mentions/${p.id}/overview`;
               const initial = (p.name.trim()[0] || '?').toUpperCase();
 
               if (!showLabels) {
                 return (
                   <Link
                     key={p.id}
-                    href={`/mentions/${p.id}`}
+                    href={home}
                     title={p.name}
                     className={cn('mx-auto flex h-9 w-9 items-center justify-center rounded-lg font-play text-[14px] font-extrabold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50', projectDot(p.name), open ? 'ring-2 ring-[#1c1917] ring-offset-2' : 'opacity-80 hover:opacity-100')}
                   >
@@ -167,12 +221,14 @@ export function Sidebar() {
                 );
               }
 
+              const groups = open ? projectNav(p.id, pathname) : [];
+              const pilot = autopilot[p.id];
+
               return (
                 <div key={p.id} className={cn('rounded-xl transition-[box-shadow,border-color] motion-reduce:transition-none', open ? STICKER : 'border-2 border-transparent')}>
                   <Link
-                    href={`/mentions/${p.id}`}
+                    href={home}
                     className="flex items-center gap-2.5 rounded-lg px-2 py-1.5 hover:bg-black/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
-                    aria-current={leadsActive ? 'page' : undefined}
                   >
                     <span className={cn('flex h-7 w-7 shrink-0 items-center justify-center rounded-md font-play text-[13px] font-extrabold text-white', projectDot(p.name))}>
                       {initial}
@@ -180,26 +236,41 @@ export function Sidebar() {
                     <span className={cn('min-w-0 truncate text-[13.5px] text-ink-900', open ? 'font-bold' : 'font-semibold')}>{p.name}</span>
                   </Link>
                   {open && (
-                    <div className="px-1.5 pb-1.5 space-y-0.5">
-                      {[
-                        { label: 'Leads', href: `/mentions/${p.id}`, icon: Inbox, active: leadsActive },
-                        { label: 'AI visibility', href: `/visibility/${p.id}`, icon: Sparkles, active: visibilityActive },
-                        { label: 'Analytics', href: `/mentions/${p.id}/analytics`, icon: BarChart3, active: analyticsActive },
-                      ].map((item) => (
-                        <Link
-                          key={item.label}
-                          href={item.href}
-                          aria-current={item.active ? 'page' : undefined}
-                          className={cn(
-                            'flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',
-                            item.active ? 'bg-[#ff4500]/[0.12] font-semibold text-[#b83200]' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
+                    <nav className="px-1.5 pb-1.5" aria-label={`${p.name} sections`}>
+                      {groups.map((g, gi) => (
+                        <div key={g.label ?? 'top'} className={gi === 0 ? '' : 'mt-1'}>
+                          {g.label && (
+                            <p className="px-2.5 pb-0.5 pt-1.5 text-[11px] font-semibold text-ink-400">{g.label}</p>
                           )}
-                        >
-                          <item.icon className="h-3.5 w-3.5 shrink-0" />
-                          {item.label}
-                        </Link>
+                          <div className="space-y-0.5">
+                            {g.items.map((item) => (
+                              <Link
+                                key={item.label}
+                                href={item.href}
+                                aria-current={item.active ? 'page' : undefined}
+                                className={cn(
+                                  'flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[13px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',
+                                  item.active ? 'bg-[#ff4500]/[0.12] font-semibold text-[#b83200]' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
+                                )}
+                              >
+                                <item.icon className="h-3.5 w-3.5 shrink-0" />
+                                <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                                {item.label === 'Autopilot' && pilot !== undefined && (
+                                  <span
+                                    className={cn(
+                                      'shrink-0 rounded-md px-1.5 py-px text-[10.5px] font-semibold',
+                                      pilot ? 'bg-[#059669]/[0.12] text-[#047857]' : 'bg-black/[0.06] text-ink-600'
+                                    )}
+                                  >
+                                    {pilot ? 'On' : 'Off'}
+                                  </span>
+                                )}
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
                       ))}
-                    </div>
+                    </nav>
                   )}
                 </div>
               );
@@ -207,7 +278,7 @@ export function Sidebar() {
           </div>
 
           <Link
-            href="/projects?new=1"
+            href="/projects/new"
             title={!showLabels ? 'New project' : undefined}
             className={cn(
               'mt-2 flex items-center rounded-xl border-2 border-dashed border-ink-300 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40',

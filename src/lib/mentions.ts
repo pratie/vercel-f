@@ -13,7 +13,7 @@ export interface RawMention {
   content: string;
   url: string;
   subreddit: string;
-  author?: string;
+  author?: string | null;
   created_utc: number;
   score: number;
   num_comments: number;
@@ -61,6 +61,27 @@ export function isHighIntent(m: Pick<Mention, 'relevance_score' | 'intent'>): bo
     intent.includes('solution') ||
     intent.includes('recommendation')
   );
+}
+
+/** Someone we could actually message. */
+export function hasKnownAuthor(m: Pick<Mention, 'author'>): boolean {
+  return !!m.author && m.author !== 'unknown' && m.author !== '[deleted]' && m.author !== 'AutoModerator';
+}
+
+/** Reply queue: a draft is waiting and the user has not posted yet. */
+export function inReplyQueue(m: Pick<Mention, 'draft_reply' | 'id'>, published: Record<number, string>): boolean {
+  return !!m.draft_reply && !published[m.id];
+}
+
+/** DM queue: a strong lead (80+) from someone we can message. */
+export function inDmQueue(m: Pick<Mention, 'relevance_score' | 'intent' | 'author' | 'id'>, dmSent: Record<number, number>): boolean {
+  return !isUnscored(m) && (m.relevance_score ?? 0) >= 80 && hasKnownAuthor(m) && !dmSent[m.id];
+}
+
+/** Best score first; unscored leads sink to the bottom. */
+export function byBestScore(a: Pick<Mention, 'relevance_score' | 'intent' | 'created_utc'>, b: Pick<Mention, 'relevance_score' | 'intent' | 'created_utc'>): number {
+  const scoreOf = (m: Pick<Mention, 'relevance_score' | 'intent'>) => (isUnscored(m) ? -1 : m.relevance_score ?? -1);
+  return scoreOf(b) - scoreOf(a) || b.created_utc - a.created_utc;
 }
 
 /** Placeholder strings the backend has historically stored in suggested_comment. */

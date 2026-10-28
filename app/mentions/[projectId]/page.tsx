@@ -15,6 +15,7 @@ import { LeadInbox } from '@/components/mentions/LeadInbox';
 import { ScanBanner } from '@/components/mentions/ScanBanner';
 import { BTN_PRIMARY, BTN_QUIET, BTN_SECONDARY } from '@/components/ui/sticker';
 import { FilterBar, MentionFilters, DEFAULT_FILTERS, SortKey, TriageTab } from '@/components/mentions/FilterBar';
+import { useTriage } from '@/lib/useTriage';
 
 const MENTIONS_PER_PAGE = 25;
 const SCAN_POLL_MS = 3000;
@@ -38,9 +39,11 @@ export default function MentionsPage() {
   const [scanProgress, setScanProgress] = useState(0);
   const [scanMessage, setScanMessage] = useState('');
 
-  const [viewedPosts, setViewedPosts] = useState<Set<number>>(new Set());
-  const [publishedComments, setPublishedComments] = useState<Record<number, string>>({});
+  // Triage state (viewed / replied) is shared with the queue pages.
+  const { viewed: viewedPosts, published: publishedComments, dmSent, markViewed, markPublished, markDmSent } = useTriage(projectId);
   const [rescoring, setRescoring] = useState(false);
+  const leadParam = searchParams?.get('lead');
+  const initialSelectedId = leadParam ? parseInt(leadParam, 10) : null;
 
   // Filters initialise from the URL so filtered views survive refresh and can be shared.
   const [filters, setFilters] = useState<MentionFilters>(() => ({
@@ -69,35 +72,6 @@ export default function MentionsPage() {
     });
     setVisibleCount(MENTIONS_PER_PAGE);
   }, []);
-
-  // ---- Local triage state (persisted per project) ----
-  useEffect(() => {
-    if (!projectId) return;
-    try {
-      const viewed = JSON.parse(localStorage.getItem(`viewedPosts_${projectId}`) || '[]');
-      if (Array.isArray(viewed)) setViewedPosts(new Set(viewed));
-    } catch { /* corrupted state — start fresh */ }
-    try {
-      setPublishedComments(JSON.parse(localStorage.getItem(`published-comments-${projectId}`) || '{}'));
-    } catch { /* corrupted state — start fresh */ }
-  }, [projectId]);
-
-  const markViewed = useCallback((id: number) => {
-    setViewedPosts((prev) => {
-      if (prev.has(id)) return prev;
-      const next = new Set(prev).add(id);
-      localStorage.setItem(`viewedPosts_${projectId}`, JSON.stringify(Array.from(next)));
-      return next;
-    });
-  }, [projectId]);
-
-  const markPublished = useCallback((id: number, commentUrl: string) => {
-    setPublishedComments((prev) => {
-      const next = { ...prev, [id]: commentUrl };
-      localStorage.setItem(`published-comments-${projectId}`, JSON.stringify(next));
-      return next;
-    });
-  }, [projectId]);
 
   // ---- Data loading ----
   const loadMentions = useCallback(async () => {
@@ -311,7 +285,7 @@ export default function MentionsPage() {
           <div className="min-w-0">
             <p className="truncate text-[13px] font-semibold text-ink-400">{project ? project.name : ' '}</p>
             <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">
-              Leads
+              Opportunities
             </h1>
             {allMentions.length > 0 && (
               <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-400">
@@ -447,10 +421,13 @@ export default function MentionsPage() {
                 mentions={displayMentions}
                 viewed={viewedPosts}
                 published={publishedComments}
+                dmSent={dmSent}
                 onViewed={markViewed}
                 onPublished={markPublished}
+                onDmSent={markDmSent}
                 remaining={remaining}
                 onLoadMore={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
+                initialSelectedId={initialSelectedId}
               />
             </div>
             <div className="-ml-4 border-t border-black/[0.06] lg:hidden">

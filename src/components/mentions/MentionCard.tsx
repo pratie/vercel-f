@@ -2,7 +2,7 @@
 
 import { useId, useState } from 'react';
 import {
-  ArrowUpRight, Check, Copy, Edit3, Loader2, Sparkles, X,
+  ArrowUpRight, Check, Copy, Edit3, Loader2, Send, Sparkles, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { api } from '@/lib/api';
@@ -21,6 +21,11 @@ interface MentionCardProps {
   onPublished: (id: number, commentUrl: string) => void;
   /** "detail" = the reading pane of the two-pane inbox: always open, actions first, full post text. */
   variant?: 'row' | 'detail';
+  /** Which flow leads. "dm" puts the message draft first (the DM queue). */
+  focus?: 'reply' | 'dm';
+  /** When the DM was marked sent (ms), from local triage state. */
+  dmSentAt?: number;
+  onDmSent?: (id: number) => void;
 }
 
 /** Match + intent collapsed into one quiet string: "78% match · Solution seeking". */
@@ -37,8 +42,11 @@ function signal(mention: Mention): string | null {
  * behind an expand. As the detail pane (desktop) it shows the actions right
  * under the title, then the reasoning, then the full post.
  */
-export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row' }: MentionCardProps) {
+export function MentionCard({
+  mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row', focus = 'reply', dmSentAt, onDmSent,
+}: MentionCardProps) {
   const isDetail = variant === 'detail';
+  const dmFirst = focus === 'dm';
   const [reply, setReply] = useState<string | null>(mention.draft_reply);
   const [dm, setDm] = useState<{ author: string; message: string; compose_url: string } | null>(null);
   const [dmLoading, setDmLoading] = useState(false);
@@ -121,6 +129,8 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
       await navigator.clipboard.writeText(dm.message);
     } catch { /* the compose link carries the text anyway */ }
     window.open(dm.compose_url, '_blank', 'noopener,noreferrer');
+    onViewed(mention.id);
+    onDmSent?.(mention.id);
     toast.success(`Message to u/${dm.author} opened on Reddit. Press Send there.`);
   };
 
@@ -159,6 +169,47 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
     onPublished(mention.id, mention.url);
     toast.success('Marked as replied');
   };
+
+  /** The DM queue's lead action row: message first, everything else quiet. */
+  const dmActions = (
+    <div className="flex flex-wrap items-center gap-2">
+      {canDm ? (
+        <button onClick={handleDm} disabled={dmLoading} className={BTN_PRIMARY}>
+          {dmLoading ? (
+            <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Drafting</>
+          ) : (
+            <><Send className="h-4 w-4" aria-hidden="true" /> Draft a message to u/{mention.author}</>
+          )}
+        </button>
+      ) : (
+        <span className="text-[13px] text-ink-400">The poster is unknown, so there is no one to message.</span>
+      )}
+      <a
+        href={mention.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        onClick={() => onViewed(mention.id)}
+        className={BTN_QUIET}
+      >
+        Open on Reddit
+        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+      </a>
+      {dmSentAt ? (
+        <span className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold text-[#047857]">
+          <Check className="h-3.5 w-3.5" aria-hidden="true" />
+          Messaged
+        </span>
+      ) : onDmSent && (
+        <button
+          onClick={() => { onDmSent(mention.id); toast.success('Marked as sent'); }}
+          className={BTN_QUIET}
+          title="Already messaged them? Mark it done so it leaves the queue"
+        >
+          Mark as sent
+        </button>
+      )}
+    </div>
+  );
 
   const metaLine = (
     <p className={`flex flex-wrap items-center gap-x-2 gap-y-1 text-ink-400 tabular-nums ${isDetail ? 'mt-2 text-[12.5px]' : 'mt-2 text-[11.5px]'}`}>
@@ -344,8 +395,14 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
         />
         {metaLine}
 
-        <div className="mt-4">{reply === null ? actions : replyBox}</div>
-        {dmBox && <div className="mt-3">{dmBox}</div>}
+        {dmFirst ? (
+          <div className="mt-4">{dm ? dmBox : dmActions}</div>
+        ) : (
+          <>
+            <div className="mt-4">{reply === null ? actions : replyBox}</div>
+            {dmBox && <div className="mt-3">{dmBox}</div>}
+          </>
+        )}
 
         {reasoning && <div className="mt-5 border-t-2 border-[#1c1917]/[0.08] pt-4">{reasoning}</div>}
 
