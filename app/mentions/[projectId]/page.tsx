@@ -13,6 +13,7 @@ import {
   Mention, transformRawMention, isUnscored, isHighIntent, exportMentionsToCSV,
 } from '@/lib/mentions';
 import { MentionCard } from '@/components/mentions/MentionCard';
+import { LeadInbox } from '@/components/mentions/LeadInbox';
 import { ScanBanner } from '@/components/mentions/ScanBanner';
 import { StatsStrip, MentionStats } from '@/components/mentions/StatsStrip';
 import { FilterBar, MentionFilters, DEFAULT_FILTERS, SortKey, TriageTab } from '@/components/mentions/FilterBar';
@@ -313,25 +314,25 @@ export default function MentionsPage() {
 
   return (
     <PaymentGuard>
-      <div className="max-w-[940px] mx-auto px-5 sm:px-6 py-6 sm:py-10">
+      <div className="max-w-[940px] lg:max-w-[1240px] mx-auto px-5 sm:px-6 py-6 sm:py-10">
         {/* Header */}
         <header className="mb-8">
           <button
             onClick={() => router.push('/projects')}
-            className="group -ml-1 mb-5 inline-flex items-center gap-1.5 rounded-md px-1 py-0.5 text-[11.5px] font-medium uppercase tracking-[0.09em] text-ink-400 transition-colors hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
+            className="group -ml-1 mb-4 inline-flex items-center gap-1.5 rounded-md px-1 py-0.5 text-[13px] font-medium text-ink-400 transition-colors hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"
           >
             <ArrowLeft className="h-3 w-3 transition-transform group-hover:-translate-x-0.5" />
-            Projects
+            All projects
           </button>
 
           <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
             <div className="min-w-0">
-              <h1 className="text-[30px] sm:text-[36px] font-semibold text-ink-900 tracking-[-0.028em] leading-[1.1] truncate">
+              <h1 className="font-play text-[34px] sm:text-[44px] font-extrabold text-ink-900 tracking-[-0.03em] leading-[1.05] truncate">
                 {project ? project.name : ' '}
               </h1>
               {allMentions.length > 0 && (
                 <p className="mt-1.5 text-[13.5px] text-ink-400">
-                  Reddit <span className="font-display italic text-ink-600">leads</span> across{' '}
+                  Reddit leads across{' '}
                   <span className="tabular-nums text-ink-600">{availableSubreddits.length}</span>{' '}
                   {availableSubreddits.length === 1 ? 'community' : 'communities'}
                 </p>
@@ -462,7 +463,19 @@ export default function MentionsPage() {
           </div>
         ) : (
           <>
-            <div className="-ml-4 border-t border-black/[0.06]">
+            {/* Desktop: two-pane inbox. Phones: the single-column list. */}
+            <div className="hidden lg:block">
+              <LeadInbox
+                mentions={displayMentions}
+                viewed={viewedPosts}
+                published={publishedComments}
+                onViewed={markViewed}
+                onPublished={markPublished}
+                hasMore={visibleCount < filteredAll.length}
+                onLoadMore={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
+              />
+            </div>
+            <div className="lg:hidden -ml-4 border-t border-black/[0.06]">
               {displayMentions.map((mention) => (
                 <MentionCard
                   key={mention.id}
@@ -476,7 +489,7 @@ export default function MentionsPage() {
             </div>
 
             {visibleCount < filteredAll.length && (
-              <div className="mt-8 mb-10 flex justify-center">
+              <div className="lg:hidden mt-8 mb-10 flex justify-center">
                 <button
                   onClick={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
                   className="h-9 px-4 rounded-lg text-[12.5px] font-medium text-ink-600 transition-colors hover:bg-[#f7f6f4] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25"

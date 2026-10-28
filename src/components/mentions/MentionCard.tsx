@@ -18,6 +18,8 @@ interface MentionCardProps {
   onViewed: (id: number) => void;
   /** Marks the lead as replied in local triage state. */
   onPublished: (id: number, commentUrl: string) => void;
+  /** "detail" = the reading pane of the two-pane inbox: always open, full post text. */
+  variant?: 'row' | 'detail';
 }
 
 /** Match + intent collapsed into one quiet string: "78% · Solution seeking". */
@@ -34,12 +36,13 @@ function signal(mention: Mention): string | null {
  * needed to triage (the AI explanation, the reply flow) lives behind an
  * expand so the list stays scannable.
  */
-export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished }: MentionCardProps) {
+export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row' }: MentionCardProps) {
+  const isDetail = variant === 'detail';
   const [reply, setReply] = useState<string | null>(null);
   const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(isDetail);
   const panelId = useId();
 
   const unscored = isUnscored(mention);
@@ -85,7 +88,9 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
 
   return (
     <article
-      className={`group relative border-b border-black/[0.06] pl-4 transition-colors duration-200
+      className={isDetail
+        ? 'group relative'
+        : `group relative border-b border-black/[0.06] pl-4 transition-colors duration-200
         ${expanded ? 'bg-[#fcfbf9]' : 'hover:bg-[#fcfbf9]'}
         ${viewed && !publishedUrl && !expanded ? 'opacity-65 hover:opacity-100 focus-within:opacity-100' : ''}`}
     >
@@ -98,26 +103,32 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
         the text nothing and doubles as an at-a-glance index of where the good
         leads are.
       */}
-      <span
-        aria-hidden="true"
-        className={`absolute left-0 top-0 bottom-0 w-0.5 ${highIntent ? 'bg-emerald-500' : 'bg-black/[0.06]'}`}
-      />
+      {!isDetail && (
+        <span
+          aria-hidden="true"
+          className={`absolute left-0 top-0 bottom-0 w-0.5 ${highIntent ? 'bg-emerald-500' : 'bg-black/[0.06]'}`}
+        />
+      )}
 
       <button
         type="button"
-        onClick={() => setExpanded((v) => !v)}
-        aria-expanded={expanded}
+        onClick={() => { if (!isDetail) setExpanded((v) => !v); }}
+        aria-expanded={isDetail ? undefined : expanded}
         aria-controls={panelId}
         className="w-full text-left pr-[76px] sm:pr-24 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/25 rounded-sm"
       >
         <h3
-          className="text-[15px] font-medium text-ink-900 leading-[1.45] tracking-[-0.011em]"
+          className={isDetail
+            ? 'font-play text-[22px] font-bold text-ink-900 leading-[1.25] tracking-[-0.02em]'
+            : 'text-[15px] font-medium text-ink-900 leading-[1.45] tracking-[-0.011em]'}
           style={{ textWrap: 'pretty' } as React.CSSProperties}
           dangerouslySetInnerHTML={{ __html: highlightKeywordsSafe(mention.title, mention.matching_keywords) }}
         />
 
         {mention.content && (
-          <p className="mt-1 text-[13px] text-ink-400 leading-relaxed line-clamp-1">
+          <p className={isDetail
+            ? 'mt-3 max-h-[150px] overflow-y-auto whitespace-pre-wrap text-[14px] text-ink-600 leading-[1.7]'
+            : 'mt-1 text-[13px] text-ink-400 leading-relaxed line-clamp-1'}>
             {mention.content}
           </p>
         )}

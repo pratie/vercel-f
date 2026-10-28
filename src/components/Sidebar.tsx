@@ -4,8 +4,10 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import {
-  LayoutGrid,
   Settings,
+  Inbox,
+  BarChart3,
+  Plus,
   LogOut,
   Menu,
   X,
@@ -16,13 +18,13 @@ import {
 import { useAuth } from './AuthContext';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { api, Project } from '@/lib/api';
+import { api, Project, hasActiveAccess } from '@/lib/api';
 
 const PROJECTS_CACHE_KEY = 'sidebar-projects-v1';
 
 // Deterministic warm-palette dot per project, keyed off the name so the hue
 // is stable across sessions without storing anything.
-const DOT_PALETTE = ['bg-orange-500', 'bg-amber-500', 'bg-rose-400', 'bg-violet-400', 'bg-teal-500'];
+const DOT_PALETTE = ['bg-[#d13800]', 'bg-[#b45309]', 'bg-[#be123c]', 'bg-[#6d28d9]', 'bg-[#0f766e]'];
 function projectDot(name: string) {
   let hash = 0;
   for (let i = 0; i < name.length; i++) hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
@@ -40,6 +42,8 @@ export function Sidebar() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
   const [projects, setProjects] = useState<Project[]>([]);
+  // undefined = not loaded yet, null = no paid plan, string = plan id.
+  const [plan, setPlan] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
     if (localStorage.getItem('sidebar-collapsed') === 'true') setCollapsed(true);
@@ -63,6 +67,13 @@ export function Sidebar() {
   // Close the drawer on navigation.
   useEffect(() => { setDrawerOpen(false); }, [pathname]);
 
+  useEffect(() => {
+    if (!user) return;
+    api.getPaymentStatus()
+      .then((st) => setPlan(hasActiveAccess(st) ? (st.subscription_plan || 'paid') : null))
+      .catch(() => setPlan(undefined));
+  }, [user]);
+
   // Stay in sync when a project is created/deleted elsewhere in the app.
   useEffect(() => {
     const onUpdate = (e: Event) => {
@@ -82,37 +93,25 @@ export function Sidebar() {
     localStorage.setItem('sidebar-collapsed', String(next));
   };
 
-  const navigation = [
-    { name: 'Projects', href: '/projects', icon: LayoutGrid, active: pathname === '/projects' },
-    { name: 'Settings', href: '/settings', icon: Settings, active: pathname.startsWith('/settings') },
-  ];
-
   const navBody = (isDrawer: boolean) => {
     const showLabels = isDrawer || !collapsed;
+    const STICKER = 'border-2 border-[#1c1917] bg-white shadow-[3px_3px_0_#1c1917]';
+    const planLabel = plan === 'growth_monthly' ? 'Growth plan' : plan === 'starter_monthly' ? 'Starter plan' : plan ? 'Paid plan' : null;
+
     return (
       <>
         {/* Logo + collapse toggle */}
-        <div className={cn(
-          'h-14 flex items-center border-b border-[#eeecea]/70 shrink-0',
-          showLabels ? 'px-5 justify-between' : 'px-0 justify-center'
-        )}>
+        <div className={cn('h-16 flex items-center shrink-0', showLabels ? 'px-4 justify-between' : 'px-0 justify-center')}>
           <Link href="/projects" className="flex items-center gap-2 min-w-0">
-            <Image
-              src="/logo.png"
-              alt=""
-              width={30}
-              height={19}
-              priority
-              className="shrink-0 h-auto w-[30px] no-outline"
-            />
+            <Image src="/logo.png" alt="" width={34} height={21} priority className="shrink-0 h-auto w-[34px] no-outline" />
             {showLabels && (
-              <span className="font-semibold text-[15px] text-ink-900 tracking-tight truncate">SneakyGuy</span>
+              <span className="font-play font-extrabold text-[18px] text-ink-900 tracking-[-0.02em] truncate">SneakyGuy</span>
             )}
           </Link>
           {!isDrawer && showLabels && (
             <button
               onClick={toggleCollapse}
-              className="p-1 rounded-lg text-ink-300 hover:text-ink-600 hover:bg-black/[0.035] transition-colors duration-150"
+              className="p-1 rounded-lg text-ink-400 hover:text-ink-900 hover:bg-black/[0.05] transition-colors"
               aria-label="Collapse sidebar"
             >
               <ChevronsLeft className="h-4 w-4" />
@@ -121,10 +120,10 @@ export function Sidebar() {
         </div>
 
         {!isDrawer && collapsed && (
-          <div className="px-2 pt-2">
+          <div className="px-2 pb-2">
             <button
               onClick={toggleCollapse}
-              className="w-full p-2 rounded-xl text-ink-300 hover:text-ink-600 hover:bg-black/[0.035] transition-colors duration-150 flex items-center justify-center"
+              className="w-full p-2 rounded-xl text-ink-400 hover:text-ink-900 hover:bg-black/[0.05] transition-colors flex items-center justify-center"
               aria-label="Expand sidebar"
             >
               <ChevronsRight className="h-4 w-4" />
@@ -132,107 +131,128 @@ export function Sidebar() {
           </div>
         )}
 
-        {/* Nav */}
-        <nav className={cn('py-3 space-y-1 shrink-0', showLabels ? 'px-3' : 'px-2')}>
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              title={!showLabels ? item.name : undefined}
-              className={cn(
-                'relative flex items-center rounded-xl text-[13px] font-medium',
-                'transition-[color,background-color,box-shadow] duration-200 ease-out active:scale-[0.98]',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
-                showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5',
-                item.active
-                  ? 'bg-white text-[#d94100] shadow-card'
-                  : 'text-ink-600 hover:text-ink-900 hover:bg-black/[0.035]'
-              )}
-              aria-current={item.active ? 'page' : undefined}
-            >
-              <item.icon className={cn('h-4 w-4 shrink-0', item.active ? 'text-orange-500' : 'text-ink-400')} />
-              {showLabels && item.name}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Project quick-switcher */}
-        {showLabels && projects.length > 0 && (
-          <div className="px-3 pb-3 flex-1 min-h-0 overflow-y-auto">
-            <p className="px-3 pb-1.5 text-[10.5px] font-semibold text-ink-400 uppercase tracking-[0.08em]">Your projects</p>
-            <div className="space-y-1">
-              {projects.slice(0, 8).map((p) => {
-                // Project ids are plain integers, so a bare startsWith would light up
-                // project 3 while sitting on project 31. Match the id, then the segment
-                // boundary, so sub-routes like /mentions/3/analytics still count.
-                const active = pathname === `/mentions/${p.id}` || pathname.startsWith(`/mentions/${p.id}/`);
-                const visibilityActive = pathname === `/visibility/${p.id}` || pathname.startsWith(`/visibility/${p.id}/`);
-                return (
-                  // Leads and AI Visibility are peer destinations for the same project.
-                  <div key={p.id} className="flex items-center gap-1">
-                    <Link
-                      href={`/mentions/${p.id}`}
-                      className={cn(
-                        'relative flex flex-1 min-w-0 items-center gap-2 px-3 py-1.5 rounded-xl text-[12px] font-medium truncate',
-                        'transition-[color,background-color,box-shadow] duration-200 ease-out',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
-                        active
-                          ? 'bg-white text-[#d94100] shadow-card'
-                          : 'text-ink-600 hover:text-ink-900 hover:bg-black/[0.035]'
-                      )}
-                      aria-current={active ? 'page' : undefined}
-                    >
-                      <span
-                        className={cn('h-2 w-2 rounded-full shrink-0', projectDot(p.name), !active && 'opacity-70')}
-                        aria-hidden="true"
-                      />
-                      <span className="truncate">{p.name}</span>
-                    </Link>
-                    <Link
-                      href={`/visibility/${p.id}`}
-                      title={`AI Visibility for ${p.name}`}
-                      aria-label={`AI Visibility for ${p.name}`}
-                      className={cn(
-                        'relative shrink-0 p-1.5 rounded-xl',
-                        'transition-[color,background-color,box-shadow] duration-200 ease-out',
-                        'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
-                        visibilityActive
-                          ? 'bg-white text-[#d94100] shadow-card'
-                          : 'text-ink-300 hover:text-ink-900 hover:bg-black/[0.035]'
-                      )}
-                      aria-current={visibilityActive ? 'page' : undefined}
-                    >
-                      <Sparkles className="h-3.5 w-3.5" />
-                    </Link>
-                  </div>
-                );
-              })}
+        {/* Projects: the real navigation */}
+        <div className={cn('flex-1 min-h-0 overflow-y-auto pb-3', showLabels ? 'px-3' : 'px-2')}>
+          {showLabels && (
+            <div className="flex items-center justify-between px-1 pt-1 pb-2">
+              <Link
+                href="/projects"
+                className={cn('text-[13px] font-semibold transition-colors', pathname === '/projects' ? 'text-ink-900' : 'text-ink-400 hover:text-ink-900')}
+              >
+                Projects
+              </Link>
+              <span className="text-[12px] tabular-nums text-ink-400">{projects.length}</span>
             </div>
-          </div>
-        )}
-        {!showLabels && <div className="flex-1" />}
+          )}
 
-        {/* Bottom */}
-        <div className="mt-auto border-t border-[#eeecea]/70 shrink-0">
-          <div className={cn(showLabels ? 'px-3 pb-3' : 'px-2 pb-3')}>
-            {user && showLabels && (
-              <div className="px-3 py-1.5 mb-2">
-                <p className="text-xs text-ink-400 font-medium truncate">{user.email}</p>
-              </div>
-            )}
-            <button
-              onClick={logout}
-              title={!showLabels ? 'Sign out' : undefined}
-              className={cn(
-                'w-full flex items-center rounded-lg text-[13px] font-medium text-ink-400 hover:text-ink-700 hover:bg-black/[0.035] transition-colors duration-150',
-                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60',
-                showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5'
-              )}
-            >
-              <LogOut className="h-4 w-4 shrink-0" />
-              {showLabels && 'Sign out'}
-            </button>
+          <div className="space-y-2">
+            {projects.slice(0, 12).map((p) => {
+              const leadsActive = pathname === `/mentions/${p.id}`;
+              const analyticsActive = pathname.startsWith(`/mentions/${p.id}/`);
+              const visibilityActive = pathname.startsWith(`/visibility/${p.id}`);
+              const open = leadsActive || analyticsActive || visibilityActive;
+              const initial = (p.name.trim()[0] || '?').toUpperCase();
+
+              if (!showLabels) {
+                return (
+                  <Link
+                    key={p.id}
+                    href={`/mentions/${p.id}`}
+                    title={p.name}
+                    className={cn('mx-auto flex h-10 w-10 items-center justify-center rounded-xl font-play text-[15px] font-extrabold text-white', projectDot(p.name), open ? 'ring-2 ring-[#1c1917] ring-offset-2' : 'opacity-80 hover:opacity-100')}
+                  >
+                    {initial}
+                  </Link>
+                );
+              }
+
+              return (
+                <div key={p.id} className={cn('rounded-2xl transition-[box-shadow,border-color]', open ? STICKER : 'border-2 border-transparent')}>
+                  <Link
+                    href={`/mentions/${p.id}`}
+                    className="flex items-center gap-2.5 rounded-2xl px-2 py-2 hover:bg-black/[0.03] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+                    aria-current={leadsActive ? 'page' : undefined}
+                  >
+                    <span className={cn('flex h-8 w-8 shrink-0 items-center justify-center rounded-lg font-play text-[14px] font-extrabold text-white', projectDot(p.name))}>
+                      {initial}
+                    </span>
+                    <span className="min-w-0 truncate text-[13.5px] font-semibold text-ink-900">{p.name}</span>
+                  </Link>
+                  {open && (
+                    <div className="px-2 pb-2 pt-0.5 space-y-0.5">
+                      {[
+                        { label: 'Leads', href: `/mentions/${p.id}`, icon: Inbox, active: leadsActive },
+                        { label: 'AI visibility', href: `/visibility/${p.id}`, icon: Sparkles, active: visibilityActive },
+                        { label: 'Analytics', href: `/mentions/${p.id}/analytics`, icon: BarChart3, active: analyticsActive },
+                      ].map((item) => (
+                        <Link
+                          key={item.label}
+                          href={item.href}
+                          aria-current={item.active ? 'page' : undefined}
+                          className={cn(
+                            'flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium transition-colors',
+                            item.active ? 'bg-[#ff4500]/[0.1] text-[#b83200]' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
+                          )}
+                        >
+                          <item.icon className="h-3.5 w-3.5 shrink-0" />
+                          {item.label}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
+
+          <Link
+            href="/projects?new=1"
+            title={!showLabels ? 'New project' : undefined}
+            className={cn(
+              'mt-3 flex items-center rounded-2xl border-2 border-dashed border-ink-300 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900',
+              showLabels ? 'gap-2 px-3 py-2.5' : 'mx-auto h-10 w-10 justify-center'
+            )}
+          >
+            <Plus className="h-4 w-4 shrink-0" />
+            {showLabels && 'New project'}
+          </Link>
+        </div>
+
+        {/* Plan, settings, account */}
+        <div className={cn('shrink-0 border-t-2 border-[#1c1917]/[0.08] py-3 space-y-1', showLabels ? 'px-3' : 'px-2')}>
+          {showLabels && (
+            planLabel ? (
+              <div className="mb-2 flex items-center justify-between rounded-xl bg-[#059669]/[0.1] px-3 py-2">
+                <span className="text-[12.5px] font-semibold text-[#047857]">{planLabel}</span>
+                <Link href="/settings" className="text-[12px] font-medium text-[#047857] underline-offset-2 hover:underline">Billing</Link>
+              </div>
+            ) : plan === null ? null : (
+              <Link href="/upgrade" className="btn-primary mb-2 w-full h-9 text-[13px]">Upgrade</Link>
+            )
+          )}
+          <Link
+            href="/settings"
+            title={!showLabels ? 'Settings' : undefined}
+            className={cn(
+              'flex items-center rounded-xl text-[13px] font-medium transition-colors',
+              showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5',
+              pathname.startsWith('/settings') ? 'bg-black/[0.05] text-ink-900' : 'text-ink-600 hover:bg-black/[0.04] hover:text-ink-900'
+            )}
+          >
+            <Settings className="h-4 w-4 shrink-0" />
+            {showLabels && 'Settings'}
+          </Link>
+          <button
+            onClick={logout}
+            title={!showLabels ? 'Sign out' : undefined}
+            className={cn(
+              'w-full flex items-center rounded-xl text-[13px] font-medium text-ink-400 hover:bg-black/[0.04] hover:text-ink-900 transition-colors',
+              showLabels ? 'gap-2.5 px-3 py-2' : 'justify-center p-2.5'
+            )}
+          >
+            <LogOut className="h-4 w-4 shrink-0" />
+            {showLabels && <span className="truncate">Sign out{user ? ` ${user.email}` : ''}</span>}
+          </button>
         </div>
       </>
     );
@@ -286,9 +306,9 @@ export function Sidebar() {
       {/* ---- Desktop: sticky rail ---- */}
       <aside
         className={cn(
-          'hidden md:flex sticky top-0 h-screen flex-col bg-[#fbfaf9] border-r border-[#eeecea] shrink-0',
+          'hidden md:flex sticky top-0 h-screen flex-col bg-[#fbfaf9] border-r-2 border-[#1c1917]/[0.08] shrink-0',
           'transition-[width] duration-200 ease-out',
-          collapsed ? 'w-[64px]' : 'w-[230px]'
+          collapsed ? 'w-[68px]' : 'w-[248px]'
         )}
       >
         {navBody(false)}

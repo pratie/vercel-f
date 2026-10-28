@@ -98,13 +98,13 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
         aria-label={`Open leads for ${project.name}`}
         onClick={handleViewMentions}
         onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); handleViewMentions(); } }}
-        className="premium-card w-full overflow-hidden cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
+        className="w-full overflow-hidden cursor-pointer rounded-[20px] border-2 border-[#1c1917] bg-white shadow-[4px_4px_0_#1c1917] transition-[transform,box-shadow] duration-150 hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[6px_6px_0_#1c1917] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-orange-400/60"
       >
         <div className="p-5">
           {/* Identity row */}
           <div className="flex items-center gap-2.5 min-w-0">
             <span className={`h-2.5 w-2.5 rounded-full shrink-0 ${projectDot(project.name)}`} aria-hidden="true" />
-            <h3 className="text-[15.5px] font-semibold text-ink-900 tracking-tight truncate flex-1">
+            <h3 className="font-play text-[18px] font-bold text-ink-900 tracking-[-0.015em] truncate flex-1">
               {project.name}
             </h3>
             {project.analysis_status === 'scanning' ? (

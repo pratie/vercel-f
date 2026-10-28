@@ -18,7 +18,8 @@ export const DEFAULT_FILTERS: MentionFilters = {
   query: '',
   subreddit: 'all',
   intent: 'all',
-  sort: 'new',
+  // Best match first: the inbox is for deciding what to answer, not reading a feed.
+  sort: 'relevance',
   tab: 'all',
 };
 
@@ -67,7 +68,7 @@ function QuietSelect({
 
 export function FilterBar({ filters, onChange, subreddits, intents, counts, shown, matched }: FilterBarProps) {
   const hasActiveFilters =
-    !!filters.query || filters.subreddit !== 'all' || filters.intent !== 'all' || filters.sort !== 'new' || filters.tab !== 'all';
+    !!filters.query || filters.subreddit !== 'all' || filters.intent !== 'all' || filters.sort !== 'relevance' || filters.tab !== 'all';
 
   const tabs: { key: TriageTab; label: string; count: number }[] = [
     { key: 'all', label: 'All', count: counts.all },
@@ -140,11 +141,11 @@ export function FilterBar({ filters, onChange, subreddits, intents, counts, show
           <QuietSelect
             value={filters.sort}
             onChange={(v) => onChange({ sort: v as SortKey })}
-            active={filters.sort !== 'new'}
+            active={filters.sort !== 'relevance'}
             label="Sort leads"
           >
-            <option value="new">Newest</option>
             <option value="relevance">Best match</option>
+            <option value="new">Newest</option>
             <option value="comments">Most comments</option>
             <option value="upvotes">Most upvotes</option>
           </QuietSelect>

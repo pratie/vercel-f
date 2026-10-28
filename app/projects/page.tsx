@@ -27,6 +27,10 @@ export default function ProjectsPage() {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
+  // The sidebar's "New project" button links here with ?new=1.
+  useEffect(() => {
+    if (searchParams.get('new') === '1') setIsCreateOpen(true);
+  }, [searchParams]);
 
   // Pick up pending URL from the landing page. Runs for unpaid users too:
   // the analysis itself is free, and seeing their own keywords is the moment
@@ -222,11 +226,11 @@ export default function ProjectsPage() {
           <div className="mb-6">
             <div className="flex items-end justify-between gap-3">
               <div>
-                <h1 className="text-[30px] sm:text-[36px] font-semibold text-ink-900 tracking-[-0.028em] leading-[1.1]">Projects</h1>
+                <h1 className="font-play text-[34px] sm:text-[44px] font-extrabold text-ink-900 tracking-[-0.03em] leading-[1.05]">Projects</h1>
                 <p className="mt-1.5 text-[13.5px] text-ink-400">
                   {projects.length === 1
-                    ? <>One product being <span className="font-display italic text-ink-600">monitored</span></>
-                    : <><span className="tabular-nums text-ink-600">{projects.length}</span> products being <span className="font-display italic text-ink-600">monitored</span></>}
+                    ? <>One product being watched on Reddit</>
+                    : <><span className="tabular-nums text-ink-600">{projects.length}</span> products being watched on Reddit</>}
                 </p>
               </div>
               <button
