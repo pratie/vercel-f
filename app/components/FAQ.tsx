@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
 
 interface FAQItemProps {
@@ -11,86 +11,96 @@ interface FAQItemProps {
   onClick: () => void;
 }
 
-const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => (
-  <div className="border-b border-black/[0.08] last:border-0">
-    <button
-      onClick={onClick}
-      className="w-full py-5 flex items-center justify-between text-left group"
-    >
-      <span className="text-sm font-semibold text-[#1c1917] group-hover:text-[#d94100] transition-colors pr-4">
-        {question}
-      </span>
-      <div className={`flex-shrink-0 w-7 h-7 rounded-lg border flex items-center justify-center transition-[background-color,border-color,transform] duration-200 ${isOpen ? 'bg-[#ff4500] border-[#ff4500] rotate-0' : 'bg-[#f4f1ec] border-black/[0.10] group-hover:border-black/[0.22]'}`}>
-        {isOpen ? (
-          <Minus className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
-        ) : (
-          <Plus className="h-3.5 w-3.5 text-[#78716c]" strokeWidth={2.5} />
-        )}
-      </div>
-    </button>
-    <AnimatePresence>
-      {isOpen && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: 'auto', opacity: 1 }}
-          exit={{ height: 0, opacity: 0 }}
-          transition={{ duration: 0.25, ease: 'easeInOut' }}
-          className="overflow-hidden"
+const FAQItem = ({ question, answer, isOpen, onClick }: FAQItemProps) => {
+  const reduce = useReducedMotion();
+  return (
+    <div className="border-b-2 border-[#1c1917]/10 last:border-0">
+      <button
+        onClick={onClick}
+        aria-expanded={isOpen}
+        className="w-full py-5 flex items-center justify-between text-left group rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4500]"
+      >
+        <span className="text-[16px] font-semibold text-[#1c1917] pr-4">{question}</span>
+        <span
+          className={`flex-shrink-0 w-8 h-8 rounded-lg border-2 border-[#1c1917] flex items-center justify-center transition-colors duration-200 ${
+            isOpen ? 'bg-[#1c1917] text-white' : 'bg-[#ffffff] text-[#1c1917] group-hover:bg-[#fff1ea]'
+          }`}
+          aria-hidden="true"
         >
-          <p className="pb-5 text-sm text-[#44403c] leading-relaxed max-w-2xl">
-            {answer}
-          </p>
-        </motion.div>
-      )}
-    </AnimatePresence>
-  </div>
-);
+          {isOpen ? <Minus className="h-4 w-4" strokeWidth={2.5} /> : <Plus className="h-4 w-4" strokeWidth={2.5} />}
+        </span>
+      </button>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={reduce ? false : { height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={reduce ? undefined : { height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: 'easeInOut' }}
+            className="overflow-hidden"
+          >
+            <p className="pb-5 text-[15px] text-[#44403c] leading-relaxed">{answer}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 const faqs = [
   {
-    question: "Will this actually work for my niche?",
-    answer: "That's exactly what the free analysis answers. Paste your website and you'll see the real keywords and communities for your specific product before paying anything. If your buyers ask questions anywhere on Reddit, from SaaS to skincare to accounting software, SneakyGuy finds those threads. If the analysis looks thin for your niche, don't buy. That's the point of showing it first."
+    question: 'Will this work for my niche?',
+    answer:
+      'That is what the free check answers. Paste your website and you see the real keywords and communities for your product before paying anything. If your buyers ask questions anywhere on Reddit, SneakyGuy finds those threads. If the check looks thin for your niche, do not buy.',
   },
   {
-    question: "Will using SneakyGuy get my Reddit account banned?",
-    answer: "Nobody can promise that, and you should distrust anyone who does. SneakyGuy never posts for you. It finds threads where your product is a real answer and drafts a reply that says you built it. You read it, edit it, and post it yourself. Accounts get banned for spammy, undisclosed promotion, so post where it genuinely helps and follow each subreddit's rules."
+    question: 'Will this get my Reddit account banned?',
+    answer:
+      'Nobody can promise that, and you should distrust anyone who does. SneakyGuy never posts for you. It finds threads where your product is a real answer and drafts a reply that says you built it. You read it, edit it, and post it yourself. Accounts get banned for spammy, undisclosed promotion, so post where it genuinely helps and follow each subreddit’s rules.',
   },
   {
-    question: "How does the AI relevancy scoring work?",
-    answer: "Every matching post gets a relevance score from 20 to 100 and an intent label, such as asking for a recommendation, comparing tools, or complaining about a current one. Keywords only get a post into the list. The score decides whether it is worth your time."
+    question: 'How does the scoring work?',
+    answer:
+      'Every matching thread gets a score from 20 to 100 and an intent label, such as asking for a recommendation, comparing tools, or complaining about a current one. Keywords only get a thread into the list. The score decides whether it is worth your time.',
   },
   {
-    question: "Can I customize the tone of AI responses?",
-    answer: "Absolutely. You can set your brand's tone (Professional, Technical, Friendly, etc.) and add your own style notes. The AI adapts its writing style to match how you want your brand to be perceived."
+    question: 'What does the AI visibility check do?',
+    answer:
+      'Every week we ask ChatGPT, Gemini, Perplexity and Claude the questions your buyers ask, and record which products they recommend. You see whether you are named, who is named instead, and the Reddit threads those answers cite.',
   },
   {
-    question: "What happens after my one-month access expires?",
-    answer: "Your monitoring pauses. You can purchase another month whenever you need it. There are no automatic renewals or dark patterns - you only pay when you want to use the tool."
+    question: 'Do you offer refunds?',
+    answer:
+      'Yes. Full refund within 7 days of your first payment, no questions asked. Email us and we refund it. You can also cancel anytime from Settings.',
   },
-  {
-    question: "Do you offer refunds?",
-    answer: "Yes. Full refund within 7 days of your first payment, no questions asked. Email us and we refund it. You can also cancel anytime from Settings."
-  }
 ];
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-20 md:py-28 bg-[#ffffff]">
-      <div className="max-w-2xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <p className="text-[12px] font-semibold text-[#d94100] uppercase tracking-[0.15em] mb-3">FAQ</p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1c1917] mb-4">Common questions</h2>
-          <p className="text-base text-[#78716c]">
-            Can&apos;t find your answer? <a href="mailto:support@sneakyguy.com" className="text-[#d94100] hover:text-[#ff4500] font-medium transition-colors">Contact us</a>
+    <section className="py-20 sm:py-28 bg-[#ffffff]">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-10 sm:mb-12">
+          <h2 className="font-play text-[34px] sm:text-[46px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1c1917]">
+            Questions
+          </h2>
+          <p className="mt-3 text-[16px] text-[#44403c]">
+            Anything else?{' '}
+            <a
+              href="mailto:support@sneakyguy.com"
+              className="font-semibold text-[#1c1917] underline decoration-2 decoration-[#ff4500] underline-offset-4 hover:decoration-[#1c1917] rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4500]"
+            >
+              Email us
+            </a>
+            .
           </p>
         </div>
 
-        <div className="bg-[#ffffff] rounded-2xl border border-black/[0.08] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-6">
+        <div className="rounded-2xl border-2 border-[#1c1917] bg-[#ffffff] px-6 shadow-[5px_5px_0_#1c1917]">
           {faqs.map((faq, index) => (
             <FAQItem
-              key={index}
+              key={faq.question}
               question={faq.question}
               answer={faq.answer}
               isOpen={openIndex === index}

@@ -1,10 +1,14 @@
 'use client';
 
+// Proof, in one row. Three real quotes from X and one real number from the
+// users table (404 signups, Sep 2026). No star ratings, no logos, nothing
+// invented. No scroll motion: the landing page spends its one motion moment
+// on the hero.
+
 import React from 'react';
 import { Twitter } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 
 const testimonials = [
   {
@@ -30,76 +34,52 @@ const testimonials = [
   },
 ];
 
-const fadeUp = {
-  hidden: { opacity: 0, y: 12, filter: 'blur(4px)' },
-  show: { opacity: 1, y: 0, filter: 'blur(0px)', transition: { duration: 0.5, ease: [0.16, 1, 0.3, 1] } },
-};
+const FOCUS =
+  'focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4500]';
 
 const SocialProof: React.FC = () => (
-  <section className="py-16 md:py-28 bg-[#ffffff]">
-    <div className="max-w-5xl mx-auto px-6">
-      <div className="text-center mb-10 md:mb-14">
-        <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
-          <p className="text-[12px] font-semibold text-[#d94100] uppercase tracking-[0.15em] mb-3">Testimonials</p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1c1917]">What early users said</h2>
-        </motion.div>
+  <section className="py-20 sm:py-28 bg-[#ffffff]">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="text-center mb-10 sm:mb-12">
+        <h2 className="font-play text-[34px] sm:text-[46px] font-extrabold leading-[1.02] tracking-[-0.03em] text-[#1c1917]">
+          400+ people have signed up.
+        </h2>
+        <p className="mt-3 text-[16px] text-[#44403c]">Here is what a few of them said.</p>
       </div>
 
-      <div className="grid md:grid-cols-3 gap-4">
-        {testimonials.map((t, i) => (
-          <motion.div
-            key={i}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, margin: "-40px" }}
-            variants={fadeUp}
-            transition={{ delay: i * 0.08 }}
-            className="group rounded-2xl bg-[#ffffff] border border-black/[0.09] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] hover:border-black/[0.16] transition-colors duration-300 p-6 flex flex-col justify-between"
+      <ul className="grid gap-5 md:grid-cols-3">
+        {testimonials.map((t) => (
+          <li
+            key={t.handle}
+            className="flex flex-col justify-between rounded-2xl border-2 border-[#1c1917] bg-[#ffffff] p-6 shadow-[4px_4px_0_#1c1917]"
           >
-            <div>
-              <p className="text-sm text-[#44403c] leading-relaxed mb-6">
-                &ldquo;{t.quote}&rdquo;
-              </p>
-            </div>
+            <p className="font-play text-[17px] font-semibold leading-snug text-[#1c1917] mb-6">
+              &ldquo;{t.quote}&rdquo;
+            </p>
 
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-black/[0.12]">
-                  <Image src={t.avatar} alt={t.name} width={32} height={32} className="object-cover" />
+                <div className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#1c1917]">
+                  <Image src={t.avatar} alt="" width={32} height={32} className="object-cover no-outline" />
                 </div>
                 <div>
-                  <p className="text-xs font-semibold text-[#1c1917]">{t.name}</p>
-                  <p className="text-[11px] text-[#8a827b]">{t.handle}</p>
+                  <p className="text-[13px] font-semibold text-[#1c1917]">{t.name}</p>
+                  <p className="text-[12px] text-[#78716c]">{t.handle}</p>
                 </div>
               </div>
               <Link
                 href={t.link}
                 target="_blank"
-                className="w-7 h-7 rounded-md bg-[#f4f1ec] border border-black/[0.08] flex items-center justify-center text-[#78716c] hover:text-[#1DA1F2] hover:border-[#1DA1F2]/30 hover:bg-[#1DA1F2]/[0.12] transition-[color,border-color,background-color]"
+                rel="noopener noreferrer"
+                aria-label={`${t.name} on X`}
+                className={`w-8 h-8 rounded-lg border-2 border-[#1c1917] flex items-center justify-center text-[#1c1917] hover:bg-[#1c1917] hover:text-white transition-colors ${FOCUS}`}
               >
-                <Twitter size={12} />
+                <Twitter size={13} />
               </Link>
             </div>
-          </motion.div>
+          </li>
         ))}
-      </div>
-
-      {/* Trust counter */}
-      <motion.div
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true }}
-        variants={fadeUp}
-        className="mt-12 text-center"
-      >
-        <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#ffffff] border border-black/[0.09]">
-          {/* A real number from the users table (404 signups, Sep 2026). No
-              star ratings or placeholder faces: nobody gave those. */}
-          <span className="text-xs text-[#78716c] font-medium">
-            <span className="font-bold text-[#1c1917]">400+</span> people have signed up to find leads on Reddit
-          </span>
-        </div>
-      </motion.div>
+      </ul>
     </div>
   </section>
 );

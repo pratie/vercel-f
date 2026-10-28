@@ -15,6 +15,9 @@
 //   - each SVG is aria-hidden; the card's heading and body carry the meaning
 //   - one shot on scroll into view, settles into a finished frame, no loop
 //   - prefers-reduced-motion renders that finished frame with zero motion
+//   - `still` renders that same finished frame with no motion at all: the
+//     landing page spends its one motion moment on the hero, so the step
+//     cards are drawn settled
 //   - viewBox only, never a hardcoded pixel width, so the card can shrink to
 //     390px without overflowing
 // ---------------------------------------------------------------------------
@@ -41,11 +44,11 @@ const C = {
 const VB = '0 0 260 110';
 const VIEWPORT = { once: true, margin: '-60px' } as const;
 
-type StepProps = { delay?: number };
+type StepProps = { delay?: number; still?: boolean };
 
 /** Parent gate. Children inherit "hidden"/"visible" through variant propagation. */
-function useStage(delay: number) {
-  const reduce = useReducedMotion();
+function useStage(delay: number, still = false) {
+  const reduce = useReducedMotion() || still;
 
   const stage = {
     viewBox: VB,
@@ -90,8 +93,8 @@ const SUBREDDITS: { label: string; x: number; w: number }[] = [
   { label: 'r/startups', x: 162, w: 66 },
 ];
 
-export function PasteSiteAnimation({ delay = 0 }: StepProps) {
-  const { stage, v } = useStage(delay);
+export function PasteSiteAnimation({ delay = 0, still = false }: StepProps) {
+  const { stage, v } = useStage(delay, still);
 
   return (
     <motion.svg {...stage}>
@@ -170,8 +173,8 @@ const L1_W = 200; // generous clip widths: better a hair wide than a clipped wor
 const L2_W = 204;
 const TYPE_X = 34;
 
-export function ReplyAnimation({ delay = 0 }: StepProps) {
-  const { stage, v, reduce } = useStage(delay);
+export function ReplyAnimation({ delay = 0, still = false }: StepProps) {
+  const { stage, v, reduce } = useStage(delay, still);
   const uid = useId().replace(/[^a-zA-Z0-9]/g, '');
   const clip1 = `sg-t1-${uid}`;
   const clip2 = `sg-t2-${uid}`;
@@ -277,8 +280,8 @@ const RIVALS: { rank: number; name: string; slot: number }[] = [
   { rank: 4, name: 'Syften', slot: 3 },
 ];
 
-export function AiCatchUpAnimation({ delay = 0 }: StepProps) {
-  const { stage, v } = useStage(delay);
+export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
+  const { stage, v } = useStage(delay, still);
   const y = ROW_Y[1];
 
   return (
@@ -342,8 +345,8 @@ export function AiCatchUpAnimation({ delay = 0 }: StepProps) {
 const STEP_ANIMATIONS = [PasteSiteAnimation, ReplyAnimation, AiCatchUpAnimation];
 
 /** Picks the drawing for step `index` (0-based) and staggers it behind the card. */
-export default function StepAnimation({ index, delay = 0 }: { index: number; delay?: number }) {
+export default function StepAnimation({ index, delay = 0, still = false }: { index: number; delay?: number; still?: boolean }) {
   const Drawing = STEP_ANIMATIONS[index];
   if (!Drawing) return null;
-  return <Drawing delay={delay} />;
+  return <Drawing delay={delay} still={still} />;
 }
