@@ -61,7 +61,7 @@ export default function UpgradePage() {
             </button>
             {/* The offer itself. It states the price and the terms, so it is
                 body text, not a muted micro label. */}
-            <span className="text-[13px] font-semibold text-[#44403c]">$19, one month, no auto renewal</span>
+            <span className="text-[13px] font-semibold text-[#44403c]">From $29 a month, cancel anytime</span>
           </div>
         </div>
       </div>

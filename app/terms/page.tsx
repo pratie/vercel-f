@@ -91,7 +91,7 @@ export default function TermsPage() {
 
           <h2 className="text-2xl font-semibold text-gray-900 mt-8 mb-4">Refund Policy</h2>
           <p className="text-gray-600 mb-6">
-            We offer refunds within 7 days of purchase if you have not used the product. To request a refund, please contact us at SneakyGuysaas@gmail.com.
+            We give a full refund within 7 days of your first payment. To request one, email us at sneakyguysaas@gmail.com. Subscriptions can be cancelled anytime from Settings and stay active until the end of the period you paid for.
           </p>
 
           <div className="mt-12 pt-8 border-t border-gray-200">

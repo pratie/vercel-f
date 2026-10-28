@@ -336,7 +336,7 @@ export default async function BlogPost({ params }: Props) {
                         </h2>
                         <p className="mx-auto mt-3 max-w-md text-[15px] leading-relaxed text-ink-300">
                             SneakyGuy scans the subreddits your buyers live in, scores every match for
-                            real buying intent, and drafts the reply. You post it. $19 for 30 days.
+                            real buying intent, and drafts the reply. You post it. From $29 a month.
                         </p>
                         <Link
                             href="/login"

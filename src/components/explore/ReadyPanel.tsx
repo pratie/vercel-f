@@ -30,7 +30,7 @@ import type { OnboardingSession } from '@/lib/onboarding';
 const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]';
 
 /** The only price this flow may ever show. One month, no auto renewal. */
-const PRICE_LABEL = '$19';
+const PRICE_LABEL = '$29 a month';
 
 export interface ReadyPanelProps {
   /** The finished poll response. */
@@ -130,7 +130,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
           {threadCount > 0 ? 'Start replying to these threads' : 'Start catching these conversations'}
         </p>
         <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#78716c]">
-          {PRICE_LABEL} for one month, no auto renewal. We keep watching{' '}
+          From {PRICE_LABEL}, cancel anytime. We keep watching{' '}
           {subredditCount > 0 ? `those ${subredditCount} subreddits` : 'your subreddits'}, surface new threads as they
           appear, draft the reply in your voice, and track whether the assistants start naming {brand}.
         </p>
@@ -140,7 +140,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
           onClick={handleCta}
           className="group mt-5 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-[#d13800] px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff] sm:w-auto"
         >
-          Get started for {PRICE_LABEL}
+          Get started from {PRICE_LABEL}
           <ArrowRight
             className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5"
             aria-hidden="true"

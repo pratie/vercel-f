@@ -69,7 +69,7 @@ const faqs = [
   },
   {
     question: "Do you offer refunds?",
-    answer: "Yes. We offer a no-questions-asked 7-day money-back guarantee. If SneakyGuy hasn't found you high-quality leads within your first week, email us and we'll refund your $19."
+    answer: "Yes. Full refund within 7 days of your first payment, no questions asked. Email us and we refund it. You can also cancel anytime from Settings."
   }
 ];
 

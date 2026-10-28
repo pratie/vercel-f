@@ -40,7 +40,7 @@ import type { OnboardingPhase } from '@/lib/onboarding';
 export const OFFER_BAR_MIN_PHASE_INDEX = 2;
 
 /** The only price this flow may ever show. One month, no auto renewal. */
-const PRICE_LABEL = '$19';
+const PRICE_LABEL = '$29 a month';
 
 export interface OfferBarProps {
   /** phase_index off the poll response. The bar shows from 2 onwards. */
@@ -99,8 +99,8 @@ export function OfferBar({
           <div className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-4 py-3 sm:gap-6 sm:px-8 sm:py-3.5">
             <div className="min-w-0">
               <p className="text-[13.5px] font-semibold leading-snug tracking-tight text-[#1c1917] sm:text-[15px]">
-                <span className="sm:hidden">Keep all of this, {PRICE_LABEL} for a month</span>
-                <span className="hidden sm:inline">Keep everything we are finding, {PRICE_LABEL} for one month</span>
+                <span className="sm:hidden">Keep all of this from {PRICE_LABEL}</span>
+                <span className="hidden sm:inline">Keep everything we are finding, from {PRICE_LABEL}</span>
               </p>
               {/* One line on a phone. The detail is on the ready panel anyway. */}
               <p className="mt-0.5 hidden text-[12.5px] leading-relaxed text-[#78716c] sm:block">

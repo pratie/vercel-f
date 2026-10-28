@@ -849,8 +849,8 @@ export default function LandingPage() {
           <div className="text-center mb-12">
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#d94100] mb-3">Pricing</p>
             <h2 className="text-3xl sm:text-4xl font-bold tracking-[-0.025em] text-[#1c1917]">
-              One plan.{' '}
-              <em className="font-display font-medium italic text-[#d94100]">No subscription.</em>
+              Two plans.{' '}
+              <em className="font-display font-medium italic text-[#d94100]">Cancel anytime.</em>
             </h2>
             <p className="mt-3 text-base text-[#44403c] max-w-2xl mx-auto">
               Cancel anytime. Full refund within 7 days of your first payment.
@@ -921,7 +921,7 @@ export default function LandingPage() {
               panel, so the guarantee would be the dimmest thing in the section
               a buyer actually needs to read. Muted is the floor here. */}
           <p className="relative text-[11.5px] text-[#78716c] mt-4">
-            Free analysis · No subscription · 7-day money-back guarantee
+            Free analysis · Cancel anytime · Full refund within 7 days
           </p>
         </motion.div>
       </section>
