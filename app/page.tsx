@@ -550,7 +550,7 @@ export default function LandingPage() {
             </span>
             <span className="flex items-center">
               <Check className="h-4 w-4 text-[#059669] mr-1.5 shrink-0" aria-hidden="true" />
-              From $29 a month, cancel anytime
+              Full refund within 7 days
             </span>
           </div>
         </div>

@@ -141,7 +141,11 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                     <span className="text-5xl font-extrabold tracking-tight tabular-nums text-[#1c1917]">{plan.price}</span>
                     <span className="text-sm font-medium text-[#78716c]">/ {plan.billing}</span>
                   </div>
-                  <p className="mt-1.5 text-xs text-[#78716c]">Cancel anytime. Full refund within 7 days of your first payment.</p>
+                  <p className="mt-1.5 text-xs text-[#78716c]">
+                    {plan.kind === 'one_time' || plan.billing === 'one-time'
+                      ? 'One payment, no renewal. Full refund within 7 days.'
+                      : 'Cancel anytime. Full refund within 7 days of your first payment.'}
+                  </p>
                 </div>
 
                 {/* CTA. The single loudest element on whatever page hosts this. */}
