@@ -1,6 +1,7 @@
 'use client';
 
 import { Sidebar } from '@/components/Sidebar';
+import { openProjectId } from '@/components/nav/navModel';
 import { usePathname } from 'next/navigation';
 
 export function RootLayoutContent({ children }: { children: React.ReactNode }) {
@@ -22,12 +23,17 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
     return <>{children}</>;
   }
 
-  // Mobile: Sidebar renders a sticky top bar in normal flow (block layout).
-  // Desktop (md+): flex row with a sticky rail on the left.
+  // Inside a project the mobile nav adds a fixed bottom tab bar, so the page
+  // needs room underneath it.
+  const inProject = !!openProjectId(pathname);
+
+  // Mobile: Sidebar renders a sticky top bar in normal flow (block layout)
+  // and, inside a project, a fixed bottom tab bar.
+  // Desktop (md+): flex row with a sticky sidebar on the left.
   return (
     <div className="min-h-screen md:flex bg-paper">
       <Sidebar />
-      <main className="flex-1 min-w-0 px-4 md:px-8 py-6 md:py-8">
+      <main className={`flex-1 min-w-0 px-4 md:px-8 py-6 md:py-8 ${inProject ? 'pb-24 md:pb-8' : ''}`}>
         {children}
       </main>
     </div>

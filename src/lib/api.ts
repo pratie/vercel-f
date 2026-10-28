@@ -355,6 +355,65 @@ export interface VisibilityOpportunity {
 }
 
 /** What /analyze/url drafts from a landing page, for the /projects/new wizard. */
+/* ── SEO opportunities ──────────────────────────────────────────────────── */
+
+export interface SeoThreadEngine {
+    engine: string;
+    cited: number;
+    named: number;
+    in_latest_run: boolean;
+}
+
+export interface SeoThreadQuestion {
+    id: number;
+    text: string;
+    engines: string[];
+}
+
+export interface SeoThreadLead {
+    id: number;
+    num_comments: number;
+    score: number;
+    relevance_score: number;
+    draft_reply: string | null;
+}
+
+export interface SeoThread {
+    reddit_post_id: string;
+    url: string;
+    title: string;
+    subreddit: string | null;
+    engines: SeoThreadEngine[];
+    questions: SeoThreadQuestion[];
+    times_cited: number;
+    named_in: number;
+    first_seen_at: string;
+    last_seen_at: string;
+    lead: SeoThreadLead | null;
+}
+
+export interface SeoSummary {
+    threads: number;
+    questions_covered: number;
+    questions_total: number;
+    named_in: number;
+    answers_total: number;
+    visibility_pct: number;
+}
+
+export interface SeoOpportunitiesResponse {
+    run_id: number | null;
+    last_checked_at: string | null;
+    next_check_at: string | null;
+    summary: SeoSummary;
+    threads: SeoThread[];
+}
+
+export interface SeoImportResponse {
+    lead_id: number;
+    created: boolean;
+}
+
 export interface ProductAnalysis {
     name: string;
     description: string;
@@ -1153,6 +1212,29 @@ export const api = {
         const response = await fetchWithAuth(`${getApiBaseUrl()}/api/visibility/${brandId}/opportunities`);
         if (!response.ok) {
             throw await handleApiError(response, 'Failed to fetch visibility opportunities');
+        }
+        return response.json();
+    },
+
+    // SEO opportunities: the Reddit threads the AI engines cited when answering
+    // the brand's buying questions. Built from the same sweep as AI visibility.
+
+    async getSeoOpportunities(brandId: string | number): Promise<SeoOpportunitiesResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/seo/${brandId}`);
+        if (!response.ok) {
+            throw await handleApiError(response, 'Failed to fetch SEO opportunities');
+        }
+        return response.json();
+    },
+
+    /** Turns a cited thread into a lead so the reply flow can draft for it. */
+    async importSeoThread(brandId: string | number, url: string): Promise<SeoImportResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/seo/${brandId}/import`, {
+            method: 'POST',
+            body: JSON.stringify({ url }),
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Could not add this thread to your leads');
         }
         return response.json();
     },
