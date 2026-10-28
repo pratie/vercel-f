@@ -197,6 +197,7 @@ interface GenerateReplyRequest {
     post_content: string;
     brand_id: number;
     include_experience: boolean;
+    mention_id?: number;
 }
 
 interface PreferencesResponse {
@@ -576,7 +577,7 @@ export const api = {
     },
 
     // Generate reply for a mention
-    generateReply: async (mention: { title: string; content: string; brand_id: number }): Promise<string> => {
+    generateReply: async (mention: { title: string; content: string; brand_id: number; id?: number }): Promise<string> => {
         try {
             const baseUrl = getApiBaseUrl();
             const response = await fetchWithAuth(`${baseUrl}/generate-comment/`, {
@@ -585,7 +586,8 @@ export const api = {
                     post_title: mention.title,
                     post_content: mention.content,
                     brand_id: mention.brand_id,
-                    include_experience: true
+                    include_experience: true,
+                    mention_id: mention.id,
                 } as GenerateReplyRequest)
             });
             const data = await response.json();
@@ -812,6 +814,22 @@ export const api = {
             console.error('Checkout error:', error);
             throw error;
         }
+    },
+
+    async saveDraft(mentionId: number, draftReply: string): Promise<void> {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/mentions/item/${mentionId}/draft`, {
+            method: 'PUT',
+            body: JSON.stringify({ draft_reply: draftReply }),
+        });
+        if (!response.ok) throw await handleApiError(response, 'Could not save the draft');
+    },
+
+    async draftDm(mentionId: number): Promise<{ author: string; message: string; compose_url: string }> {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/mentions/item/${mentionId}/dm-draft`, { method: 'POST' });
+        if (!response.ok) throw await handleApiError(response, 'Could not draft a message');
+        return response.json();
     },
 
     async openBillingPortal(): Promise<string> {

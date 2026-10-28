@@ -123,7 +123,7 @@ export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, 
                       <span aria-hidden="true">·</span>
                       <span className="inline-flex items-center gap-1"><MessageCircle className="h-3 w-3" aria-hidden="true" />{m.num_comments}</span>
                     </span>
-                    {(m.intent || replied) && (
+                    {(m.intent || replied || m.draft_reply) && (
                       <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[12px] text-ink-400">
                         {m.intent && (
                           <span className={isHighIntent(m) ? 'font-semibold text-[#047857]' : ''}>{intentLabel(m.intent)}</span>
@@ -131,6 +131,12 @@ export function LeadInbox({ mentions, viewed, published, onViewed, onPublished, 
                         {m.intent && replied && <span aria-hidden="true">·</span>}
                         {replied && (
                           <span className="inline-flex items-center gap-1 font-semibold text-[#047857]"><Check className="h-3 w-3" aria-hidden="true" />Replied</span>
+                        )}
+                        {!replied && m.draft_reply && (
+                          <>
+                            {m.intent && <span aria-hidden="true">·</span>}
+                            <span className="font-semibold text-[#b83200]">Reply ready</span>
+                          </>
                         )}
                       </span>
                     )}

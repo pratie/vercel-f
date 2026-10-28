@@ -40,6 +40,8 @@ export interface Mention {
   /** Backend note: this field holds the relevance *explanation*, not a reply draft. */
   explanation: string;
   intent: string | null;
+  /** Reply drafted for this lead, automatically after a scan or on request. */
+  draft_reply: string | null;
 }
 
 /** The digest service used to write relevance_score=50 with no intent — that's
@@ -99,6 +101,7 @@ export function transformRawMention(raw: RawMention): Mention {
     relevance_score: raw.relevance_score,
     explanation: PLACEHOLDER_EXPLANATIONS.includes(explanation.trim()) ? '' : explanation,
     intent: raw.intent && raw.intent !== 'unknown' ? raw.intent : null,
+    draft_reply: (raw as { draft_reply?: string | null }).draft_reply || null,
   };
 }
 

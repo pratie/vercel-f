@@ -39,7 +39,9 @@ function signal(mention: Mention): string | null {
  */
 export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row' }: MentionCardProps) {
   const isDetail = variant === 'detail';
-  const [reply, setReply] = useState<string | null>(null);
+  const [reply, setReply] = useState<string | null>(mention.draft_reply);
+  const [dm, setDm] = useState<{ author: string; message: string; compose_url: string } | null>(null);
+  const [dmLoading, setDmLoading] = useState(false);
   const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
@@ -61,6 +63,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
         title: mention.title,
         content: mention.content,
         brand_id: mention.brand_id,
+        id: mention.id,
       });
       setReply(text);
       setDraft(text);
@@ -86,6 +89,71 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
       toast.error('Failed to copy');
     }
   };
+
+  const saveEdit = async () => {
+    const next = draft || reply || '';
+    setReply(next);
+    setEditing(false);
+    try {
+      await api.saveDraft(mention.id, next);
+    } catch {
+      toast.error('Saved here, but not on the server. It may not survive a reload.');
+    }
+  };
+
+  const handleDm = async () => {
+    if (dmLoading) return;
+    setDmLoading(true);
+    try {
+      setDm(await api.draftDm(mention.id));
+    } catch (error) {
+      toast.error('Could not draft a message', {
+        description: error instanceof Error ? error.message : 'Please try again.',
+      });
+    } finally {
+      setDmLoading(false);
+    }
+  };
+
+  const sendDm = async () => {
+    if (!dm) return;
+    try {
+      await navigator.clipboard.writeText(dm.message);
+    } catch { /* the compose link carries the text anyway */ }
+    window.open(dm.compose_url, '_blank', 'noopener,noreferrer');
+    toast.success(`Message to u/${dm.author} opened on Reddit. Press Send there.`);
+  };
+
+  const canDm = !!mention.author && mention.author !== 'unknown' && mention.author !== '[deleted]';
+
+  const dmBox = dm && (
+    <div className="max-w-[64ch] rounded-xl border-2 border-[#1c1917]/[0.12] bg-white">
+      <div className="flex h-10 items-center justify-between border-b-2 border-[#1c1917]/[0.08] px-4">
+        <span className="text-[12.5px] font-semibold text-ink-600">Message to u/{dm.author}</span>
+        <button
+          className="min-hit-area rounded text-ink-400 transition-colors hover:text-ink-900"
+          onClick={() => setDm(null)}
+          aria-label="Discard message"
+        >
+          <X className="h-3.5 w-3.5" aria-hidden="true" />
+        </button>
+      </div>
+      <p className="whitespace-pre-wrap p-4 text-[13.5px] leading-[1.7] text-ink-700">{dm.message}</p>
+      <div className="border-t-2 border-[#1c1917]/[0.08] px-3 py-2">
+        <button onClick={sendDm} className={BTN_PRIMARY}>
+          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+          Open in Reddit messages
+        </button>
+      </div>
+    </div>
+  );
+
+  const dmButton = canDm && !dm && (
+    <button onClick={handleDm} disabled={dmLoading} className={BTN_QUIET} title={`Draft a private message to u/${mention.author}`}>
+      {dmLoading ? <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" /> : null}
+      Message u/{mention.author}
+    </button>
+  );
 
   const markReplied = () => {
     onPublished(mention.id, mention.url);
@@ -156,6 +224,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
         Open on Reddit
         <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
       </a>
+      {dmButton}
       {repliedBadge ?? (
         <button
           onClick={markReplied}
@@ -172,7 +241,9 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
   const replyBox = reply !== null && (
     <div className="max-w-[64ch] rounded-xl border-2 border-[#1c1917]/[0.12] bg-white">
       <div className="flex h-10 items-center justify-between border-b-2 border-[#1c1917]/[0.08] px-4">
-        <span className="text-[12.5px] font-semibold text-ink-600">Your reply</span>
+        <span className="text-[12.5px] font-semibold text-ink-600">
+          {mention.draft_reply && reply === mention.draft_reply ? 'Reply drafted for you' : 'Your reply'}
+        </span>
         <button
           className="min-hit-area rounded text-ink-400 transition-colors hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
           onClick={() => { setReply(null); setEditing(false); }}
@@ -201,7 +272,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
                 Cancel
               </button>
               <button
-                onClick={() => { setReply(draft || reply); setEditing(false); }}
+                onClick={saveEdit}
                 className={BTN_PRIMARY}
               >
                 Save
@@ -232,6 +303,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
             <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
             Edit
           </button>
+          {dmButton}
           {repliedBadge ?? (
             <button
               onClick={markReplied}
@@ -273,6 +345,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
         {metaLine}
 
         <div className="mt-4">{reply === null ? actions : replyBox}</div>
+        {dmBox && <div className="mt-3">{dmBox}</div>}
 
         {reasoning && <div className="mt-5 border-t-2 border-[#1c1917]/[0.08] pt-4">{reasoning}</div>}
 
@@ -337,6 +410,7 @@ export function MentionCard({ mention, viewed, publishedUrl, onViewed, onPublish
       <div id={panelId} hidden={!expanded} className="-mt-1 pb-5 pr-4">
         {reasoning}
         <div className={reasoning ? 'mt-4' : ''}>{reply === null ? actions : replyBox}</div>
+        {dmBox && <div className="mt-3">{dmBox}</div>}
       </div>
     </article>
   );
