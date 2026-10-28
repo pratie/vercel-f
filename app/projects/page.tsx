@@ -51,13 +51,14 @@ export default function ProjectsPage() {
 
     const handlePaymentSuccess = async () => {
       const isPaymentSuccess = searchParams.get('payment') === 'success' ||
-                              searchParams.get('status') === 'succeeded';
-      const paymentId = searchParams.get('payment_id');
+                              (searchParams.get('status') === 'succeeded' || searchParams.get('status') === 'active');
+      const paymentId = searchParams.get('payment_id') || undefined;
+      const subscriptionId = searchParams.get('subscription_id') || undefined;
 
       if (isPaymentSuccess && !hasPaid) {
         setIsProcessingPayment(true);
         try {
-          await api.updatePaymentStatus(paymentId ? { paymentId } : undefined);
+          await api.updatePaymentStatus({ paymentId, subscriptionId });
           sessionStorage.removeItem('payment-status-v1');
           setHasPaid(true);
           toast.success('Payment successful! You can now create projects.');

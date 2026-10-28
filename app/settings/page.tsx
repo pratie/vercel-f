@@ -292,10 +292,12 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-2.5 min-w-0">
                   <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
                   <span className="text-[13px] text-ink-700">
-                    <span className="font-semibold text-ink-900">Pro</span>
+                    <span className="font-semibold text-ink-900">
+                      {payment.subscription_plan === 'growth_monthly' ? 'Growth' : payment.subscription_plan === 'starter_monthly' ? 'Starter' : 'Pro'}
+                    </span>
                     {payment.plan_expires_at && (
                       <span className="text-ink-400">
-                        {' '}· access until {new Date(payment.plan_expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                        {' '}· {payment.has_subscription && payment.subscription_status === 'active' ? 'renews' : 'access until'} {new Date(payment.plan_expires_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                       </span>
                     )}
                   </span>
@@ -314,6 +316,21 @@ export default function SettingsPage() {
                 <a href="/upgrade" className="btn-primary h-9 px-4 text-xs shrink-0">
                   Upgrade
                 </a>
+              )}
+              {payment?.has_subscription && (
+                <button
+                  type="button"
+                  onClick={async () => {
+                    try {
+                      window.location.href = await api.openBillingPortal();
+                    } catch {
+                      toast.error('Could not open billing. Please try again.');
+                    }
+                  }}
+                  className="h-9 shrink-0 rounded-lg border border-black/[0.1] bg-white px-3.5 text-xs font-semibold text-ink-900 hover:bg-[#faf6ef]"
+                >
+                  Manage billing
+                </button>
               )}
             </div>
 

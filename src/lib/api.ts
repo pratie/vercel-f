@@ -165,6 +165,8 @@ export interface PaymentStatus {
     plan_expires_at?: string;
     /** What paid routes enforce: paid AND not expired. has_paid stays true after expiry. */
     access_active?: boolean;
+    subscription_status?: string | null;
+    has_subscription?: boolean;
 }
 
 /** Paid and not expired. Falls back to has_paid for a backend that predates access_active. */
@@ -177,13 +179,17 @@ export interface PricingPlan {
     name: string;
     price: string;
     billing: string;
-    duration: string;
+    kind?: 'subscription' | 'one_time';
+    tier?: string;
+    features?: string[];
+    duration?: string;
     savings?: string;
     popular?: boolean;
 }
 
 export interface PricingPlansResponse {
     plans: PricingPlan[];
+    note?: string;
 }
 
 interface GenerateReplyRequest {
@@ -808,11 +814,21 @@ export const api = {
         }
     },
 
-    async updatePaymentStatus(data?: { paymentId?: string }): Promise<void> {
+    async openBillingPortal(): Promise<string> {
+        const baseUrl = getApiBaseUrl();
+        const response = await fetchWithAuth(`${baseUrl}/payment/portal`, { method: 'POST' });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Could not open billing');
+        }
+        const data = await response.json();
+        return data.portal_url;
+    },
+
+    async updatePaymentStatus(data?: { paymentId?: string; subscriptionId?: string }): Promise<void> {
         const baseUrl = getApiBaseUrl();
         const response = await fetchWithAuth(`${baseUrl}/payment/success`, {
             method: 'POST',
-            ...(data?.paymentId ? { body: JSON.stringify({ payment_id: data.paymentId }) } : {})
+            ...(data ? { body: JSON.stringify({ payment_id: data.paymentId, subscription_id: data.subscriptionId }) } : {})
         });
         if (!response.ok) {
             throw await handleApiError(response, 'Failed to update payment status');

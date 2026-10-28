@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { ArrowRight, Twitter, Star, Quote } from 'lucide-react';
+import { Twitter } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -41,7 +41,7 @@ const SocialProof: React.FC = () => (
       <div className="text-center mb-10 md:mb-14">
         <motion.div initial="hidden" whileInView="show" viewport={{ once: true }} variants={fadeUp}>
           <p className="text-[12px] font-semibold text-[#d94100] uppercase tracking-[0.15em] mb-3">Testimonials</p>
-          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1c1917]">Loved by founders</h2>
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight text-[#1c1917]">What early users said</h2>
         </motion.div>
       </div>
 
@@ -57,11 +57,6 @@ const SocialProof: React.FC = () => (
             className="group rounded-2xl bg-[#ffffff] border border-black/[0.09] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] hover:border-black/[0.16] transition-colors duration-300 p-6 flex flex-col justify-between"
           >
             <div>
-              <div className="flex gap-0.5 mb-4">
-                {[1,2,3,4,5].map(s => (
-                  <Star key={s} className="h-3.5 w-3.5 fill-amber-400 text-amber-400" />
-                ))}
-              </div>
               <p className="text-sm text-[#44403c] leading-relaxed mb-6">
                 &ldquo;{t.quote}&rdquo;
               </p>
@@ -98,23 +93,10 @@ const SocialProof: React.FC = () => (
         className="mt-12 text-center"
       >
         <div className="inline-flex items-center gap-3 px-5 py-3 rounded-full bg-[#ffffff] border border-black/[0.09]">
-          {/* Placeholder avatars, so they stay on the neutral ramp. The old
-              stack was bg-orange-500 (which this Tailwind config re-anchors to
-              the literal brand #ff4500) plus blue/purple/green, i.e. decorative
-              brand orange and three hues that exist nowhere else on the dark
-              canvas. The overlap borders already read as separate people. */}
-          <div className="flex -space-x-1.5">
-            {['JD', 'TK', 'AM', 'RJ'].map((initials, i) => (
-              <div key={i} className="w-6 h-6 rounded-full border-2 border-[#ffffff] bg-[#c9c2b8] flex items-center justify-center">
-                <span className="text-[8px] font-bold text-[#1c1917]">{initials}</span>
-              </div>
-            ))}
-            <div className="w-6 h-6 rounded-full border-2 border-[#ffffff] bg-[#f4f1ec] flex items-center justify-center">
-              <span className="text-[8px] font-bold text-[#78716c]">+</span>
-            </div>
-          </div>
+          {/* A real number from the users table (404 signups, Sep 2026). No
+              star ratings or placeholder faces: nobody gave those. */}
           <span className="text-xs text-[#78716c] font-medium">
-            Join <span className="font-bold text-[#1c1917]">100+</span> happy customers
+            <span className="font-bold text-[#1c1917]">400+</span> people have signed up to find leads on Reddit
           </span>
         </div>
       </motion.div>

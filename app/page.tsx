@@ -550,7 +550,7 @@ export default function LandingPage() {
             </span>
             <span className="flex items-center">
               <Check className="h-4 w-4 text-[#059669] mr-1.5 shrink-0" aria-hidden="true" />
-              $19 for 30 days, no subscription
+              From $29 a month, cancel anytime
             </span>
           </div>
         </div>
@@ -853,7 +853,7 @@ export default function LandingPage() {
               <em className="font-display font-medium italic text-[#d94100]">No subscription.</em>
             </h2>
             <p className="mt-3 text-base text-[#44403c] max-w-2xl mx-auto">
-              Everything included, one-time payment.
+              Cancel anytime. Full refund within 7 days of your first payment.
             </p>
           </div>
 
