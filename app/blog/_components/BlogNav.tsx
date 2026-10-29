@@ -40,7 +40,7 @@ export function BlogNav() {
                     </Link>
                 </nav>
 
-                <Link href="/login" className="btn-primary text-[13px]">
+                <Link href="/login" className="btn-primary text-[13px]" data-ml-goal="signup_click" data-ml-goal-source="blog_nav">
                     Get started
                 </Link>
             </div>

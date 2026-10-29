@@ -114,6 +114,8 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <button
           type="button"
           onClick={handleCta}
+          data-ml-goal="start_trial"
+          data-ml-goal-source="ready_panel"
           className="group mt-5 inline-flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-[#d13800] px-6 text-[15px] font-semibold text-white transition-opacity hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#ffffff] sm:w-auto"
         >
           Get started from {PRICE_LABEL}

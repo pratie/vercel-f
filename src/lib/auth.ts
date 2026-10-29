@@ -1,6 +1,7 @@
 'use client';
 
 import { create } from 'zustand';
+import { markSignupCompleted } from './minilytics';
 
 export interface User {
   email: string;
@@ -117,6 +118,7 @@ const authStore = create<AuthState>((set, get) => ({
       }
 
       const user = { email: data.email, token: data.access_token };
+      if (data.is_new_user) markSignupCompleted();
       if (typeof window !== 'undefined') {
         localStorage.setItem('userEmail', data.email);
         sessionStorage.setItem('token', data.access_token);
@@ -185,6 +187,7 @@ const authStore = create<AuthState>((set, get) => ({
       }
 
       const user = { email: data.email, token: data.access_token };
+      if (data.is_new_user) markSignupCompleted();
       if (typeof window !== 'undefined') {
         localStorage.setItem('userEmail', data.email);
         sessionStorage.setItem('token', data.access_token);

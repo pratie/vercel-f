@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore, User } from '@/lib/auth';
+import { flushSignupCompleted } from '@/lib/minilytics';
 
 interface AuthContextType {
   user: User | null;
@@ -27,6 +28,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, [initialize, isInitialized]);
 
+
+  // Tie this browser's visits to the signed-in person. The script loads after
+  // hydration, so retry briefly until it is there.
+  const email = user?.email;
+  useEffect(() => {
+    if (!email) return;
+    let tries = 0;
+    const timer = setInterval(() => {
+      if (window.minilytics || ++tries > 20) {
+        clearInterval(timer);
+        window.minilytics?.('identify', { user_id: email, email, name: email.split('@')[0] });
+        flushSignupCompleted();
+      }
+    }, 500);
+    return () => clearInterval(timer);
+  }, [email]);
 
   const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog');
 

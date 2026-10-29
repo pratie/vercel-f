@@ -150,6 +150,8 @@ export default function LandingPage() {
         </div>
         <button
           type="submit"
+          data-ml-goal="signup_click"
+          data-ml-goal-source={variant}
           className={`h-12 shrink-0 rounded-xl px-6 text-[15px] font-semibold text-white transition-[transform,background-color] duration-150 hover:-translate-y-0.5 ${FOCUS} ${
             variant === 'hero' ? 'bg-[#d13800] hover:bg-[#bf3400]' : 'bg-[#1c1917] hover:bg-[#3a3532]'
           }`}
@@ -295,6 +297,7 @@ export default function LandingPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <SectionHeading title="Two plans. Cancel anytime." sub="Full refund within 7 days of your first payment." />
           <PricingTable
+            goal="pricing_cta"
             onPlanSelect={() => {
               router.push(user ? '/upgrade' : '/login');
             }}

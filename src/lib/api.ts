@@ -1,5 +1,6 @@
 // API configuration and endpoints
 import { getAuthToken, getUserEmail } from './auth';
+import { minilyticsAttribution } from './minilytics';
 import { handleError, logError } from './errorUtils';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -934,7 +935,10 @@ export const api = {
                 method: 'POST',
                 body: JSON.stringify({
                     plan,
-                    datafast_visitor_id: datafastVisitorId
+                    datafast_visitor_id: datafastVisitorId,
+                    // The API is on another domain, so the Minilytics cookies
+                    // do not ride along; send the ids for Dodo's metadata.
+                    ...minilyticsAttribution(),
                 })
             });
             if (!response.ok) {

@@ -10,6 +10,8 @@ interface PricingTableProps {
   onPlanSelect?: (planId: string) => void;
   showHeader?: boolean;
   compact?: boolean;
+  /** Minilytics goal for the plan buttons: checkout_click where they start a checkout. */
+  goal?: 'checkout_click' | 'pricing_cta';
 }
 
 // Shown until /payment/plans answers, and if it fails. Mirrors the backend
@@ -52,7 +54,7 @@ const features = [
   'Replies drafted in your voice that say you built it',
 ];
 
-export function PricingTable({ onPlanSelect, showHeader = false, compact = false }: PricingTableProps) {
+export function PricingTable({ onPlanSelect, showHeader = false, compact = false, goal = 'checkout_click' }: PricingTableProps) {
   const [plans, setPlans] = useState<PricingPlan[]>(fallbackPlans);
   const [trialDays, setTrialDays] = useState(7);
   const [loading, setLoading] = useState(false);
@@ -148,6 +150,8 @@ export function PricingTable({ onPlanSelect, showHeader = false, compact = false
                 {/* CTA. The single loudest element on whatever page hosts this. */}
                 <Button
                   onClick={() => handlePlanSelect(plan.id)}
+                  data-ml-goal={goal}
+                  data-ml-goal-plan={plan.id}
                   disabled={checkoutLoading === plan.id}
                   className="group h-12 w-full rounded-xl border-2 border-[#1c1917] bg-[#d13800] text-[15px] font-semibold text-white shadow-[3px_3px_0_#1c1917] transition-[transform,box-shadow] duration-150 hover:bg-[#d13800] hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#1c1917] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ff4500] focus-visible:ring-0"
                 >

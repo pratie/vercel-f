@@ -84,6 +84,12 @@ export default function RootLayout({
           data-domain="www.sneakyguy.com"
           strategy="afterInteractive"
         />
+        <Script
+          defer
+          data-website-id="1o1t54574s103x6w"
+          src="https://minilytics.kprathapr2.workers.dev/js/script.js"
+          strategy="afterInteractive"
+        />
       </head>
       <body className="font-sans antialiased">
         <Providers>
