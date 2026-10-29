@@ -1,6 +1,6 @@
 // src/components/ProjectCard.tsx
 import { useState } from 'react';
-import { Trash2, Loader2, Pencil, ArrowRight, Sparkles } from 'lucide-react';
+import { Trash2, Loader2, Pencil, ArrowRight, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { api, Project } from '@/lib/api';
@@ -162,14 +162,14 @@ export function ProjectCard({ project: initialProject, onDelete }: ProjectCardPr
             </span>
             {/* Secondary destination. Stops propagation so it never fires the card's leads action. */}
             <Link
-              href={`/visibility/${project.id}`}
+              href={`/mentions/${project.id}/seo`}
               onClick={(e) => e.stopPropagation()}
               onKeyDown={(e) => e.stopPropagation()}
               className="inline-flex items-center gap-1.5 rounded-lg text-[13px] font-medium text-ink-600 transition-colors duration-150 hover:text-ink-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50"
-              aria-label={`Open AI visibility for ${project.name}`}
+              aria-label={`Open SEO opportunities for ${project.name}`}
             >
-              <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
-              AI visibility
+              <Search className="h-3.5 w-3.5" aria-hidden="true" />
+              SEO opportunities
             </Link>
           </div>
           <div className="flex items-center gap-1 shrink-0">

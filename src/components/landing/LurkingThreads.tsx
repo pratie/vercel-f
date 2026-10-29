@@ -22,9 +22,9 @@ export default function LurkingThreads() {
   const reduce = useReducedMotion();
 
   return (
-    <div className="relative mx-auto w-full max-w-[460px] pt-[110px] sm:pt-[136px]">
+    <div className="relative mx-auto w-full max-w-[460px] pt-[86px] sm:pt-[106px]">
       {/* The guy. His bottom edge sits exactly on the card's top edge. */}
-      <div className="absolute left-1/2 top-0 z-30 w-[190px] -translate-x-[86%] sm:w-[236px] sm:-translate-x-[62%]">
+      <div className="absolute left-1/2 top-0 z-30 w-[210px] -translate-x-[86%] sm:w-[260px] sm:-translate-x-[62%]">
         <SneakyPeek />
       </div>
 
@@ -43,7 +43,7 @@ export default function LurkingThreads() {
       </motion.div>
 
       <div className={`relative z-10 overflow-hidden rounded-[22px] bg-[#fff] ${STICKER}`}>
-        <div className="flex items-center justify-between border-b-2 border-[#1c1917] bg-[#ff4500] px-4 py-2.5">
+        <div className="flex items-end justify-between border-b-2 border-[#1c1917] bg-[#ff4500] px-4 pb-2.5 pt-9 sm:pt-10">
           <span className="font-play text-[15px] font-bold text-white">New on Reddit</span>
           <span className="text-[12px] font-semibold text-white/90">scanned 4 min ago</span>
         </div>

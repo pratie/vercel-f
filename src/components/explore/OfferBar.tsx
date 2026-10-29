@@ -7,15 +7,15 @@
  * the first two phases, while we are still reading their site and picking
  * their subreddits, because asking for money before the visitor has seen
  * anything useful is exactly the mistake this funnel exists to fix. It appears
- * at phase_index >= 2, the moment we start showing them which competitors the
- * assistants named instead of them, and from then on it stays pinned.
+ * at step 2, the moment we start showing them threads worth joining, and from
+ * then on it stays pinned.
  *
  * Motion contract: the entrance runs ONCE. The page re-renders every 1500ms on
  * each poll, so the visible state is latched, never derived fresh, and the bar
  * cannot slide in again on a later tick.
  *
  * The latch does NOT survive a failed run. The backend leaves phase_index alone
- * when it flips a session to "failed", so a run that dies during visibility or
+ * when it flips a session to "failed", so a run that dies during
  * thread search stays on index 2 or 3 forever. Without the phase check the bar
  * would sit above the error screen asking for money to keep everything we are
  * "finding", which is the one thing this component must never do.
@@ -34,16 +34,16 @@ import { cn } from '@/lib/utils';
 import type { OnboardingPhase } from '@/lib/onboarding';
 
 /**
- * The bar is held back until this phase index. Phase 2 is check_visibility,
- * the point where the visitor has watched us find their competitors.
+ * The bar is held back until this step index. Step 2 is finding threads,
+ * the point where the visitor has watched us read their market.
  */
 export const OFFER_BAR_MIN_PHASE_INDEX = 2;
 
-/** The only price this flow may ever show. One month, no auto renewal. */
+/** The only price this flow may ever show. A monthly plan, cancel anytime. */
 const PRICE_LABEL = '$29 a month';
 
 export interface OfferBarProps {
-  /** phase_index off the poll response. The bar shows from 2 onwards. */
+  /** The step index (stepForPhase). The bar shows from 2 onwards. */
   phaseIndex: number;
   /**
    * phase off the poll response. Required, because phase_index alone cannot
@@ -128,7 +128,7 @@ export function OfferBar({
 
 /**
  * The supporting line. Concrete about their own run when we have the numbers,
- * and honest about the plan when we do not. No auto renewal is stated either
+ * and honest about the plan when we do not. Cancel anytime is stated either
  * way, it is the single most reassuring fact we have.
  */
 function detailLine({
@@ -151,10 +151,10 @@ function detailLine({
   }
 
   if (parts.length === 0) {
-    return 'No auto renewal. Threads worth joining, a reply drafted in your voice, and tracking for who the assistants name.';
+    return 'Cancel anytime. Threads worth joining, and a reply drafted in your voice for each one.';
   }
 
   const found = parts.join(' and ');
   const forBrand = brand ? ` for ${brand}` : '';
-  return `No auto renewal. Keeps the ${found} we drafted${forBrand}, plus the threads we find next and a reply drafted in your voice.`;
+  return `Cancel anytime. Keeps the ${found} we drafted${forBrand}, plus the threads we find next and a reply drafted in your voice.`;
 }

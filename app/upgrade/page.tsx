@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { PricingTable } from '@/components/PricingTable';
-import { ArrowLeft, Eye, MessageSquare, Search } from 'lucide-react';
+import { ArrowLeft, MessageSquare, Search } from 'lucide-react';
 import { api } from '@/lib/api';
 import { toast } from 'sonner';
 
@@ -71,60 +71,11 @@ export default function UpgradePage() {
         {/* The hook: the product demonstrated on the buyer's own problem. */}
         <div className="text-center max-w-2xl mx-auto mb-12">
           <h1 className="text-[32px] sm:text-[42px] font-bold tracking-[-0.03em] text-[#1c1917] leading-[1.1] mb-4">
-            Right now, AI is answering{' '}
-            <em className="font-display font-medium italic text-[#d94100]">without you</em>
+            Your next customers are asking on Reddit right now
           </h1>
           <p className="text-[17px] leading-relaxed text-[#44403c]">
-            Your buyers ask Reddit, then they ask ChatGPT. SneakyGuy finds the conversations
-            worth joining and tracks whether the assistants start naming you.
-          </p>
-        </div>
-
-        {/*
-          Concrete demonstration. These are real answers we recorded.
-          Toned to match PhaseVisibility on /explore: the recommended names are
-          the bright, legible content, and the "not mentioned" verdict below the
-          rule is deliberately quiet. A dim dot and grey text, no red, no
-          warning icon. Decorating it would make the fact read as a sales trick.
-        */}
-        <div className="mb-12 overflow-hidden rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)]">
-          <div className="flex items-center gap-2 border-b border-black/[0.08] px-5 py-3.5 sm:px-6">
-            <Search className="h-3.5 w-3.5 shrink-0 text-[#8a827b]" />
-            <span className="text-[13px] text-[#1c1917]">
-              &ldquo;What are the best tools to find leads on Reddit?&rdquo;
-            </span>
-          </div>
-          <div className="grid divide-y divide-black/[0.08] sm:grid-cols-2 sm:divide-y-0 sm:divide-x">
-            {[
-              { engine: 'ChatGPT', named: ['Leado', 'Leadline', 'Optareach', 'LeadSnipe', 'Leadmatically'] },
-              { engine: 'Perplexity', named: ['Linkeddit', 'CommunityTracker', 'RedReach', 'Buska', 'Syften'] },
-            ].map((row) => (
-              <div key={row.engine} className="p-5 sm:p-6">
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]">
-                  {row.engine} recommended
-                </p>
-                <div className="mb-4 flex flex-wrap gap-1.5">
-                  {row.named.map((n) => (
-                    <span
-                      key={n}
-                      className="rounded-md border border-black/[0.08] bg-[#f4f1ec] px-2.5 py-1 text-[12.5px] leading-tight text-[#44403c]"
-                    >
-                      {n}
-                    </span>
-                  ))}
-                </div>
-                <div className="flex items-center gap-2 border-t border-black/[0.08] pt-3.5">
-                  <span aria-hidden className="h-1.5 w-1.5 shrink-0 rounded-full bg-[#c9c2b8]" />
-                  <span className="text-[13px] text-[#8a827b]">Your product, not mentioned</span>
-                </div>
-              </div>
-            ))}
-          </div>
-          {/* Not a disclosure. This line carries the argument the panel is
-              making, so it reads at #78716c rather than the dim disclaimer
-              tone, while staying quieter than the recommended names above. */}
-          <p className="border-t border-black/[0.09] bg-[#ffffff] px-5 py-3 text-[11.5px] leading-relaxed text-[#78716c] sm:px-6">
-            A real check we ran. If the assistants do not say your name, they are saying a competitor&rsquo;s.
+            SneakyGuy finds the threads where people ask for a product like yours, drafts a reply
+            that says you built it, and shows you the threads that rank on Google.
           </p>
         </div>
 
@@ -137,9 +88,9 @@ export default function UpgradePage() {
               body: 'We scan the subreddits your buyers post in and score every thread for buying intent, so you reply to the three that matter instead of reading two hundred.',
             },
             {
-              icon: Eye,
-              title: 'Track whether AI names you',
-              body: 'We ask ChatGPT, Gemini, Perplexity and Claude the questions your buyers ask, record who gets recommended, and show you the Reddit threads that would change it.',
+              icon: Search,
+              title: 'Reply where Google sends people',
+              body: 'We find the Reddit threads that rank on Google for your keywords, so a good reply keeps getting read long after you post it.',
             },
           ].map((f) => (
             <div key={f.title} className="rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">

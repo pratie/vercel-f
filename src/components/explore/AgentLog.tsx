@@ -56,7 +56,7 @@ export function LiveDot({ pulse = true, className }: LiveDotProps) {
 export interface AgentLogProps {
   /** log[] straight off the poll response, ordered oldest first. */
   log: OnboardingLogEntry[];
-  /** phase_index off the poll response. Drives the "step N of 5" header. */
+  /** The step index (stepForPhase). Drives the "step N of 4" header. */
   phaseIndex: number;
   /** phase off the poll response. Switches the header to its calm done state. */
   phase: OnboardingPhase;

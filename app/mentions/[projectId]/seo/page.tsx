@@ -1,24 +1,35 @@
 'use client';
 
-// SEO opportunities: the Reddit threads the AI assistants read when they
-// answer this project's buying questions. One job per row: get a helpful
-// comment into that thread, because the engines will read it again.
+// SEO opportunities: Reddit threads Google shows for this project's keywords.
+// One job per row: get a helpful reply into that thread, because everyone who
+// searches the keyword keeps reading it for as long as it ranks.
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode, Fragment } from 'react';
 import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { ArrowUpRight, Check, MessageSquare, Plus, Sparkles } from 'lucide-react';
+import { ArrowUpRight, Check, Lock, MessageCircle, RefreshCw, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 import { PaymentGuard } from '@/components/PaymentGuard';
 import { QueueError, QueueHeader, QueueSkeleton } from '@/components/mentions/QueueHeader';
 import { useAuth } from '@/components/AuthContext';
-import { api, Project, SeoOpportunitiesResponse, SeoThread } from '@/lib/api';
-import { engineLabel, formatRunDate } from '@/components/visibility/engines';
+import { api, Project, SeoOpportunitiesResponse, SeoOpportunity } from '@/lib/api';
+import { relativeTime } from '@/lib/mentions';
 import { BTN_PRIMARY, BTN_QUIET, BTN_SECONDARY, STICKER_PANEL } from '@/components/ui/sticker';
 
-const RUN_POLL_MS = 5000;
+/** "2h 40m" until an ISO time, or null once it has passed. */
+function timeUntil(iso: string | null, now: number): string | null {
+  if (!iso) return null;
+  const ms = new Date(iso.endsWith('Z') ? iso : `${iso}Z`).getTime() - now;
+  if (ms <= 0) return null;
+  const mins = Math.max(1, Math.ceil(ms / 60_000));
+  return mins >= 60 ? `${Math.floor(mins / 60)}h ${mins % 60}m` : `${mins}m`;
+}
 
-type RunState = 'idle' | 'running' | 'done';
+/** Server times are naive UTC. */
+function utcSeconds(iso: string | null): number | null {
+  if (!iso) return null;
+  return Math.floor(new Date(iso.endsWith('Z') ? iso : `${iso}Z`).getTime() / 1000);
+}
 
 export default function SeoOpportunitiesPage() {
   const params = useParams();
@@ -30,15 +41,14 @@ export default function SeoOpportunitiesPage() {
   const [data, setData] = useState<SeoOpportunitiesResponse | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [runState, setRunState] = useState<RunState>('idle');
-  const [runMessage, setRunMessage] = useState('');
+  const [refreshing, setRefreshing] = useState(false);
+  const [now, setNow] = useState(() => Date.now());
 
-  const load = useCallback(async () => {
-    if (!projectId) return null;
-    const fresh = await api.getSeoOpportunities(projectId);
-    setData(fresh);
-    return fresh;
-  }, [projectId]);
+  // The cooldown label counts down without a reload.
+  useEffect(() => {
+    const t = setInterval(() => setNow(Date.now()), 30_000);
+    return () => clearInterval(t);
+  }, []);
 
   useEffect(() => {
     if (!user) { router.push('/login'); return; }
@@ -59,14 +69,6 @@ export default function SeoOpportunitiesPage() {
         if (cancelled) return;
         setProject(projectData);
         setData(fresh);
-        // A check started elsewhere should show as running here too.
-        try {
-          const status = await api.getVisibilityStatus(projectId);
-          if (!cancelled && status.status === 'running') {
-            setRunState('running');
-            setRunMessage(status.message || '');
-          }
-        } catch { /* status is a nice-to-have */ }
       } catch (e) {
         if (!cancelled) setError(e instanceof Error ? e.message : 'Failed to load SEO opportunities.');
       } finally {
@@ -77,123 +79,100 @@ export default function SeoOpportunitiesPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [projectId, user]);
 
-  // Poll while a check runs, then reload the list once it completes.
-  const pollTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  useEffect(() => {
-    if (runState !== 'running' || !projectId) return;
-    let stopped = false;
-    const tick = async () => {
-      if (stopped) return;
-      try {
-        const status = await api.getVisibilityStatus(projectId);
-        if (stopped) return;
-        setRunMessage(status.message || '');
-        if (status.status === 'completed') {
-          const fresh = await load();
-          if (stopped) return;
-          setRunState('done');
-          toast.success(
-            fresh && fresh.summary.threads > 0
-              ? `Found ${fresh.summary.threads} Reddit ${fresh.summary.threads === 1 ? 'thread' : 'threads'} the AI answers are built on`
-              : 'Check complete'
-          );
-          return;
-        }
-        if (status.status === 'failed') {
-          setRunState('idle');
-          toast.error('The check failed', { description: status.message || 'Try again in a few minutes.' });
-          return;
-        }
-      } catch { /* keep polling */ }
-      pollTimer.current = setTimeout(tick, RUN_POLL_MS);
-    };
-    pollTimer.current = setTimeout(tick, RUN_POLL_MS);
-    return () => {
-      stopped = true;
-      if (pollTimer.current) clearTimeout(pollTimer.current);
-    };
-  }, [runState, projectId, load]);
-
-  const startRun = useCallback(async () => {
-    if (!projectId || runState === 'running') return;
+  const refresh = useCallback(async () => {
+    if (!projectId || refreshing) return;
+    setRefreshing(true);
     try {
-      const response = await api.runVisibilityCheck(projectId);
-      if (response.status === 'started' || response.status === 'already_running') {
-        setRunState('running');
-        setRunMessage('Asking the assistants your buying questions');
-      } else if (response.status === 'no_prompts') {
-        toast.error('Add at least one buying question first', {
-          description: 'Questions live on the AI check page.',
-        });
-        router.push(`/visibility/${projectId}`);
-      } else {
-        toast.error(response.message || 'Could not start the check');
-      }
+      const res = await api.refreshSeoOpportunities(projectId);
+      const fresh = await api.getSeoOpportunities(projectId);
+      setData(fresh);
+      setNow(Date.now());
+      toast.success(
+        res.found > 0
+          ? `Found ${res.found} Reddit ${res.found === 1 ? 'thread' : 'threads'} on Google`
+          : 'No Reddit threads on Google for these keywords yet'
+      );
     } catch (e) {
-      toast.error('Could not start the check', { description: e instanceof Error ? e.message : undefined });
+      toast.error('Could not refresh', { description: e instanceof Error ? e.message : undefined });
+    } finally {
+      setRefreshing(false);
     }
-  }, [projectId, runState, router]);
+  }, [projectId, refreshing]);
 
-  const onImported = useCallback((postId: string, leadId: number) => {
-    setData((prev) => {
-      if (!prev) return prev;
-      return {
-        ...prev,
-        threads: prev.threads.map((t) =>
-          t.reddit_post_id === postId
-            ? { ...t, lead: { id: leadId, num_comments: t.lead?.num_comments ?? 0, score: t.lead?.score ?? 0, relevance_score: 0, draft_reply: null } }
-            : t
-        ),
-      };
+  const onImported = useCallback((id: number, leadId: number) => {
+    setData((prev) => prev && {
+      ...prev,
+      opportunities: prev.opportunities.map((o) => (o.id === id ? { ...o, lead: { id: leadId, draft_reply: null } } : o)),
     });
   }, []);
 
-  const summary = data?.summary;
-  const hasRun = !!data && data.run_id !== null;
+  const cooldown = timeUntil(data?.next_refresh_at ?? null, now);
+  const checkedAt = utcSeconds(data?.last_refreshed_at ?? null);
+  const canRefresh = !!data?.configured && data.keywords_total > 0 && !cooldown && !refreshing;
+
+  const refreshButton = data && (
+    <button
+      type="button"
+      onClick={refresh}
+      disabled={!canRefresh}
+      className={data.opportunities.length ? BTN_SECONDARY : BTN_PRIMARY}
+      title={cooldown ? `You can refresh again in ${cooldown}` : undefined}
+    >
+      <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin motion-reduce:animate-none' : ''}`} aria-hidden="true" />
+      {refreshing ? 'Checking Google' : cooldown ? `Refresh in ${cooldown}` : 'Refresh'}
+    </button>
+  );
 
   return (
     <PaymentGuard>
-      <div className="mx-auto max-w-[1280px]">
+      <div className="mx-auto max-w-[1080px]">
         <QueueHeader
           projectName={project?.name}
           title="SEO opportunities"
-          lede="Reddit threads that ChatGPT and Perplexity read when buyers ask about your category. A helpful comment here keeps showing up in answers for months."
-        />
+          lede="Reddit threads that show up on Google for your keywords. A good reply here keeps getting read for years."
+        >
+          {data && data.opportunities.length > 0 && refreshButton}
+        </QueueHeader>
 
         {isLoading ? (
           <QueueSkeleton label="Loading SEO opportunities" />
         ) : error ? (
           <QueueError message={error} />
-        ) : !hasRun ? (
-          <FirstRun projectId={projectId} runState={runState} runMessage={runMessage} onStart={startRun} />
+        ) : data!.opportunities.length === 0 ? (
+          <EmptyState
+            data={data!}
+            projectId={projectId}
+            refreshing={refreshing}
+            cooldown={cooldown}
+            button={refreshButton}
+          />
         ) : (
           <>
-            <HeaderStats data={data!} projectId={projectId} runState={runState} runMessage={runMessage} />
-
-            {data!.threads.length === 0 ? (
-              <div className="max-w-[56ch] py-10">
-                <h2 className="font-play text-[24px] font-bold tracking-[-0.02em] text-ink-900">No Reddit threads in the latest answers</h2>
-                <p className="mt-2 text-[14px] leading-[1.7] text-ink-600">
-                  The assistants answered {summary!.answers_total} {summary!.answers_total === 1 ? 'time' : 'times'} without citing Reddit.
-                  That changes week to week. The next check runs {formatRunDate(data!.next_check_at) || 'next week'}, or add broader buying questions on the AI check page.
-                </p>
-                <Link href={`/visibility/${projectId}`} className={`${BTN_SECONDARY} mt-6`}>
-                  Edit the questions
-                </Link>
-              </div>
-            ) : (
-              <ol className="mt-6 border-t-2 border-[#1c1917]/[0.08]">
-                {data!.threads.map((thread, index) => (
-                  <ThreadRow
-                    key={thread.reddit_post_id}
-                    thread={thread}
-                    index={index}
-                    projectId={projectId}
-                    onImported={onImported}
-                  />
-                ))}
-              </ol>
-            )}
+            <p className="text-[13px] text-ink-600" role="status" aria-live="polite">
+              {refreshing
+                ? `Searching Google for ${data!.keywords_checked} ${data!.keywords_checked === 1 ? 'keyword' : 'keywords'}. This takes about 20 seconds.`
+                : <>
+                    {data!.opportunities.length} {data!.opportunities.length === 1 ? 'thread' : 'threads'} from {data!.keywords_checked} of {data!.keywords_total} {data!.keywords_total === 1 ? 'keyword' : 'keywords'}
+                    {checkedAt ? `, checked ${relativeTime(checkedAt)}` : ''}. Google is re-checked every week.
+                  </>}
+            </p>
+            <ol className="mt-4 border-t-2 border-[#1c1917]/[0.08]">
+              {data!.opportunities.map((o, i, all) => {
+                // The API lists open threads first; mark where the archived ones begin.
+                const closed = o.archived || o.locked;
+                const firstClosed = closed && (i === 0 || !(all[i - 1].archived || all[i - 1].locked));
+                return (
+                  <Fragment key={o.id}>
+                    {firstClosed && (
+                      <li className="pb-2 pt-6 text-[13px] text-ink-400">
+                        Still ranking, but Reddit closed these to new comments. Worth reading for what people ask.
+                      </li>
+                    )}
+                    <OpportunityRow opp={o} projectId={projectId} onImported={onImported} />
+                  </Fragment>
+                );
+              })}
+            </ol>
           </>
         )}
       </div>
@@ -201,202 +180,141 @@ export default function SeoOpportunitiesPage() {
   );
 }
 
-/* ── Header ────────────────────────────────────────────────────────────── */
+/* ── Empty state ───────────────────────────────────────────────────────── */
 
-function HeaderStats({
-  data, projectId, runState, runMessage,
+function EmptyState({
+  data, projectId, refreshing, cooldown, button,
 }: {
   data: SeoOpportunitiesResponse;
   projectId: string;
-  runState: RunState;
-  runMessage: string;
+  refreshing: boolean;
+  cooldown: string | null;
+  button: ReactNode;
 }) {
-  const s = data.summary;
-  return (
-    <section className={`${STICKER_PANEL} p-5 sm:p-6`} aria-label="Summary">
-      <div className="grid gap-5 sm:grid-cols-3">
-        <Stat
-          big={`${s.threads}`}
-          label={`${s.threads === 1 ? 'thread' : 'threads'} cited by AI answers`}
-          sub={`for ${s.questions_covered} of ${s.questions_total} buying ${s.questions_total === 1 ? 'question' : 'questions'}`}
-        />
-        <Stat
-          big={`${s.named_in} of ${s.answers_total}`}
-          label="AI answers name you"
-          sub={
-            <Link href={`/visibility/${projectId}`} className="text-ink-600 underline decoration-ink-300 underline-offset-2 hover:text-ink-900">
-              See the full AI check
-            </Link>
-          }
-        />
-        <Stat
-          big={formatRunDate(data.last_checked_at) || 'Just now'}
-          label="last checked"
-          sub={
-            runState === 'running'
-              ? <span className="text-[#d13800]">{runMessage || 'Check running now'}</span>
-              : `Next check ${formatRunDate(data.next_check_at) || 'next week'}`
-          }
-        />
-      </div>
-    </section>
-  );
-}
+  let heading = 'Find the threads Google already ranks';
+  let body = `Press Refresh and we search Google for your ${data.keywords_checked} ${data.keywords_checked === 1 ? 'keyword' : 'keywords'} and keep every Reddit thread on the first two pages. It takes about 20 seconds.`;
+  if (!data.configured) {
+    heading = 'Google search is not switched on yet';
+    body = 'This needs a setting on our side. Check back soon.';
+  } else if (data.keywords_total === 0) {
+    heading = 'Add keywords first';
+    body = 'SEO opportunities come from your keywords. Add a few to this project, then come back and press Refresh.';
+  } else if (data.last_refreshed_at) {
+    heading = 'No Reddit threads on Google yet';
+    body = cooldown
+      ? `Google showed no Reddit threads for your keywords. Try broader keywords, or refresh again in ${cooldown}.`
+      : 'Google showed no Reddit threads for your keywords. Try broader keywords and refresh again.';
+  }
 
-function Stat({ big, label, sub }: { big: string; label: string; sub?: ReactNode }) {
-  return (
-    <div className="min-w-0">
-      <p className="font-play text-[28px] font-extrabold leading-none tracking-[-0.02em] text-ink-900 tabular-nums">{big}</p>
-      <p className="mt-1.5 text-[13.5px] font-semibold text-ink-900">{label}</p>
-      {sub && <p className="mt-0.5 text-[12.5px] text-ink-600">{sub}</p>}
-    </div>
-  );
-}
-
-/* ── Empty state ───────────────────────────────────────────────────────── */
-
-function FirstRun({
-  projectId, runState, runMessage, onStart,
-}: {
-  projectId: string;
-  runState: RunState;
-  runMessage: string;
-  onStart: () => void;
-}) {
-  const running = runState === 'running';
   return (
     <div className={`${STICKER_PANEL} max-w-[640px] p-6 sm:p-8`}>
-      <h2 className="font-play text-[24px] font-bold tracking-[-0.02em] text-ink-900">No check yet</h2>
-      <p className="mt-2 text-[14px] leading-[1.7] text-ink-600">
-        We ask ChatGPT, Gemini, Perplexity and Claude your buying questions with web search on, then keep every Reddit thread they cite.
-        Those threads are your SEO opportunities. The check takes a couple of minutes.
-      </p>
+      <h2 className="font-play text-[24px] font-bold tracking-[-0.02em] text-ink-900">{heading}</h2>
+      <p className="mt-2 text-[14px] leading-[1.7] text-ink-600">{body}</p>
       <div className="mt-6 flex flex-wrap items-center gap-3">
-        <button type="button" onClick={onStart} disabled={running} className={BTN_PRIMARY}>
-          <Sparkles className="h-4 w-4" aria-hidden="true" />
-          {running ? 'Checking' : 'Run the first check'}
-        </button>
-        <Link href={`/visibility/${projectId}`} className={BTN_QUIET}>
-          Edit the questions first
-        </Link>
+        {data.configured && data.keywords_total > 0 && button}
+        {data.configured && data.keywords_total === 0 && (
+          <Link href={`/mentions/${projectId}/overview`} className={BTN_PRIMARY}>Go to the project</Link>
+        )}
       </div>
-      {running && (
+      {refreshing && (
         <p className="mt-4 text-[13px] text-ink-600" role="status" aria-live="polite">
-          {runMessage || 'Asking the assistants your buying questions'}. This page updates on its own.
+          Searching Google. This page fills in on its own.
         </p>
       )}
     </div>
   );
 }
 
-/* ── Thread row ────────────────────────────────────────────────────────── */
+/* ── Row ───────────────────────────────────────────────────────────────── */
 
-function ThreadRow({
-  thread, index, projectId, onImported,
+function OpportunityRow({
+  opp, projectId, onImported,
 }: {
-  thread: SeoThread;
-  index: number;
+  opp: SeoOpportunity;
   projectId: string;
-  onImported: (postId: string, leadId: number) => void;
+  onImported: (id: number, leadId: number) => void;
 }) {
+  const router = useRouter();
   const [importing, setImporting] = useState(false);
-  const lead = thread.lead;
+  const closed = opp.archived || opp.locked;
+  const lead = opp.lead;
 
-  const addToLeads = async () => {
+  const draft = async () => {
     if (importing) return;
     setImporting(true);
     try {
-      const res = await api.importSeoThread(projectId, thread.url);
-      onImported(thread.reddit_post_id, res.lead_id);
-      toast.success(res.created ? 'Added to your leads' : 'Already in your leads', {
-        description: 'Draft a reply when you are ready.',
-      });
+      const res = await api.importSeoThread(projectId, opp.url);
+      onImported(opp.id, res.lead_id);
+      router.push(`/mentions/${projectId}?lead=${res.lead_id}`);
     } catch (e) {
-      toast.error('Could not add this thread', { description: e instanceof Error ? e.message : undefined });
-    } finally {
+      toast.error('Could not open this thread', { description: e instanceof Error ? e.message : undefined });
       setImporting(false);
     }
   };
 
-  const named = thread.named_in;
-  const cited = thread.times_cited;
-
   return (
-    <li className="border-b border-black/[0.08] py-5">
-      <div className="flex gap-4">
+    <li className={`border-b border-black/[0.08] py-4 ${closed ? 'opacity-70' : ''}`}>
+      <div className="flex gap-3 sm:gap-4">
         <span
-          aria-hidden="true"
-          className="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-[#1c1917] font-play text-[13px] font-extrabold tabular-nums text-ink-900 sm:flex"
+          className="flex h-11 w-11 shrink-0 flex-col items-center justify-center rounded-xl border-2 border-[#1c1917] bg-white font-play leading-none text-ink-900"
+          title={opp.google_position ? `Position ${opp.google_position} on Google for "${opp.keyword} reddit"` : 'Position unknown'}
         >
-          {index + 1}
+          <span className="text-[16px] font-extrabold tabular-nums">#{opp.google_position ?? '?'}</span>
+          <span className="mt-0.5 text-[9.5px] font-semibold text-ink-400">Google</span>
         </span>
 
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-600">
-            {thread.subreddit && <span className="font-semibold text-ink-900">r/{thread.subreddit}</span>}
-            {lead && (
-              <>
-                <span aria-hidden="true">·</span>
-                <span className="tabular-nums">{lead.num_comments} {lead.num_comments === 1 ? 'comment' : 'comments'}</span>
-                <span aria-hidden="true">·</span>
-                <span className="tabular-nums">{lead.score} {lead.score === 1 ? 'upvote' : 'upvotes'}</span>
-              </>
+        <div className="min-w-0 flex-1 sm:flex sm:items-start sm:gap-4">
+          <div className="min-w-0 flex-1">
+            <h2 className="font-play text-[16.5px] font-bold leading-[1.3] tracking-[-0.01em] text-ink-900">
+              <a href={opp.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
+                {opp.title}
+              </a>
+            </h2>
+            <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[12.5px] text-ink-600">
+              <span className="font-semibold text-ink-900">r/{opp.subreddit}</span>
+              <span aria-hidden="true">·</span>
+              <span>ranks for <span className="text-ink-900">{opp.keyword}</span></span>
+              {opp.num_comments != null && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span className="inline-flex items-center gap-1 tabular-nums">
+                    <MessageCircle className="h-3 w-3" aria-hidden="true" />
+                    {opp.num_comments} {opp.num_comments === 1 ? 'comment' : 'comments'}
+                  </span>
+                </>
+              )}
+              {opp.created_utc && (
+                <>
+                  <span aria-hidden="true">·</span>
+                  <span>posted {relativeTime(opp.created_utc)}</span>
+                </>
+              )}
+            </p>
+            {closed && (
+              <p className="mt-1 inline-flex items-center gap-1 text-[12.5px] font-medium text-ink-600">
+                <Lock className="h-3 w-3" aria-hidden="true" />
+                {opp.locked ? 'Locked by the moderators' : 'Archived'}, so it no longer takes new comments
+              </p>
             )}
           </div>
 
-          <h2 className="mt-1 font-play text-[18px] font-bold leading-[1.25] tracking-[-0.01em] text-ink-900">
-            <a href={thread.url} target="_blank" rel="noopener noreferrer" className="hover:underline">
-              {thread.title}
-            </a>
-          </h2>
-
-          <div className="mt-2.5 flex flex-wrap items-center gap-1.5" aria-label="Engines citing this thread">
-            {thread.engines.map((e) => (
-              <span
-                key={e.engine}
-                title={e.named > 0 ? `${engineLabel(e.engine)} named you in ${e.named} of ${e.cited} answers citing this` : `${engineLabel(e.engine)} cited this in ${e.cited} ${e.cited === 1 ? 'answer' : 'answers'}`}
-                className="inline-flex h-6 items-center gap-1.5 rounded-full border-2 border-[#1c1917] bg-white px-2 text-[11.5px] font-semibold text-ink-900"
-              >
-                {e.named > 0 && <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-[#059669]" />}
-                {engineLabel(e.engine)}
-              </span>
-            ))}
-            <span className="ml-1 text-[12.5px] text-ink-600">
-              {named > 0
-                ? <><span className="font-semibold text-[#059669]">Named in {named} of {cited}</span> answers citing it</>
-                : <>Not named in any of {cited} {cited === 1 ? 'answer' : 'answers'} citing it</>}
-            </span>
-          </div>
-
-          <ul className="mt-2.5 space-y-1" aria-label="Buying questions this thread answers">
-            {thread.questions.map((q) => (
-              <li key={q.id} className="flex items-start gap-2 text-[13.5px] leading-[1.5] text-ink-600">
-                <MessageSquare className="mt-[3px] h-3.5 w-3.5 shrink-0 text-ink-300" aria-hidden="true" />
-                <span>
-                  <span className="text-ink-900">{q.text}</span>
-                  <span className="text-ink-400"> · {q.engines.map(engineLabel).join(', ')}</span>
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-4 flex flex-wrap items-center gap-2">
+          <div className="mt-3 flex flex-wrap items-center gap-1 sm:mt-0 sm:shrink-0">
             {lead ? (
               <Link
                 href={lead.draft_reply ? `/mentions/${projectId}/replies?lead=${lead.id}` : `/mentions/${projectId}?lead=${lead.id}`}
-                className={BTN_PRIMARY}
+                className={`${BTN_QUIET} font-semibold text-[#047857] hover:text-[#047857]`}
               >
-                {lead.draft_reply ? <Check className="h-4 w-4" aria-hidden="true" /> : <Sparkles className="h-4 w-4" aria-hidden="true" />}
-                {lead.draft_reply ? 'Open the draft' : 'Draft a reply'}
+                <Check className="h-4 w-4" aria-hidden="true" />
+                In your leads
               </Link>
-            ) : (
-              <button type="button" onClick={addToLeads} disabled={importing} className={BTN_SECONDARY}>
-                <Plus className="h-4 w-4" aria-hidden="true" />
-                {importing ? 'Adding' : 'Add to my leads'}
+            ) : !closed ? (
+              <button type="button" onClick={draft} disabled={importing} className={BTN_SECONDARY}>
+                <Sparkles className="h-4 w-4" aria-hidden="true" />
+                {importing ? 'Opening' : 'Draft a reply'}
               </button>
-            )}
-            <a href={thread.url} target="_blank" rel="noopener noreferrer" className={BTN_QUIET}>
-              Open on Reddit
+            ) : null}
+            <a href={opp.url} target="_blank" rel="noopener noreferrer" className={BTN_QUIET} aria-label={`Open "${opp.title}" on Reddit`}>
+              Reddit
               <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
             </a>
           </div>

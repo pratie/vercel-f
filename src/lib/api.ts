@@ -357,56 +357,41 @@ export interface VisibilityOpportunity {
 /** What /analyze/url drafts from a landing page, for the /projects/new wizard. */
 /* ── SEO opportunities ──────────────────────────────────────────────────── */
 
-export interface SeoThreadEngine {
-    engine: string;
-    cited: number;
-    named: number;
-    in_latest_run: boolean;
-}
-
-export interface SeoThreadQuestion {
+export interface SeoOpportunity {
     id: number;
-    text: string;
-    engines: string[];
-}
-
-export interface SeoThreadLead {
-    id: number;
-    num_comments: number;
-    score: number;
-    relevance_score: number;
-    draft_reply: string | null;
-}
-
-export interface SeoThread {
-    reddit_post_id: string;
     url: string;
+    reddit_post_id: string;
+    subreddit: string;
     title: string;
-    subreddit: string | null;
-    engines: SeoThreadEngine[];
-    questions: SeoThreadQuestion[];
-    times_cited: number;
-    named_in: number;
-    first_seen_at: string;
-    last_seen_at: string;
-    lead: SeoThreadLead | null;
-}
-
-export interface SeoSummary {
-    threads: number;
-    questions_covered: number;
-    questions_total: number;
-    named_in: number;
-    answers_total: number;
-    visibility_pct: number;
+    /** The keyword it ranks best for, searched as "<keyword> reddit". */
+    keyword: string;
+    google_position: number | null;
+    snippet: string;
+    num_comments: number | null;
+    score: number | null;
+    created_utc: number | null;
+    /** Reddit closes threads to new comments after six months, or a mod locks them. */
+    archived: boolean;
+    locked: boolean;
+    found_at: string | null;
+    last_seen_at: string | null;
+    lead: { id: number; draft_reply: string | null } | null;
 }
 
 export interface SeoOpportunitiesResponse {
-    run_id: number | null;
-    last_checked_at: string | null;
-    next_check_at: string | null;
-    summary: SeoSummary;
-    threads: SeoThread[];
+    /** False until the server has a Google search key. */
+    configured: boolean;
+    refreshing: boolean;
+    last_refreshed_at: string | null;
+    /** Set while the 6 hour refresh cooldown runs. */
+    next_refresh_at: string | null;
+    keywords_total: number;
+    keywords_checked: number;
+    opportunities: SeoOpportunity[];
+}
+
+export interface SeoRefreshResponse {
+    found: number;
 }
 
 export interface SeoImportResponse {
@@ -1216,8 +1201,8 @@ export const api = {
         return response.json();
     },
 
-    // SEO opportunities: the Reddit threads the AI engines cited when answering
-    // the brand's buying questions. Built from the same sweep as AI visibility.
+    // SEO opportunities: Reddit threads that rank on Google for the brand's
+    // keywords. Swept weekly, or on demand once every 6 hours.
 
     async getSeoOpportunities(brandId: string | number): Promise<SeoOpportunitiesResponse> {
         const response = await fetchWithAuth(`${getApiBaseUrl()}/api/seo/${brandId}`);
@@ -1227,7 +1212,16 @@ export const api = {
         return response.json();
     },
 
-    /** Turns a cited thread into a lead so the reply flow can draft for it. */
+    /** Searches Google for every keyword now. 429 during the cooldown. */
+    async refreshSeoOpportunities(brandId: string | number): Promise<SeoRefreshResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/seo/${brandId}/refresh`, { method: 'POST' });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Could not refresh SEO opportunities');
+        }
+        return response.json();
+    },
+
+    /** Turns a Reddit thread into a lead so the reply flow can draft for it. */
     async importSeoThread(brandId: string | number, url: string): Promise<SeoImportResponse> {
         const response = await fetchWithAuth(`${getApiBaseUrl()}/api/seo/${brandId}/import`, {
             method: 'POST',

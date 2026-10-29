@@ -64,9 +64,9 @@ const faqs = [
       'Every matching thread gets a score from 20 to 100 and an intent label, such as asking for a recommendation, comparing tools, or complaining about a current one. Keywords only get a thread into the list. The score decides whether it is worth your time.',
   },
   {
-    question: 'What does the AI visibility check do?',
+    question: 'What are SEO opportunities?',
     answer:
-      'Every week we ask ChatGPT, Gemini, Perplexity and Claude the questions your buyers ask, and record which products they recommend. You see whether you are named, who is named instead, and the Reddit threads those answers cite.',
+      'Reddit threads that show up on Google for the searches your buyers make. People keep finding those threads for months, so a helpful reply there keeps getting read long after you post it. We list them for each project so you can reply where the traffic already is.',
   },
   {
     question: 'Do you offer refunds?',

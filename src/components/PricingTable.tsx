@@ -25,7 +25,7 @@ const fallbackPlans: PricingPlan[] = [
       '1 project',
       'Reddit leads scored for buying intent',
       'Unlimited reply drafts',
-      'AI visibility across 4 assistants, 10 questions',
+      'SEO opportunities: Reddit threads that rank on Google',
     ],
   },
   {
@@ -38,7 +38,7 @@ const fallbackPlans: PricingPlan[] = [
     features: [
       '3 projects',
       'Everything in Starter',
-      'AI visibility, 20 questions per project',
+      'Autopilot scans every 6 hours',
       'Priority on new features as they ship',
     ],
   },
@@ -48,8 +48,7 @@ const fallbackPlans: PricingPlan[] = [
 const features = [
   'Catch buyers the moment they ask on Reddit',
   'Every lead scored for buying intent, best ones first',
-  'See whether ChatGPT, Gemini, Perplexity and Claude recommend you, checked weekly',
-  'See who they recommend instead, and the Reddit threads behind it',
+  'The Reddit threads that rank on Google for your keywords',
   'Replies drafted in your voice that say you built it',
 ];
 

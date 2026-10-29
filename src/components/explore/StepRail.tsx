@@ -14,11 +14,10 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LiveDot } from './AgentLog';
 
-/** Step labels, index-aligned with phase_index from the API. */
+/** Step labels, index-aligned with stepForPhase(phase_index). */
 export const EXPLORE_STEPS = [
   'Research your company',
   'Find your communities',
-  'Check AI visibility',
   'Find threads to join',
   'Ready',
 ] as const;
@@ -26,7 +25,7 @@ export const EXPLORE_STEPS = [
 export const EXPLORE_STEP_COUNT = EXPLORE_STEPS.length;
 
 export interface StepRailProps {
-  /** phase_index from the poll response. Clamped to 0..4 internally. */
+  /** The step index (stepForPhase). Clamped to 0..3 internally. */
   activeIndex: number;
   /** True at phase "ready". Stops the dot pulsing so the rail settles. */
   complete?: boolean;

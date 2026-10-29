@@ -5,8 +5,8 @@
 //
 // Three small inline SVGs, one per step, that show the mechanism instead of
 // decorating it: a URL settling into a field and fanning out into keywords and
-// subreddits, a reply composing itself under a thread, and "You" arriving into
-// a ranked list the assistants read from.
+// subreddits, a reply composing itself under a thread, and a Reddit thread
+// arriving into a Google results page.
 //
 // Rules baked in here, do not break them in a repaint:
 //   - every colour is a literal from the landing palette (canvas #ffffff,
@@ -219,7 +219,7 @@ export function ReplyAnimation({ delay = 0, still = false }: StepProps) {
         <rect x={24} y={52} width={226} height={52} rx={11} fill={C.brand} fillOpacity={0.06} stroke={C.brand} strokeOpacity={0.2} strokeWidth={1} />
         <circle cx={35} cy={64} r={3.2} fill={C.brand} />
         <text x={43} y={67} fontSize={8.5} fill={C.brandText} fontWeight={600}>
-          {'You'}
+          {'reddit.com, r/SaaS thread'}
         </text>
       </motion.g>
 
@@ -268,19 +268,19 @@ export function ReplyAnimation({ delay = 0, still = false }: StepProps) {
 }
 
 // ---------------------------------------------------------------------------
-// 3. Watch the AI catch up
-//    A ranked list of the names the assistants hand out, with rank 2 sitting
-//    empty, then "You" arriving into that slot. This is the payoff beat.
+// 3. Reply where Google sends people
+//    A Google results page for a buyer's search, with rank 2 sitting empty,
+//    then the Reddit thread you replied in arriving into that slot.
 // ---------------------------------------------------------------------------
 
 const ROW_Y = [18, 40, 62, 84];
 const RIVALS: { rank: number; name: string; slot: number }[] = [
-  { rank: 1, name: 'Leado', slot: 0 },
-  { rank: 3, name: 'Linkeddit', slot: 2 },
-  { rank: 4, name: 'Syften', slot: 3 },
+  { rank: 1, name: 'g2.com', slot: 0 },
+  { rank: 3, name: 'capterra.com', slot: 2 },
+  { rank: 4, name: 'a vendor blog', slot: 3 },
 ];
 
-export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
+export function GoogleThreadAnimation({ delay = 0, still = false }: StepProps) {
   const { stage, v } = useStage(delay, still);
   const y = ROW_Y[1];
 
@@ -289,7 +289,7 @@ export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
       <motion.g variants={v({ opacity: 0 }, { opacity: 1 }, 0, 0.4)}>
         <circle cx={13} cy={7} r={3} fill={C.ok} fillOpacity={0.9} />
         <text x={21} y={10} fontSize={8.5} fill={C.muted} fontWeight={500}>
-          {'ChatGPT, asked weekly: which tool?'}
+          {'Google: best tool for this?'}
         </text>
       </motion.g>
 
@@ -305,7 +305,7 @@ export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
         </motion.g>
       ))}
 
-      {/* the slot with your name missing from it */}
+      {/* the slot the thread will take */}
       <motion.rect
         x={10}
         y={y}
@@ -319,7 +319,7 @@ export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
         variants={v({ opacity: 0 }, { opacity: [0, 1, 1, 0] }, 0.5, 1.1)}
       />
 
-      {/* and you arriving into it */}
+      {/* and the Reddit thread arriving into it */}
       <motion.g variants={v({ opacity: 0, x: -30 }, { opacity: 1, x: 0 }, 1.2, 0.72)}>
         <rect x={10} y={y} width={240} height={18} rx={9} fill={C.brand} fillOpacity={0.12} stroke={C.brand} strokeOpacity={0.28} strokeWidth={1} />
         <text x={22} y={y + 12.5} fontSize={8.5} fill={C.brandText} textAnchor="middle" fontWeight={600}>
@@ -331,9 +331,9 @@ export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
       </motion.g>
 
       <motion.g variants={v({ opacity: 0 }, { opacity: 1 }, 1.78, 0.4)}>
-        <circle cx={196} cy={y + 9} r={2.5} fill={C.ok} />
-        <text x={204} y={y + 12} fontSize={8} fill={C.ok} fontWeight={600}>
-          {'named you'}
+        <circle cx={190} cy={y + 9} r={2.5} fill={C.ok} />
+        <text x={198} y={y + 12} fontSize={8} fill={C.ok} fontWeight={600}>
+          {'your reply'}
         </text>
       </motion.g>
     </motion.svg>
@@ -342,7 +342,7 @@ export function AiCatchUpAnimation({ delay = 0, still = false }: StepProps) {
 
 // ---------------------------------------------------------------------------
 
-const STEP_ANIMATIONS = [PasteSiteAnimation, ReplyAnimation, AiCatchUpAnimation];
+const STEP_ANIMATIONS = [PasteSiteAnimation, ReplyAnimation, GoogleThreadAnimation];
 
 /** Picks the drawing for step `index` (0-based) and staggers it behind the card. */
 export default function StepAnimation({ index, delay = 0, still = false }: { index: number; delay?: number; still?: boolean }) {

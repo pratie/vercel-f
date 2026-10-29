@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api, hasActiveAccess, Project } from '@/lib/api';
-import { inDmQueue, inReplyQueue, Mention, transformRawMention } from '@/lib/mentions';
+import { inDmQueue, inReplyQueue, isNewLead, Mention, transformRawMention } from '@/lib/mentions';
 
 /**
  * Everything the navigation needs to show live state, with light caching so
@@ -43,15 +43,17 @@ function computeCounts(projectId: string, mentions: Mention[]): NavCounts {
   // Same keys useTriage writes, so the badges match the queues exactly.
   const published = readJson<Record<number, string>>(`published-comments-${projectId}`, {});
   const dmSent = readJson<Record<number, number>>(`dm-sent-${projectId}`, {});
-  const dayAgo = Date.now() / 1000 - 86_400;
+  const viewedRaw = readJson<unknown>(`viewedPosts_${projectId}`, []);
+  const viewed = new Set(Array.isArray(viewedRaw) ? (viewedRaw as number[]) : []);
+  const now = Date.now() / 1000;
   return {
     repliesReady: mentions.filter((m) => inReplyQueue(m, published)).length,
     dmsToSend: mentions.filter((m) => inDmQueue(m, dmSent)).length,
-    newLeads: mentions.filter((m) => m.created_utc > dayAgo).length,
+    newLeads: mentions.filter((m) => isNewLead(m, viewed, now) && !published[m.id]).length,
   };
 }
 
-export function useNavData(projectId: string | undefined) {
+export function useNavData(projectId: string | undefined, view?: string | null) {
   const { user } = useAuth();
   const pathname = usePathname();
   const [projects, setProjects] = useState<Project[]>([]);
@@ -152,9 +154,9 @@ export function useNavData(projectId: string | undefined) {
       window.removeEventListener('focus', onFocus);
       window.removeEventListener('storage', onStorage);
     };
-    // pathname is a dependency on purpose: every navigation re-reads the
-    // triage state the queue pages write to localStorage.
-  }, [user, projectId, pathname]);
+    // pathname and view are dependencies on purpose: every navigation re-reads
+    // the triage state the queue pages write to localStorage.
+  }, [user, projectId, pathname, view]);
 
   return { projects, plan, autopilot, counts };
 }

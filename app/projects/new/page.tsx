@@ -322,7 +322,7 @@ function NewProjectWizard() {
       });
       sessionStorage.removeItem(PENDING_URL_KEY);
 
-      // Competitors feed the AI visibility report. A failure here is not
+      // Competitors feed brand signals and the scan keywords. A failure here is not
       // worth stopping the first scan for.
       await Promise.allSettled(confirmedCompetitors.map((c) => api.addVisibilityCompetitor(project.id, c)));
 

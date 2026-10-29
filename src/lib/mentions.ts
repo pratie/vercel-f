@@ -68,6 +68,15 @@ export function hasKnownAuthor(m: Pick<Mention, 'author'>): boolean {
   return !!m.author && m.author !== 'unknown' && m.author !== '[deleted]' && m.author !== 'AutoModerator';
 }
 
+/** How far back "New leads" looks. */
+export const NEW_LEAD_WINDOW_S = 72 * 3600;
+
+/** New lead: posted in the last 72 hours and not opened yet. */
+export function isNewLead(m: Pick<Mention, 'created_utc' | 'id'>, viewed: Set<number> | number[], nowS = Date.now() / 1000): boolean {
+  const seen = Array.isArray(viewed) ? viewed.includes(m.id) : viewed.has(m.id);
+  return m.created_utc > nowS - NEW_LEAD_WINDOW_S && !seen;
+}
+
 /** Reply queue: a draft is waiting and the user has not posted yet. */
 export function inReplyQueue(m: Pick<Mention, 'draft_reply' | 'id'>, published: Record<number, string>): boolean {
   return !!m.draft_reply && !published[m.id];

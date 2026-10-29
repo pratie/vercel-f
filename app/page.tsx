@@ -23,10 +23,9 @@ const logoHeight = (width: number) => Math.round(width * LOGO_RATIO);
 // ---------------------------------------------------------------------------
 // LAYOUT
 //
-// Seven sections, each with one job:
+// Six sections, each with one job:
 //   hero        paste your URL (the only CTA on the page, repeated at the end)
 //   steps       what happens next, three cards, a real sequence
-//   visibility  the second hook: real AI answers with your name missing
 //   proof       three real quotes and one real number
 //   pricing     two plans, the refund, what every plan includes
 //   faq         five questions
@@ -46,7 +45,6 @@ const FOCUS =
 
 const NAV_LINKS = [
   { label: 'How it works', href: '#how-it-works' },
-  { label: 'AI visibility', href: '#ai-visibility' },
   { label: 'Pricing', href: '#pricing' },
   { label: 'Blog', href: '/blog' },
 ];
@@ -63,30 +61,10 @@ const STEPS = [
     body: 'Every lead comes with a draft that says you built the product. Edit it, then post it yourself.',
   },
   {
-    title: 'Get named by the assistants',
-    body: 'Each week we ask ChatGPT, Gemini, Perplexity and Claude what your buyers ask, and record who gets named.',
+    title: 'Reply where Google sends people',
+    body: 'We find the Reddit threads that rank on Google for your keywords, so a good reply keeps getting read long after you post it.',
   },
 ];
-
-// Real recorded answers, queried through the same engine the product uses,
-// on the day the check shipped. The verdict line reads "Your product", so the
-// reader puts themselves in the empty slot.
-const AI_PROMPT = 'What are the best tools to find leads on Reddit?';
-
-const AI_ANSWERS: { engine: string; dotClass: string; named: string[] }[] = [
-  {
-    engine: 'ChatGPT',
-    dotClass: 'bg-[#059669]',
-    named: ['Leado', 'Leadline', 'Optareach', 'LeadSnipe', 'Leadmatically'],
-  },
-  {
-    engine: 'Perplexity',
-    dotClass: 'bg-[#38bdf8]',
-    named: ['Linkeddit', 'CommunityTracker', 'RedReach', 'Buska', 'Syften'],
-  },
-];
-
-const AI_ENGINES = ['ChatGPT', 'Gemini', 'Perplexity', 'Claude'];
 
 function SectionHeading({ title, sub }: { title: string; sub?: string }) {
   return (
@@ -262,7 +240,7 @@ export default function LandingPage() {
 
             <p className="mt-6 max-w-[34rem] text-[17px] sm:text-[19px] leading-relaxed text-[#44403c]">
               Paste your site. SneakyGuy finds the Reddit threads where people ask for a product
-              like yours, drafts a reply that says you built it, and checks whether ChatGPT names you.
+              like yours, and drafts a reply that says you built it. You post it yourself.
             </p>
 
             {urlForm('hero')}
@@ -307,74 +285,6 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* ───── AI VISIBILITY ───── */}
-      {/* Two real answer cards with our own name missing. Nobody argues with a
-          screenshot of being left out. */}
-      <section id="ai-visibility" className="py-20 sm:py-28 scroll-mt-20 border-t-2 border-[#1c1917]/10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <SectionHeading
-            title="We asked ChatGPT for the best tools. Here is who it named."
-            sub="Buyers ask AI for a shortlist before they visit anyone's site. If you are not on it, a competitor is."
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-            {AI_ANSWERS.map((answer) => (
-              <article key={answer.engine} className={`${STICKER} overflow-hidden`}>
-                <div className="flex items-center gap-2 px-5 py-3 border-b-2 border-[#1c1917] bg-[#fff1ea]">
-                  <span className={`h-2.5 w-2.5 rounded-full ${answer.dotClass}`} aria-hidden="true" />
-                  <span className="font-play text-[16px] font-bold text-[#1c1917]">{answer.engine}</span>
-                  <span className="ml-auto text-[12px] font-semibold text-[#44403c]">web search on</span>
-                </div>
-
-                <div className="p-5 sm:p-6">
-                  <p className="text-[13px] text-[#78716c]">Asked</p>
-                  <p className="mt-1 mb-5 text-[16px] font-semibold text-[#1c1917]">&ldquo;{AI_PROMPT}&rdquo;</p>
-
-                  <p className="text-[13px] text-[#78716c] mb-2">Named</p>
-                  <ol className="space-y-2 mb-5">
-                    {answer.named.map((brand, n) => (
-                      <li key={brand} className="flex items-center gap-3 text-[15px] text-[#1c1917]">
-                        <span
-                          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-2 border-[#1c1917]/15 text-[12px] font-bold text-[#44403c] tabular-nums"
-                          aria-hidden="true"
-                        >
-                          {n + 1}
-                        </span>
-                        {brand}
-                      </li>
-                    ))}
-                  </ol>
-
-                  <div className="flex items-center gap-2.5 rounded-xl border-2 border-dashed border-[#1c1917]/30 px-4 py-3">
-                    <X className="h-4 w-4 text-[#d13800] shrink-0" strokeWidth={2.5} aria-hidden="true" />
-                    <span className="text-[14px] text-[#44403c]">
-                      Your product: <span className="font-semibold text-[#1c1917]">not mentioned</span>
-                    </span>
-                  </div>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          <div className="mt-8 sm:mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-x-6 gap-y-3 max-w-3xl mx-auto">
-            <p className="text-[15px] leading-relaxed text-[#44403c]">
-              Those answers lean on Reddit threads, the same threads SneakyGuy finds for you. Every week we
-              check who gets named and show you the threads behind each answer.
-            </p>
-            <ul className="flex flex-wrap gap-2 shrink-0" aria-label="Assistants we check">
-              {AI_ENGINES.map((engine) => (
-                <li
-                  key={engine}
-                  className="rounded-full border-2 border-[#1c1917] bg-[#ffffff] px-3 py-1 text-[13px] font-semibold text-[#1c1917]"
-                >
-                  {engine}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
       {/* ───── PROOF ───── */}
       <div className="border-t-2 border-[#1c1917]/10">
         <SocialProof />
@@ -401,8 +311,8 @@ export default function LandingPage() {
       {/* The mascot's second appearance: bigger, peeking over the whole closing
           panel. The panel is the ledge. */}
       <section className="pb-20 sm:pb-28 px-4 sm:px-6">
-        <div className="relative max-w-4xl mx-auto pt-[150px] sm:pt-[196px]">
-          <div className="absolute left-1/2 top-0 z-20 w-[260px] sm:w-[340px] -translate-x-1/2">
+        <div className="relative max-w-4xl mx-auto pt-[122px] sm:pt-[155px]">
+          <div className="absolute left-1/2 top-0 z-20 w-[300px] sm:w-[380px] -translate-x-1/2">
             <SneakyPeek delay={0.1} />
           </div>
           <div className="relative rounded-[28px] border-2 border-[#1c1917] bg-[#d13800] px-6 py-12 sm:px-14 sm:py-16 text-center shadow-[7px_7px_0_#1c1917]">
@@ -410,7 +320,7 @@ export default function LandingPage() {
               Someone is asking for you right now.
             </h2>
             <p className="mx-auto mt-4 mb-8 max-w-md text-[16px] leading-relaxed text-white">
-              Paste your website. See the threads you are missing, and who the assistants name instead of you.
+              Paste your website. See the Reddit threads where people are asking for a product like yours.
             </p>
             {urlForm('close')}
             <p className="mt-4 text-[13px] text-white">Free check, no signup.</p>

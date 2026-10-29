@@ -18,6 +18,8 @@ export function middleware(request: NextRequest) {
     pathname.endsWith('.jpeg') ||
     pathname.endsWith('.gif') ||
     pathname.endsWith('.svg') ||
+    pathname.endsWith('.webp') ||
+    pathname.startsWith('/mascot/') ||
     pathname.endsWith('.ico') ||
     pathname === '/favicon.ico' ||
     pathname.startsWith('/blog') ||

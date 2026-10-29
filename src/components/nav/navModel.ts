@@ -6,6 +6,7 @@ import {
   Radio,
   Search,
   Send,
+  Sparkles,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
@@ -14,7 +15,7 @@ import {
  * The per-project navigation, as data. Both the desktop sidebar and the
  * mobile tab bar read from here so the two never drift apart.
  */
-export type NavKey = 'overview' | 'leads' | 'signals' | 'replies' | 'dms' | 'autopilot' | 'seo' | 'analytics';
+export type NavKey = 'overview' | 'leads' | 'new' | 'signals' | 'replies' | 'dms' | 'autopilot' | 'seo' | 'analytics';
 
 export interface NavItem {
   key: NavKey;
@@ -35,37 +36,42 @@ export function projectBase(id: string) {
   return `/mentions/${id}`;
 }
 
-export function projectNav(id: string, pathname: string): NavGroup[] {
+/**
+ * `view` is the leads page's ?view= param: "new" lights up New leads instead
+ * of All leads, since both live on the same route.
+ */
+export function projectNav(id: string, pathname: string, view?: string | null): NavGroup[] {
   const base = projectBase(id);
   const is = (href: string) => pathname === href;
   const item = (key: NavKey, label: string, short: string, href: string, icon: LucideIcon, active = is(href)): NavItem => ({
     key, label, short, href, icon, active,
   });
+  const onLeads = pathname === base;
   return [
     { label: null, items: [item('overview', 'Overview', 'Home', `${base}/overview`, LayoutDashboard)] },
     {
-      label: 'Find',
+      label: 'Opportunities',
       items: [
-        item('leads', 'Opportunities', 'Leads', base, Inbox),
-        item('signals', 'Brand signals', 'Signals', `${base}/signals`, Radio),
+        item('leads', 'All leads', 'Leads', base, Inbox, onLeads && view !== 'new'),
+        item('new', 'New leads', 'New', `${base}?view=new`, Sparkles, onLeads && view === 'new'),
+        item('seo', 'SEO opportunities', 'SEO', `${base}/seo`, Search, pathname.startsWith(`${base}/seo`)),
       ],
     },
     {
-      label: 'Act',
+      label: 'Engage',
       items: [
         item('replies', 'Reply queue', 'Replies', `${base}/replies`, MessageSquare),
         item('dms', 'DM queue', 'DMs', `${base}/dms`, Send),
       ],
     },
-    { label: 'Automate', items: [item('autopilot', 'Autopilot', 'Autopilot', `${base}/autopilot`, Zap)] },
     {
-      label: 'Grow',
+      label: 'Track',
       items: [
-        // The SEO page owns the link to /visibility/[id]; it is not in the nav.
-        item('seo', 'SEO opportunities', 'SEO', `${base}/seo`, Search, pathname.startsWith(`${base}/seo`) || pathname.startsWith(`/visibility/${id}`)),
+        item('signals', 'Brand signals', 'Signals', `${base}/signals`, Radio),
         item('analytics', 'Analytics', 'Analytics', `${base}/analytics`, BarChart3),
       ],
     },
+    { label: 'Automate', items: [item('autopilot', 'Autopilot', 'Autopilot', `${base}/autopilot`, Zap)] },
   ];
 }
 

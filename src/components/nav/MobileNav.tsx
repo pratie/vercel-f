@@ -12,19 +12,22 @@ import { ProjectList } from './ProjectSwitcher';
 import { badgeFor } from './DesktopNav';
 import type { NavCounts, Plan } from './useNavData';
 
-const TAB_KEYS: NavKey[] = ['overview', 'leads', 'replies', 'dms'];
+const TAB_KEYS: NavKey[] = ['overview', 'leads', 'new', 'replies'];
 const PLAN_LABEL: Record<NonNullable<Plan>, string> = { starter: 'Starter plan', growth: 'Growth plan', paid: 'Paid plan' };
 
 /**
  * Mobile navigation, two parts:
  *  - a slim top bar: logo and the open project (tap opens the sheet)
- *  - inside a project, a bottom tab bar with the four queues and "More"
+ *  - inside a project, a bottom tab bar with home, the two lead views, the
+ *    reply queue and "More"
  * The sheet holds the rest of the sections, the project list and account.
  */
 export function MobileNav({
-  pathname, projects, project, projectId, counts, autopilot, plan, sheetOpen, onSheetOpen, onSheetClose, onLogout,
+  pathname, view, projects, project, projectId, counts, autopilot, plan, sheetOpen, onSheetOpen, onSheetClose, onLogout,
 }: {
   pathname: string;
+  /** The leads page's ?view= param. */
+  view?: string | null;
   projects: Project[];
   project?: Project;
   projectId?: string;
@@ -36,7 +39,7 @@ export function MobileNav({
   onSheetClose: () => void;
   onLogout: () => void;
 }) {
-  const groups = projectId ? projectNav(projectId, pathname) : [];
+  const groups = projectId ? projectNav(projectId, pathname, view) : [];
   const items = groups.flatMap((g) => g.items);
   const tabs = TAB_KEYS.map((k) => items.find((i) => i.key === k)).filter((i): i is NavItem => !!i);
   const more = items.filter((i) => !TAB_KEYS.includes(i.key));
@@ -120,7 +123,7 @@ export function MobileNav({
                             badge.tone === 'orange' ? 'bg-[#d13800] text-white' : badge.tone === 'ink' ? 'bg-[#1c1917] text-white' : 'bg-black/[0.08] text-ink-900'
                           )}
                         >
-                          {t.key === 'leads' ? counts?.newLeads : badge.text}
+                          {badge.text}
                         </span>
                       )}
                     </span>

@@ -26,7 +26,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { domainFromUrl, ONBOARDING_STEP_COUNT, type OnboardingSession } from '@/lib/onboarding';
+import { domainFromUrl, ONBOARDING_STEP_COUNT, stepForPhase, type OnboardingSession } from '@/lib/onboarding';
 import { AgentLog, LiveDot } from './AgentLog';
 import { EXPLORE_STEPS, StepRail } from './StepRail';
 
@@ -63,7 +63,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
 
   const phase = session?.phase ?? 'research_company';
   const rawIndex = session?.phase_index ?? 0;
-  const phaseIndex = displayIndex ?? rawIndex;
+  const phaseIndex = displayIndex ?? stepForPhase(rawIndex);
   const log = session?.log ?? [];
   const domain = domainFromUrl(session?.url ?? url ?? '');
   const ready = phase === 'ready';
@@ -104,7 +104,7 @@ export function ExploreShell({ session, url, fatal, findings, children, displayI
             )}
           </div>
 
-          <StepRail activeIndex={phaseIndex} complete={ready && phaseIndex >= 4} failed={failed} />
+          <StepRail activeIndex={phaseIndex} complete={ready && phaseIndex >= ONBOARDING_STEP_COUNT - 1} failed={failed} />
         </div>
 
         <div className="px-5 py-7 sm:px-8 sm:py-9">

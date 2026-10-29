@@ -17,7 +17,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ExploreShell, type ExploreFatal } from '@/components/explore/ExploreShell';
 import { PhaseCompany } from '@/components/explore/PhaseCompany';
 import { PhaseCommunities } from '@/components/explore/PhaseCommunities';
-import { PhaseVisibility } from '@/components/explore/PhaseVisibility';
 import { PhaseThreads } from '@/components/explore/PhaseThreads';
 import { OfferBar } from '@/components/explore/OfferBar';
 import { ReadyPanel } from '@/components/explore/ReadyPanel';
@@ -26,7 +25,9 @@ import {
   isOnboardingError,
   isTerminalPhase,
   ONBOARDING_POLL_MS,
+  ONBOARDING_STEP_COUNT,
   startOnboarding,
+  stepForPhase,
   type OnboardingSession,
 } from '@/lib/onboarding';
 
@@ -189,7 +190,7 @@ function ExploreFunnel() {
   //
   // So the reveal walks forward one step at a time and holds each one, exactly
   // the way explee does it. The work is already done, the pacing is the show.
-  const rawIndex = session?.phase_index ?? 0;
+  const rawIndex = stepForPhase(session?.phase_index ?? 0);
   const [displayIndex, setDisplayIndex] = useState(0);
   // Set once the visitor clicks a step. From then on the rail is theirs and we
   // stop dragging them forward mid-read.
@@ -234,15 +235,7 @@ function ExploreFunnel() {
         );
       case 2:
         return (
-          <PhaseVisibility
-            visibility={session.visibility}
-            brandName={session.company?.name}
-            loading={rawIndex > 2 ? false : undefined}
-          />
-        );
-      case 3:
-        return (
-          <PhaseThreads threads={session.threads ?? []} loading={rawIndex > 3 ? false : undefined} />
+          <PhaseThreads threads={session.threads ?? []} loading={rawIndex > 2 ? false : undefined} />
         );
       default:
         return <ReadyPanel session={session} onCta={handleCta} />;
@@ -265,7 +258,7 @@ function ExploreFunnel() {
           {/* Steps already revealed are clickable, so nothing is lost to pacing. */}
           {session.phase !== 'failed' && (
           <StepDots
-            count={5}
+            count={ONBOARDING_STEP_COUNT}
             active={displayIndex}
             reached={rawIndex}
             onPick={(i) => {

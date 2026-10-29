@@ -8,7 +8,7 @@ import { useAuth } from '@/components/AuthContext';
 import { api, Project } from '@/lib/api';
 import { PaymentGuard } from '@/components/PaymentGuard';
 import {
-  Mention, transformRawMention, isUnscored, isHighIntent, exportMentionsToCSV,
+  Mention, transformRawMention, isUnscored, isHighIntent, isNewLead, exportMentionsToCSV,
 } from '@/lib/mentions';
 import { MentionCard } from '@/components/mentions/MentionCard';
 import { LeadInbox } from '@/components/mentions/LeadInbox';
@@ -43,6 +43,9 @@ export default function MentionsPage() {
   const { viewed: viewedPosts, published: publishedComments, dmSent, markViewed, markPublished, markDmSent } = useTriage(projectId);
   const [rescoring, setRescoring] = useState(false);
   const leadParam = searchParams?.get('lead');
+  // ?view=new narrows the page to New leads (posted in the last 72 hours, not
+  // opened yet). The nav links switch it without remounting the page.
+  const isNewView = searchParams?.get('view') === 'new';
   const initialSelectedId = leadParam ? parseInt(leadParam, 10) : null;
 
   // Filters initialise from the URL so filtered views survive refresh and can be shared.
@@ -262,7 +265,28 @@ export default function MentionsPage() {
       });
   }, [allMentions, filters, viewedPosts, publishedComments]);
 
-  const displayMentions = filteredAll.slice(0, visibleCount);
+  // The New leads set is fixed when the view opens (or the leads reload), so a
+  // lead does not vanish from under the reader the moment it is marked viewed.
+  const viewedRef = useRef(viewedPosts);
+  viewedRef.current = viewedPosts;
+  const publishedRef = useRef(publishedComments);
+  publishedRef.current = publishedComments;
+  const newLeadIds = useMemo(() => {
+    if (!isNewView) return null;
+    const now = Date.now() / 1000;
+    return new Set(
+      allMentions.filter((m) => isNewLead(m, viewedRef.current, now) && !publishedRef.current[m.id]).map((m) => m.id)
+    );
+  }, [isNewView, allMentions]);
+
+  const viewMentions = useMemo(
+    () => (newLeadIds ? filteredAll.filter((m) => newLeadIds.has(m.id)) : filteredAll),
+    [filteredAll, newLeadIds]
+  );
+
+  useEffect(() => { setVisibleCount(MENTIONS_PER_PAGE); }, [isNewView]);
+
+  const displayMentions = viewMentions.slice(0, visibleCount);
 
   const stats = useMemo(() => {
     const dayAgo = Date.now() / 1000 - 86_400;
@@ -274,7 +298,7 @@ export default function MentionsPage() {
     };
   }, [allMentions]);
 
-  const remaining = filteredAll.length - displayMentions.length;
+  const remaining = viewMentions.length - displayMentions.length;
   const dot = <span aria-hidden="true" className="text-ink-300">·</span>;
 
   return (
@@ -285,9 +309,15 @@ export default function MentionsPage() {
           <div className="min-w-0">
             <p className="truncate text-[13px] font-semibold text-ink-400">{project ? project.name : ' '}</p>
             <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">
-              Opportunities
+              {isNewView ? 'New leads' : 'All leads'}
             </h1>
-            {allMentions.length > 0 && (
+            {isNewView && !isLoading && (
+              <p className="mt-1.5 text-[13px] text-ink-400">
+                <span className="font-semibold tabular-nums text-ink-900">{newLeadIds?.size ?? 0}</span>
+                {' '}posted in the last 3 days that you have not opened yet
+              </p>
+            )}
+            {!isNewView && allMentions.length > 0 && (
               <p className="mt-1.5 flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px] text-ink-400">
                 <span><span className="font-semibold tabular-nums text-ink-900">{stats.total}</span> leads</span>
                 {dot}
@@ -329,10 +359,10 @@ export default function MentionsPage() {
             </button>
             <button
               onClick={() => {
-                exportMentionsToCSV(filteredAll, project ? project.name.replace(/\s+/g, '_').toLowerCase() : 'sneakyguy_leads');
-                toast.success(`Exported ${filteredAll.length} leads`);
+                exportMentionsToCSV(viewMentions, project ? project.name.replace(/\s+/g, '_').toLowerCase() : 'sneakyguy_leads');
+                toast.success(`Exported ${viewMentions.length} leads`);
               }}
-              disabled={filteredAll.length === 0}
+              disabled={viewMentions.length === 0}
               className={BTN_QUIET}
             >
               <Download className="h-3.5 w-3.5" aria-hidden="true" />
@@ -402,6 +432,22 @@ export default function MentionsPage() {
                 Scan Reddit now
               </button>
             )}
+          </div>
+        ) : isNewView && newLeadIds?.size === 0 ? (
+          <div className="max-w-[52ch] py-12">
+            <h2 className="font-play text-[24px] font-bold tracking-[-0.02em] text-ink-900">You are caught up</h2>
+            <p className="mt-2 text-[14px] leading-[1.7] text-ink-600">
+              Every lead from the last 3 days has been opened. Scan again for fresh threads, or work through all leads.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <button onClick={() => startScan()} disabled={scanStatus === 'scanning'} className={BTN_PRIMARY}>
+                <RefreshCw className="h-4 w-4" aria-hidden="true" />
+                Scan now
+              </button>
+              <button onClick={() => router.push(`/mentions/${projectId}`)} className={BTN_SECONDARY}>
+                See all leads
+              </button>
+            </div>
           </div>
         ) : displayMentions.length === 0 ? (
           <div className="py-16">

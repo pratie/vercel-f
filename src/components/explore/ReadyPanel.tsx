@@ -5,8 +5,8 @@
  *
  * This is the paywall moment, and the visitor is holding a finished analysis of
  * their own business. So the panel does not pitch, it recaps: what we decided
- * they sell, how much groundwork we drafted, how many assistants named someone
- * else, and how many threads are sitting there waiting. The CTA follows the
+ * they sell, how much groundwork we drafted, and how many threads are sitting
+ * there waiting. The CTA follows the
  * evidence rather than replacing it.
  *
  * CTA HAND OFF, do not change without reading app/projects/page.tsx:
@@ -29,7 +29,7 @@ import type { OnboardingSession } from '@/lib/onboarding';
 
 const MICRO_LABEL = 'text-[10px] font-semibold uppercase tracking-[0.08em] text-[#8a827b]';
 
-/** The only price this flow may ever show. One month, no auto renewal. */
+/** The only price this flow may ever show. A monthly plan, cancel anytime. */
 const PRICE_LABEL = '$29 a month';
 
 export interface ReadyPanelProps {
@@ -54,14 +54,6 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
   const keywordCount = session.keywords?.length ?? 0;
   const subredditCount = session.subreddits?.length ?? 0;
   const threadCount = session.threads?.length ?? 0;
-
-  const engines = session.visibility?.engines ?? [];
-  const engineCount = engines.length;
-  // "Named a competitor instead of you" is only honest when the model actually
-  // named someone. A model that named nobody is not evidence either way.
-  const missedCount = engines.filter(
-    (engine) => !engine.brand_mentioned && (engine.competitors?.length ?? 0) > 0,
-  ).length;
 
   const handleCta = () => {
     if (onCta) {
@@ -97,31 +89,15 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <p className="mt-2.5 text-[14px] leading-relaxed text-[#78716c]">{description}</p>
       )}
 
-      <div className="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-black/[0.08] bg-black/[0.08] sm:grid-cols-4">
+      <div className="mt-6 grid grid-cols-3 gap-px overflow-hidden rounded-2xl border border-black/[0.08] bg-black/[0.08] sm:grid-cols-3">
         <Stat value={keywordCount} label={keywordCount === 1 ? 'buying intent keyword' : 'buying intent keywords'} />
         <Stat value={subredditCount} label={subredditCount === 1 ? 'subreddit to watch' : 'subreddits to watch'} />
-        {/*
-          When the visibility phase produced nothing (it is allowed to fail
-          without killing the session) we have NO answers, which is not the
-          same as "no assistant named a competitor". Reporting a bare 0 under
-          "assistants named someone else" would read as good news we never
-          earned, so the cell states what it actually is: nothing checked.
-        */}
-        {engineCount > 0 ? (
-          <Stat
-            value={`${missedCount}/${engineCount}`}
-            label={engineCount === 1 ? 'assistant named someone else' : 'assistants named someone else'}
-            highlight={missedCount > 0}
-          />
-        ) : (
-          <Stat value={0} label="assistant answers we could check" />
-        )}
         <Stat value={threadCount} label={threadCount === 1 ? 'thread waiting' : 'threads waiting'} />
       </div>
 
       <div className="mt-6 rounded-2xl border border-black/[0.09] bg-[#ffffff] shadow-[0_1px_2px_rgba(28,25,23,0.04),0_12px_32px_-16px_rgba(28,25,23,0.14)] p-5 sm:p-6">
         {/*
-          Phases 2 and 3 are allowed to come back empty without failing the
+          The thread search is allowed to come back empty without failing the
           session, so this panel can legitimately render with zero threads.
           The heading has to survive that: pointing at "these threads" when
           there are none is the kind of small lie that loses the sale.
@@ -132,7 +108,7 @@ export function ReadyPanel({ session, onCta, onStartOver, className }: ReadyPane
         <p className="mt-1.5 text-[13.5px] leading-relaxed text-[#78716c]">
           From {PRICE_LABEL}, cancel anytime. We keep watching{' '}
           {subredditCount > 0 ? `those ${subredditCount} subreddits` : 'your subreddits'}, surface new threads as they
-          appear, draft the reply in your voice, and track whether the assistants start naming {brand}.
+          appear, and draft the reply in your voice so {brand} gets mentioned where buyers are asking.
         </p>
 
         <button

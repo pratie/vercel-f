@@ -141,8 +141,19 @@ export function isOnboardingError(error: unknown): error is OnboardingError {
 /* Helpers                                                                    */
 /* -------------------------------------------------------------------------- */
 
-/** Total number of steps in the funnel. The UI says "step N of 5". */
-export const ONBOARDING_STEP_COUNT = 5;
+/** Total number of steps in the funnel. The UI says "step N of 4". */
+export const ONBOARDING_STEP_COUNT = 4;
+
+/**
+ * The API still numbers five phases (phase 2 was the AI answer check, which
+ * the product no longer shows). The page shows four steps, so phase 2 and 3
+ * both read as "find threads" and the rest shift down by one.
+ */
+export function stepForPhase(phaseIndex: number): number {
+  if (phaseIndex <= 1) return Math.max(0, phaseIndex);
+  if (phaseIndex <= 3) return 2;
+  return 3;
+}
 
 /** Polling interval the contract asks for. */
 export const ONBOARDING_POLL_MS = 1500;

@@ -19,8 +19,8 @@ export function badgeFor(item: NavItem, counts: NavCounts | null, autopilot: boo
       return counts && counts.repliesReady > 0 ? { text: String(counts.repliesReady), tone: 'orange' } : null;
     case 'dms':
       return counts && counts.dmsToSend > 0 ? { text: String(counts.dmsToSend), tone: 'ink' } : null;
-    case 'leads':
-      return counts && counts.newLeads > 0 ? { text: `${counts.newLeads} new`, tone: 'muted' } : null;
+    case 'new':
+      return counts && counts.newLeads > 0 ? { text: String(counts.newLeads), tone: 'muted' } : null;
     case 'autopilot':
       return autopilot === undefined ? null : autopilot ? { text: 'On', tone: 'green' } : { text: 'Off', tone: 'muted' };
     default:
@@ -89,9 +89,11 @@ function RailLink({
  * Automate / Grow. Collapses to a 72px icon rail.
  */
 export function DesktopNav({
-  pathname, projects, project, projectId, counts, autopilot, plan, collapsed, onToggleCollapse, onLogout, userEmail,
+  pathname, view, projects, project, projectId, counts, autopilot, plan, collapsed, onToggleCollapse, onLogout, userEmail,
 }: {
   pathname: string;
+  /** The leads page's ?view= param. */
+  view?: string | null;
   projects: Project[];
   project?: Project;
   projectId?: string;
@@ -103,7 +105,7 @@ export function DesktopNav({
   onLogout: () => void;
   userEmail?: string;
 }) {
-  const groups = projectId ? projectNav(projectId, pathname) : [];
+  const groups = projectId ? projectNav(projectId, pathname, view) : [];
   const replies = counts ? counts.repliesReady : null;
   const planLabel = plan ? PLAN_LABEL[plan] : null;
 

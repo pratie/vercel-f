@@ -32,15 +32,15 @@ const fraunces = Fraunces({
 });
 
 export const metadata: Metadata = {
-  title: 'SneakyGuy: Find Leads on Reddit. Get Recommended by ChatGPT.',
-  description: 'Your buyers ask Reddit, then they ask ChatGPT. SneakyGuy finds the Reddit conversations worth joining, drafts the reply in your voice, and tracks whether ChatGPT, Gemini, Perplexity and Claude start naming you.',
+  title: 'SneakyGuy: Find Leads on Reddit. Reply Before Your Competitors Do.',
+  description: 'SneakyGuy finds the Reddit threads where people ask for a product like yours, scores them for buying intent, drafts the reply in your voice, and shows the threads that rank on Google.',
   icons: {
     icon: '/favicon.ico',
   },
   metadataBase: new URL('https://www.sneakyguy.com'),
   openGraph: {
-    title: 'SneakyGuy: Find Leads on Reddit. Get Recommended by ChatGPT.',
-    description: 'Your buyers ask Reddit, then they ask ChatGPT. Find the conversations worth joining, and track whether AI assistants start recommending you.',
+    title: 'SneakyGuy: Find Leads on Reddit. Reply Before Your Competitors Do.',
+    description: 'Find the Reddit conversations worth joining, with a reply drafted for each one.',
     url: 'https://www.sneakyguy.com',
     siteName: 'SneakyGuy',
     images: [
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         url: 'https://www.sneakyguy.com/images/og-image-v2.png',
         width: 1200,
         height: 630,
-        alt: 'SneakyGuy: find leads on Reddit, get recommended by ChatGPT',
+        alt: 'SneakyGuy: find leads on Reddit',
       },
     ],
     locale: 'en_US',
@@ -58,8 +58,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'SneakyGuy: Find Leads on Reddit. Get Recommended by ChatGPT.',
-    description: 'Find the Reddit conversations worth joining, then track whether ChatGPT, Gemini, Perplexity and Claude start naming you.',
+    title: 'SneakyGuy: Find Leads on Reddit. Reply Before Your Competitors Do.',
+    description: 'Find the Reddit conversations worth joining, with a reply drafted for each one.',
     images: ['https://www.sneakyguy.com/images/og-image-v2.png'],
     creator: '@snow_stark17',
   },

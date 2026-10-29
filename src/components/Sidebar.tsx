@@ -1,7 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { Suspense, useCallback, useEffect, useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from './AuthContext';
 import { DesktopNav } from '@/components/nav/DesktopNav';
 import { MobileNav } from '@/components/nav/MobileNav';
@@ -18,10 +18,25 @@ import { useNavData } from '@/components/nav/useNavData';
  * useNavData, which caches so route changes do not refetch.
  */
 export function Sidebar() {
+  // useSearchParams needs a Suspense boundary on statically rendered pages;
+  // the fallback is the same nav without the ?view= param.
+  return (
+    <Suspense fallback={<SidebarInner view={null} />}>
+      <SidebarWithParams />
+    </Suspense>
+  );
+}
+
+function SidebarWithParams() {
+  const searchParams = useSearchParams();
+  return <SidebarInner view={searchParams?.get('view') ?? null} />;
+}
+
+function SidebarInner({ view }: { view: string | null }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
   const projectId = openProjectId(pathname);
-  const { projects, plan, autopilot, counts } = useNavData(projectId);
+  const { projects, plan, autopilot, counts } = useNavData(projectId, view);
   const project = projectId ? projects.find((p) => String(p.id) === projectId) : undefined;
 
   const [collapsed, setCollapsed] = useState(false);
@@ -34,7 +49,7 @@ export function Sidebar() {
   }, []);
 
   // Close the sheet on navigation.
-  useEffect(() => { setSheetOpen(false); }, [pathname]);
+  useEffect(() => { setSheetOpen(false); }, [pathname, view]);
 
   const toggleCollapse = useCallback(() => {
     setCollapsed((prev) => {
@@ -51,6 +66,7 @@ export function Sidebar() {
     <>
       <MobileNav
         pathname={pathname}
+        view={view}
         projects={projects}
         project={project}
         projectId={projectId}
@@ -64,6 +80,7 @@ export function Sidebar() {
       />
       <DesktopNav
         pathname={pathname}
+        view={view}
         projects={projects}
         project={project}
         projectId={projectId}

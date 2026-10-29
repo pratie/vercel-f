@@ -180,8 +180,8 @@ export default function ProjectsPage() {
                 <h1 className="font-play text-[30px] font-extrabold leading-[1.05] tracking-[-0.025em] text-ink-900 sm:text-[34px]">Projects</h1>
                 <p className="mt-1.5 text-[13px] text-ink-400">
                   {projects.length === 1
-                    ? <>One product watched on Reddit and in AI answers</>
-                    : <><span className="font-semibold tabular-nums text-ink-900">{projects.length}</span> products watched on Reddit and in AI answers</>}
+                    ? <>One product watched on Reddit</>
+                    : <><span className="font-semibold tabular-nums text-ink-900">{projects.length}</span> products watched on Reddit</>}
                 </p>
               </div>
               <button onClick={handleNewProject} className={BTN_PRIMARY}>
