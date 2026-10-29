@@ -74,7 +74,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     if (user) {
-      const redirectTo = searchParams.get('redirect') || '/projects';
+      const redirectTo = searchParams.get('redirect') || '/home';
       router.push(redirectTo);
       return;
     }

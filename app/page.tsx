@@ -85,7 +85,7 @@ export default function LandingPage() {
 
   useEffect(() => {
     if (user && pathname === '/') {
-      router.push('/projects');
+      router.push('/home');
     }
   }, [user, router, pathname]);
 

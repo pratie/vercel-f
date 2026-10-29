@@ -119,7 +119,7 @@ export function DesktopNav({
     >
       {/* Brand */}
       <div className={cn('flex h-16 shrink-0 items-center', collapsed ? 'justify-center' : 'justify-between px-4')}>
-        <Link href="/projects" className={cn('flex items-center gap-2 rounded-lg', FOCUS_RING)} aria-label="SneakyGuy, all projects">
+        <Link href="/home" className={cn('flex items-center gap-2 rounded-lg', FOCUS_RING)} aria-label="SneakyGuy home">
           <Image src="/logo.png" alt="" width={34} height={21} priority className="no-outline h-auto w-[34px] shrink-0" />
           {!collapsed && <span className="font-play text-[18px] font-extrabold tracking-[-0.02em] text-ink-900">SneakyGuy</span>}
         </Link>

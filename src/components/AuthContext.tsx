@@ -37,7 +37,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!user?.token && !isPublicRoute) {
       router.push('/');
     } else if (user?.token && pathname === '/login') {
-      router.push('/projects');
+      router.push('/home');
     }
   }, [user, router, pathname, isInitialized, isPublicRoute]);
 

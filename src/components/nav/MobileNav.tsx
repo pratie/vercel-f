@@ -61,7 +61,7 @@ export function MobileNav({
     <>
       {/* Top bar */}
       <header className="md:hidden sticky top-0 z-40 flex h-14 items-center gap-2 border-b-2 border-[#1c1917]/[0.08] bg-white px-4">
-        <Link href="/projects" className={cn('flex shrink-0 items-center rounded-lg', FOCUS_RING)} aria-label="SneakyGuy, all projects">
+        <Link href="/home" className={cn('flex shrink-0 items-center rounded-lg', FOCUS_RING)} aria-label="SneakyGuy home">
           <Image src="/logo.png" alt="" width={28} height={17} className="no-outline h-auto w-[28px]" />
         </Link>
         {project ? (

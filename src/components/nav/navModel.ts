@@ -95,3 +95,14 @@ export function projectInitial(name: string) {
 
 export const FOCUS_RING =
   'focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-white';
+
+// The project you were last in. The sidebar keeps showing its full nav on
+// pages outside a project (settings, billing, the project list), and /home
+// sends you straight back to it after sign-in.
+const LAST_PROJECT_KEY = 'last-project-id';
+export function rememberProject(id: string) {
+  try { localStorage.setItem(LAST_PROJECT_KEY, id); } catch { /* storage blocked */ }
+}
+export function lastProjectId(): string | null {
+  try { return localStorage.getItem(LAST_PROJECT_KEY); } catch { return null; }
+}

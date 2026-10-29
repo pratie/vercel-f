@@ -5,7 +5,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 import { useAuth } from './AuthContext';
 import { DesktopNav } from '@/components/nav/DesktopNav';
 import { MobileNav } from '@/components/nav/MobileNav';
-import { openProjectId } from '@/components/nav/navModel';
+import { lastProjectId, openProjectId, rememberProject } from '@/components/nav/navModel';
 import { useNavData } from '@/components/nav/useNavData';
 
 /**
@@ -35,9 +35,27 @@ function SidebarWithParams() {
 function SidebarInner({ view }: { view: string | null }) {
   const pathname = usePathname();
   const { logout, user } = useAuth();
-  const projectId = openProjectId(pathname);
+  // Inside a project the URL says which one. Everywhere else (settings, the
+  // project list, billing) keep showing the project you were last in, so the
+  // nav never empties out and you never have to click back into a project.
+  const routeId = openProjectId(pathname);
+  const [rememberedId, setRememberedId] = useState<string | null>(null);
+  useEffect(() => {
+    if (routeId) { rememberProject(routeId); setRememberedId(routeId); }
+    else setRememberedId(lastProjectId());
+  }, [routeId]);
+  const projectId = routeId ?? rememberedId ?? undefined;
   const { projects, plan, autopilot, counts } = useNavData(projectId, view);
   const project = projectId ? projects.find((p) => String(p.id) === projectId) : undefined;
+
+  // The remembered project was deleted, or nothing is remembered yet: fall
+  // back to the first project once the list is in.
+  useEffect(() => {
+    if (routeId || !projects.length) return;
+    if (!rememberedId || !projects.some((p) => String(p.id) === rememberedId)) {
+      setRememberedId(String(projects[0].id));
+    }
+  }, [routeId, rememberedId, projects]);
 
   const [collapsed, setCollapsed] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
