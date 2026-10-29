@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowRight, ChevronsLeft, ChevronsRight, CreditCard, FolderKanban, LogOut, Settings } from 'lucide-react';
+import { ChevronsLeft, ChevronsRight, CreditCard, FolderKanban, LogOut, Settings } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { Project } from '@/lib/api';
 import { BTN_PRIMARY } from '@/components/ui/sticker';
@@ -106,7 +106,6 @@ export function DesktopNav({
   userEmail?: string;
 }) {
   const groups = projectId ? projectNav(projectId, pathname, view) : [];
-  const replies = counts ? counts.repliesReady : null;
   const planLabel = plan ? PLAN_LABEL[plan] : null;
 
   return (
@@ -153,32 +152,7 @@ export function DesktopNav({
       <div className={cn('flex-1 min-h-0 overflow-y-auto pb-3', collapsed ? 'px-3 pt-3' : 'px-4 pt-4')}>
         {projectId ? (
           <>
-            {/* The one thing to do next */}
-            {!collapsed && (
-              <Link
-                href={`/mentions/${projectId}/replies`}
-                className={cn(
-                  'group block rounded-xl border-2 border-[#1c1917] p-3.5 shadow-[4px_4px_0_#1c1917]',
-                  'transition-[transform,box-shadow] duration-150 motion-reduce:transition-none hover:-translate-x-px hover:-translate-y-px hover:shadow-[5px_5px_0_#1c1917]',
-                  replies ? 'bg-[#d13800] text-white' : 'bg-[#fbfaf9] text-ink-900',
-                  FOCUS_RING
-                )}
-                aria-label={replies === null ? 'Reply queue, loading' : replies ? `Reply queue, ${replies} ${replies === 1 ? 'reply' : 'replies'} ready` : 'Reply queue, all caught up'}
-              >
-                <span className={cn('block text-[11.5px] font-semibold', replies ? 'text-white/85' : 'text-ink-400')}>Up next</span>
-                <span className="mt-1 flex items-end justify-between gap-2">
-                  <span className="font-play text-[34px] font-extrabold leading-none tabular-nums tracking-[-0.03em]" aria-hidden="true">
-                    {replies === null ? <span className="inline-block h-8 w-10 animate-pulse rounded bg-current opacity-20 motion-reduce:animate-none" /> : replies}
-                  </span>
-                  <ArrowRight className={cn('mb-0.5 h-5 w-5 shrink-0 transition-transform motion-reduce:transition-none group-hover:translate-x-0.5', replies ? 'text-white' : 'text-ink-400')} aria-hidden="true" />
-                </span>
-                <span className={cn('mt-1 block text-[13px] font-semibold leading-tight', replies ? 'text-white' : 'text-ink-600')} aria-hidden="true">
-                  {replies === null ? 'Counting replies' : replies === 0 ? 'Reply queue is clear' : replies === 1 ? 'reply ready to post' : 'replies ready to post'}
-                </span>
-              </Link>
-            )}
-
-            <nav className={cn('mt-4', collapsed && 'mt-0')} aria-label="Project sections">
+            <nav aria-label="Project sections">
               {groups.map((g, gi) => (
                 <div key={g.label ?? 'top'} className={gi === 0 ? '' : collapsed ? 'mt-2 border-t-2 border-[#1c1917]/[0.08] pt-2' : 'mt-3'}>
                   {g.label && !collapsed && (
