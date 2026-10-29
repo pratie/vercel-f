@@ -26,6 +26,8 @@ interface MentionCardProps {
   /** When the DM was marked sent (ms), from local triage state. */
   dmSentAt?: number;
   onDmSent?: (id: number) => void;
+  /** Detail opened inside its own list row: the row already shows the title and meta. */
+  inline?: boolean;
 }
 
 /** Match + intent collapsed into one quiet string: "78% match · Solution seeking". */
@@ -43,7 +45,7 @@ function signal(mention: Mention): string | null {
  * under the title, then the reasoning, then the full post.
  */
 export function MentionCard({
-  mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row', focus = 'reply', dmSentAt, onDmSent,
+  mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row', focus = 'reply', dmSentAt, onDmSent, inline = false,
 }: MentionCardProps) {
   const isDetail = variant === 'detail';
   const dmFirst = focus === 'dm';
@@ -388,12 +390,14 @@ export function MentionCard({
   if (isDetail) {
     return (
       <article>
+        {!inline && <>
         <h3
           className="font-play text-[22px] font-bold leading-[1.25] tracking-[-0.02em] text-ink-900"
           style={{ textWrap: 'pretty' } as React.CSSProperties}
           dangerouslySetInnerHTML={{ __html: highlightKeywordsSafe(mention.title, mention.matching_keywords) }}
         />
         {metaLine}
+        </>}
 
         {dmFirst ? (
           <div className="mt-4">{dm ? dmBox : dmActions}</div>
@@ -409,9 +413,7 @@ export function MentionCard({
         {mention.content && (
           <div className="mt-5 border-t-2 border-[#1c1917]/[0.08] pt-4">
             <p className="mb-1.5 text-[12px] font-semibold text-ink-400">The post</p>
-            <p className="max-w-[68ch] whitespace-pre-wrap text-[14px] leading-[1.7] text-ink-700">
-              {mention.content}
-            </p>
+            <PostBody text={mention.content} />
           </div>
         )}
       </article>
@@ -470,5 +472,37 @@ export function MentionCard({
         {dmBox && <div className="mt-3">{dmBox}</div>}
       </div>
     </article>
+  );
+}
+
+/** Reddit hands back HTML entities and paragraphs padded with blank lines. */
+export function cleanRedditText(text: string) {
+  return text
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&#x200B;/gi, '')
+    .replace(/\n\s*\n+/g, '\n')
+    .trim();
+}
+
+/** The post text, cut to a few lines until asked for in full. */
+function PostBody({ text }: { text: string }) {
+  const clean = cleanRedditText(text);
+  const long = clean.length > 420 || clean.split('\n').length > 6;
+  const [full, setFull] = useState(false);
+  return (
+    <>
+      <p className={`max-w-[72ch] whitespace-pre-wrap text-[14px] leading-[1.65] text-ink-700 ${long && !full ? 'line-clamp-5' : ''}`}>
+        {clean}
+      </p>
+      {long && (
+        <button
+          type="button"
+          onClick={() => setFull((v) => !v)}
+          className="mt-1.5 rounded text-[13px] font-semibold text-ink-900 underline-offset-2 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+        >
+          {full ? 'Show less' : 'Show the whole post'}
+        </button>
+      )}
+    </>
   );
 }

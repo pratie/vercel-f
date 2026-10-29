@@ -1,19 +1,16 @@
 'use client';
 
-// The two-pane lead inbox (desktop). The job is "which thread do I answer,
-// and what do I say?", so the list is built for ranking at a glance (a big
-// score badge, the community, the intent) and the right pane holds one lead
-// in full with its reply flow. Both panes scroll on their own, like a mail
-// client, so the page never grows to thousands of pixels. J and K move
-// through the queue.
+// The lead inbox (desktop): one uniform white row per thread, ranked for a
+// glance (score, community, age, intent, status). Clicking a row opens it in
+// place with the full post and the reply flow; clicking it again closes it.
+// Only one row is open at a time. J and K move through the list.
 //
 // Below lg the page keeps the single-column MentionCard list instead.
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Check, MessageCircle, Send } from 'lucide-react';
-import { MentionCard } from './MentionCard';
+import { Check, ChevronDown, MessageCircle, Send } from 'lucide-react';
+import { MentionCard, cleanRedditText } from './MentionCard';
 import { Mention, intentLabel, isHighIntent, isUnscored, relativeTime } from '@/lib/mentions';
-import { STICKER_PANEL } from '@/components/ui/sticker';
 
 interface LeadInboxProps {
   mentions: Mention[];
@@ -33,9 +30,6 @@ interface LeadInboxProps {
   /** Open on this lead when the list first renders (from a deep link). */
   initialSelectedId?: number | null;
 }
-
-/** Height of both panes: the viewport minus the page header and toolbar. */
-const PANE_HEIGHT = 'h-[calc(100vh-13.5rem)] min-h-[420px]';
 
 function ScoreBadge({ mention }: { mention: Mention }) {
   if (isUnscored(mention) || mention.relevance_score == null) {
@@ -69,23 +63,30 @@ export function LeadInbox({
   mentions, viewed, published, onViewed, onPublished, remaining, onLoadMore,
   cardFocus = 'reply', dmSent = {}, onDmSent, footer, initialSelectedId,
 }: LeadInboxProps) {
+  // Queue pages (they pass a footer) open on the first lead; the lead list
+  // starts with every row closed unless a deep link names one.
   const [selectedId, setSelectedId] = useState<number | null>(
-    (initialSelectedId && mentions.some((m) => m.id === initialSelectedId) ? initialSelectedId : null) ?? mentions[0]?.id ?? null
+    (initialSelectedId && mentions.some((m) => m.id === initialSelectedId) ? initialSelectedId : null)
+      ?? (footer ? mentions[0]?.id ?? null : null)
   );
-  // Where the selection was last seen, so when a lead leaves the list (marked
-  // posted, sent) the queue moves on to the next one instead of back to the top.
+  // Where the open row was last seen, so when a lead leaves the list (marked
+  // posted, sent) the next one opens in its place instead of the top one.
   const lastIndex = useRef(0);
 
-  // Keep a valid selection when the list changes underneath it.
   useEffect(() => {
-    if (mentions.some((m) => m.id === selectedId)) return;
+    if (selectedId == null || mentions.some((m) => m.id === selectedId)) return;
     const next = mentions[Math.min(lastIndex.current, mentions.length - 1)];
     setSelectedId(next?.id ?? null);
   }, [mentions, selectedId]);
 
+  // Bring a newly opened row to the top of the view.
+  useEffect(() => {
+    if (selectedId == null) return;
+    document.getElementById(`lead-row-${selectedId}`)?.scrollIntoView({ block: 'nearest' });
+  }, [selectedId]);
+
   const index = useMemo(() => mentions.findIndex((m) => m.id === selectedId), [mentions, selectedId]);
   useEffect(() => { if (index >= 0) lastIndex.current = index; }, [index]);
-  const selected = index >= 0 ? mentions[index] : null;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -106,118 +107,99 @@ export function LeadInbox({
     return () => window.removeEventListener('keydown', onKey);
   }, [mentions, index]);
 
+  // Clicking the open row again closes it.
+  const toggle = (id: number) => setSelectedId((cur) => (cur === id ? null : id));
+
   return (
-    <div className="grid grid-cols-[minmax(0,340px)_minmax(0,1fr)] gap-5 items-start">
-      {/* Ranked list */}
-      <div className={`flex flex-col ${PANE_HEIGHT}`}>
-        {/* The extra padding gives the active sticker's offset shadow room inside the scroll box. */}
-        <ul className="-mx-1.5 min-h-0 flex-1 space-y-1.5 overflow-y-auto px-1.5 pb-2 pt-1" aria-label="Leads">
-          {mentions.map((m) => {
-            const active = m.id === selectedId;
-            const replied = !!published[m.id];
-            const messaged = !!dmSent[m.id];
-            const seen = viewed.has(m.id);
-            return (
-              <li key={m.id}>
-                <button
-                  id={`lead-row-${m.id}`}
-                  type="button"
-                  onClick={() => setSelectedId(m.id)}
-                  aria-current={active ? 'true' : undefined}
-                  className={`flex w-full items-start gap-3 rounded-xl border-2 bg-white p-2.5 text-left transition-[box-shadow,border-color,transform] duration-150 motion-reduce:transition-none
-                    focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40
-                    ${active
-                      ? 'border-[#1c1917] shadow-[3px_3px_0_#1c1917]'
-                      : 'border-transparent hover:border-[#1c1917]/[0.15]'}
-                    ${seen && !active && !replied ? 'opacity-60' : ''}`}
-                >
-                  <ScoreBadge mention={m} />
-                  <span className="min-w-0 flex-1">
-                    <span className={`block text-[13.5px] leading-snug text-ink-900 line-clamp-2 ${seen || replied ? 'font-medium' : 'font-semibold'}`}>
-                      {m.title}
-                    </span>
-                    <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[12px] text-ink-400">
-                      <span className="font-medium text-ink-600">r/{m.subreddit}</span>
-                      <span aria-hidden="true">·</span>
-                      <span>{relativeTime(m.created_utc)}</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="inline-flex items-center gap-1"><MessageCircle className="h-3 w-3" aria-hidden="true" />{m.num_comments}</span>
-                    </span>
-                    {(m.intent || replied || m.draft_reply || messaged) && (
-                      <span className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-[12px] text-ink-400">
-                        {m.intent && (
-                          <span className={isHighIntent(m) ? 'font-semibold text-[#047857]' : ''}>{intentLabel(m.intent)}</span>
-                        )}
-                        {m.intent && replied && <span aria-hidden="true">·</span>}
-                        {replied && (
-                          <span className="inline-flex items-center gap-1 font-semibold text-[#047857]"><Check className="h-3 w-3" aria-hidden="true" />Replied</span>
-                        )}
-                        {!replied && m.draft_reply && (
-                          <>
-                            {m.intent && <span aria-hidden="true">·</span>}
-                            <span className="font-semibold text-[#b83200]">Reply ready</span>
-                          </>
-                        )}
-                        {messaged && (
-                          <>
-                            {(m.intent || replied || m.draft_reply) && <span aria-hidden="true">·</span>}
-                            <span className="inline-flex items-center gap-1 font-semibold text-[#047857]"><Send className="h-3 w-3" aria-hidden="true" />Messaged</span>
-                          </>
-                        )}
-                      </span>
-                    )}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-          {remaining > 0 && (
-            <li className="pt-1">
+    <div>
+      <ol className="border-t border-black/[0.08]" aria-label="Leads">
+        {mentions.map((m, i) => {
+          const open = m.id === selectedId;
+          const replied = !!published[m.id];
+          const messaged = !!dmSent[m.id];
+          const seen = viewed.has(m.id);
+          return (
+            <li key={m.id} id={`lead-row-${m.id}`} className="border-b border-black/[0.08] bg-white">
               <button
                 type="button"
-                onClick={onLoadMore}
-                className="h-10 w-full rounded-xl border-2 border-dashed border-ink-300 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+                onClick={() => toggle(m.id)}
+                aria-expanded={open}
+                className={`group flex w-full items-center gap-4 px-2 py-3.5 text-left transition-colors duration-150 motion-reduce:transition-none
+                  hover:bg-[#fcfbf9] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#ff4500]/40
+                  ${seen && !open && !replied ? 'opacity-60 hover:opacity-100' : ''}`}
               >
-                Show {Math.min(25, remaining)} more
-                <span className="font-normal text-ink-400"> ({remaining} left)</span>
+                <ScoreBadge mention={m} />
+                <span className="min-w-0 flex-1">
+                  <span className={`block text-[15px] leading-snug text-ink-900 line-clamp-1 ${seen || replied ? 'font-medium' : 'font-semibold'}`}>
+                    {cleanRedditText(m.title)}
+                  </span>
+                  <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[12.5px] text-ink-400">
+                    <span className="font-semibold text-ink-600">r/{m.subreddit}</span>
+                    <span aria-hidden="true">·</span>
+                    <span>{relativeTime(m.created_utc)}</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="inline-flex items-center gap-1"><MessageCircle className="h-3 w-3" aria-hidden="true" />{m.num_comments}</span>
+                    {m.intent && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span className={isHighIntent(m) ? 'font-semibold text-[#047857]' : ''}>{intentLabel(m.intent)}</span>
+                      </>
+                    )}
+                  </span>
+                </span>
+                <span className="hidden shrink-0 items-center gap-3 text-[12.5px] font-semibold sm:flex">
+                  {replied && <span className="inline-flex items-center gap-1 text-[#047857]"><Check className="h-3.5 w-3.5" aria-hidden="true" />Replied</span>}
+                  {!replied && m.draft_reply && <span className="text-[#b83200]">Reply ready</span>}
+                  {messaged && <span className="inline-flex items-center gap-1 text-[#047857]"><Send className="h-3.5 w-3.5" aria-hidden="true" />Messaged</span>}
+                </span>
+                <ChevronDown
+                  className={`h-4 w-4 shrink-0 text-ink-400 transition-transform duration-150 motion-reduce:transition-none ${open ? 'rotate-180 text-ink-900' : ''}`}
+                  aria-hidden="true"
+                />
               </button>
+
+              {open && (
+                <div className="border-t border-black/[0.06] px-2 pb-5 pt-0 sm:pl-[64px]">
+                  <MentionCard
+                    key={m.id}
+                    variant="detail"
+                    inline
+                    focus={cardFocus}
+                    mention={m}
+                    viewed={seen}
+                    publishedUrl={published[m.id]}
+                    dmSentAt={dmSent[m.id]}
+                    onViewed={onViewed}
+                    onPublished={onPublished}
+                    onDmSent={onDmSent}
+                  />
+                  {footer && (
+                    <div className="mt-4 border-t border-black/[0.06] pt-3">
+                      {footer(m, { index: i, total: mentions.length })}
+                    </div>
+                  )}
+                </div>
+              )}
             </li>
-          )}
-        </ul>
-        <p className="shrink-0 pt-2 text-center text-[11.5px] text-ink-400">
+          );
+        })}
+      </ol>
+      <div className="flex items-center justify-between gap-4 pt-3">
+        <p className="text-[11.5px] text-ink-400">
           <kbd className="rounded border border-ink-300 px-1 font-sans">J</kbd> next{' '}
           <kbd className="ml-1.5 rounded border border-ink-300 px-1 font-sans">K</kbd> previous
         </p>
+        {remaining > 0 && (
+          <button
+            type="button"
+            onClick={onLoadMore}
+            className="h-10 rounded-xl border-2 border-dashed border-ink-300 px-4 text-[13px] font-semibold text-ink-600 transition-colors hover:border-[#1c1917] hover:text-ink-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+          >
+            Show {Math.min(25, remaining)} more
+            <span className="font-normal text-ink-400"> ({remaining} left)</span>
+          </button>
+        )}
       </div>
-
-      {/* Reading pane */}
-      {selected ? (
-        <div className={`${STICKER_PANEL} ${PANE_HEIGHT} flex flex-col overflow-hidden`}>
-          <div className="min-h-0 flex-1 overflow-y-auto p-6">
-            <MentionCard
-              key={selected.id}
-              variant="detail"
-              focus={cardFocus}
-              mention={selected}
-              viewed={viewed.has(selected.id)}
-              publishedUrl={published[selected.id]}
-              dmSentAt={dmSent[selected.id]}
-              onViewed={onViewed}
-              onPublished={onPublished}
-              onDmSent={onDmSent}
-            />
-          </div>
-          {footer && (
-            <div className="shrink-0 border-t-2 border-[#1c1917] bg-[#fcfbf9] px-4 py-3">
-              {footer(selected, { index, total: mentions.length })}
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="rounded-2xl border-2 border-dashed border-ink-300 p-10 text-center text-[14px] text-ink-400">
-          Pick a lead on the left to read it and draft a reply.
-        </div>
-      )}
     </div>
   );
 }
