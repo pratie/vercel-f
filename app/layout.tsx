@@ -47,7 +47,7 @@ export const metadata: Metadata = {
       {
         // Bumped filename so Slack, X and LinkedIn fetch fresh art instead of
         // serving the card they already cached for this URL.
-        url: 'https://www.sneakyguy.com/images/og-image-v2.png',
+        url: 'https://www.sneakyguy.com/images/og-image-v3.png',
         width: 1200,
         height: 630,
         alt: 'SneakyGuy: find leads on Reddit',
@@ -60,7 +60,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'SneakyGuy: Find Leads on Reddit. Reply Before Your Competitors Do.',
     description: 'Find the Reddit conversations worth joining, with a reply drafted for each one.',
-    images: ['https://www.sneakyguy.com/images/og-image-v2.png'],
+    images: ['https://www.sneakyguy.com/images/og-image-v3.png'],
     creator: '@snow_stark17',
   },
   verification: {
