@@ -23,6 +23,9 @@ export function middleware(request: NextRequest) {
     pathname.endsWith('.ico') ||
     pathname === '/favicon.ico' ||
     pathname.startsWith('/blog') ||
+    // Crawlers fetch these without a session.
+    pathname === '/sitemap.xml' ||
+    pathname === '/robots.txt' ||
     publicRoutes.includes(pathname)) {
     return NextResponse.next()
   }
