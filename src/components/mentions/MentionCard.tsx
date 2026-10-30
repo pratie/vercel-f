@@ -11,14 +11,22 @@ import {
   isHighIntent, isUnscored, relativeTime,
 } from '@/lib/mentions';
 import { BTN_PRIMARY, BTN_QUIET } from '@/components/ui/sticker';
+import type { ReplyStatus } from '@/lib/api';
+import { isCommentLink } from '@/lib/useTriage';
+import { CommentLinkPrompt } from '@/components/results/CommentLinkPrompt';
+import { ReplyStatusPill } from '@/components/results/ReplyStatusPill';
 
 interface MentionCardProps {
   mention: Mention;
   viewed: boolean;
   publishedUrl?: string;
   onViewed: (id: number) => void;
-  /** Marks the lead as replied in local triage state. */
-  onPublished: (id: number, commentUrl: string) => void;
+  /** Marks the lead as replied (no comment link). */
+  onPublished: (id: number, commentUrl?: string) => void;
+  /** Saves the link to the user's comment, which also marks the lead replied. */
+  onSaveLink?: (id: number, commentUrl: string) => Promise<void>;
+  /** How the posted reply is doing on Reddit. */
+  replyStatus?: ReplyStatus;
   /** "detail" = the reading pane of the two-pane inbox: always open, actions first, full post text. */
   variant?: 'row' | 'detail';
   /** Which flow leads. "dm" puts the message draft first (the DM queue). */
@@ -45,7 +53,7 @@ function signal(mention: Mention): string | null {
  * under the title, then the reasoning, then the full post.
  */
 export function MentionCard({
-  mention, viewed, publishedUrl, onViewed, onPublished, variant = 'row', focus = 'reply', dmSentAt, onDmSent, inline = false,
+  mention, viewed, publishedUrl, onViewed, onPublished, onSaveLink, replyStatus, variant = 'row', focus = 'reply', dmSentAt, onDmSent, inline = false,
 }: MentionCardProps) {
   const isDetail = variant === 'detail';
   const dmFirst = focus === 'dm';
@@ -56,6 +64,9 @@ export function MentionCard({
   const [editing, setEditing] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [expanded, setExpanded] = useState(isDetail);
+  // The "Paste the link to your comment" step: after Copy and open Reddit,
+  // after Mark as replied, or later from Add comment link.
+  const [askLink, setAskLink] = useState(false);
   const panelId = useId();
 
   const unscored = isUnscored(mention);
@@ -94,6 +105,7 @@ export function MentionCard({
       await navigator.clipboard.writeText(reply);
       window.open(mention.url, '_blank', 'noopener,noreferrer');
       onViewed(mention.id);
+      if (onSaveLink && !isCommentLink(publishedUrl)) setAskLink(true);
       toast.success('Reply copied. Paste it on Reddit');
     } catch {
       toast.error('Failed to copy');
@@ -168,9 +180,34 @@ export function MentionCard({
   );
 
   const markReplied = () => {
-    onPublished(mention.id, mention.url);
-    toast.success('Marked as replied');
+    setAskLink(false);
+    onPublished(mention.id);
+    toast.success('Marked as replied', onSaveLink ? { description: 'Add the comment link any time from Results.' } : undefined);
   };
+
+  /** Mark as replied asks for the link first when we can store one. */
+  const startMarkReplied = () => {
+    if (onSaveLink) setAskLink(true);
+    else markReplied();
+  };
+
+  const saveLink = async (url: string) => {
+    if (!onSaveLink) return;
+    await onSaveLink(mention.id, url);
+    setAskLink(false);
+    toast.success('Link saved. We will check how your comment does.');
+  };
+
+  const linkPrompt = askLink && onSaveLink && (
+    <div className="max-w-[64ch]">
+      <CommentLinkPrompt
+        onSave={saveLink}
+        onSkip={publishedUrl ? undefined : markReplied}
+        onCancel={() => setAskLink(false)}
+        skipLabel="Skip, just mark it replied"
+      />
+    </div>
+  );
 
   /** The DM queue's lead action row: message first, everything else quiet. */
   const dmActions = (
@@ -241,16 +278,30 @@ export function MentionCard({
         <>
           <span aria-hidden="true" className="text-ink-300">·</span>
           <span className="font-semibold text-[#047857]">Replied</span>
+          <ReplyStatusPill status={replyStatus} size="sm" />
         </>
       )}
     </p>
   );
 
   const repliedBadge = publishedUrl ? (
-    <span className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold text-[#047857]">
-      <Check className="h-3.5 w-3.5" aria-hidden="true" />
-      Replied
-    </span>
+    <>
+      <span className="inline-flex h-10 items-center gap-1.5 rounded-lg px-2 text-[13px] font-semibold text-[#047857]">
+        <Check className="h-3.5 w-3.5" aria-hidden="true" />
+        Replied
+      </span>
+      <ReplyStatusPill status={replyStatus} />
+      {isCommentLink(publishedUrl) ? (
+        <a href={publishedUrl} target="_blank" rel="noopener noreferrer" className={BTN_QUIET}>
+          Your comment
+          <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+        </a>
+      ) : onSaveLink && !askLink && (
+        <button onClick={() => setAskLink(true)} className={BTN_QUIET} title="Paste the link to your comment so we can track it">
+          Add comment link
+        </button>
+      )}
+    </>
   ) : null;
 
   /** The action row shown before a draft exists. */
@@ -280,7 +331,7 @@ export function MentionCard({
       {dmButton}
       {repliedBadge ?? (
         <button
-          onClick={markReplied}
+          onClick={startMarkReplied}
           className={BTN_QUIET}
           title="Posted your own reply? Mark it done so it moves to the Replied tab"
         >
@@ -359,7 +410,7 @@ export function MentionCard({
           {dmButton}
           {repliedBadge ?? (
             <button
-              onClick={markReplied}
+              onClick={startMarkReplied}
               className={BTN_QUIET}
               title="Posted it on Reddit? Mark it done so it moves to the Replied tab"
             >
@@ -404,6 +455,7 @@ export function MentionCard({
         ) : (
           <>
             <div className="mt-4">{reply === null ? actions : replyBox}</div>
+            {linkPrompt && <div className="mt-3">{linkPrompt}</div>}
             {dmBox && <div className="mt-3">{dmBox}</div>}
           </>
         )}
@@ -469,6 +521,7 @@ export function MentionCard({
       <div id={panelId} hidden={!expanded} className="-mt-1 pb-5 pr-4">
         {reasoning}
         <div className={reasoning ? 'mt-4' : ''}>{reply === null ? actions : replyBox}</div>
+        {linkPrompt && <div className="mt-3">{linkPrompt}</div>}
         {dmBox && <div className="mt-3">{dmBox}</div>}
       </div>
     </article>

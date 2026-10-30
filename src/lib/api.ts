@@ -1288,4 +1288,98 @@ export const api = {
         }
         return response.json();
     },
+
+    // Triage (viewed, replied, DM sent) and the results of posted replies.
+
+    async getTriage(brandId: string | number): Promise<{ items: TriageRow[] }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/triage/${brandId}`);
+        if (!response.ok) throw await handleApiError(response, 'Could not load what you have opened and replied to');
+        return response.json();
+    },
+
+    /** Only the fields passed change. true sets, false clears; comment_url "" clears the link. */
+    async setTriage(mentionId: number, patch: TriagePatch): Promise<TriageRow> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/mentions/item/${mentionId}/triage`, {
+            method: 'PATCH',
+            body: JSON.stringify(patch),
+        });
+        if (!response.ok) throw await handleApiError(response, 'Could not save that');
+        return response.json();
+    },
+
+    /** One-time upload of the triage state this browser kept in localStorage. */
+    async importTriage(brandId: string | number, items: TriageImportItem[]): Promise<{ updated: number }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/triage/${brandId}/import`, {
+            method: 'POST',
+            body: JSON.stringify({ items }),
+        });
+        if (!response.ok) throw await handleApiError(response, 'Could not sync your triage state');
+        return response.json();
+    },
+
+    async getResults(brandId: string | number): Promise<ResultsResponse> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/results/${brandId}`);
+        if (!response.ok) throw await handleApiError(response, 'Could not load your results');
+        return response.json();
+    },
 };
+
+/** live | removed | deleted | checking (link saved, first check pending) | unlinked (no comment link yet). */
+export type ReplyStatus = 'live' | 'removed' | 'deleted' | 'checking' | 'unlinked';
+
+export interface TriageRow {
+    id: number;
+    viewed_at: string | null;
+    replied_at: string | null;
+    reply_comment_url: string | null;
+    dm_sent_at: string | null;
+    reply_status: ReplyStatus | null;
+}
+
+export interface TriagePatch {
+    viewed?: boolean;
+    replied?: boolean;
+    dm_sent?: boolean;
+    comment_url?: string;
+}
+
+export interface TriageImportItem {
+    id: number;
+    viewed?: boolean;
+    published_url?: string;
+    dm_sent_at_ms?: number;
+}
+
+export interface ReplyResult {
+    mention_id: number;
+    title: string;
+    subreddit: string;
+    thread_url: string;
+    replied_at: string | null;
+    comment_url: string | null;
+    found_by: 'link' | 'match' | null;
+    status: ReplyStatus;
+    score: number | null;
+    num_replies: number | null;
+    is_top_level: boolean | null;
+    rank: number | null;
+    top_level_count: number | null;
+    thread_removed: boolean;
+    google_position: number | null;
+    last_checked_at: string | null;
+    next_check_at: string | null;
+    hint: string | null;
+    history: { at: string; status: ReplyStatus; score: number | null; num_replies: number | null }[];
+}
+
+export interface ResultsResponse {
+    stats: {
+        replies_posted: number;
+        tracked: number;
+        live: number;
+        live_pct: number | null;
+        total_upvotes: number;
+        top_comments: number;
+    };
+    items: ReplyResult[];
+}

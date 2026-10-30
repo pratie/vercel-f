@@ -11,13 +11,19 @@ import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Check, ChevronDown, MessageCircle, Send } from 'lucide-react';
 import { MentionCard, cleanRedditText } from './MentionCard';
 import { Mention, intentLabel, isHighIntent, isUnscored, relativeTime } from '@/lib/mentions';
+import type { ReplyStatus } from '@/lib/api';
+import { ReplyStatusPill } from '@/components/results/ReplyStatusPill';
 
 interface LeadInboxProps {
   mentions: Mention[];
   viewed: Set<number>;
   published: Record<number, string>;
   onViewed: (id: number) => void;
-  onPublished: (id: number, url: string) => void;
+  onPublished: (id: number, url?: string) => void;
+  /** Save the link to the user's comment (marks replied too). */
+  onSaveLink?: (id: number, url: string) => Promise<void>;
+  /** How each posted reply is doing on Reddit. */
+  replyStatus?: Record<number, ReplyStatus>;
   /** How many leads match the filters beyond the ones in `mentions`. */
   remaining: number;
   onLoadMore: () => void;
@@ -60,7 +66,7 @@ function ScoreBadge({ mention }: { mention: Mention }) {
 }
 
 export function LeadInbox({
-  mentions, viewed, published, onViewed, onPublished, remaining, onLoadMore,
+  mentions, viewed, published, onViewed, onPublished, onSaveLink, replyStatus = {}, remaining, onLoadMore,
   cardFocus = 'reply', dmSent = {}, onDmSent, footer, initialSelectedId,
 }: LeadInboxProps) {
   // Queue pages (they pass a footer) open on the first lead; the lead list
@@ -149,6 +155,7 @@ export function LeadInbox({
                 </span>
                 <span className="hidden shrink-0 items-center gap-3 text-[12.5px] font-semibold sm:flex">
                   {replied && <span className="inline-flex items-center gap-1 text-[#047857]"><Check className="h-3.5 w-3.5" aria-hidden="true" />Replied</span>}
+                  {replied && <ReplyStatusPill status={replyStatus[m.id]} />}
                   {!replied && m.draft_reply && <span className="text-[#b83200]">Reply ready</span>}
                   {messaged && <span className="inline-flex items-center gap-1 text-[#047857]"><Send className="h-3.5 w-3.5" aria-hidden="true" />Messaged</span>}
                 </span>
@@ -171,6 +178,8 @@ export function LeadInbox({
                     dmSentAt={dmSent[m.id]}
                     onViewed={onViewed}
                     onPublished={onPublished}
+                    onSaveLink={onSaveLink}
+                    replyStatus={replyStatus[m.id]}
                     onDmSent={onDmSent}
                   />
                   {footer && (
