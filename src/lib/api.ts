@@ -158,6 +158,7 @@ export interface RedditMention {
     intent?: string;
     author?: string | null;
     draft_reply?: string | null;
+    dm_draft?: string | null;
 }
 
 /** One stored lead that names the brand or a competitor. */
@@ -190,6 +191,47 @@ export interface AutopilotStatus {
     last_scan_at: string | null;
     next_scan_at: string | null;
     drafted_last_7d: number;
+    /** Draft replies for leads scoring at least this. */
+    min_score: number;
+    /** Leads auto-drafted per UTC day, at most. */
+    daily_cap: number;
+    draft_dms: boolean;
+    /** DMs are auto-drafted from this score (min_score + 5). */
+    dm_min_score: number;
+    drafted_today: number;
+    min_score_choices: number[];
+    daily_cap_choices: number[];
+}
+
+export interface AutopilotSettingsInput {
+    enabled?: boolean;
+    min_score?: number;
+    daily_cap?: number;
+    draft_dms?: boolean;
+}
+
+export interface ProjectInstructions {
+    scoring_instructions: string;
+    reply_instructions: string;
+    dm_template: string;
+    max_chars: number;
+    dm_template_variables: string[];
+}
+
+export type Strictness = 'strict' | 'careful' | 'open' | 'unknown';
+
+export interface SubredditRules {
+    name: string;
+    strictness: Strictness;
+    summary: string;
+    rules: { short_name: string; description: string }[];
+    fetched_at: string | null;
+}
+
+export interface DmDraft {
+    author: string;
+    message: string;
+    compose_url: string;
 }
 
 export interface PaymentStatus {
@@ -235,6 +277,7 @@ interface GenerateReplyRequest {
     brand_id: number;
     include_experience: boolean;
     mention_id?: number;
+    previous_draft?: string;
 }
 
 interface PreferencesResponse {
@@ -757,7 +800,10 @@ export const api = {
     },
 
     // Generate reply for a mention
-    generateReply: async (mention: { title: string; content: string; brand_id: number; id?: number }): Promise<string> => {
+    generateReply: async (
+        mention: { title: string; content: string; brand_id: number; id?: number },
+        previousDraft?: string,
+    ): Promise<string> => {
         try {
             const baseUrl = getApiBaseUrl();
             const response = await fetchWithAuth(`${baseUrl}/generate-comment/`, {
@@ -768,6 +814,7 @@ export const api = {
                     brand_id: mention.brand_id,
                     include_experience: true,
                     mention_id: mention.id,
+                    previous_draft: previousDraft || undefined,
                 } as GenerateReplyRequest)
             });
             const data = await response.json();
@@ -1008,9 +1055,13 @@ export const api = {
         if (!response.ok) throw await handleApiError(response, 'Could not save the draft');
     },
 
-    async draftDm(mentionId: number): Promise<{ author: string; message: string; compose_url: string }> {
+    /** previousDraft: the message being replaced ("Draft another"). */
+    async draftDm(mentionId: number, previousDraft?: string): Promise<DmDraft> {
         const baseUrl = getApiBaseUrl();
-        const response = await fetchWithAuth(`${baseUrl}/mentions/item/${mentionId}/dm-draft`, { method: 'POST' });
+        const response = await fetchWithAuth(`${baseUrl}/mentions/item/${mentionId}/dm-draft`, {
+            method: 'POST',
+            body: JSON.stringify({ previous_draft: previousDraft || null }),
+        });
         if (!response.ok) throw await handleApiError(response, 'Could not draft a message');
         return response.json();
     },
@@ -1029,12 +1080,55 @@ export const api = {
     },
 
     async setAutopilot(brandId: string | number, enabled: boolean): Promise<AutopilotStatus> {
+        return api.updateAutopilot(brandId, { enabled });
+    },
+
+    /** Save any subset of the autopilot controls. */
+    async updateAutopilot(brandId: string | number, settings: AutopilotSettingsInput): Promise<AutopilotStatus> {
         const response = await fetchWithAuth(`${getApiBaseUrl()}/api/autopilot/${brandId}`, {
             method: 'PUT',
-            body: JSON.stringify({ enabled }),
+            body: JSON.stringify(settings),
         });
         if (!response.ok) throw await handleApiError(response, 'Could not update autopilot');
         return response.json();
+    },
+
+    async getInstructions(brandId: string | number): Promise<ProjectInstructions> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/projects/${brandId}/instructions`);
+        if (!response.ok) throw await handleApiError(response, 'Could not load custom instructions');
+        return response.json();
+    },
+
+    /** Fields left out stay as they are; an empty string clears one. */
+    async saveInstructions(
+        brandId: string | number,
+        fields: Partial<Pick<ProjectInstructions, 'scoring_instructions' | 'reply_instructions' | 'dm_template'>>,
+    ): Promise<ProjectInstructions> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/projects/${brandId}/instructions`, {
+            method: 'PUT',
+            body: JSON.stringify(fields),
+        });
+        if (!response.ok) throw await handleApiError(response, 'Could not save custom instructions');
+        return response.json();
+    },
+
+    /** Draft a DM for one lead with a template, without saving anything. */
+    async previewDmTemplate(brandId: string | number, mentionId: number, template: string): Promise<{ author: string; message: string }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/projects/${brandId}/dm-template/preview`, {
+            method: 'POST',
+            body: JSON.stringify({ mention_id: mentionId, template }),
+        });
+        if (!response.ok) throw await handleApiError(response, 'Could not draft a preview');
+        return response.json();
+    },
+
+    /** Self-promotion strictness for up to 25 subreddits. Cached server side for a week. */
+    async getSubredditRules(names: string[]): Promise<SubredditRules[]> {
+        const qs = encodeURIComponent(names.join(','));
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/subreddit-rules?names=${qs}`);
+        if (!response.ok) throw await handleApiError(response, 'Could not load subreddit rules');
+        const data = await response.json();
+        return data.items || [];
     },
 
     async openBillingPortal(): Promise<string> {

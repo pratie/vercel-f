@@ -42,6 +42,8 @@ export interface Mention {
   intent: string | null;
   /** Reply drafted for this lead, automatically after a scan or on request. */
   draft_reply: string | null;
+  /** DM drafted for this lead (autopilot, or the last one drafted by hand). */
+  dm_draft: string | null;
 }
 
 /** The digest service used to write relevance_score=50 with no intent — that's
@@ -132,6 +134,7 @@ export function transformRawMention(raw: RawMention): Mention {
     explanation: PLACEHOLDER_EXPLANATIONS.includes(explanation.trim()) ? '' : explanation,
     intent: raw.intent && raw.intent !== 'unknown' ? raw.intent : null,
     draft_reply: (raw as { draft_reply?: string | null }).draft_reply || null,
+    dm_draft: (raw as { dm_draft?: string | null }).dm_draft || null,
   };
 }
 

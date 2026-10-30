@@ -1,11 +1,13 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import {
-  ArrowUpRight, Check, Copy, Edit3, Loader2, Send, Sparkles, X,
+  ArrowUpRight, Check, Copy, Edit3, Loader2, RefreshCw, Send, Sparkles, AlertTriangle, Undo2, X,
 } from 'lucide-react';
 import { toast } from 'sonner';
-import { api } from '@/lib/api';
+import { api, DmDraft } from '@/lib/api';
+import { useSubredditRules } from '@/lib/useSubredditRules';
+import { SubredditBadge, rulesUrl } from './SubredditBadge';
 import {
   Mention, highlightKeywordsSafe, intentLabel,
   isHighIntent, isUnscored, relativeTime,
@@ -36,6 +38,18 @@ interface MentionCardProps {
   onDmSent?: (id: number) => void;
   /** Detail opened inside its own list row: the row already shows the title and meta. */
   inline?: boolean;
+  /** This is the open lead: R drafts another (or a first) reply or message. */
+  hotkeys?: boolean;
+}
+
+/** The backend's failure text for a reply it could not draft. */
+const DRAFT_FAILED = 'Sorry, ';
+
+/** Same link the backend builds: Reddit's compose form, prefilled. */
+function composeUrl(author: string, title: string, message: string) {
+  const subject = `Re: ${title.slice(0, 80)}`;
+  return `https://old.reddit.com/message/compose/?to=${encodeURIComponent(author)}`
+    + `&subject=${encodeURIComponent(subject)}&message=${encodeURIComponent(message)}`;
 }
 
 /** Match + intent collapsed into one quiet string: "78% match · Solution seeking". */
@@ -54,11 +68,18 @@ function signal(mention: Mention): string | null {
  */
 export function MentionCard({
   mention, viewed, publishedUrl, onViewed, onPublished, onSaveLink, replyStatus, variant = 'row', focus = 'reply', dmSentAt, onDmSent, inline = false,
+  hotkeys = false,
 }: MentionCardProps) {
   const isDetail = variant === 'detail';
   const dmFirst = focus === 'dm';
   const [reply, setReply] = useState<string | null>(mention.draft_reply);
-  const [dm, setDm] = useState<{ author: string; message: string; compose_url: string } | null>(null);
+  // "Draft another" keeps the draft it replaced one step back, for Undo.
+  const [prevReply, setPrevReply] = useState<string | null>(null);
+  const [regenerating, setRegenerating] = useState(false);
+  const [dm, setDm] = useState<DmDraft | null>(() =>
+    mention.dm_draft && mention.author ? { author: mention.author, message: mention.dm_draft, compose_url: composeUrl(mention.author, mention.title, mention.dm_draft) } : null
+  );
+  const [prevDm, setPrevDm] = useState<DmDraft | null>(null);
   const [dmLoading, setDmLoading] = useState(false);
   const [draft, setDraft] = useState('');
   const [editing, setEditing] = useState(false);
@@ -68,6 +89,10 @@ export function MentionCard({
   // after Mark as replied, or later from Add comment link.
   const [askLink, setAskLink] = useState(false);
   const panelId = useId();
+
+  const rulesFor = useSubredditRules([mention.subreddit]);
+  const rules = rulesFor(mention.subreddit);
+  const strict = rules?.strictness === 'strict';
 
   const unscored = isUnscored(mention);
   const highIntent = isHighIntent(mention);
@@ -128,6 +153,7 @@ export function MentionCard({
     setDmLoading(true);
     try {
       setDm(await api.draftDm(mention.id));
+      setPrevDm(null);
     } catch (error) {
       toast.error('Could not draft a message', {
         description: error instanceof Error ? error.message : 'Please try again.',
@@ -136,6 +162,95 @@ export function MentionCard({
       setDmLoading(false);
     }
   };
+
+  /** A new reply with a different angle. The old one stays one Undo away. */
+  const draftAnotherReply = async () => {
+    if (regenerating || !reply) return;
+    const old = reply;
+    setRegenerating(true);
+    try {
+      const text = await api.generateReply(
+        { title: mention.title, content: mention.content, brand_id: mention.brand_id, id: mention.id },
+        old,
+      );
+      if (text.startsWith(DRAFT_FAILED)) throw new Error('The writer is busy. Try again in a minute.');
+      setPrevReply(old);
+      setReply(text);
+      setDraft(text);
+    } catch (error) {
+      toast.error('Could not draft another reply', {
+        description: error instanceof Error ? error.message : 'Please try again.',
+        action: { label: 'Retry', onClick: draftAnotherReply },
+      });
+    } finally {
+      setRegenerating(false);
+    }
+  };
+
+  const undoReply = async () => {
+    if (prevReply === null) return;
+    const restored = prevReply;
+    setReply(restored);
+    setDraft(restored);
+    setPrevReply(null);
+    try {
+      await api.saveDraft(mention.id, restored);
+    } catch {
+      toast.error('Restored here, but not on the server. It may not survive a reload.');
+    }
+  };
+
+  const draftAnotherDm = async () => {
+    if (dmLoading || !dm) return;
+    const old = dm;
+    setDmLoading(true);
+    try {
+      setDm(await api.draftDm(mention.id, old.message));
+      setPrevDm(old);
+    } catch (error) {
+      toast.error('Could not draft another message', {
+        description: error instanceof Error ? error.message : 'Please try again.',
+        action: { label: 'Retry', onClick: draftAnotherDm },
+      });
+    } finally {
+      setDmLoading(false);
+    }
+  };
+
+  const undoDm = () => {
+    if (!prevDm) return;
+    setDm(prevDm);
+    setPrevDm(null);
+  };
+
+  // R: draft another for the open lead. Ignored while typing, so it never
+  // fights J/K in the inbox or the reply editor.
+  const hotkey = useRef<() => void>(() => {});
+  hotkey.current = () => {
+    if (editing) return;
+    if (dmFirst) {
+      if (dm) draftAnotherDm();
+      else if (canDm) handleDm();
+    } else if (reply !== null) {
+      draftAnotherReply();
+    } else {
+      handleGenerate();
+    }
+  };
+  useEffect(() => {
+    if (!hotkeys) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== 'r' && e.key !== 'R') return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+      const el = e.target as HTMLElement | null;
+      if (el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.tagName === 'SELECT' || el.isContentEditable)) return;
+      if (document.querySelector('[role="dialog"][data-state="open"]')) return;
+      e.preventDefault();
+      hotkey.current();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [hotkeys]);
 
   const sendDm = async () => {
     if (!dm) return;
@@ -162,12 +277,24 @@ export function MentionCard({
           <X className="h-3.5 w-3.5" aria-hidden="true" />
         </button>
       </div>
-      <p className="whitespace-pre-wrap p-4 text-[13.5px] leading-[1.7] text-ink-700">{dm.message}</p>
-      <div className="border-t-2 border-[#1c1917]/[0.08] px-3 py-2">
-        <button onClick={sendDm} className={BTN_PRIMARY}>
+      <p
+        className={`whitespace-pre-wrap p-4 text-[13.5px] leading-[1.7] text-ink-700 transition-opacity duration-150 motion-reduce:transition-none ${dmLoading ? 'opacity-40' : ''}`}
+        aria-busy={dmLoading}
+      >
+        {dm.message}
+      </p>
+      <div className="flex flex-wrap items-center gap-1.5 border-t-2 border-[#1c1917]/[0.08] px-3 py-2">
+        <button onClick={sendDm} disabled={dmLoading} className={BTN_PRIMARY}>
           <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
           Open in Reddit messages
         </button>
+        <DraftAnotherButton busy={dmLoading} onClick={draftAnotherDm} hint={hotkeys} />
+        {prevDm && !dmLoading && (
+          <button onClick={undoDm} className={BTN_QUIET} title="Bring back the message you had before">
+            <Undo2 className="h-3.5 w-3.5" aria-hidden="true" />
+            Undo
+          </button>
+        )}
       </div>
     </div>
   );
@@ -261,7 +388,10 @@ export function MentionCard({
           <span aria-hidden="true" className="text-ink-300">·</span>
         </>
       )}
-      <span className="font-medium text-ink-600">r/{mention.subreddit}</span>
+      <span className="inline-flex items-center gap-1.5">
+        <span className="font-medium text-ink-600">r/{mention.subreddit}</span>
+        <SubredditBadge rules={rules} mode={isDetail ? 'interactive' : 'static'} />
+      </span>
       <span aria-hidden="true" className="text-ink-300">·</span>
       <time title={exactDate}>{relativeTime(mention.created_utc)}</time>
       <span aria-hidden="true" className="text-ink-300">·</span>
@@ -385,9 +515,10 @@ export function MentionCard({
           </div>
         ) : (
           <p
-            className="-m-1.5 cursor-text whitespace-pre-wrap rounded-lg p-1.5 text-[13.5px] leading-[1.7] text-ink-700 transition-colors hover:bg-[#fcfbf9]"
-            onClick={() => { setDraft(reply); setEditing(true); }}
+            className={`-m-1.5 cursor-text whitespace-pre-wrap rounded-lg p-1.5 text-[13.5px] leading-[1.7] text-ink-700 transition-[background-color,opacity] duration-150 hover:bg-[#fcfbf9] motion-reduce:transition-none ${regenerating ? 'opacity-40' : ''}`}
+            onClick={() => { if (!regenerating) { setDraft(reply); setEditing(true); } }}
             title="Click to edit"
+            aria-busy={regenerating}
           >
             {reply}
           </p>
@@ -396,17 +527,25 @@ export function MentionCard({
 
       {!editing && (
         <div className="flex flex-wrap items-center gap-1.5 border-t-2 border-[#1c1917]/[0.08] px-3 py-2">
-          <button onClick={copyAndOpen} className={BTN_PRIMARY}>
+          <button onClick={copyAndOpen} disabled={regenerating} className={BTN_PRIMARY}>
             <Copy className="h-3.5 w-3.5" aria-hidden="true" />
             Copy and open Reddit
           </button>
           <button
             onClick={() => { setDraft(reply); setEditing(true); }}
+            disabled={regenerating}
             className={BTN_QUIET}
           >
             <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
             Edit
           </button>
+          <DraftAnotherButton busy={regenerating} onClick={draftAnotherReply} hint={hotkeys} />
+          {prevReply !== null && !regenerating && (
+            <button onClick={undoReply} className={BTN_QUIET} title="Bring back the reply you had before">
+              <Undo2 className="h-3.5 w-3.5" aria-hidden="true" />
+              Undo
+            </button>
+          )}
           {dmButton}
           {repliedBadge ?? (
             <button
@@ -438,6 +577,33 @@ export function MentionCard({
     </div>
   );
 
+  const strictWarning = strict && rules && (
+    <p className="mt-4 flex max-w-[64ch] items-start gap-2 rounded-xl border-2 border-[#b83200]/20 bg-[#fff1eb] px-3 py-2.5 text-[13px] leading-snug text-[#7c2d12]">
+      <AlertTriangle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#b83200]" aria-hidden="true" />
+      <span>
+        r/{rules.name} removes self-promotion. Lead with the answer; mention your product only if asked.{' '}
+        <a
+          href={rulesUrl(rules.name)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="whitespace-nowrap rounded font-semibold underline underline-offset-2 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40"
+        >
+          Read the rules
+        </a>
+      </span>
+    </p>
+  );
+
+  // Inside an inbox row the meta line (and its badge) is hidden, so the open
+  // lead carries the rule itself. Strict subs get the warning instead.
+  const rulesNote = inline && !strict && rules && rules.strictness !== 'unknown' && rules.summary && (
+    <p className="mt-4 flex max-w-[64ch] flex-wrap items-center gap-x-2 gap-y-1 text-[12.5px] text-ink-600">
+      <span className="font-medium">r/{rules.name}</span>
+      <SubredditBadge rules={rules} />
+      <span>{rules.summary}</span>
+    </p>
+  );
+
   if (isDetail) {
     return (
       <article>
@@ -454,6 +620,7 @@ export function MentionCard({
           <div className="mt-4">{dm ? dmBox : dmActions}</div>
         ) : (
           <>
+            {strictWarning || rulesNote}
             <div className="mt-4">{reply === null ? actions : replyBox}</div>
             {linkPrompt && <div className="mt-3">{linkPrompt}</div>}
             {dmBox && <div className="mt-3">{dmBox}</div>}
@@ -520,11 +687,33 @@ export function MentionCard({
 
       <div id={panelId} hidden={!expanded} className="-mt-1 pb-5 pr-4">
         {reasoning}
-        <div className={reasoning ? 'mt-4' : ''}>{reply === null ? actions : replyBox}</div>
+        {strictWarning}
+        <div className={reasoning || strictWarning ? 'mt-4' : ''}>{reply === null ? actions : replyBox}</div>
         {linkPrompt && <div className="mt-3">{linkPrompt}</div>}
         {dmBox && <div className="mt-3">{dmBox}</div>}
       </div>
     </article>
+  );
+}
+
+/** "Draft another": same width while busy so the row never jumps. */
+function DraftAnotherButton({ busy, onClick, hint }: { busy: boolean; onClick: () => void; hint?: boolean }) {
+  return (
+    <button
+      onClick={onClick}
+      disabled={busy}
+      className={BTN_QUIET}
+      title={hint ? 'Draft another (R)' : 'Draft another with a different angle'}
+      aria-keyshortcuts={hint ? 'R' : undefined}
+    >
+      <span className="relative inline-flex h-3.5 w-3.5 items-center justify-center" aria-hidden="true">
+        {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin motion-reduce:animate-none" /> : <RefreshCw className="h-3.5 w-3.5" />}
+      </span>
+      <span className="relative">
+        <span className={busy ? 'invisible' : ''}>Draft another</span>
+        {busy && <span className="absolute inset-0">Drafting</span>}
+      </span>
+    </button>
   );
 }
 

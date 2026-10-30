@@ -10,9 +10,11 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Check, ChevronDown, MessageCircle, Send } from 'lucide-react';
 import { MentionCard, cleanRedditText } from './MentionCard';
+import { SubredditBadge } from './SubredditBadge';
 import { Mention, intentLabel, isHighIntent, isUnscored, relativeTime } from '@/lib/mentions';
 import type { ReplyStatus } from '@/lib/api';
 import { ReplyStatusPill } from '@/components/results/ReplyStatusPill';
+import { useSubredditRules } from '@/lib/useSubredditRules';
 
 interface LeadInboxProps {
   mentions: Mention[];
@@ -92,6 +94,7 @@ export function LeadInbox({
   }, [selectedId]);
 
   const index = useMemo(() => mentions.findIndex((m) => m.id === selectedId), [mentions, selectedId]);
+  const rulesFor = useSubredditRules(useMemo(() => Array.from(new Set(mentions.map((m) => m.subreddit))), [mentions]));
   useEffect(() => { if (index >= 0) lastIndex.current = index; }, [index]);
 
   useEffect(() => {
@@ -141,6 +144,7 @@ export function LeadInbox({
                   </span>
                   <span className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[12.5px] text-ink-400">
                     <span className="font-semibold text-ink-600">r/{m.subreddit}</span>
+                    <SubredditBadge rules={rulesFor(m.subreddit)} mode="static" />
                     <span aria-hidden="true">·</span>
                     <span>{relativeTime(m.created_utc)}</span>
                     <span aria-hidden="true">·</span>
@@ -181,6 +185,7 @@ export function LeadInbox({
                     onSaveLink={onSaveLink}
                     replyStatus={replyStatus[m.id]}
                     onDmSent={onDmSent}
+                    hotkeys
                   />
                   {footer && (
                     <div className="mt-4 border-t border-black/[0.06] pt-3">
@@ -196,7 +201,8 @@ export function LeadInbox({
       <div className="flex items-center justify-between gap-4 pt-3">
         <p className="text-[11.5px] text-ink-400">
           <kbd className="rounded border border-ink-300 px-1 font-sans">J</kbd> next{' '}
-          <kbd className="ml-1.5 rounded border border-ink-300 px-1 font-sans">K</kbd> previous
+          <kbd className="ml-1.5 rounded border border-ink-300 px-1 font-sans">K</kbd> previous{' '}
+          <kbd className="ml-1.5 rounded border border-ink-300 px-1 font-sans">R</kbd> draft another
         </p>
         {remaining > 0 && (
           <button

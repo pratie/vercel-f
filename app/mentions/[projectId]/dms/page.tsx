@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { PaymentGuard } from '@/components/PaymentGuard';
 import { LeadInbox } from '@/components/mentions/LeadInbox';
 import { MentionCard } from '@/components/mentions/MentionCard';
+import { DmTemplatePanel } from '@/components/mentions/DmTemplatePanel';
 import { QueueError, QueueHeader, QueueSkeleton } from '@/components/mentions/QueueHeader';
 import { useProjectLeads } from '@/lib/useProjectLeads';
 import { useTriage } from '@/lib/useTriage';
@@ -48,6 +49,14 @@ export default function DmQueuePage() {
               : 'Leads scoring 80 or more with a known poster land here.'
           }
         />
+
+        {!isLoading && !error && (
+          <DmTemplatePanel
+            projectId={projectId}
+            productName={project?.name}
+            leads={queue.length > 0 ? queue : [...mentions].sort(byBestScore)}
+          />
+        )}
 
         {isLoading ? (
           <QueueSkeleton label="Loading the DM queue" />
