@@ -5,12 +5,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { toast } from 'sonner';
-import { CheckCircle2, AlertTriangle, Mail, Loader2 } from 'lucide-react';
-import { api, PaymentStatus } from '@/lib/api';
+import { CheckCircle2, AlertTriangle, Mail, Loader2, Send } from 'lucide-react';
+import { api, AlertSettings, PaymentStatus } from '@/lib/api';
 import { getUserEmail } from '@/lib/auth';
 import { cn } from '@/lib/utils';
 import { PaymentGuard } from '@/components/PaymentGuard';
-import { BTN_PRIMARY, BTN_SECONDARY, PANEL } from '@/components/ui/sticker';
+import { BTN_PRIMARY, BTN_QUIET, BTN_SECONDARY, PANEL } from '@/components/ui/sticker';
 
 type Tone = 'friendly' | 'professional' | 'technical';
 
@@ -21,13 +21,7 @@ interface PreferencesResponse {
   updated_at: string;
 }
 
-interface AlertSettings {
-  telegram_chat_id: string;
-  enable_telegram_alerts: boolean;
-  enable_email_alerts: boolean;
-  alert_frequency: 'daily' | 'weekly' | 'realtime';
-  is_active?: boolean;
-}
+type EmailPrefs = Pick<AlertSettings, 'hot_lead_alerts' | 'weekly_summary'> & { email_configured: boolean };
 
 const TONE_OPTIONS: { value: Tone; title: string; body: string }[] = [
   { value: 'friendly', title: 'Friendly', body: 'Warm and casual, like a founder in the thread' },
@@ -35,17 +29,12 @@ const TONE_OPTIONS: { value: Tone; title: string; body: string }[] = [
   { value: 'technical', title: 'Technical', body: 'Detailed, for developer audiences' },
 ];
 
-/** Normalize an alert-settings API payload into UI state. */
-function normalizeAlerts(data: Partial<AlertSettings>): AlertSettings {
-  const isActive =
-    data.is_active !== undefined ? data.is_active : data.enable_email_alerts || false;
+/** Both emails default to on; the backend resolves older stored values. */
+function normalizeAlerts(data: Partial<AlertSettings>): EmailPrefs {
   return {
-    telegram_chat_id: data.telegram_chat_id || '',
-    enable_telegram_alerts: false, // Always false for UI logic
-    enable_email_alerts: isActive, // Primary UI toggle state
-    alert_frequency:
-      data.alert_frequency === 'realtime' ? 'daily' : data.alert_frequency || 'daily',
-    is_active: isActive,
+    hot_lead_alerts: data.hot_lead_alerts ?? true,
+    weekly_summary: data.weekly_summary ?? true,
+    email_configured: data.email_configured ?? true,
   };
 }
 
@@ -119,13 +108,13 @@ export default function SettingsPage() {
     created_at: '',
     updated_at: '',
   });
-  const [alertSettings, setAlertSettings] = useState<AlertSettings>({
-    telegram_chat_id: '', // Kept for API compatibility, not used in UI
-    enable_telegram_alerts: false, // Kept for API compatibility, always false
-    enable_email_alerts: false,
-    alert_frequency: 'daily',
-    is_active: false,
+  const [alertSettings, setAlertSettings] = useState<EmailPrefs>({
+    hot_lead_alerts: true,
+    weekly_summary: true,
+    email_configured: true,
   });
+  const [alertsError, setAlertsError] = useState(false);
+  const [sendingTest, setSendingTest] = useState(false);
   const [isPrefsLoading, setIsPrefsLoading] = useState(true);
   const [isAlertsLoading, setIsAlertsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
@@ -149,17 +138,10 @@ export default function SettingsPage() {
       try {
         const data = await api.getAlertSettings();
         setAlertSettings(normalizeAlerts(data));
+        setAlertsError(false);
       } catch (error) {
         console.error('Error loading alert settings:', error);
-        // Fallback state on error
-        setAlertSettings({
-          telegram_chat_id: '',
-          enable_telegram_alerts: false,
-          enable_email_alerts: false,
-          alert_frequency: 'daily',
-          is_active: false,
-        });
-        toast.error(error instanceof Error ? error.message : 'Failed to load alert settings');
+        setAlertsError(true);
       } finally {
         setIsAlertsLoading(false);
       }
@@ -171,38 +153,36 @@ export default function SettingsPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Optimistic save: state is applied immediately by the caller, we confirm or roll back.
-  const saveAlertSettings = async (updated: AlertSettings, previous: AlertSettings) => {
-    const settingsToSave: AlertSettings = {
-      ...updated,
-      telegram_chat_id: updated.telegram_chat_id || '',
-      enable_telegram_alerts: false,
-      is_active: updated.enable_email_alerts,
-      alert_frequency:
-        updated.alert_frequency === 'realtime' || !updated.alert_frequency
-          ? 'daily'
-          : updated.alert_frequency,
-    };
-
+  // Optimistic: the switch moves at once, the server confirms or we roll back.
+  const updateAlerts = async (changes: Partial<Pick<EmailPrefs, 'hot_lead_alerts' | 'weekly_summary'>>) => {
+    const previous = alertSettings;
+    const updated: EmailPrefs = { ...alertSettings, ...changes };
+    setAlertSettings(updated);
     try {
-      const data = await api.updateAlertSettings(settingsToSave);
-      // Reconcile with the server's response
+      const data = await api.updateAlertSettings({
+        hot_lead_alerts: updated.hot_lead_alerts,
+        weekly_summary: updated.weekly_summary,
+      });
       setAlertSettings(normalizeAlerts(data));
-      toast.success('Notification settings saved');
+      toast.success('Email settings saved');
     } catch (error) {
       console.error('Error saving alert settings:', error);
-      setAlertSettings(previous); // Roll back the optimistic update
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to save notification settings'
-      );
+      setAlertSettings(previous);
+      toast.error(error instanceof Error ? error.message : 'Could not save your email settings. Try again.');
     }
   };
 
-  const updateAlerts = (changes: Partial<AlertSettings>) => {
-    const previous = alertSettings;
-    const updated: AlertSettings = { ...alertSettings, ...changes };
-    setAlertSettings(updated); // Optimistic
-    saveAlertSettings(updated, previous);
+  const sendTestEmail = async () => {
+    if (sendingTest) return;
+    setSendingTest(true);
+    try {
+      const res = await api.sendTestEmail();
+      toast.success(`Test email sent to ${res.to}. It can take a minute to arrive.`);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'Could not send the test email. Try again.');
+    } finally {
+      setSendingTest(false);
+    }
   };
 
   const handleSavePreferences = async () => {
@@ -227,10 +207,6 @@ export default function SettingsPage() {
     payment?.subscription_plan === 'growth_monthly' ? 'Growth'
       : payment?.subscription_plan === 'starter_monthly' ? 'Starter'
         : 'Pro';
-  const frequency =
-    alertSettings.alert_frequency === 'realtime' || !alertSettings.alert_frequency
-      ? 'daily'
-      : alertSettings.alert_frequency;
 
   return (
     <PaymentGuard>
@@ -371,88 +347,87 @@ export default function SettingsPage() {
             )}
           </SettingsSection>
 
-          {/* ── Alerts ── */}
+          {/* ── Email ── */}
           <SettingsSection
             id="alerts"
-            title="Email alerts"
-            sub="A digest of new leads, sent to your sign-in address."
+            title="Email"
+            sub={<>Sent to {getUserEmail() || 'your sign-in address'}. Each lead is emailed once, never twice.</>}
           >
             {isAlertsLoading ? (
-              <div className="space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-48" />
-                    <Skeleton className="h-3 w-32" />
+              <div className="divide-y divide-[#1c1917]/[0.08]">
+                {[0, 1].map((i) => (
+                  <div key={i} className="flex items-center justify-between gap-4 py-3.5 first:pt-0">
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-44" />
+                      <Skeleton className="h-3 w-64 max-w-[60vw]" />
+                    </div>
+                    <Skeleton className="h-6 w-11 rounded-full" />
                   </div>
-                  <Skeleton className="h-6 w-11 rounded-full" />
-                </div>
-                <Skeleton className="h-9 w-64 rounded-lg" />
+                ))}
+              </div>
+            ) : alertsError ? (
+              <div role="alert" className="flex flex-wrap items-center justify-between gap-3 rounded-xl bg-cream px-3.5 py-3">
+                <p className="flex items-start gap-2 text-[12.5px] leading-snug text-ink-600">
+                  <AlertTriangle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                  We could not load your email settings. Check your connection and reload the page.
+                </p>
+                <button type="button" onClick={() => window.location.reload()} className={BTN_QUIET}>
+                  Reload
+                </button>
               </div>
             ) : (
-              <div className="space-y-5">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="text-[13.5px] font-semibold text-ink-900">Send me new leads by email</p>
-                    <p className="mt-0.5 text-[12.5px] text-ink-400">Saved as soon as you switch it.</p>
-                  </div>
-                  <Toggle
-                    label="Send new leads by email"
-                    checked={alertSettings.enable_email_alerts}
-                    onCheckedChange={(checked) => {
-                      updateAlerts({
-                        enable_email_alerts: checked,
-                        alert_frequency: checked ? alertSettings.alert_frequency : 'daily',
-                        is_active: checked,
-                      });
-                    }}
-                  />
+              <div>
+                <div className="divide-y divide-[#1c1917]/[0.08]">
+                  {(
+                    [
+                      {
+                        key: 'hot_lead_alerts',
+                        title: 'Hot leads as they come',
+                        body: 'One email when a scan finds threads scoring 85 or more. At most one every 3 hours per project.',
+                      },
+                      {
+                        key: 'weekly_summary',
+                        title: 'Weekly summary',
+                        body: 'Monday morning: new leads, your top 5, replies drafted and SEO threads found, per project.',
+                      },
+                    ] as const
+                  ).map(({ key, title, body }) => (
+                    <div key={key} className="flex items-center justify-between gap-4 py-3.5 first:pt-0 last:pb-0">
+                      <div className="min-w-0">
+                        <p id={`${key}-label`} className="text-[13.5px] font-semibold text-ink-900">{title}</p>
+                        <p className="mt-0.5 text-[12.5px] leading-snug text-ink-400">{body}</p>
+                      </div>
+                      <Toggle
+                        label={title}
+                        checked={alertSettings[key]}
+                        onCheckedChange={(checked) => updateAlerts({ [key]: checked })}
+                      />
+                    </div>
+                  ))}
                 </div>
 
-                <div className={cn(!alertSettings.enable_email_alerts && 'opacity-50')}>
-                  <p className="mb-2 text-[13px] font-semibold text-ink-900">How often</p>
-                  <div
-                    className="inline-flex gap-1 rounded-xl border-2 border-[#1c1917]/[0.12] p-1"
-                    role="radiogroup"
-                    aria-label="Alert frequency"
-                  >
-                    {(
-                      [
-                        { value: 'daily', label: 'Daily' },
-                        { value: 'weekly', label: 'Weekly' },
-                      ] as const
-                    ).map(({ value, label }) => (
-                      <button
-                        key={value}
-                        role="radio"
-                        aria-checked={frequency === value}
-                        disabled={!alertSettings.enable_email_alerts}
-                        onClick={() => {
-                          if (frequency !== value) updateAlerts({ alert_frequency: value });
-                        }}
-                        className={cn(
-                          'h-8 rounded-lg px-3.5 text-[13px] font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-[#ff4500]/40 disabled:cursor-not-allowed',
-                          frequency === value
-                            ? 'bg-[#1c1917] text-white'
-                            : 'text-ink-600 hover:bg-cream hover:text-ink-900'
-                        )}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {alertSettings.enable_email_alerts ? (
-                  <p className="flex items-start gap-2 rounded-xl bg-[#ff4500]/[0.08] px-3.5 py-3 text-[12.5px] leading-snug text-[#b83200]">
+                {!alertSettings.email_configured ? (
+                  <p className="mt-5 flex items-start gap-2 rounded-xl bg-cream px-3.5 py-3 text-[12.5px] leading-snug text-ink-600">
+                    <AlertTriangle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
+                    Email is not switched on for SneakyGuy yet. Your choices are saved and apply as soon as it is.
+                  </p>
+                ) : !alertSettings.hot_lead_alerts && !alertSettings.weekly_summary ? (
+                  <p className="mt-5 flex items-start gap-2 rounded-xl bg-cream px-3.5 py-3 text-[12.5px] leading-snug text-ink-600">
                     <Mail className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                    {/* Nothing sends digests yet. Say so instead of promising an email. */}
-                    Saved. Email digests switch on in the next update, and this setting carries over.
+                    Both emails are off. New leads still show up in your inbox in the app.
                   </p>
                 ) : (
-                  <p className="flex items-start gap-2 rounded-xl bg-cream px-3.5 py-3 text-[12.5px] leading-snug text-ink-600">
-                    <AlertTriangle className="mt-px h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-                    Alerts are off. Switch them on to hear about new leads without opening the app.
-                  </p>
+                  <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2">
+                    <button type="button" onClick={sendTestEmail} disabled={sendingTest} className={BTN_SECONDARY}>
+                      {sendingTest ? (
+                        <Loader2 className="h-4 w-4 animate-spin motion-reduce:animate-none" aria-hidden="true" />
+                      ) : (
+                        <Send className="h-4 w-4" aria-hidden="true" />
+                      )}
+                      {sendingTest ? 'Sending' : 'Send me a test email'}
+                    </button>
+                    <span className="text-[12.5px] text-ink-400">A preview of the weekly summary with your last 7 days.</span>
+                  </div>
                 )}
               </div>
             )}

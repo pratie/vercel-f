@@ -249,11 +249,18 @@ interface PreferencesRequest {
     response_style: string | null;
 }
 
-interface AlertSettings {
-    telegram_chat_id: string;
-    enable_telegram_alerts: boolean;
-    enable_email_alerts: boolean;
-    alert_frequency: 'daily' | 'weekly' | 'realtime';
+export interface AlertSettings {
+    /** Instant email when a scan finds leads scoring 85 or more. */
+    hot_lead_alerts: boolean;
+    /** Monday summary of the week, per project. */
+    weekly_summary: boolean;
+    /** False when the server has no email provider key. */
+    email_configured?: boolean;
+    // Legacy fields, still returned and accepted by the backend.
+    telegram_chat_id?: string;
+    enable_telegram_alerts?: boolean;
+    enable_email_alerts?: boolean;
+    alert_frequency?: 'daily' | 'weekly' | 'realtime';
     is_active?: boolean;
 }
 
@@ -1068,7 +1075,7 @@ export const api = {
         return data;
     },
 
-    updateAlertSettings: async (settings: AlertSettings): Promise<AlertSettings> => {
+    updateAlertSettings: async (settings: Partial<AlertSettings>): Promise<AlertSettings> => {
         if (process.env.NODE_ENV === 'development') {
             console.log('Updating alert settings with:', settings);
         }
@@ -1084,6 +1091,15 @@ export const api = {
             console.log('Update alert settings response:', data);
         }
         return data;
+    },
+
+    /** Sends a preview of the weekly summary to the signed-in address. */
+    async sendTestEmail(): Promise<{ status: string; to: string }> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/alerts/test-email`, { method: 'POST' });
+        if (!response.ok) {
+            throw await handleApiError(response, 'Could not send the test email');
+        }
+        return response.json();
     },
 
     /** Rolling 24h Reddit reply quota (backend caps at 5/day). */
