@@ -25,9 +25,11 @@ const fallbackPlans: PricingPlan[] = [
     kind: 'subscription',
     features: [
       '1 project',
-      'Reddit leads scored for buying intent',
-      'Unlimited reply drafts',
-      'SEO opportunities: Reddit threads that rank on Google',
+      'New Reddit leads found every 24 hours',
+      'Reply and DM drafts for every lead',
+      'SEO opportunities: Reddit threads ranking on Google',
+      'Brand signals when people name you or a competitor',
+      'Autopilot drafts replies for your best leads',
     ],
   },
   {
@@ -39,9 +41,8 @@ const fallbackPlans: PricingPlan[] = [
     popular: true,
     features: [
       '3 projects',
+      'New Reddit leads found every 6 hours',
       'Everything in Starter',
-      'Autopilot scans every 6 hours',
-      'Priority on new features as they ship',
     ],
   },
 ];
