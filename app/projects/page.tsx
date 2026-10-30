@@ -313,6 +313,7 @@ export default function ProjectsPage() {
                 key={project.id}
                 project={project}
                 onDelete={handleDeleteProject}
+                startEditing={searchParams?.get('edit') === String(project.id)}
               />
             ))}
           </div>

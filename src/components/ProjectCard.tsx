@@ -11,6 +11,8 @@ import { logError } from '@/lib/errorUtils';
 interface ProjectCardProps {
   project: Project;
   onDelete?: (projectId: string) => void;
+  /** Open the edit dialog on mount (from a /projects?edit=<id> link). */
+  startEditing?: boolean;
 }
 
 // Same hash + palette as the sidebar quick-switcher, so a project keeps one
@@ -35,10 +37,10 @@ function updatedLabel(dateStr: string): string {
   return `Updated ${d.toLocaleDateString('en-US', sameYear ? { month: 'short', day: 'numeric' } : { month: 'short', day: 'numeric', year: 'numeric' })}`;
 }
 
-export function ProjectCard({ project: initialProject, onDelete }: ProjectCardProps) {
+export function ProjectCard({ project: initialProject, onDelete, startEditing = false }: ProjectCardProps) {
   // Local copy so an edit updates the card in place instead of reloading the page.
   const [project, setProject] = useState(initialProject);
-  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [isEditOpen, setIsEditOpen] = useState(startEditing);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
