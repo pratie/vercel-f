@@ -342,6 +342,9 @@ export default function LandingPage() {
 
             <nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-[14px] font-medium text-[#44403c]" aria-label="Footer">
               {[
+                ['/tools', 'Free tools'],
+                ['/alternatives', 'Compare'],
+                ['/affiliates', 'Affiliates'],
                 ['/blog', 'Blog'],
                 ['/about', 'About'],
                 ['/privacy', 'Privacy'],

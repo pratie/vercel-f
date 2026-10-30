@@ -1,0 +1,47 @@
+# SneakyGuy
+
+> SneakyGuy is a Reddit lead generation tool for founders and small teams. It finds the Reddit threads where people ask for a product like yours, scores each one for buying intent, and drafts a reply that says you built the product. You post the reply yourself, from your own Reddit account. SneakyGuy never posts for you, never uses warmed or aged accounts, and never buys upvotes.
+
+## What it does
+
+- Reads your website and suggests the keywords and subreddits your buyers use.
+- Scans Reddit for new threads that match, and scores each thread 20 to 100 for buying intent, best first.
+- Drafts a reply for each lead that discloses you built the product. You edit it and post it yourself.
+- SEO opportunities: lists the Reddit threads that rank on Google for your keywords, so a reply keeps getting read.
+- Brand signals: threads that mention you or the competitors you track.
+- Autopilot scans and drafts on a schedule, filters, sorting and CSV export, and tracking of how your posted replies do.
+- Works in any niche, because you post from your own account. Each subreddit's own rules still apply.
+
+## Pricing
+
+- Starter: $29 a month, 1 project.
+- Growth: $59 a month, 3 projects, autopilot scans every 6 hours.
+- 7-day free trial. Full refund within 7 days of your first payment. Cancel anytime.
+- Free URL check on the home page: paste a website and see real Reddit threads for it, with no signup and no card.
+
+## Key pages
+
+- [Home](https://www.sneakyguy.com/): product overview, pricing and the free URL check.
+- [Free Reddit tools](https://www.sneakyguy.com/tools): no signup needed.
+- [Subreddit finder](https://www.sneakyguy.com/tools/subreddit-finder): subreddits for a product URL or description, with member counts and activity.
+- [Subreddit rules checker](https://www.sneakyguy.com/tools/subreddit-rules-checker): a subreddit's rules and how strict it is about self-promotion.
+- [Reddit threads on Google](https://www.sneakyguy.com/tools/reddit-threads-on-google): Reddit threads Google ranks for a keyword.
+- [Comparisons](https://www.sneakyguy.com/alternatives): SneakyGuy compared with other Reddit tools.
+- [Bazzly alternative](https://www.sneakyguy.com/alternatives/bazzly)
+- [GummySearch alternative](https://www.sneakyguy.com/alternatives/gummysearch)
+- [F5Bot alternative](https://www.sneakyguy.com/alternatives/f5bot)
+- [Syften alternative](https://www.sneakyguy.com/alternatives/syften)
+- [Affiliate program](https://www.sneakyguy.com/affiliates): 30% recurring commission for 12 months.
+- [Blog](https://www.sneakyguy.com/blog): guides to finding customers on Reddit.
+- [About](https://www.sneakyguy.com/about)
+
+## Guides
+
+- [How to find leads on Reddit](https://www.sneakyguy.com/blog/how-to-find-leads-on-reddit-guide)
+- [Reddit SEO guide](https://www.sneakyguy.com/blog/reddit-seo-guide)
+- [Genuine engagement vs spam on Reddit](https://www.sneakyguy.com/blog/genuine-engagement-vs-spam)
+- [Best Reddit lead generation tools](https://www.sneakyguy.com/blog/best-reddit-lead-generation-tools)
+
+## Contact
+
+- Email: support@sneakyguy.com
