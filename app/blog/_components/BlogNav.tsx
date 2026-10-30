@@ -35,6 +35,9 @@ export function BlogNav() {
                     <Link href="/#pricing" className={link}>
                         Pricing
                     </Link>
+                    <Link href="/tools" className={link}>
+                        Free tools
+                    </Link>
                     <Link href="/blog" className="text-[13.5px] font-bold text-orange-600">
                         Blog
                     </Link>

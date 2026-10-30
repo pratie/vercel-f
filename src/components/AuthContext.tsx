@@ -4,6 +4,7 @@ import React, { createContext, useContext, useEffect, useRef } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuthStore, User } from '@/lib/auth';
 import { flushSignupCompleted } from '@/lib/minilytics';
+import { isPublicMarketingPath } from '@/lib/publicRoutes';
 
 interface AuthContextType {
   user: User | null;
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => clearInterval(timer);
   }, [email]);
 
-  const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog');
+  const isPublicRoute = PUBLIC_ROUTES.includes(pathname) || pathname.startsWith('/blog') || isPublicMarketingPath(pathname);
 
   // Handle navigation
   useEffect(() => {

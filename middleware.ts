@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { isPublicMarketingPath } from './src/lib/publicRoutes'
 
 // List of public routes that don't require authentication
 // `/explore` is the anonymous onboarding funnel. It has to work with no token
@@ -23,6 +24,9 @@ export function middleware(request: NextRequest) {
     pathname.endsWith('.ico') ||
     pathname === '/favicon.ico' ||
     pathname.startsWith('/blog') ||
+    // Free tools, comparison pages, affiliates, and llms.txt are public.
+    isPublicMarketingPath(pathname) ||
+    pathname.endsWith('.txt') ||
     publicRoutes.includes(pathname)) {
     return NextResponse.next()
   }
