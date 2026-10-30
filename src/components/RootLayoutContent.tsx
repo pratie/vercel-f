@@ -1,6 +1,7 @@
 'use client';
 
 import { Sidebar } from '@/components/Sidebar';
+import { isPublicMarketingPath } from '@/lib/publicRoutes';
 import { usePathname } from 'next/navigation';
 
 export function RootLayoutContent({ children }: { children: React.ReactNode }) {
@@ -16,7 +17,8 @@ export function RootLayoutContent({ children }: { children: React.ReactNode }) {
     pathname === '/privacy' ||
     pathname === '/terms' ||
     pathname === '/about' ||
-    pathname.startsWith('/blog');
+    pathname.startsWith('/blog') ||
+    isPublicMarketingPath(pathname);
 
   if (isPublicPage) {
     return <>{children}</>;

@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import { useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
 import { FOCUS, logoHeight } from './styles';
+import { useAuth } from '@/components/AuthContext';
 
 const NAV_LINKS = [
   { label: 'Free tools', href: '/tools' },
@@ -18,6 +19,7 @@ const NAV_LINKS = [
 export function MarketingHeader() {
   const pathname = usePathname() || '';
   const [open, setOpen] = useState(false);
+  const { user } = useAuth();
   const isCurrent = (href: string) => href !== '/#pricing' && (pathname === href || pathname.startsWith(`${href}/`));
 
   return (
@@ -46,10 +48,10 @@ export function MarketingHeader() {
 
           <div className="flex items-center gap-1.5">
             <Link
-              href="/login"
+              href={user ? '/home' : '/login'}
               className={`inline-flex items-center gap-1.5 h-10 px-4 rounded-xl border-2 border-[#1c1917] bg-white text-[14px] font-semibold text-[#1c1917] shadow-[3px_3px_0_#1c1917] transition-[transform,box-shadow] duration-150 hover:-translate-y-0.5 hover:shadow-[4px_4px_0_#1c1917] motion-reduce:transition-none ${FOCUS}`}
             >
-              Sign in
+              {user ? 'Open app' : 'Sign in'}
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
             <button

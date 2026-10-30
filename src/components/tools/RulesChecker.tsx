@@ -147,7 +147,7 @@ export function RulesChecker() {
                         {rule.flag === 'careful' && <span className="rounded-full bg-[#fef3c7] px-2 py-0.5 text-[12px] font-bold text-[#92400e]">Read before posting</span>}
                       </p>
                       {rule.description && (
-                        <p className="mt-1 whitespace-pre-line break-words text-[15px] leading-relaxed text-[#44403c]">{rule.description}</p>
+                        <p className="mt-1 whitespace-pre-line break-words text-[15px] leading-relaxed text-[#44403c]">{plainRuleText(rule.description)}</p>
                       )}
                     </div>
                   </li>
@@ -162,4 +162,17 @@ export function RulesChecker() {
       )}
     </div>
   );
+}
+
+/** Rules are written in Reddit markdown; show them as plain text. */
+function plainRuleText(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/(\*\*|__)(.+?)\1/g, '$2')
+    .replace(/(^|\s)[*_](\S[^*_]*?)[*_](?=\s|$|[.,:;])/g, '$1$2')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^\s*[-*]\s+/gm, '• ')
+    .replace(/&amp;/g, '&').replace(/&gt;/g, '>').replace(/&lt;/g, '<')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
 }
