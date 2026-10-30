@@ -16,7 +16,10 @@
  *      when someone opens a shared /explore link directly.
  *   3. route to /login
  * The existing flow takes it from there: login lands on /projects, which reads
- * pending_analyze_url and opens the create project dialog. The visitor is NOT
+ * pending_analyze_url and opens /projects/new. The wizard claims the session
+ * (POST /api/onboarding/{id}/claim), prefills every step from it instead of
+ * analysing the site again, and imports the found threads as leads once the
+ * project exists. The visitor is NOT
  * authenticated here, so this component never creates a project and never
  * touches a paid endpoint.
  */

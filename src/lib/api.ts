@@ -416,6 +416,19 @@ export interface ProductAnalysis {
     source_url?: string;
 }
 
+/** A finished /explore check, picked up after sign-up to prefill a project. */
+export interface OnboardingClaim {
+    session_id: string;
+    url: string;
+    name: string;
+    description: string;
+    keywords: string[];
+    subreddits: string[];
+    competitors: string[];
+    threads: { title: string; url: string; subreddit: string; score: number; num_comments: number }[];
+    imported_into: number | null;
+}
+
 export interface SubredditInfo {
     name: string;
     subscribers: number;
@@ -573,6 +586,29 @@ export const api = {
             competitors: Array.isArray(data.competitors) ? data.competitors : [],
             source_url: data.source_url,
         };
+    },
+
+    /** Claims the free /explore check for this account. 404/410 when it is gone or expired. */
+    async claimOnboardingSession(sessionId: string): Promise<OnboardingClaim> {
+        const response = await fetchWithAuth(`${getApiBaseUrl()}/api/onboarding/${encodeURIComponent(sessionId)}/claim`, {
+            method: 'POST',
+        });
+        if (!response.ok) {
+            throw await handleApiError(response, 'We could not pick up your free check.');
+        }
+        return response.json();
+    },
+
+    /** Adds the free check's threads to a project as leads. Scored in the background. */
+    async importOnboardingThreads(sessionId: string, projectId: string | number): Promise<{ queued: number; already_imported: boolean }> {
+        const response = await fetchWithAuth(
+            `${getApiBaseUrl()}/api/onboarding/${encodeURIComponent(sessionId)}/import/${projectId}`,
+            { method: 'POST' },
+        );
+        if (!response.ok) {
+            throw await handleApiError(response, 'Could not add the threads from your free check');
+        }
+        return response.json();
     },
 
     /** Member counts for up to 20 subreddits. Unknown names come back with exists=false. */

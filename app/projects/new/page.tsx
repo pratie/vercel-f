@@ -6,16 +6,19 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { ArrowRight, Globe, Loader2, Sparkles } from 'lucide-react';
 import { toast } from 'sonner';
 
-import { api, hasActiveAccess, ProductAnalysis, SubredditInfo } from '@/lib/api';
+import { api, hasActiveAccess, OnboardingClaim, ProductAnalysis, SubredditInfo } from '@/lib/api';
 import { useAuth } from '@/components/AuthContext';
 import { BTN_PRIMARY, BTN_QUIET, FIELD, STICKER_PANEL } from '@/components/ui/sticker';
 import { WizardShell } from '@/components/onboarding/WizardShell';
 import { AnalyzingChecklist } from '@/components/onboarding/AnalyzingChecklist';
 import { ChipInput, RemovableChip, ToggleChip, formatMembers } from '@/components/onboarding/Chips';
 
-type Step = 'url' | 'analyzing' | 'review' | 'communities';
+type Step = 'url' | 'resume' | 'analyzing' | 'review' | 'communities';
 
 const PENDING_URL_KEY = 'pending_analyze_url';
+// Set by /explore's CTA. The finished free check is claimed and reused here
+// instead of analysing the site again.
+const ONBOARDING_SESSION_KEY = 'onboarding_session';
 const SUBREDDIT_RE = /^[A-Za-z0-9_]{2,21}$/;
 
 type SubInfoState = Record<string, SubredditInfo | 'loading' | undefined>;
@@ -32,12 +35,36 @@ function looksLikeUrl(v: string): boolean {
   return host.includes('.') && !/\s/.test(host);
 }
 
+function hostOf(v: string): string {
+  return normaliseUrl(v).replace(/^https?:\/\//i, '').split('/')[0].replace(/^www\./i, '').toLowerCase();
+}
+
+function readStorage(key: string): string | null {
+  try {
+    return typeof window !== 'undefined' ? sessionStorage.getItem(key) : null;
+  } catch {
+    return null;
+  }
+}
+
+function clearStorage(key: string) {
+  try {
+    sessionStorage.removeItem(key);
+  } catch {
+    /* storage blocked */
+  }
+}
+
 function NewProjectWizard() {
   const { user } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [step, setStep] = useState<Step>('url');
+  // False until the first effect has looked for a hand-off from /explore, so
+  // the URL form never flashes before a prefilled wizard replaces it.
+  const [booted, setBooted] = useState(false);
+  const [claim, setClaim] = useState<OnboardingClaim | null>(null);
   const [url, setUrl] = useState('');
   const [urlError, setUrlError] = useState<string | null>(null);
 
@@ -81,8 +108,10 @@ function NewProjectWizard() {
     const target = normaliseUrl(raw);
     if (!target || !looksLikeUrl(target)) {
       setUrlError('Enter a website address, like yourproduct.com');
+      setStep('url');
       return;
     }
+    setClaim(null);
     setUrlError(null);
     setUrl(target);
     setAnalysisDone(false);
@@ -91,18 +120,65 @@ function NewProjectWizard() {
     setStep('analyzing');
   }, []);
 
-  // Hand-off from the public funnel: the landing page and /explore stash the
-  // URL, sign-up sends the person here, and the analysis starts by itself.
+  // Prefill every step from a claimed free check, as if the analysis had just run.
+  const applyClaim = useCallback((c: OnboardingClaim) => {
+    analysisRef.current = {
+      name: c.name,
+      description: c.description,
+      keywords: c.keywords,
+      subreddits: c.subreddits,
+      competitors: c.competitors,
+      source_url: c.url,
+    };
+    setClaim(c);
+    setUrl(normaliseUrl(c.url));
+    setName(c.name);
+    setDescription(c.description);
+    setSuggestedCompetitors(c.competitors);
+    setConfirmedCompetitors(c.competitors.slice(0, 3));
+    setKeywords(c.keywords);
+    setSubreddits(c.subreddits);
+    setStep('review');
+  }, []);
+
+  // Hand-off from the public funnel. /explore leaves its session id: claim it
+  // and land on a filled-in wizard. Otherwise the landing page left a URL and
+  // the analysis starts by itself.
   const autoStarted = useRef(false);
   useEffect(() => {
     if (autoStarted.current || !user) return;
-    const fromQuery = searchParams.get('url');
-    const fromSession = typeof window !== 'undefined' ? sessionStorage.getItem(PENDING_URL_KEY) : null;
-    const pending = (fromQuery || fromSession || '').trim();
-    if (!pending) return;
     autoStarted.current = true;
-    startAnalysis(pending);
-  }, [user, searchParams, startAnalysis]);
+    const fromQuery = searchParams.get('url');
+    const pending = (fromQuery || readStorage(PENDING_URL_KEY) || '').trim();
+    const sessionId = readStorage(ONBOARDING_SESSION_KEY);
+
+    if (!sessionId) {
+      if (pending) startAnalysis(pending);
+      setBooted(true);
+      return;
+    }
+
+    setStep('resume');
+    setBooted(true);
+    api
+      .claimOnboardingSession(sessionId)
+      .then((c) => {
+        // A newer URL typed since that check wins over the old result.
+        const usable = c.name && c.description.length >= 10 && (!pending || hostOf(pending) === hostOf(c.url));
+        if (!usable) {
+          clearStorage(ONBOARDING_SESSION_KEY);
+          startAnalysis(pending || c.url);
+          return;
+        }
+        applyClaim(c);
+      })
+      .catch((err: any) => {
+        // Gone, expired or someone else's: forget it and analyse afresh.
+        if (err?.statusCode === 404 || err?.statusCode === 410) clearStorage(ONBOARDING_SESSION_KEY);
+        if (pending) startAnalysis(pending);
+        else setStep('url');
+      });
+  }, [user, searchParams, startAnalysis, applyClaim]);
 
   const onSubmitUrl = (e: FormEvent) => {
     e.preventDefault();
@@ -158,6 +234,7 @@ function NewProjectWizard() {
 
   const enterManually = () => {
     runningUrlRef.current = null;
+    setClaim(null);
     setAnalysisError(null);
     setName('');
     setDescription('');
@@ -326,6 +403,17 @@ function NewProjectWizard() {
       // worth stopping the first scan for.
       await Promise.allSettled(confirmedCompetitors.map((c) => api.addVisibilityCompetitor(project.id, c)));
 
+      // The threads the free check found become leads straight away. Queued
+      // on the server and scored in the background, so this returns quickly.
+      if (claim && claim.threads.length > 0 && !claim.imported_into) {
+        try {
+          await api.importOnboardingThreads(claim.session_id, project.id);
+        } catch (err) {
+          console.error('Free check threads were not imported:', err);
+        }
+      }
+      clearStorage(ONBOARDING_SESSION_KEY);
+
       // Everything that needs the API answers before the scan starts: the
       // scan's background task runs on the server's event loop and holds
       // other requests until it finishes.
@@ -359,9 +447,20 @@ function NewProjectWizard() {
     }
   };
 
-  if (!user) return null;
+  if (!user || !booted) return null;
 
   // ----- Render --------------------------------------------------------------
+
+  if (step === 'resume') {
+    return (
+      <WizardShell step={2} title="Picking up your free check" lead="Bringing over what we found, so you do not have to wait for it again.">
+        <div className={`${STICKER_PANEL} flex items-center gap-3 p-4`} role="status" aria-live="polite">
+          <Loader2 className="h-5 w-5 shrink-0 animate-spin text-[#d13800] motion-reduce:animate-none" aria-hidden="true" />
+          <span className="text-[14px] text-ink-700">Loading your product, keywords and threads</span>
+        </div>
+      </WizardShell>
+    );
+  }
 
   if (step === 'url') {
     return (
@@ -473,7 +572,9 @@ function NewProjectWizard() {
         lead={
           manual
             ? 'A name and a plain sentence or two is enough. We draft the rest from it.'
-            : 'This is how we will describe you in replies. Fix anything that is off.'
+            : claim
+              ? `From your free check of ${hostOf(claim.url)}. This is how we will describe you in replies. Fix anything that is off.`
+              : 'This is how we will describe you in replies. Fix anything that is off.'
         }
         footer={
           <button
@@ -649,7 +750,11 @@ function NewProjectWizard() {
             </>
           )}
         </button>
-        <p className="text-center text-[12.5px] text-ink-400">The first scan runs right away. New threads are checked automatically after that.</p>
+        <p className="text-center text-[12.5px] text-ink-400">
+          {claim && claim.threads.length > 0 && !claim.imported_into
+            ? `The ${claim.threads.length === 1 ? 'thread' : `${claim.threads.length} threads`} from your free check go straight into your leads, and the first scan runs right away.`
+            : 'The first scan runs right away. New threads are checked automatically after that.'}
+        </p>
       </div>
     </WizardShell>
   );
