@@ -40,7 +40,7 @@ export default function MentionsPage() {
   const [scanMessage, setScanMessage] = useState('');
 
   // Triage state (viewed / replied) is shared with the queue pages.
-  const { viewed: viewedPosts, published: publishedComments, dmSent, markViewed, markPublished, markDmSent } = useTriage(projectId);
+  const { viewed: viewedPosts, published: publishedComments, dmSent, replyStatus, markViewed, markPublished, saveCommentLink, markDmSent } = useTriage(projectId);
   const [rescoring, setRescoring] = useState(false);
   const leadParam = searchParams?.get('lead');
   // ?view=new narrows the page to New leads (posted in the last 72 hours, not
@@ -470,6 +470,8 @@ export default function MentionsPage() {
                 dmSent={dmSent}
                 onViewed={markViewed}
                 onPublished={markPublished}
+                onSaveLink={saveCommentLink}
+                replyStatus={replyStatus}
                 onDmSent={markDmSent}
                 remaining={remaining}
                 onLoadMore={() => setVisibleCount((c) => c + MENTIONS_PER_PAGE)}
@@ -485,6 +487,8 @@ export default function MentionsPage() {
                   publishedUrl={publishedComments[mention.id]}
                   onViewed={markViewed}
                   onPublished={markPublished}
+                  onSaveLink={saveCommentLink}
+                  replyStatus={replyStatus[mention.id]}
                 />
               ))}
             </div>

@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useAuth } from '@/components/AuthContext';
 import { api, hasActiveAccess, Project } from '@/lib/api';
 import { inDmQueue, inReplyQueue, isNewLead, Mention, transformRawMention } from '@/lib/mentions';
+import { TRIAGE_EVENT } from '@/lib/useTriage';
 
 /**
  * Everything the navigation needs to show live state, with light caching so
@@ -40,7 +41,8 @@ function readJson<T>(key: string, fallback: T): T {
 }
 
 function computeCounts(projectId: string, mentions: Mention[]): NavCounts {
-  // Same keys useTriage writes, so the badges match the queues exactly.
+  // The localStorage mirror useTriage keeps in sync with the server, so the
+  // badges match the queues exactly.
   const published = readJson<Record<number, string>>(`published-comments-${projectId}`, {});
   const dmSent = readJson<Record<number, number>>(`dm-sent-${projectId}`, {});
   const viewedRaw = readJson<unknown>(`viewedPosts_${projectId}`, []);
@@ -149,10 +151,13 @@ export function useNavData(projectId: string | undefined, view?: string | null) 
     };
     window.addEventListener('focus', onFocus);
     window.addEventListener('storage', onStorage);
+    // Same-tab triage changes (useTriage writes the mirror, then fires this).
+    window.addEventListener(TRIAGE_EVENT, onStorage);
     return () => {
       cancelled = true;
       window.removeEventListener('focus', onFocus);
       window.removeEventListener('storage', onStorage);
+      window.removeEventListener(TRIAGE_EVENT, onStorage);
     };
     // pathname and view are dependencies on purpose: every navigation re-reads
     // the triage state the queue pages write to localStorage.

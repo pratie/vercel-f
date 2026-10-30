@@ -7,6 +7,7 @@ import {
   Search,
   Send,
   Sparkles,
+  Trophy,
   Zap,
   type LucideIcon,
 } from 'lucide-react';
@@ -15,7 +16,7 @@ import {
  * The per-project navigation, as data. Both the desktop sidebar and the
  * mobile tab bar read from here so the two never drift apart.
  */
-export type NavKey = 'overview' | 'leads' | 'new' | 'signals' | 'replies' | 'dms' | 'autopilot' | 'seo' | 'analytics';
+export type NavKey = 'overview' | 'leads' | 'new' | 'signals' | 'replies' | 'dms' | 'autopilot' | 'seo' | 'analytics' | 'results';
 
 export interface NavItem {
   key: NavKey;
@@ -69,6 +70,7 @@ export function projectNav(id: string, pathname: string, view?: string | null): 
       items: [
         item('signals', 'Brand signals', 'Signals', `${base}/signals`, Radio),
         item('analytics', 'Analytics', 'Analytics', `${base}/analytics`, BarChart3),
+        item('results', 'Results', 'Results', `${base}/results`, Trophy),
       ],
     },
     { label: 'Automate', items: [item('autopilot', 'Autopilot', 'Autopilot', `${base}/autopilot`, Zap)] },

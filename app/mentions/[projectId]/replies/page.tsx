@@ -31,9 +31,14 @@ export default function ReplyQueuePage() {
   const leadParam = searchParams?.get('lead');
   const initialSelectedId = leadParam ? parseInt(leadParam, 10) : null;
 
-  const posted = (id: number, url: string) => {
-    triage.markPublished(id, url);
+  const posted = (id: number) => {
+    triage.markPublished(id);
     toast.success('Posted. On to the next one');
+  };
+
+  // Pasting the comment link marks it posted too, so the lead leaves the queue.
+  const savedLink = async (id: number, url: string) => {
+    await triage.saveCommentLink(id, url);
   };
 
   return (
@@ -74,6 +79,8 @@ export default function ReplyQueuePage() {
                 dmSent={triage.dmSent}
                 onViewed={triage.markViewed}
                 onPublished={triage.markPublished}
+                onSaveLink={savedLink}
+                replyStatus={triage.replyStatus}
                 onDmSent={triage.markDmSent}
                 remaining={0}
                 onLoadMore={() => {}}
@@ -83,7 +90,7 @@ export default function ReplyQueuePage() {
                     <span className="text-[12.5px] tabular-nums text-ink-400">
                       {pos.index + 1} of {pos.total}
                     </span>
-                    <button onClick={() => posted(m.id, m.url)} className={BTN_SECONDARY}>
+                    <button onClick={() => posted(m.id)} className={BTN_SECONDARY}>
                       <Check className="h-4 w-4 text-[#059669]" aria-hidden="true" />
                       Posted
                     </button>
@@ -100,6 +107,7 @@ export default function ReplyQueuePage() {
                   publishedUrl={triage.published[m.id]}
                   onViewed={triage.markViewed}
                   onPublished={posted}
+                  onSaveLink={savedLink}
                 />
               ))}
             </div>
