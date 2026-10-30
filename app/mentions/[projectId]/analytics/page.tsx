@@ -10,40 +10,34 @@ import { api, Project } from '@/lib/api';
 import { PaymentGuard } from '@/components/PaymentGuard';
 import { Mention, transformRawMention, exportMentionsToCSV } from '@/lib/mentions';
 import { MentionsAnalytics } from '@/components/MentionsAnalytics';
+import { QueueHeader } from '@/components/mentions/QueueHeader';
+import { BTN_PRIMARY, BTN_QUIET, PANEL, STICKER_PANEL } from '@/components/ui/sticker';
 
 /** Mirrors the analytics layout while data loads — no spinner, no jump. */
 function AnalyticsSkeleton() {
   return (
-    <div className="space-y-5 animate-pulse" aria-hidden="true">
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {[0, 1, 2, 3].map((i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-card p-5">
-            <div className="h-2.5 w-20 bg-cream rounded-full mb-4" />
-            <div className="h-7 w-14 bg-cream rounded-lg mb-2" />
-            <div className="h-2.5 w-24 bg-cream/70 rounded-full" />
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {[0, 1].map((i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-card p-6">
-            <div className="h-2.5 w-28 bg-cream rounded-full mb-5" />
-            <div className="h-[190px] bg-cream/60 rounded-xl" />
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {[0, 1, 2].map((i) => (
-          <div key={i} className="bg-white rounded-2xl shadow-card p-6">
-            <div className="h-2.5 w-32 bg-cream rounded-full mb-5" />
-            <div className="space-y-4">
-              {[0, 1, 2, 3].map((j) => (
-                <div key={j}>
-                  <div className="h-2.5 w-3/4 bg-cream/70 rounded-full mb-2" />
-                  <div className="h-1.5 w-full bg-cream rounded-full" />
-                </div>
-              ))}
+    <div className="space-y-5 animate-pulse motion-reduce:animate-none" aria-busy="true" aria-label="Loading analytics">
+      <div className={`${STICKER_PANEL} overflow-hidden`}>
+        <div className="grid grid-cols-2 lg:grid-cols-4">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="px-5 py-4">
+              <div className="h-3 w-20 rounded-full bg-[#f2efeb]" />
+              <div className="mt-3 h-8 w-16 rounded-lg bg-[#f2efeb]" />
+              <div className="mt-3 h-3 w-24 rounded-full bg-[#f7f5f2]" />
             </div>
+          ))}
+        </div>
+        <div className="border-t-2 border-[#1c1917]/[0.08] p-5">
+          <div className="h-[260px] rounded-xl bg-[#f7f5f2] sm:h-[300px]" />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i} className={`${PANEL} p-5`}>
+            <div className="mb-4 h-4 w-28 rounded-full bg-[#f2efeb]" />
+            {[0, 1, 2, 3, 4].map((j) => (
+              <div key={j} className="mb-2 h-9 rounded-lg bg-[#f7f5f2]" style={{ width: `${90 - j * 14}%` }} />
+            ))}
           </div>
         ))}
       </div>
@@ -82,56 +76,35 @@ export default function AnalyticsPage() {
 
   return (
     <PaymentGuard>
-      <div className="max-w-5xl mx-auto px-4 py-4">
-        {/* Header — breadcrumb back to the leads dashboard */}
-        <div className="flex items-center justify-between mb-6 gap-3">
-          <div className="flex items-center gap-3 min-w-0">
-            <Link
-              href={`/mentions/${projectId}`}
-              className="flex items-center gap-1.5 text-xs font-medium text-ink-400 hover:text-ink-700 transition-colors duration-200 group shrink-0"
-            >
-              <ArrowLeft className="h-3.5 w-3.5 group-hover:-translate-x-0.5 transition-transform duration-200" />
-              Leads
-            </Link>
-            {project && (
-              <>
-                <span className="text-ink-300/60">/</span>
-                <span className="text-sm font-semibold text-ink-900 truncate max-w-[200px]">{project.name}</span>
-                <span className="text-ink-300/60">/</span>
-                <span className="text-sm font-medium text-ink-600 shrink-0">Analytics</span>
-              </>
-            )}
-          </div>
-
-          <div className="flex items-center gap-3 shrink-0">
-            {!isLoading && mentions.length > 0 && (
-              <span className="text-xs text-ink-600 tabular-nums" style={{ fontVariantNumeric: 'tabular-nums' }}>
-                {mentions.length.toLocaleString()} {mentions.length === 1 ? 'lead' : 'leads'}
-              </span>
-            )}
-            <button
-              onClick={() => {
-                try {
-                  exportMentionsToCSV(mentions, `sneakyguy_analytics_${project?.name || projectId}`);
-                  toast.success('CSV exported');
-                } catch {
-                  toast.error('Failed to export CSV');
-                }
-              }}
-              disabled={isLoading || mentions.length === 0}
-              className="flex items-center gap-1.5 px-3 h-8 rounded-xl bg-white shadow-card text-xs font-medium text-ink-600 hover:bg-orange-50/60 hover:text-ink-900 hover:shadow-card-hover transition-all duration-200 disabled:opacity-50"
-            >
-              <Download className="h-3 w-3" />
-              Export
-            </button>
-          </div>
-        </div>
+      <div className="mx-auto max-w-[1080px]">
+        <QueueHeader
+          projectName={project?.name}
+          title="Analytics"
+          lede="Where your leads come from, how good they are, and how many you answered."
+        >
+          <button
+            type="button"
+            onClick={() => {
+              try {
+                exportMentionsToCSV(mentions, `sneakyguy_analytics_${project?.name || projectId}`);
+                toast.success('CSV exported');
+              } catch {
+                toast.error('Could not export the CSV. Try again.');
+              }
+            }}
+            disabled={isLoading || mentions.length === 0}
+            className={BTN_QUIET}
+          >
+            <Download className="h-4 w-4" aria-hidden="true" />
+            Export CSV
+          </button>
+        </QueueHeader>
 
         {/* Content */}
         {isLoading ? (
           <AnalyticsSkeleton />
         ) : mentions.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl shadow-card">
+          <div className={`${PANEL} px-6 py-16 text-center`}>
             <div className="mx-auto w-11 h-11 rounded-xl bg-orange-50 flex items-center justify-center mb-3">
               <Inbox className="h-5 w-5 text-orange-500" />
             </div>
@@ -141,7 +114,7 @@ export default function AnalyticsPage() {
             </p>
             <Link
               href={`/mentions/${projectId}`}
-              className="inline-flex items-center gap-1.5 px-3.5 h-8 rounded-xl bg-[#d13800] text-white text-xs font-semibold shadow-orange hover:bg-[#b83200] transition-all duration-200"
+              className={BTN_PRIMARY}
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Back to leads
